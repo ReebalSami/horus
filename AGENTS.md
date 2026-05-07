@@ -21,9 +21,9 @@ In `.windsurf/rules/`:
 
 - 18 global long-form rules copied from cascade-system (`document-as-you-go`, `context7-and-docs-first`, `adapt-from-all`, `branch-and-pr-required`, `clean-project-structure`, `make-sure-it-works`, `bidirectional-learning-pipe`, …)
 - L3 (`python-ml-uv`) overrides: `notebook-discipline.md` (jupytext .py only, no .ipynb checked in), `uv-discipline.md` (uv exclusive; no pip/poetry/conda mixing)
-- L2 (HORUS-specific, authored at M2D.2):
-  - `horus-decision-discipline.md` — tightens "significant decision" to **any** tool/model/library/dataset/framework choice; mandates the 5 ADR sections above
-  - `horus-source-archival.md` — every cited source archived under `docs/sources/<type>/<slug>.md` with Obsidian-clipper-compatible frontmatter
+- L2 (HORUS-specific, ratified at M2D.2):
+  - `horus-decision-discipline.md` — tightens "significant decision" to **any** tool/model/library/dataset/framework choice; mandates the 5 ADR sections (Current-state survey / Options considered / Decision + integration thoughts / Source archival / Supersession trigger). See `docs/decisions/ADR-001-tool-decision-discipline.md`.
+  - `horus-source-archival.md` — every cited source archived under `docs/sources/<type>/<slug>.md` with Obsidian-clipper-compatible frontmatter. See `docs/decisions/ADR-002-source-archival.md`.
 
 ## How to start work
 
