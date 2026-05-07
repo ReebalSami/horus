@@ -2,7 +2,9 @@
 
 | ID | Title | Status |
 |---|---|---|
-| _(none yet)_ | | |
+| ADR-001 | Tool-decision discipline (mandatory ADR sections for every tool/model/library/dataset/framework choice) | Accepted |
+| ADR-002 | Source-archival convention (`docs/sources/` tree + Obsidian-clipper-compatible stubs) | Accepted |
+| ADR-003 | Brand naming — HORUS (Hybrid OCR-free Reading & Understanding System) | Accepted |
 
 ## Conventions
 
