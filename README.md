@@ -1,15 +1,16 @@
-# your-pkg
+# HORUS
 
-Python ML / research project bootstrapped from the `python-ml-uv` L3 template.
+**H**ybrid **O**CR-free **R**eading & **U**nderstanding **S**ystem.
 
-## Post-bootstrap rename (do this first)
+Master's thesis project (FH Wedel, SS 2026): privacy-first document intelligence for German tax/accounting professionals via local vision-language models. Documents stay inside the firm; the analyst keeps full audit-trail visibility.
 
-1. Rename `src/your_pkg/` to your project's snake_case package slug (e.g., `src/my_project/`).
-2. Update `pyproject.toml` `[project] name = "..."` to your project's kebab-case slug (e.g., `my-project`).
-3. Update import statements in `tests/test_smoke.py` (or run `make test` and follow failures).
-4. Run `make install && make test` to confirm the bootstrap works end-to-end.
+## Why HORUS?
 
-A future `/start-project` enhancement will automate this token substitution. See `cascade-system/queue/pending-review.md` for the L1-promotion entry.
+**Backronym**: **H**ybrid **O**CR-free **R**eading & **U**nderstanding **S**ystem.
+
+**Symbolic anchor**: Horus is the Egyptian falcon-headed god of vision and kingship. The **Eye of Horus** — the *wedjat* — is one of antiquity's most enduring symbols of perception, protection, and restoration. Vision-language models *see* documents holistically without an OCR transcription step; the mythology maps directly to the central methodological commitment of this thesis (OCR-free, VLM-first; see brainstorm v2 §1 + §3.1, ratified at `docs/decisions/ADR-003-brand-naming-horus.md`).
+
+**Why not the alternatives?** `vellum` / `hearth` / `aegis` / `codex` were all evaluated and rejected — see `docs/decisions/ADR-003-brand-naming-horus.md` for the elimination tree.
 
 ## Toolchain
 
@@ -43,7 +44,7 @@ make experiment NB=experiments/baseline.py    # jupytext + papermill flow
 ├── .gitignore              # Python + ML + uv flavored
 ├── README.md               # this file
 ├── src/
-│   └── your_pkg/            # rename to your package slug post-bootstrap
+│   └── horus/              # main package (kebab `horus` = snake `horus`; no split needed)
 │       ├── __init__.py
 │       ├── seeding.py      # set_global_seed (stdlib + optional torch/numpy)
 │       ├── tracking.py     # Tracker Protocol + StdoutTracker (B4=C tracker-agnostic)
@@ -89,11 +90,11 @@ See `https://docs.astral.sh/uv/guides/integration/pytorch/` for the full pattern
 
 ### Experiment tracker (B4=C)
 
-Default: `StdoutTracker` in `src/your_pkg/tracking.py` prints metrics to stdout. Swap for MLflow / W&B / TensorBoard / Aim / DVC / Neptune by implementing the `Tracker` Protocol — see `tracking.py` docstring for the swap pattern.
+Default: `StdoutTracker` in `src/horus/tracking.py` prints metrics to stdout. Swap for MLflow / W&B / TensorBoard / Aim / DVC / Neptune by implementing the `Tracker` Protocol — see `tracking.py` docstring for the swap pattern.
 
 ### Config layer (B8=C)
 
-Default: stdlib `@dataclass Config` in `src/your_pkg/config.py`. Extend or replace with Hydra / pydantic / argparse / typer — see `config.py` docstring for swap patterns.
+Default: stdlib `@dataclass Config` in `src/horus/config.py`. Extend or replace with Hydra / pydantic / argparse / typer — see `config.py` docstring for swap patterns.
 
 ### CI scaffold (B10=C)
 
@@ -138,4 +139,8 @@ Run a phase via `/run-phase <name>` from a Cascade conversation in this project'
 
 ## Provenance
 
-Bootstrapped via `/start-project` from L3 template `python-ml-uv` at `~/.windsurf/templates/python-ml-uv/`. Brainstorm spec at `cascade-system/docs/prompts/stages/02-brainstorm-python-ml-uv.md` (M2B.1 milestone).
+Bootstrapped via `/start-project` from L3 template `python-ml-uv` at `~/.windsurf/templates/python-ml-uv/` (Vertical B output of the cascade-system meta-repo, milestones M2B.1–M2B.8). HORUS identity ratified at `docs/decisions/ADR-003-brand-naming-horus.md` (M2D.1). Tool-decision discipline + source archival ratified at `docs/decisions/ADR-001-tool-decision-discipline.md` and `ADR-002-source-archival.md` (M2D.2). Project handoff context: `cascade-system/docs/handoffs/cascade-d-master-thesis.md` + kickoff plan `~/.windsurf/plans/kickoff-cascade-d-horus-362eef.md`.
+
+## License
+
+Proprietary — all rights reserved (thesis project). Source code, models, datasets, and derived artifacts are not licensed for external use, redistribution, or commercial adaptation. The thesis text itself is governed by FH Wedel's Prüfungsordnung.

@@ -5,7 +5,7 @@ per-project decision at consumption time. Ships a stdlib `@dataclass`
 placeholder; consumer extends or replaces with their preferred tooling.
 
 Example (default):
-    from your_pkg.config import Config
+    from horus.config import Config
 
     cfg = Config(seed=42, learning_rate=1e-3)
     print(cfg)

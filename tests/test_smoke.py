@@ -17,15 +17,15 @@ import random
 
 def test_package_imports() -> None:
     """Package and its core utility modules import cleanly."""
-    import your_pkg  # noqa: F401
-    from your_pkg import config, seeding, tracking  # noqa: F401
+    import horus  # noqa: F401
+    from horus import config, seeding, tracking  # noqa: F401
 
-    assert your_pkg.__version__ == "0.1.0"
+    assert horus.__version__ == "0.1.0"
 
 
 def test_set_global_seed_stdlib_only() -> None:
     """Seeding via stdlib `random` is deterministic across calls."""
-    from your_pkg.seeding import set_global_seed
+    from horus.seeding import set_global_seed
 
     set_global_seed(42)
     a = [random.random() for _ in range(8)]
@@ -36,7 +36,7 @@ def test_set_global_seed_stdlib_only() -> None:
 
 def test_default_tracker_protocol() -> None:
     """DEFAULT_TRACKER satisfies the Tracker Protocol shape."""
-    from your_pkg.tracking import DEFAULT_TRACKER
+    from horus.tracking import DEFAULT_TRACKER
 
     # Each Protocol method should be callable without raising.
     DEFAULT_TRACKER.log_metric("loss", 0.42, step=1)
@@ -46,7 +46,7 @@ def test_default_tracker_protocol() -> None:
 
 def test_config_defaults() -> None:
     """Config dataclass instantiates with sensible defaults."""
-    from your_pkg.config import Config
+    from horus.config import Config
 
     cfg = Config()
     assert cfg.seed == 42
