@@ -6,7 +6,7 @@ for MLflow / W&B / TensorBoard / Aim / DVC / Neptune by implementing the
 Protocol.
 
 Example (default):
-    from your_pkg.tracking import DEFAULT_TRACKER as tracker
+    from horus.tracking import DEFAULT_TRACKER as tracker
 
     tracker.log_metric("loss", 0.42, step=100)
     tracker.log_param("learning_rate", 1e-3)

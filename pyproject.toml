@@ -1,9 +1,13 @@
 [project]
-name = "your-pkg"
+name = "horus"
 version = "0.1.0"
-description = "Python ML / research project bootstrapped from the python-ml-uv L3 template"
+description = "HORUS — Hybrid OCR-free Reading & Understanding System. Privacy-first document intelligence for German tax/accounting professionals via local vision-language models. Master's thesis (FH Wedel, SS 2026)."
 readme = "README.md"
 requires-python = ">=3.14"
+license = { text = "Proprietary — All rights reserved (thesis project)" }
+authors = [
+    { name = "Reebal Sami" },
+]
 dependencies = [
     "torch>=2.5",
 ]

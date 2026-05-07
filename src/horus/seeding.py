@@ -6,7 +6,7 @@ module works in environments without optional ML deps installed (e.g., during
 `/start-project --dry-run` validation).
 
 Example:
-    from your_pkg.seeding import set_global_seed
+    from horus.seeding import set_global_seed
 
     set_global_seed(42)
     # ... train / evaluate ...
