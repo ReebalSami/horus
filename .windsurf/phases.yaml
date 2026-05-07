@@ -1,0 +1,100 @@
+# python-ml-uv L3 template — phase manifest
+# Spec:               cascade-system/docs/prompts/stages/02-brainstorm-python-ml-uv.md (M2B.1, B5=A)
+# Contract:           ~/.windsurf/contracts/phase-taxonomy.md (v1)
+# Issuing milestone:  M2B.2 (cascade-system#76)
+
+phase_set: python-ml-uv
+version: 1
+description: |
+  Lifecycle for Python ML and research projects (uv-managed; jupytext + papermill
+  experiments; mypy + ruff + pytest; stdlib reproducibility primitives). Generic
+  across thesis-style research, paper repro, Kaggle baselines, RL agents,
+  vision/NLP fine-tuning, and LLM eval harnesses.
+
+  Phase chain per brainstorm B5=A: linear 7-phase chain. Non-research consumers
+  close the `literature` phase trivially (1-paragraph "no relevant prior art")
+  rather than removing it; the chain shape is shared across consumers.
+
+phases:
+  - name: literature
+    skill: "@literature-review"
+    description: |
+      Survey relevant prior work; produce annotated bibliography. Wraps
+      @vault-research for vault-resident prior art and adds external-source
+      flow (arxiv / Semantic Scholar / web). Closes trivially for projects
+      with no meaningful prior art (e.g., Kaggle baselines, internal eval
+      harnesses).
+    artifacts:
+      - docs/prompts/stages/01-literature.md
+    milestone: literature-review-complete
+    next: brainstorm
+
+  - name: brainstorm
+    skill: "@grill-me"
+    description: |
+      Socratic interview to walk the design tree until shared understanding.
+      Produces an approved brainstorm artifact that grounds the spec phase.
+    artifacts:
+      - docs/prompts/stages/02-brainstorm.md
+    milestone: design-tree-resolved
+    next: spec
+
+  - name: spec
+    skill: "@to-prd"
+    description: |
+      Convert brainstorm output to a Product Requirements Document. PRD is
+      approved by the user via @to-prd's review gate before issues are
+      decomposed.
+    artifacts:
+      - docs/prompts/stages/03-prd.md
+      - "github://issue/<n>"
+    milestone: prd-approved
+    next: issues
+
+  - name: issues
+    skill: "@to-issues"
+    description: |
+      Decompose PRD §11 vertical slices into GitHub issues + milestones +
+      Project v2 board cards. One issue per slice.
+    artifacts:
+      - "github://project/<n>"
+    milestone: backlog-populated
+    next: experiment
+
+  - name: experiment
+    skill: "@run-experiment"
+    description: |
+      Run jupytext-paired experiments (papermill); validate hypotheses before
+      implementation. Consolidates B2 (jupytext + papermill discipline),
+      B4 (tracker-agnostic adapter), and B8 (stdlib reproducibility seeding)
+      into one operational pass.
+    artifacts:
+      - experiments/
+      - docs/prompts/stages/04-experiments.md
+    milestone: experiments-validated
+    next: implement
+
+  - name: implement
+    skill: "@tdd"
+    description: |
+      Test-driven implementation of validated experiments. Red → green →
+      refactor with pytest. @tdd is a forward-reference to a future L1
+      skill (per brainstorm B6 + 'Open / deferred items'); promote when
+      first surfaced (likely Vertical D's implement phase).
+    artifacts:
+      - src/
+      - tests/
+    milestone: feature-complete
+    next: writeup
+
+  - name: writeup
+    skill: "@writeup"
+    description: |
+      Compile report / paper / publication artifacts from results.
+      Consumer-flavored: thesis, conference paper, technical report, blog
+      post, internal write-up. @writeup is a forward-reference to a future
+      L1 skill (M2B.2 deferral); promote when first surfaced.
+    artifacts:
+      - docs/prompts/stages/05-writeup.md
+    milestone: submission-ready
+    next: null

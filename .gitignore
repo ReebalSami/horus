@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+
+# uv (manages .venv automatically; lockfile committed)
+.venv/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter / notebook discipline (B2=A: jupytext .py only, no .ipynb checked in)
+.ipynb_checkpoints/
+*.ipynb
+# Consumer override pattern: place a .gitkeep in a subdir under experiments/
+# named '.ipynb_keep/' if you genuinely need to track an .ipynb (rare).
+
+# Experiment outputs from `make experiment`
+experiments/*.executed.ipynb
+experiments/*.executed.py
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ML artifacts (consumer customizes if any of these are tracked)
+artifacts/
+checkpoints/
+mlruns/
+wandb/
+tb_logs/
+lightning_logs/

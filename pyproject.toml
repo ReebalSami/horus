@@ -1,0 +1,69 @@
+[project]
+name = "your-pkg"
+version = "0.1.0"
+description = "Python ML / research project bootstrapped from the python-ml-uv L3 template"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "torch>=2.5",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.7",
+    "mypy>=1.13",
+    "jupytext>=1.16",
+    "papermill>=2.6",
+]
+
+[build-system]
+requires = ["uv_build>=0.5"]
+build-backend = "uv_build"
+
+# ---------------------------------------------------------------------------
+# Tool configuration
+# ---------------------------------------------------------------------------
+
+[tool.mypy]
+# B1=A per python-ml-uv brainstorm: mypy is the default type checker.
+# Loose lower-bound pin; consumer adds plugins (pydantic / torch / numpy) as needed.
+python_version = "3.14"
+strict = false
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+plugins = []
+
+# Optional ML deps that the scaffold imports conditionally (try/except ImportError).
+# Without these overrides, mypy fails on the conditional import even though
+# the runtime path is correct. Consumer adds rows here when adopting more
+# optional deps under the same try/except pattern.
+[[tool.mypy.overrides]]
+module = ["numpy", "numpy.*"]
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra"

@@ -1,0 +1,22 @@
+%% Example Mermaid diagram — replace or delete as the project grows.
+%% Render in any GitHub markdown view via:
+%%
+%% ```mermaid
+%% <contents below>
+%% ```
+
+graph LR
+    User([User]) --> UI[UI Layer]
+    UI --> API[API / Service Layer]
+    API --> DB[(Data Store)]
+    API --> Ext[External Services]
+
+    classDef external fill:#fef3c7,stroke:#a16207
+    class Ext external
+
+    %% Annotations
+    %% - User: end-user or upstream caller
+    %% - UI: web/CLI/notebook front-end
+    %% - API: business logic + orchestration
+    %% - DB: persistent state
+    %% - External: third-party APIs, MCPs, etc.

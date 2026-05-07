@@ -1,0 +1,18 @@
+%% Example sequence diagram — replace or delete as the project grows.
+
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant D as Database
+
+    U->>F: Action (click / command)
+    F->>B: API request
+    B->>D: Query
+    D-->>B: Result
+    B-->>F: Response
+    F-->>U: Rendered output
+
+    Note over B,D: Persistent state changes happen here
+    Note over F: Optimistic UI updates allowed
