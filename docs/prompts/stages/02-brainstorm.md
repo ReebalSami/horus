@@ -152,6 +152,55 @@ If the phase-skip proves problematic (e.g., absence of explicit PRD becomes fric
 
 ---
 
+## 9 — Amendment 2026-05-10: Claude-chat cross-check + verified candidate refresh
+
+**Status**: amendment to §1–§8 directional content. Supplements, does not supersede. Original v2-derived working frame stays valid.
+
+**Trigger**: user-led external review with Claude Opus 4.7 (web chat) on 2026-05-10 surfaced 15 candidate-list deltas vs the v2-derived directional content imported at M2D.4. Web verification done in Cascade D session (this resume rethink) via `search_web` + HuggingFace MCP. 14/15 factual claims verified; 1 caveat. 3 NEW candidates claude-chat missed. Plus a methodology refinement.
+
+**Provenance**: `~/.windsurf/plans/cascade-d-resume-rethink-2f7f5a.md` (Cascade D's resume-rethink plan). Mirrored in `cascade-system/docs/handoffs/cascade-d-master-thesis.md` §3.1 (the canonical record for new cascades that pick up via `@kickoff`).
+
+### 9.1 Verified candidate matrix
+
+| External claim | Status | Action for new cascade |
+|---|---|---|
+| Drop Qwen2.5-VL → Qwen3-VL | ✅ verified | Replace v2 §8.1 `Qwen2.5-VL-7B` row with `Qwen3-VL-8B-Instruct` (Apache 2.0, arXiv 2505.09388, released 2025-09-23) and `Qwen3-VL-30B-A3B-Instruct` (MoE) for compute-permitted runs |
+| Add PaddleOCR-VL 1.5 (0.9B SOTA OmniDocBench v1.5 = 94.5%) | ✅ verified | Add candidate. arXiv 2601.21957. Apache 2.0. Multilingual (en+zh tag). Caveat: Chinese-skewed pretraining → German eval needed |
+| Granite-Docling 258M MLX-ready | ✅ verified | Already in v2 §8.1. MLX path: `ibm-granite/granite-docling-258M-mlx` (200-300 tok/s on M-class). Strong starter |
+| olmOCR-2-7B English-skewed | ✅ verified | HF tag `language: en` only. Annotate v2 §8.1 with EN-skew caveat |
+| Mistral OCR cheapest cloud (~$0.50/1k batch) | ✅ verified | Add to v2 §8.2. Mistral OCR 3 also released — newer/more capable/higher cost |
+| Gemma 3 cloud (matches Berghaus) | ✅ verified | Add to v2 §8.2. Direct comparison to Berghaus arXiv 2509.04469 |
+| ZUGFeRD 2.4 / Factur-X 1.08 (Dec 2025) | ✅ verified | Pin generator target to v2.4. Mustangproject 2.21.0 (2025-12-18) supports |
+| Berghaus arXiv 2509.04469 | ✅ verified | Berghaus + Berger + Hillebrand + Cvejoski + Sifa (Fraunhofer IAIS + Lamarr). Already in v2 bibliography |
+| Berghaus eval-code anonymous.4open.science URL | ⚠️ unauthorized | ADR slot: locate de-anon URL; fork-or-reinvent in new cascade |
+| FATURA on HF (10k imgs, 50 templates) | ✅ verified | `mathieu1256/FATURA2-invoices`. arXiv 2311.11856. Add to v2 §9.2 |
+| Aoschu/German_invoices_dataset | ⚠️ exists but n<1K, license unclear | Add as "sanity test only" |
+| OmniDocBench v1.5 + Real5-OmniDocBench | ✅ verified | Real5 = arXiv 2603.04205 (March 2026), 1,355 imgs, 5 physical conditions. Add to v2 §9.2 |
+| bge-m3 multilingual | ✅ verified | 149M downloads, MIT, 100+ langs, arXiv 2402.03216, XLM-RoBERTa base. Replace v2 §10 generic with bge-m3 indicated |
+| vllm-mlx Apple Silicon serving | ✅ verified | `vllm-project/vllm-metal` + `waybarrios/vllm-mlx`. Add to v2 §8.4 |
+| Python 3.14 + PyTorch 2.10+ compat | ✅ verified | PyTorch 2.10 = Py3.14 `torch.compile`; 2.11 latest. Already pinned in repo |
+
+### 9.2 New finds (claude-chat missed)
+
+- **MinerU 2.5-Pro** — 1.2B params, **95.69% on OmniDocBench v1.6** (April 2026, arXiv 2604.04771). v1.6 fixes element-matching biases + adds Hard subset; surpasses PaddleOCR-VL 1.5. Stronger candidate than PaddleOCR-VL 1.5 if v1.6 is the eval target.
+- **MDPBench** — Multilingual Document Parsing Benchmark, 17 langs, 3,400 imgs, March 2026 (arXiv 2603.28130). Closed-source models robust; open-source drops 17.8% on photographed docs, 14% on non-Latin scripts.
+- **Mistral OCR 3** — replaces `mistral-ocr-latest`. To survey at cloud-baseline ADR.
+
+### 9.3 Methodology refinement (sharpens v2 §4.1 lock-vs-branch)
+
+| Lock-timing tier | Items | Source |
+|---|---|---|
+| **Hard pre-commit** (before ANY model run, incl. pilot) | (1) Held-out test set freeze + hash; (2) Layer-1 eval protocol (v2 §5.1 token F1 + §5.5 field heatmap, MLflow-tracked, deterministic seed) | claude-chat refinement of v2 §4.1 |
+| **First-Säring-meeting lock** | RQ; field weights (v2 §5.2); H1–H6; statistical reporting; freeze-date approval | v2 §4.1 + §12 |
+| **Post-Layer-1-evidence** | v2 §5.2 weighted F1, §5.3 compliance pass rate, §5.4 Vorsteuerabzug eligibility, §5.6 validator catch rate | claude-chat refinement |
+| **Layer-2/3-phase** | KG fidelity propagation; Layer 3 query-accuracy; GraphRAG-vs-vector metrics | branches per v2 §4.2 |
+
+### 9.4 Forward-reference
+
+§10 (next amendment, **separate PR landing same Cascade D session**: `docs/horus-config-discipline-rule`) authors the `horus-config-discipline` L2 rule that mandates YAML-based experiment configs — the architectural shape required for everything below. Every experiment YAML is the de-facto "lock" for that run, deterministically tied to a git commit + MLflow run.
+
+---
+
 ## Provenance
 
 - **Input**: `/Users/reebal/Projects/FH-Wedel/SS26/Master-Thesis/research/THESIS_BRAINSTORM_STATE_v2.md` (locked 2026-05-06, revision 2 by Reebal Sami + Claude Opus 4.7)
