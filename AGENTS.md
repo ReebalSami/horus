@@ -21,9 +21,10 @@ In `.windsurf/rules/`:
 
 - 18 global long-form rules copied from cascade-system (`document-as-you-go`, `context7-and-docs-first`, `adapt-from-all`, `branch-and-pr-required`, `clean-project-structure`, `make-sure-it-works`, `bidirectional-learning-pipe`, …)
 - L3 (`python-ml-uv`) overrides: `notebook-discipline.md` (jupytext .py only, no .ipynb checked in), `uv-discipline.md` (uv exclusive; no pip/poetry/conda mixing)
-- L2 (HORUS-specific, ratified at M2D.2):
-  - `horus-decision-discipline.md` — tightens "significant decision" to **any** tool/model/library/dataset/framework choice; mandates the 5 ADR sections (Current-state survey / Options considered / Decision + integration thoughts / Source archival / Supersession trigger). See `docs/decisions/ADR-001-tool-decision-discipline.md`.
-  - `horus-source-archival.md` — every cited source archived under `docs/sources/<type>/<slug>.md` with Obsidian-clipper-compatible frontmatter. See `docs/decisions/ADR-002-source-archival.md`.
+- L2 (HORUS-specific):
+  - `horus-decision-discipline.md` (ratified M2D.2) — tightens "significant decision" to **any** tool/model/library/dataset/framework choice; mandates the 5 ADR sections (Current-state survey / Options considered / Decision + integration thoughts / Source archival / Supersession trigger). See `docs/decisions/ADR-001-tool-decision-discipline.md`.
+  - `horus-source-archival.md` (ratified M2D.2) — every cited source archived under `docs/sources/<type>/<slug>.md` with Obsidian-clipper-compatible frontmatter. See `docs/decisions/ADR-002-source-archival.md`.
+  - `horus-config-discipline.md` (ratified 2026-05-10 Cascade D resume-rethink, Bundle 1) — ALL experiment knobs (hyperparams / model IDs / dataset paths / seeds / batch sizes / learning rates / prompt strings / eval thresholds / MLflow tags) live in `configs/<experiment-slug>.yaml` files. `.py` files contain LOGIC + Pydantic schema only. Experiments accept ONE papermill parameter `cfg_path`. Pydantic-validates-at-boot is the architectural forcing function (fails fast on missing/malformed YAML before any model loads). Bundle 2 (Pydantic install + ADR-NNN-config-library + replace `src/horus/config.py` + scaffold `configs/` + Makefile update) deferred to M2D.5 step 0. Pre-committed to L3 promotion at next `@sprint-review`. Canonical record: `cascade-system/docs/handoffs/cascade-d-master-thesis.md` §3.2.
 
 ## How to start work
 

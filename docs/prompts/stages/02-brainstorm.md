@@ -197,7 +197,32 @@ If the phase-skip proves problematic (e.g., absence of explicit PRD becomes fric
 
 ### 9.4 Forward-reference
 
-§10 (next amendment, **separate PR landing same Cascade D session**: `docs/horus-config-discipline-rule`) authors the `horus-config-discipline` L2 rule that mandates YAML-based experiment configs — the architectural shape required for everything below. Every experiment YAML is the de-facto "lock" for that run, deterministically tied to a git commit + MLflow run.
+§10 below authors the `horus-config-discipline` L2 rule that mandates YAML-based experiment configs — the architectural shape required for everything below. Every experiment YAML is the de-facto "lock" for that run, deterministically tied to a git commit + MLflow run.
+
+---
+
+## 10 — Amendment 2026-05-10: Config-discipline rule (L2)
+
+**Status**: rule arrival. Bundle 1 of the config-discipline split-landing.
+
+**Trigger**: user-surfaced gap during the 2026-05-10 Cascade D resume-rethink. Current `src/horus/config.py` is the L3-template `@dataclass` placeholder with hardcoded defaults (`seed=42`, `learning_rate=1e-3`, `batch_size=32`, `num_epochs=1`) — exactly the pattern that compromises reproducibility + scientific correctness if propagated into M2D.5 first-experiment authoring. `experiments/` empty. No `config-discipline` rule existed in `.windsurf/rules/`.
+
+**Bundle 1** (this PR): adds project-local L2 rule `.windsurf/rules/horus-config-discipline.md`. Rule mandates:
+
+- **Forbidden in `.py` files**: hardcoded knobs (hyperparameters / model IDs / dataset paths / seeds / batch sizes / learning rates / prompt strings / eval thresholds / MLflow tags) as default args, module-level constants, or inline literals
+- **Allowed in `.py` files**: Pydantic schema literal defaults inside `src/horus/config.py` (that's the contract — defaults belong there); package metadata (`__version__`); structural constants (column names, schema field names, enum values for typing); test fixtures inside `tests/`
+- **Contract**: experiments accept ONE papermill parameter `cfg_path: str`; cfg loaded via `ExperimentConfig.from_yaml(cfg_path)`; Pydantic raises on missing/malformed → fails fast before any model loads / dataset downloads
+- **Forcing function**: Pydantic-validates-at-boot is the architectural backstop (no separate skill/workflow needed; the architecture itself is the workflow, cf. ADR-013/ADR-018 patterns)
+
+Rule body documents: what's forbidden + what's allowed (with examples) + the contract (experiment `.py` shape template) + activation triggers (`model_decision` keywords) + when the rule does NOT fire + fires/does-not-fire examples + L3 promotion plan + source/provenance.
+
+**L3 promotion plan**: pre-committed to surface for promotion to `~/.windsurf/templates/python-ml-uv/rules/config-discipline.md` at next `@sprint-review` (per Q7 commitment in resume-rethink plan §1; not deferred indefinitely). The shape is generic enough to apply to any python-ml-uv project.
+
+**Bundle 2** (deferred to new cascade, M2D.5 step 0): walks `ADR-NNN-config-library` Socratically per `horus-decision-discipline` rule (Pydantic Settings indicated; Hydra / OmegaConf / stdlib + PyYAML alternatives surveyed) → installs chosen library via `uv add` (with full 5-section ADR per ADR-001) → replaces `src/horus/config.py` placeholder with chosen-library schema → scaffolds `configs/` directory + first per-experiment YAML → updates `Makefile` `experiment` target to accept `CFG=configs/<slug>.yaml` parameter.
+
+The new cascade has the Bundle 1 rule loaded at conversation-start (workspace rule, AGENTS.md known) → actively gates Bundle 2 work as M2D.5 step 0, BEFORE any experiment is authored or any model knob is touched.
+
+**Provenance**: `~/.windsurf/plans/cascade-d-resume-rethink-2f7f5a.md` + `cascade-system/docs/handoffs/cascade-d-master-thesis.md` §3.2 (the canonical record).
 
 ---
 
