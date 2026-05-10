@@ -5,6 +5,7 @@
 | ADR-001 | Tool-decision discipline (mandatory ADR sections for every tool/model/library/dataset/framework choice) | Accepted |
 | ADR-002 | Source-archival convention (`docs/sources/` tree + Obsidian-clipper-compatible stubs) | Accepted |
 | ADR-003 | Brand naming — HORUS (Hybrid OCR-free Reading & Understanding System) | Accepted |
+| ADR-004 | Config library — Pydantic Settings + PyYAML (implements `horus-config-discipline` Bundle 1) | Accepted |
 
 ## Conventions
 

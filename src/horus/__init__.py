@@ -13,7 +13,7 @@ naming + architectural ratification.
 Public surface (lazy-imported by callers):
   - `horus.seeding`   — `set_global_seed` (deterministic experiments)
   - `horus.tracking`  — `Tracker` Protocol + `DEFAULT_TRACKER` (stdout)
-  - `horus.config`    — placeholder dataclass; replaced as design solidifies
+  - `horus.config`    — `ExperimentConfig` schema (Pydantic Settings + YAML; see ADR-004)
 """
 
 __version__ = "0.1.0"

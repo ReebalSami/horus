@@ -1,45 +1,111 @@
-"""Configuration scaffold (python-ml-uv brainstorm B8=C stdlib-only primitives).
+"""HORUS experiment configuration schema.
 
-Defers the config-layer choice (Hydra / pydantic / argparse / typer / etc.) to
-per-project decision at consumption time. Ships a stdlib `@dataclass`
-placeholder; consumer extends or replaces with their preferred tooling.
+Single source of truth for an experiment's knobs. Loaded via
+`ExperimentConfig.from_yaml(cfg_path)` from `configs/<slug>.yaml`. Pydantic
+validates at boot — any malformed YAML, missing required field, type mismatch,
+or extra (unrecognised) field raises `pydantic.ValidationError` BEFORE any
+model loads, dataset downloads, or compute is spent. This is the architectural
+forcing function described by `.windsurf/rules/horus-config-discipline.md`
+and ratified by `docs/decisions/ADR-004-config-library.md`.
 
-Example (default):
-    from horus.config import Config
+`HORUS_*` env vars layer on top of the YAML data (per pydantic-settings source
+ordering) for secrets-style overrides — e.g., `HORUS_MLFLOW__TRACKING_URI`
+overrides `mlflow.tracking_uri` when set in the shell environment. The double
+underscore (`__`) is the nested-delimiter convention from `pydantic-settings`.
 
-    cfg = Config(seed=42, learning_rate=1e-3)
-    print(cfg)
+The schema is intentionally minimal at Bundle 2 close. It grows per experiment:
+when M2D.5 step 6 authors the first Granite-Docling pilot, that experiment's
+ADR extends this schema with `model: ModelConfig`, `dataset: DatasetConfig`,
+`eval: EvalConfig`, etc. — each addition is a code change reviewable in PR.
 
-Swap pattern (Hydra):
-    @hydra.main(version_base=None, config_path="conf", config_name="config")
-    def main(cfg: DictConfig) -> None:
-        ...
+Example (the canonical experiment-boot pattern):
+    from horus.config import ExperimentConfig
+    from horus.seeding import set_global_seed
 
-Swap pattern (pydantic):
-    from pydantic import BaseModel
-
-    class Config(BaseModel):
-        seed: int = 42
-        learning_rate: float = 1e-3
-        # ...
-
-Swap pattern (typer + dataclass):
-    @app.command()
-    def train(seed: int = 42, learning_rate: float = 1e-3, ...) -> None:
-        cfg = Config(seed=seed, learning_rate=learning_rate)
-        ...
+    cfg = ExperimentConfig.from_yaml("configs/granite-pilot.yaml")
+    set_global_seed(cfg.seed)
+    # ... cfg.mlflow.experiment_name, cfg.mlflow.run_tags ...
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from pathlib import Path
+
+import yaml
+from pydantic import BaseModel, ConfigDict, Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-@dataclass
-class Config:
-    """Minimal experiment configuration. Extend as your project grows."""
+class MLflowConfig(BaseModel):
+    """MLflow tracking metadata (sub-model of `ExperimentConfig`)."""
 
-    seed: int = 42
-    learning_rate: float = 1e-3
-    batch_size: int = 32
-    num_epochs: int = 1
+    model_config = ConfigDict(extra="forbid")
+
+    experiment_name: str = Field(
+        description="MLflow experiment name (e.g., 'granite-pilot').",
+    )
+    run_tags: dict[str, str] = Field(
+        default_factory=dict,
+        description=(
+            "Tags applied to the MLflow run (e.g., {'stage': 'pilot', 'cohort': 'granite'})."
+        ),
+    )
+    tracking_uri: str | None = Field(
+        default=None,
+        description=(
+            "MLflow tracking URI; None = local file:./mlruns. "
+            "Override at run-time via the `HORUS_MLFLOW__TRACKING_URI` env var."
+        ),
+    )
+
+
+class ExperimentConfig(BaseSettings):
+    """Single source of truth for an experiment's knobs.
+
+    Loaded via `ExperimentConfig.from_yaml(cfg_path)` from
+    `configs/<slug>.yaml`. `HORUS_*` env vars layer on top via
+    `pydantic-settings` source ordering.
+
+    Extend per experiment as needed: add new sub-models (`ModelConfig`,
+    `DatasetConfig`, `EvalConfig`, etc.) as required fields here, with
+    sensible Pydantic types + descriptions. Every knob lives in YAML;
+    nothing is hardcoded in `.py` files outside this module
+    (per `horus-config-discipline`).
+    """
+
+    model_config = SettingsConfigDict(
+        env_prefix="HORUS_",
+        env_nested_delimiter="__",
+        extra="forbid",
+        case_sensitive=False,
+    )
+
+    seed: int = Field(
+        description=(
+            "Global RNG seed (Python, NumPy, PyTorch via `horus.seeding.set_global_seed`)."
+        ),
+    )
+    mlflow: MLflowConfig
+
+    @classmethod
+    def from_yaml(cls, cfg_path: str | Path) -> ExperimentConfig:
+        """Load + validate an experiment config from a YAML file.
+
+        Reads `cfg_path` via `yaml.safe_load`, validates the result against the
+        Pydantic schema, layers `HORUS_*` env vars on top, and returns the
+        instantiated config. Raises:
+
+        - `FileNotFoundError` if `cfg_path` does not exist.
+        - `pydantic.ValidationError` if the YAML data fails schema validation
+          (missing required field, type mismatch, extra field, …).
+
+        Both classes of failure happen BEFORE any model loads, dataset
+        downloads, or compute is spent — the fail-fast contract from
+        `horus-config-discipline`.
+        """
+        path = Path(cfg_path)
+        if not path.is_file():
+            raise FileNotFoundError(f"Config file not found: {path}")
+        with path.open(encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+        return cls(**data)

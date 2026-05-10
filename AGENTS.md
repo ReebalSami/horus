@@ -24,7 +24,7 @@ In `.windsurf/rules/`:
 - L2 (HORUS-specific):
   - `horus-decision-discipline.md` (ratified M2D.2) — tightens "significant decision" to **any** tool/model/library/dataset/framework choice; mandates the 5 ADR sections (Current-state survey / Options considered / Decision + integration thoughts / Source archival / Supersession trigger). See `docs/decisions/ADR-001-tool-decision-discipline.md`.
   - `horus-source-archival.md` (ratified M2D.2) — every cited source archived under `docs/sources/<type>/<slug>.md` with Obsidian-clipper-compatible frontmatter. See `docs/decisions/ADR-002-source-archival.md`.
-  - `horus-config-discipline.md` (ratified 2026-05-10 Cascade D resume-rethink, Bundle 1) — ALL experiment knobs (hyperparams / model IDs / dataset paths / seeds / batch sizes / learning rates / prompt strings / eval thresholds / MLflow tags) live in `configs/<experiment-slug>.yaml` files. `.py` files contain LOGIC + Pydantic schema only. Experiments accept ONE papermill parameter `cfg_path`. Pydantic-validates-at-boot is the architectural forcing function (fails fast on missing/malformed YAML before any model loads). Bundle 2 (Pydantic install + ADR-NNN-config-library + replace `src/horus/config.py` + scaffold `configs/` + Makefile update) deferred to M2D.5 step 0. Pre-committed to L3 promotion at next `@sprint-review`. Canonical record: `cascade-system/docs/handoffs/cascade-d-master-thesis.md` §3.2.
+  - `horus-config-discipline.md` (Bundle 1 ratified 2026-05-10; Bundle 2 closed 2026-05-10 via ADR-004 = pydantic-settings + pyyaml) — ALL experiment knobs (hyperparams / model IDs / dataset paths / seeds / batch sizes / learning rates / prompt strings / eval thresholds / MLflow tags) live in `configs/<experiment-slug>.yaml` files. `.py` files contain LOGIC + Pydantic schema (`src/horus/config.py` → `ExperimentConfig`) only. Experiments accept ONE papermill parameter `cfg_path`. Pydantic-validates-at-boot is the architectural forcing function (fails fast on missing/malformed YAML before any model loads). Pre-committed to L3 promotion at next `@sprint-review`. Canonical records: `cascade-system/docs/handoffs/cascade-d-master-thesis.md` §3.2 + `docs/decisions/ADR-004-config-library.md` + `configs/README.md`.
 
 ## How to start work
 
@@ -54,8 +54,10 @@ Handoff context: `cascade-system/docs/handoffs/cascade-d-master-thesis.md`.
 
 - Python 3.14+ (pinned in `.python-version`)
 - `uv` (Astral) — exclusive package manager
-- `pytest` / `ruff` / `mypy` / `jupytext` / `papermill` — pinned in `pyproject.toml` `[dependency-groups] dev`
+- Runtime: `pydantic` / `pydantic-settings` / `pyyaml` / `torch` — pinned in `pyproject.toml` `[project] dependencies`
+- Dev: `pytest` / `ruff` / `mypy` / `jupytext` / `papermill` / `types-pyyaml` — pinned in `pyproject.toml` `[dependency-groups] dev`
 - `make install && make test` — bootstrap validation (must always pass before merge)
+- `make experiment NB=experiments/<slug>.py CFG=configs/<slug>.yaml` — single-cfg-path experiment runner per `horus-config-discipline`
 
 ## Pre-loaded thesis context (read-only)
 

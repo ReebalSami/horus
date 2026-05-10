@@ -8,7 +8,7 @@ help:
 	@echo "  lint        uv run ruff check (lint only; no fix)"
 	@echo "  format      uv run ruff format (apply formatting)"
 	@echo "  typecheck   uv run mypy src tests"
-	@echo "  experiment  jupytext + papermill on NB=experiments/<name>.py"
+	@echo "  experiment  jupytext + papermill on NB=experiments/<name>.py CFG=configs/<name>.yaml"
 	@echo "  clean       remove build artifacts and caches"
 
 install:
@@ -28,19 +28,22 @@ format:
 typecheck:
 	uv run mypy src tests
 
-# Jupytext-paired experiment runner (B2=A notebook discipline).
-# Usage: make experiment NB=experiments/<name>.py
-# Converts .py -> .ipynb, runs via papermill, converts result back to .py.
+# Jupytext-paired experiment runner (B2=A notebook discipline + horus-config-discipline).
+# Usage: make experiment NB=experiments/<name>.py CFG=configs/<name>.yaml
+# Converts .py -> .ipynb, runs via papermill (injects cfg_path=$(CFG)),
+# converts result back to .py. Per ADR-004 + horus-config-discipline:
+# every experiment receives ONE papermill parameter (cfg_path) and loads
+# all knobs via ExperimentConfig.from_yaml(cfg_path).
 experiment:
-	@if [ -z "$(NB)" ]; then \
-		echo "Usage: make experiment NB=experiments/<name>.py"; \
+	@if [ -z "$(NB)" ] || [ -z "$(CFG)" ]; then \
+		echo "Usage: make experiment NB=experiments/<name>.py CFG=configs/<name>.yaml"; \
 		exit 1; \
 	fi
 	uv run jupytext --to ipynb $(NB) -o $(NB:.py=.ipynb)
-	uv run papermill $(NB:.py=.ipynb) $(NB:.py=.executed.ipynb)
+	uv run papermill -p cfg_path "$(CFG)" $(NB:.py=.ipynb) $(NB:.py=.executed.ipynb)
 	uv run jupytext --to py:percent $(NB:.py=.executed.ipynb) -o $(NB:.py=.executed.py)
 	rm -f $(NB:.py=.ipynb)
-	@echo "Executed: $(NB:.py=.executed.py) (and .executed.ipynb)"
+	@echo "Executed: $(NB:.py=.executed.py) (and .executed.ipynb) [cfg=$(CFG)]"
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist
