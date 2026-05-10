@@ -47,8 +47,7 @@ class MLflowConfig(BaseModel):
     run_tags: dict[str, str] = Field(
         default_factory=dict,
         description=(
-            "Tags applied to the MLflow run "
-            "(e.g., {'stage': 'pilot', 'cohort': 'granite'})."
+            "Tags applied to the MLflow run (e.g., {'stage': 'pilot', 'cohort': 'granite'})."
         ),
     )
     tracking_uri: str | None = Field(
@@ -83,8 +82,7 @@ class ExperimentConfig(BaseSettings):
 
     seed: int = Field(
         description=(
-            "Global RNG seed (Python, NumPy, PyTorch via "
-            "`horus.seeding.set_global_seed`)."
+            "Global RNG seed (Python, NumPy, PyTorch via `horus.seeding.set_global_seed`)."
         ),
     )
     mlflow: MLflowConfig

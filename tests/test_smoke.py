@@ -55,11 +55,7 @@ def test_experiment_config_from_yaml_loads_and_validates(tmp_path: Path) -> None
 
     cfg_path = tmp_path / "smoke.yaml"
     cfg_path.write_text(
-        "seed: 42\n"
-        "mlflow:\n"
-        "  experiment_name: smoke-test\n"
-        "  run_tags:\n"
-        "    stage: smoke\n",
+        "seed: 42\nmlflow:\n  experiment_name: smoke-test\n  run_tags:\n    stage: smoke\n",
         encoding="utf-8",
     )
     cfg = ExperimentConfig.from_yaml(cfg_path)
@@ -97,10 +93,7 @@ def test_experiment_config_extra_field_forbidden(tmp_path: Path) -> None:
 
     cfg_path = tmp_path / "smoke.yaml"
     cfg_path.write_text(
-        "seed: 42\n"
-        "mlflow:\n"
-        "  experiment_name: smoke-test\n"
-        "unknown_knob: not-allowed\n",
+        "seed: 42\nmlflow:\n  experiment_name: smoke-test\nunknown_knob: not-allowed\n",
         encoding="utf-8",
     )
     with pytest.raises(ValidationError):
@@ -113,10 +106,7 @@ def test_experiment_config_extra_field_in_submodel_forbidden(tmp_path: Path) -> 
 
     cfg_path = tmp_path / "smoke.yaml"
     cfg_path.write_text(
-        "seed: 42\n"
-        "mlflow:\n"
-        "  experiment_name: smoke-test\n"
-        "  unknown_subknob: not-allowed\n",
+        "seed: 42\nmlflow:\n  experiment_name: smoke-test\n  unknown_subknob: not-allowed\n",
         encoding="utf-8",
     )
     with pytest.raises(ValidationError):
