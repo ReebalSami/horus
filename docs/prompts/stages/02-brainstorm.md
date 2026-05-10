@@ -126,6 +126,8 @@ v2 §3 D1–D11 imported as the working approach choices. Each entry below: alte
 
 ## 8 — Next phase
 
+> **Amendment 2026-05-10**: see §11 for revision of the `issues`-skip decision. `spec`-skip remains in force.
+
 Per `~/.windsurf/templates/python-ml-uv/phases.yaml`, the canonical next phase after `brainstorm` is `spec` (PRD authoring via `@to-prd`). HORUS deliberately adapts this:
 
 **Adaptation: skip `spec` and `issues` phases for now; proceed directly to `experiment` (M2D.5+).**
@@ -223,6 +225,29 @@ Rule body documents: what's forbidden + what's allowed (with examples) + the con
 The new cascade has the Bundle 1 rule loaded at conversation-start (workspace rule, AGENTS.md known) → actively gates Bundle 2 work as M2D.5 step 0, BEFORE any experiment is authored or any model knob is touched.
 
 **Provenance**: `~/.windsurf/plans/cascade-d-resume-rethink-2f7f5a.md` + `cascade-system/docs/handoffs/cascade-d-master-thesis.md` §3.2 (the canonical record).
+
+---
+
+## 11 — Amendment 2026-05-10: Issues-phase restoration
+
+**Status**: amendment to §8. Supplements + revises the `issues`-skip half of §8's phase-chain adaptation. `spec`-skip stays in force.
+
+**Trigger**: 2026-05-10 user-led clarification session. User identified that all three §8 rationales — (1) v2 §0–§14 already covers ~70% of typical PRD content, (2) the §4.1 a-priori commitments are Säring-blocked, (3) pre-Säring PRD risks HARKing — are **spec-only** rationales. None of them are about `issues`-phase semantics. The previous Cascade authoring §8 conflated the two phases when bundling them under one "skip" decision.
+
+**Decision**: Only the `spec` phase is skipped. The `issues` phase is **restored**. Issues are authored from brainstorm §8 (M2D.5 sub-steps) + handoff `cascade-d-master-thesis.md` §3 (M2D.5 work-breakdown + M2D.6+ shape) as inputs — adapted consumption pattern for `@to-issues` (it nominally consumes a PRD §11 vertical-slices section; HORUS substitutes brainstorm + handoff per this amendment, with the L3-template friction captured to the cross-project queue for the next `@sprint-review` to triage).
+
+**Rationale (un-skip)**:
+
+- Issues don't need a PRD as input. `@to-issues` adapts to consume brainstorm + handoff directly when `spec` is skipped — the L3 friction is whether `python-ml-uv` `phases.yaml` should formally allow `issues`-from-brainstorm when `spec` is skipped, or whether `@to-issues` should learn both inputs natively. Either resolution preserves the un-skip; the friction itself does not justify the original conflation.
+- Conditional / sub-issue dependency chains express "branches on results, not on plans" (v2 §4.2; §2 D10 discipline commitment) **explicitly** on the Project v2 board — makes the decision-tree discipline auditable rather than implicit in narrative prose.
+- Project board #6 is currently empty → `plan-drift-watcher` rule has nothing to detect drift against → the discipline is invisible to the rule. Issues populated to milestone `experiments-validated` (#5) give the watcher signal.
+- Conventional-commit refs (`feat(experiment): ... refs #N`) require issues to exist before commits can reference them. Without issues, the per-commit traceability that `branch-and-pr-required` + `make-sure-it-works` rely on cannot be wired.
+
+**Cross-link from §8**: top of §8 carries the callout `**Amendment 2026-05-10**: see §11 for revision of the `issues`-skip decision. `spec`-skip remains in force.`
+
+**Pattern A vs ADR**: amendment recorded inline matching §9 + §10 precedent (both methodological/discipline revisions, neither carries an ADR). `horus-decision-discipline` literal scope is tool/model/library/dataset/framework/hosting choices — phase-chain revision falls outside. ADR promotion is reversible at any future `@sprint-review` if the pattern proves novel enough.
+
+**Provenance**: parent clarify session plan `~/.windsurf/plans/horus-clarify-and-kickoff-fresh-m2d5-session-dd91c1.md` + execution kickoff plan `~/.windsurf/plans/kickoff-cascade-d-issues-restoration-f2c8e1.md` + execution wrapper `~/.windsurf/plans/kickoff-cascade-d-issues-restoration-execution-743f68.md` (this Cascade's plan summary).
 
 ---
 
