@@ -1,8 +1,10 @@
-"""Smoke generator for ZUGFeRD/Factur-X synthetic invoices (ADR-005).
+"""Smoke generator for ZUGFeRD/Factur-X synthetic invoices (ADR-005 + ADR-006).
 
-Generates ONE Factur-X 1.08 MINIMUM-profile PDF/A-3 invoice end-to-end:
-1. Build a minimal CII XML (BT-1..BT-115 mandatory fields for MINIMUM profile)
-2. Create a blank visual PDF via pypdf
+Generates ONE Factur-X 1.08 BASIC-profile PDF/A-3 invoice end-to-end:
+1. Build a BASIC-profile CII XML (adds IncludedSupplyChainTradeLineItem +
+   ApplicableTradeTax to the MINIMUM-profile fields; see ADR-006 §Context)
+2. Render a visually-realistic A4 invoice PDF from the same CII XML via
+   horus.zugferd_render (fpdf2; ADR-006)
 3. Bond XML + PDF into a Factur-X PDF/A-3 via facturx.generate_from_file
 4. Run facturx's own XSD + Schematron checks (built-in, ships with library)
 
@@ -11,11 +13,11 @@ Output: data/raw/smoke/invoice-001.pdf (gitignored)
 Cross-tool validation against Mustang is the next step — invoke
 `scripts/validate_zugferd.py data/raw/smoke/invoice-001.pdf`.
 
-Scope per ADR-005: smoke verification (1 invoice round-trip). Bulk
-generation with parameterised fixture data is deferred to a follow-up
-issue alongside the XML-extraction script.
+Scope per ADR-005 + ADR-006: smoke verification (1 realistic invoice
+round-trip). Bulk generation with parameterised fixture data is deferred to
+a follow-up issue alongside the XML-extraction script.
 
-Refs: ADR-005, issue #9, brainstorm §8 step 2.
+Refs: ADR-005, ADR-006, issue #9, issue #21, brainstorm §8 step 2 follow-up.
 """
 
 from __future__ import annotations
@@ -25,19 +27,28 @@ from pathlib import Path
 
 import facturx
 from lxml import etree
-from pypdf import PdfWriter
+
+from horus.zugferd_render import render_invoice_pdf
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = REPO_ROOT / "data" / "raw" / "smoke"
 OUT_PDF = OUT_DIR / "invoice-001.pdf"
 
-# Minimal Factur-X 1.08 MINIMUM-profile CII XML.
-# This is the smallest schema-valid Factur-X invoice payload — used purely
-# to prove the toolchain (generator + binder + validator) works end-to-end.
-# Pilot-scale invoices will use EN16931 profile via parameterised builders
-# in a follow-up issue. MINIMUM profile is intended for B2C reduced reporting;
-# it carries fewer line-item details but is still XSD + Schematron valid.
-MINIMUM_CII_XML = b"""<?xml version="1.0" encoding="UTF-8"?>
+# Factur-X 1.08 BASIC-profile CII XML — single source of truth for both the
+# visual layer (rendered by render_invoice_pdf) and the structured XML layer
+# (embedded as factur-x.xml in the PDF/A-3 output).
+#
+# BASIC is the smallest Factur-X/ZUGFeRD profile carrying
+# IncludedSupplyChainTradeLineItem (MINIMUM does not; see ADR-006 §Context).
+# Totals preserved from ADR-005 smoke (100.00 net / 19.00 VAT / 119.00 gross).
+#
+# XSD element ordering follows Factur-X_1.08_BASIC_RABIE.xsd:
+#   SupplyChainTradeTransaction: IncludedSupplyChainTradeLineItem FIRST, then
+#   ApplicableHeaderTradeAgreement / Delivery / Settlement.
+#   ApplicableHeaderTradeSettlement: InvoiceCurrencyCode → ApplicableTradeTax
+#   → SpecifiedTradeSettlementHeaderMonetarySummation (with LineTotalAmount
+#   required as first child in BASIC, absent in MINIMUM).
+BASIC_CII_XML = b"""<?xml version="1.0" encoding="UTF-8"?>
 <rsm:CrossIndustryInvoice
   xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
   xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100"
@@ -49,7 +60,7 @@ MINIMUM_CII_XML = b"""<?xml version="1.0" encoding="UTF-8"?>
       <ram:ID>A1</ram:ID>
     </ram:BusinessProcessSpecifiedDocumentContextParameter>
     <ram:GuidelineSpecifiedDocumentContextParameter>
-      <ram:ID>urn:factur-x.eu:1p0:minimum</ram:ID>
+      <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic</ram:ID>
     </ram:GuidelineSpecifiedDocumentContextParameter>
   </rsm:ExchangedDocumentContext>
   <rsm:ExchangedDocument>
@@ -60,11 +71,40 @@ MINIMUM_CII_XML = b"""<?xml version="1.0" encoding="UTF-8"?>
     </ram:IssueDateTime>
   </rsm:ExchangedDocument>
   <rsm:SupplyChainTradeTransaction>
+    <ram:IncludedSupplyChainTradeLineItem>
+      <ram:AssociatedDocumentLineDocument>
+        <ram:LineID>1</ram:LineID>
+      </ram:AssociatedDocumentLineDocument>
+      <ram:SpecifiedTradeProduct>
+        <ram:Name>Beratungsleistung</ram:Name>
+      </ram:SpecifiedTradeProduct>
+      <ram:SpecifiedLineTradeAgreement>
+        <ram:NetPriceProductTradePrice>
+          <ram:ChargeAmount>100.00</ram:ChargeAmount>
+        </ram:NetPriceProductTradePrice>
+      </ram:SpecifiedLineTradeAgreement>
+      <ram:SpecifiedLineTradeDelivery>
+        <ram:BilledQuantity unitCode="C62">1.00</ram:BilledQuantity>
+      </ram:SpecifiedLineTradeDelivery>
+      <ram:SpecifiedLineTradeSettlement>
+        <ram:ApplicableTradeTax>
+          <ram:TypeCode>VAT</ram:TypeCode>
+          <ram:CategoryCode>S</ram:CategoryCode>
+          <ram:RateApplicablePercent>19</ram:RateApplicablePercent>
+        </ram:ApplicableTradeTax>
+        <ram:SpecifiedTradeSettlementLineMonetarySummation>
+          <ram:LineTotalAmount>100.00</ram:LineTotalAmount>
+        </ram:SpecifiedTradeSettlementLineMonetarySummation>
+      </ram:SpecifiedLineTradeSettlement>
+    </ram:IncludedSupplyChainTradeLineItem>
     <ram:ApplicableHeaderTradeAgreement>
       <ram:BuyerReference>HORUS-BUYER-REF-001</ram:BuyerReference>
       <ram:SellerTradeParty>
         <ram:Name>HORUS Test Seller GmbH</ram:Name>
         <ram:PostalTradeAddress>
+          <ram:PostcodeCode>20095</ram:PostcodeCode>
+          <ram:LineOne>Teststra\xc3\x9fe 1</ram:LineOne>
+          <ram:CityName>Hamburg</ram:CityName>
           <ram:CountryID>DE</ram:CountryID>
         </ram:PostalTradeAddress>
         <ram:SpecifiedTaxRegistration>
@@ -73,12 +113,32 @@ MINIMUM_CII_XML = b"""<?xml version="1.0" encoding="UTF-8"?>
       </ram:SellerTradeParty>
       <ram:BuyerTradeParty>
         <ram:Name>HORUS Test Buyer GmbH</ram:Name>
+        <ram:PostalTradeAddress>
+          <ram:CountryID>DE</ram:CountryID>
+        </ram:PostalTradeAddress>
       </ram:BuyerTradeParty>
     </ram:ApplicableHeaderTradeAgreement>
-    <ram:ApplicableHeaderTradeDelivery/>
+    <ram:ApplicableHeaderTradeDelivery>
+      <ram:ActualDeliverySupplyChainEvent>
+        <ram:OccurrenceDateTime>
+          <udt:DateTimeString format="102">20260511</udt:DateTimeString>
+        </ram:OccurrenceDateTime>
+      </ram:ActualDeliverySupplyChainEvent>
+    </ram:ApplicableHeaderTradeDelivery>
     <ram:ApplicableHeaderTradeSettlement>
       <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+      <ram:ApplicableTradeTax>
+        <ram:CalculatedAmount>19.00</ram:CalculatedAmount>
+        <ram:TypeCode>VAT</ram:TypeCode>
+        <ram:BasisAmount>100.00</ram:BasisAmount>
+        <ram:CategoryCode>S</ram:CategoryCode>
+        <ram:RateApplicablePercent>19</ram:RateApplicablePercent>
+      </ram:ApplicableTradeTax>
+      <ram:SpecifiedTradePaymentTerms>
+        <ram:Description>Zahlung sofort faellig</ram:Description>
+      </ram:SpecifiedTradePaymentTerms>
       <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+        <ram:LineTotalAmount>100.00</ram:LineTotalAmount>
         <ram:TaxBasisTotalAmount>100.00</ram:TaxBasisTotalAmount>
         <ram:TaxTotalAmount currencyID="EUR">19.00</ram:TaxTotalAmount>
         <ram:GrandTotalAmount>119.00</ram:GrandTotalAmount>
@@ -90,34 +150,21 @@ MINIMUM_CII_XML = b"""<?xml version="1.0" encoding="UTF-8"?>
 """
 
 
-def make_blank_pdf(path: Path) -> None:
-    """Create a minimal single-page A4 PDF.
-
-    factur-x will upgrade this to PDF/A-3 during bonding. A blank page is
-    intentional for smoke — the visual layer is irrelevant; the structured
-    XML payload is what HORUS evaluates against.
-    """
-    writer = PdfWriter()
-    writer.add_blank_page(width=595, height=842)  # A4 (210 x 297 mm in points)
-    with path.open("wb") as fh:
-        writer.write(fh)
-
-
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    blank_pdf = OUT_DIR / "_blank.pdf"
-    print(f"[1/3] Creating blank visual PDF → {blank_pdf.relative_to(REPO_ROOT)}")
-    make_blank_pdf(blank_pdf)
+    visual_pdf = OUT_DIR / "_visual.pdf"
+    print(f"[1/3] Rendering visual invoice PDF → {visual_pdf.relative_to(REPO_ROOT)}")
+    render_invoice_pdf(BASIC_CII_XML, visual_pdf)
 
-    print(f"[2/3] Bonding CII XML (MINIMUM profile) + PDF → {OUT_PDF.relative_to(REPO_ROOT)}")
+    print(f"[2/3] Bonding CII XML (BASIC profile) + PDF → {OUT_PDF.relative_to(REPO_ROOT)}")
     # check_xsd=True + check_schematron=True is the default; we keep them
     # explicit here as the smoke's primary assertion.
     facturx.generate_from_file(
-        pdf_file=str(blank_pdf),
-        xml=MINIMUM_CII_XML,
+        pdf_file=str(visual_pdf),
+        xml=BASIC_CII_XML,
         flavor="factur-x",
-        level="minimum",
+        level="basic",
         check_xsd=True,
         check_schematron=True,
         output_pdf_file=str(OUT_PDF),
@@ -142,6 +189,7 @@ def main() -> int:
     print(f"  Detected level:     {level}")
     print("  XSD check:          PASS (raised no exception)")
     print("  Schematron check:   PASS (raised no exception)")
+    print("  Visual layer:       fpdf2-rendered realistic B2B invoice (ADR-006)")
     print("=" * 60)
     print()
     print(
@@ -150,7 +198,7 @@ def main() -> int:
     )
 
     # Cleanup intermediate.
-    blank_pdf.unlink()
+    visual_pdf.unlink()
     return 0
 
 
