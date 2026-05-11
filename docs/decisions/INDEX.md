@@ -6,6 +6,7 @@
 | ADR-002 | Source-archival convention (`docs/sources/` tree + Obsidian-clipper-compatible stubs) | Accepted |
 | ADR-003 | Brand naming — HORUS (Hybrid OCR-free Reading & Understanding System) | Accepted |
 | ADR-004 | Config library — Pydantic Settings + PyYAML (implements `horus-config-discipline` Bundle 1) | Accepted |
+| ADR-005 | Synthetic ZUGFeRD invoice generator — dual-track: `factur-x` (Python) for generation + Mustang Project (Java) for cross-tool validation | Accepted |
 
 ## Conventions
 
