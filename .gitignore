@@ -53,3 +53,9 @@ lightning_logs/
 # Only data/README.md is tracked; use `git add -f data/<path>` for deliberate exceptions.
 data/*
 !data/README.md
+
+# M2D.5 issue #9 (ADR-005): tools/ at repo root holds downloaded Java tools
+# (Mustang JAR). JAR fetched + checksum-verified via `make mustang-jar`.
+# Never committed. Anchored with leading slash so it doesn't shadow nested
+# tools/ paths (e.g., docs/sources/tools/).
+/tools/

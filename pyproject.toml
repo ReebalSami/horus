@@ -9,6 +9,7 @@ authors = [
     { name = "Reebal Sami" },
 ]
 dependencies = [
+    "factur-x>=4.2",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
     "pyyaml>=6.0.3",
@@ -49,6 +50,12 @@ plugins = []
 # optional deps under the same try/except pattern.
 [[tool.mypy.overrides]]
 module = ["numpy", "numpy.*"]
+ignore_missing_imports = true
+
+# ADR-005 deps (factur-x ships no py.typed; lxml has community lxml-stubs but
+# project precedent is the override pattern over an extra dev dep).
+[[tool.mypy.overrides]]
+module = ["facturx", "lxml"]
 ignore_missing_imports = true
 
 [tool.ruff]
