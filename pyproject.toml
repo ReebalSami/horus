@@ -10,6 +10,7 @@ authors = [
 ]
 dependencies = [
     "factur-x>=4.2",
+    "fpdf2>=2.8.7",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
     "pyyaml>=6.0.3",
@@ -56,6 +57,11 @@ ignore_missing_imports = true
 # project precedent is the override pattern over an extra dev dep).
 [[tool.mypy.overrides]]
 module = ["facturx", "lxml"]
+ignore_missing_imports = true
+
+# ADR-006: fpdf2 ships no py.typed; imports as the package name `fpdf` (legacy from PyFPDF).
+[[tool.mypy.overrides]]
+module = ["fpdf", "fpdf.*"]
 ignore_missing_imports = true
 
 [tool.ruff]
