@@ -48,3 +48,8 @@ mlruns/
 wandb/
 tb_logs/
 lightning_logs/
+
+# M2D.5 issue #8: data/ corpus root gitignored (brainstorm §8)
+# Only data/README.md is tracked; use `git add -f data/<path>` for deliberate exceptions.
+data/*
+!data/README.md
