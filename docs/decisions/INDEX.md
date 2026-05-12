@@ -8,6 +8,7 @@
 | ADR-004 | Config library — Pydantic Settings + PyYAML (implements `horus-config-discipline` Bundle 1) | Accepted |
 | ADR-005 | Synthetic ZUGFeRD invoice generator — dual-track: `factur-x` (Python) for generation + Mustang Project (Java) for cross-tool validation | Accepted |
 | ADR-006 | Visual PDF renderer for synthetic ZUGFeRD invoices — fpdf2 (py-pdf ecosystem) | Accepted |
+| ADR-007 | Local-VLM inference framework — dual-track: MLX-VLM (primary, MLX-ported §8.1 cohort) + HuggingFace Transformers + MPS (fallback, non-MLX-ported cohort) | Accepted |
 
 ## Conventions
 

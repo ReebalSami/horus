@@ -11,10 +11,13 @@ authors = [
 dependencies = [
     "factur-x>=4.2",
     "fpdf2>=2.8.7",
+    "mlx-vlm>=0.5.0",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
     "pyyaml>=6.0.3",
     "torch>=2.5",
+    "torchvision>=0.20",
+    "transformers>=5.5.0",
 ]
 
 [dependency-groups]
@@ -62,6 +65,12 @@ ignore_missing_imports = true
 # ADR-006: fpdf2 ships no py.typed; imports as the package name `fpdf` (legacy from PyFPDF).
 [[tool.mypy.overrides]]
 module = ["fpdf", "fpdf.*"]
+ignore_missing_imports = true
+
+# ADR-007: mlx-vlm 0.5.0 ships no py.typed; transformers DOES ship py.typed since 4.43
+# (no override needed for transformers itself).
+[[tool.mypy.overrides]]
+module = ["mlx_vlm", "mlx_vlm.*"]
 ignore_missing_imports = true
 
 [tool.ruff]

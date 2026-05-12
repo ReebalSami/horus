@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke clean
+.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke clean
 
 # Default target — list available commands.
 help:
@@ -11,6 +11,7 @@ help:
 	@echo "  experiment      jupytext + papermill on NB=experiments/<name>.py CFG=configs/<name>.yaml"
 	@echo "  mustang-jar     download + checksum-verify Mustang-CLI JAR (validator; ADR-005)"
 	@echo "  zugferd-smoke   end-to-end smoke: factur-x generate + Mustang validate (ADR-005)"
+	@echo "  inference-smoke real-model smoke: load Granite-Docling-258M via mlx-vlm + Transformers+MPS (ADR-007)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -73,6 +74,26 @@ zugferd-smoke: mustang-jar
 	@mkdir -p data/raw/smoke
 	uv run python scripts/generate_zugferd_smoke.py
 	uv run python scripts/validate_zugferd.py data/raw/smoke/invoice-001.pdf
+
+# Real-model inference smoke (ADR-007). Loads Granite-Docling-258M through
+# BOTH backends (mlx-vlm + Transformers+MPS), runs DocTags extraction on
+# the rasterized ZUGFeRD smoke invoice, captures transcripts. One-off:
+# produces ADR-007 §"Decision" evidence. Depends on `zugferd-smoke` for the
+# input PDF; uses macOS `sips` for PDF->PNG rasterization (no extra dep).
+# ~500 MB of model weights cached on first run; subsequent runs fast.
+#
+# Rasterization: --resampleWidth 2480 ≈ 300 DPI for A4 (210mm × 297mm =
+# 8.27" × 11.69"; 8.27 × 300 = 2481 px). Granite-Docling-258M's processor
+# resizes to longest_edge=2048 internally, so 300 DPI feeds it the highest
+# pre-resize resolution it will actually use; 150 DPI (resampleWidth=1240)
+# rendered the invoice body unreadable in the first smoke pass. Cohort ADR
+# #14 will replace sips with pypdfium2 + parameterized DPI.
+INFERENCE_SMOKE_PNG := data/raw/smoke/invoice-001.page1.png
+
+inference-smoke: zugferd-smoke
+	@command -v sips >/dev/null 2>&1 || (echo "ERROR: macOS 'sips' not found. inference-smoke requires macOS." && exit 1)
+	sips -s format png --resampleWidth 2480 data/raw/smoke/invoice-001.pdf --out $(INFERENCE_SMOKE_PNG)
+	uv run python scripts/inference_smoke.py $(INFERENCE_SMOKE_PNG)
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist
