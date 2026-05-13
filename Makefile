@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke clean
+.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke data-manifest clean
 
 # Default target — list available commands.
 help:
@@ -13,6 +13,7 @@ help:
 	@echo "  zugferd-smoke   end-to-end smoke: factur-x generate + Mustang validate (ADR-005)"
 	@echo "  inference-smoke real-model smoke: load Granite-Docling-258M via mlx-vlm + Transformers+MPS (ADR-007)"
 	@echo "  orchestrated-smoke  Docling StandardPdfPipeline smoke on the ZUGFeRD invoice (ADR-008)"
+	@echo "  data-manifest   generate MANIFEST.md + sha256.txt for a downloaded dataset corpus"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -107,6 +108,23 @@ inference-smoke: zugferd-smoke
 # ~/.cache/ via huggingface hub default).
 orchestrated-smoke: zugferd-smoke
 	uv run python scripts/orchestrated_smoke.py data/raw/smoke/invoice-001.pdf
+
+# Dataset manifest generator (M2D.5 issue #12).
+# Generates data/raw/<lang>/<slug>/MANIFEST.md (git-tracked) + sha256.txt (gitignored).
+# Usage: make data-manifest SLUG=<slug> LANG=<lang> [SOURCE_URL=...] [SOURCE_TYPE=...]
+#                            [LICENSE_SPDX=...] [LICENSE_URL=...] [SKIP_SHA256=1]
+data-manifest:
+	@if [ -z "$(SLUG)" ] || [ -z "$(LANG)" ]; then \
+		echo "Usage: make data-manifest SLUG=<slug> LANG=<lang> [SOURCE_URL=...] [SOURCE_TYPE=...] [LICENSE_SPDX=...] [LICENSE_URL=...] [SKIP_SHA256=1]"; \
+		exit 1; \
+	fi
+	uv run python scripts/data_manifest.py \
+		--slug "$(SLUG)" --lang "$(LANG)" \
+		$(if $(SOURCE_URL),--source-url "$(SOURCE_URL)") \
+		$(if $(SOURCE_TYPE),--source-type "$(SOURCE_TYPE)") \
+		$(if $(LICENSE_SPDX),--license-spdx "$(LICENSE_SPDX)") \
+		$(if $(LICENSE_URL),--license-url "$(LICENSE_URL)") \
+		$(if $(SKIP_SHA256),--skip-sha256)
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist

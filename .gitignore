@@ -54,6 +54,33 @@ lightning_logs/
 # Only data/README.md is tracked; use `git add -f data/<path>` for deliberate exceptions.
 data/*
 !data/README.md
+# M2D.5 issue #12: git-track MANIFEST.md per dataset as the per-corpus audit-trail record.
+# Git rule: a file inside an ignored directory cannot be un-ignored via `!` patterns.
+# Fix: un-ignore the full directory chain, re-ignore everything at each level,
+# then selectively un-ignore MANIFEST.md at the leaf (data/raw/<lang>/<slug>/) level.
+# Layout is flat: data/raw/<lang>/<slug>/ — depth is fixed, so explicit patterns work.
+!data/raw/
+data/raw/*
+!data/raw/german/
+!data/raw/english/
+!data/raw/korean/
+!data/raw/multilingual/
+data/raw/german/*
+data/raw/english/*
+data/raw/korean/*
+data/raw/multilingual/*
+!data/raw/german/*/
+!data/raw/english/*/
+!data/raw/korean/*/
+!data/raw/multilingual/*/
+data/raw/german/*/*
+data/raw/english/*/*
+data/raw/korean/*/*
+data/raw/multilingual/*/*
+!data/raw/german/*/MANIFEST.md
+!data/raw/english/*/MANIFEST.md
+!data/raw/korean/*/MANIFEST.md
+!data/raw/multilingual/*/MANIFEST.md
 
 # M2D.5 issue #9 (ADR-005): tools/ at repo root holds downloaded Java tools
 # (Mustang JAR). JAR fetched + checksum-verified via `make mustang-jar`.
