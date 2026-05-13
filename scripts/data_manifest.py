@@ -77,6 +77,10 @@ def scan_files(target_dir: Path, skip_sha256: bool) -> tuple[list[tuple[str, str
     for path in sorted(target_dir.rglob("*")):
         if not path.is_file():
             continue
+        rel_parts = path.relative_to(target_dir).parts
+        # Skip .git/ directory contents — git internals are not part of the dataset.
+        if rel_parts and rel_parts[0] == ".git":
+            continue
         if path.name in SKIP_NAMES:
             continue
         rel = str(path.relative_to(target_dir))
@@ -204,6 +208,16 @@ def main() -> None:
         action="store_true",
         help="Skip per-file hashing (fast; sha256_aggregate = 'pending'). For large datasets.",
     )
+    parser.add_argument(
+        "--commit-sha",
+        default="",
+        help="Override commit_sha (use when .git/ has been dropped and git extraction will fail).",
+    )
+    parser.add_argument(
+        "--commit-date",
+        default="",
+        help="Override commit_date (use when .git/ has been dropped).",
+    )
     args = parser.parse_args()
 
     project_root = Path(__file__).resolve().parent.parent
@@ -216,7 +230,10 @@ def main() -> None:
     stub_path = project_root / stub_rel
 
     today = datetime.now(UTC).strftime("%Y-%m-%d")
-    commit_sha, commit_date = get_git_info(target_dir)
+    if args.commit_sha or args.commit_date:
+        commit_sha, commit_date = args.commit_sha, args.commit_date
+    else:
+        commit_sha, commit_date = get_git_info(target_dir)
 
     print(f"Scanning {target_dir} ...")
     entries, total_bytes, file_count = scan_files(target_dir, skip_sha256=args.skip_sha256)
