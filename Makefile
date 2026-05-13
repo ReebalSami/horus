@@ -124,7 +124,9 @@ data-manifest:
 		$(if $(SOURCE_TYPE),--source-type "$(SOURCE_TYPE)") \
 		$(if $(LICENSE_SPDX),--license-spdx "$(LICENSE_SPDX)") \
 		$(if $(LICENSE_URL),--license-url "$(LICENSE_URL)") \
-		$(if $(SKIP_SHA256),--skip-sha256)
+		$(if $(SKIP_SHA256),--skip-sha256) \
+		$(if $(COMMIT_SHA),--commit-sha "$(COMMIT_SHA)") \
+		$(if $(COMMIT_DATE),--commit-date "$(COMMIT_DATE)")
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist
