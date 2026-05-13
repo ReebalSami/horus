@@ -54,6 +54,7 @@ This is a deviation from the canonical `@literature-review` L3 skill procedure (
 
 **Synthetic-data generation**:
 - `docs/sources/tools/mustang-project.md` — ZUGFeRD generator, the data unlock
+- `docs/sources/tools/fattural.md` — ZUGFeRD/Factur-X synthetic-data generation tooling (companion to Mustang)
 
 **Cloud-baseline reference**:
 - `docs/sources/tools/landingai-ade.md` — Landing AI ADE (SaaS / VPC / on-premise + ZDR)
@@ -62,7 +63,7 @@ This is a deviation from the canonical `@literature-review` L3 skill procedure (
 
 **Primary German B2B invoice corpora**:
 - `docs/sources/datasets/zugferd-corpus.md` — public ZUGFeRD invoices (PDF/A-3 + embedded XML ground truth)
-- `docs/sources/datasets/fattural.md` — companion ZUGFeRD-ecosystem training data
+- `docs/sources/datasets/gi-2021-de-invoices.md` — 977 real German B2B invoices (Krieger et al. 2021; pending author request, sub-issue #26)
 
 **Cross-domain evaluation benchmarks**:
 - `docs/sources/datasets/cord-v2.md` — receipts (NAVER CLOVA, HuggingFace)
