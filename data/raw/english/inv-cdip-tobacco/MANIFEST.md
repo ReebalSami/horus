@@ -12,10 +12,9 @@ commit_date: "2024-10-29T10:25:11-07:00"
 file_count: 362
 total_bytes: 2119461
 sha256_aggregate: "7bea144a5a07c74ad32e8c5416b58e43af3d8cd6ae8e0f7f1794c2fd66435891"
-sample_load_passed: false
-sample_load_notes: "Annotations-only state: 350 JSON annotation files verified (json.load, keys: image_dims + Fields). Invoice PDF images NOT present — require running download_data.py against UCSF service (sub-issue #28). Re-verify and set to true after image download. 362 total files = 350 annotations + 12 metadata/scripts."
-anomalies:
-  - "Invoice images absent — only annotation JSON files are downloaded. See sub-issue ReebalSami/horus#28."
+sample_load_passed: true
+sample_load_notes: "Annotations-only acquisition by intent (decision 2026-05-13 closing sub-issue #28 not-planned): 350 JSON annotation files verified (json.load, keys: image_dims + Fields). Underlying invoice PDFs intentionally not downloaded — UCSF Industry Documents service download_data.py is not pursued for the HORUS pilot scope. Annotation structure (field labels + bboxes) alone enables Berghaus-style baseline cross-comparison without raw scans. 362 total files = 350 annotations + 12 metadata/scripts."
+anomalies: []
 source_stub: "../../../../docs/sources/datasets/inv-cdip-tobacco.md"
 acquisition_status: completed
 ---
