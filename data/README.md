@@ -20,14 +20,13 @@ data/
 │   ├── english/
 │   │   ├── funsd/                 # guillaumejaume.github.io/FUNSD
 │   │   ├── fatura2-invoices/      # HF mathieu1256/FATURA2-invoices (CC-BY-4.0)
-│   │   ├── inv-cdip-tobacco/      # github.com/salesforce/inv-cdip (CC-BY-NC-4.0)
-│   │   ├── sroie/                 # ICDAR 2019 RRC (user-action: registration req'd)
+│   │   ├── inv-cdip-tobacco/      # github.com/salesforce/inv-cdip (CC-BY-NC-4.0); annotations only
 │   │   └── parsee-ai-invoices-example/  # HF parsee-ai/invoices-example (MIT)
 │   ├── korean/
 │   │   └── cord-v2/               # HF naver-clova-ix/cord-v2 (CC-BY-4.0)
 │   ├── multilingual/
 │   │   └── omnidocbench/          # HF opendatalab/OmniDocBench
-│   └── (gi-2021-de-invoices/ — user-action: see issue #26)
+│   └── (gi-2021-de-invoices/ — deferred; revisit only if pilot surfaces insufficient German variety)
 └── processed/                     # intermediate artefacts (conversions, splits, etc.)
 ```
 
@@ -51,8 +50,10 @@ make data-manifest SLUG=<slug> LANG=<lang> SOURCE_URL=<url> LICENSE_SPDX=<spdx>
 
 ## Downloads
 
-Tracked as a checklist in issue #12. Sub-issues #25 (SROIE) and #26 (GI 2021) are
-user-action items assigned to @ReebalSami.
+Tracked as a checklist in issue #12 (closed 2026-05-13). After M2D.5 step 3 closure,
+the pilot (`#13`) runs against data already on disk; the previously-pending sub-issues
+were resolved as: `#25` (SROIE) closed not-planned, `#26` (GI 2021) closed deferred,
+`#28` (inv-cdip-tobacco PDF images) closed not-planned.
 
 ## `acquisition_status` field semantics
 
@@ -74,4 +75,4 @@ Stubs with status `completed` link to their MANIFEST via the `data_manifest:` fi
 - `docs/prompts/stages/02-brainstorm.md` §6.2 (dataset table) + §9 + §9 amendments
 - Issue #8: Repo structural prep (M2D.5 step 1)
 - Issue #12: Dataset downloads (M2D.5 step 3)
-- Sub-issues: #25 (SROIE), #26 (GI 2021), #28 (inv-cdip-tobacco images) — all `pending-user-action`
+- Sub-issues (all closed 2026-05-13): #25 SROIE (not-planned), #26 GI 2021 (deferred), #28 inv-cdip-tobacco PDF images (not-planned)
