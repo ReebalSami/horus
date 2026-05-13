@@ -9,12 +9,13 @@ license_verified_date: "2026-05-13"
 retrieved_date: "2026-05-13"
 commit_sha: "8a8d7330f67c5d77bd6f1095d629f3e6e25ce1ae"
 commit_date: "2025-09-03T09:08:35+02:00"
-file_count: 279
-total_bytes: 178846554
-sha256_aggregate: "bc031e43296032fa9a307153c0da8e638488b72724f0ffdcfeacaa80bbd67dfe"
+file_count: 250
+total_bytes: 151876604
+sha256_aggregate: "9003a115aa2247ef15bcf50c8dd8628f4970fba3211436639109f3526ff83119"
 sample_load_passed: true
-sample_load_notes: "Opened 3 random PDFs (%PDF- magic verified) and parsed 3 random XMLs via xml.etree; all passed. Corpus contains ZUGFeRDv1/, ZUGFeRDv2/, XML-Rechnung/{FX,CII,UBL}/, fatturaPA/, incoming/, PEPPOL/, unstructured/ subdirs."
-anomalies: []
+sample_load_notes: "Opened 3 random PDFs (%PDF- magic verified) and parsed 3 random XMLs via xml.etree; all passed. Re-verified 2026-05-13 via /tmp/horus-verify-all.py: zero magic-byte failures across all 250 files (151 PDFs + 88 XMLs + 11 README/LICENSE/metadata). Corpus contains ZUGFeRDv1/, ZUGFeRDv2/, XML-Rechnung/{FX,CII,UBL}/, fatturaPA/, incoming/, PEPPOL/, unstructured/ subdirs."
+anomalies:
+  - "MANIFEST regenerated 2026-05-13 to fix .git/-inflation bug: original (commit 6c71da5, PR #27) reported file_count=279 / total_bytes=178,846,554 / sha256_aggregate=bc031e43... because data_manifest.py at that time counted .git/ contents in the scan. After PR #29 fix to skip .git/, the correct count is 250 files / 151,876,604 bytes / sha256=9003a115... — same disk content, accurate stats. No data was lost; .git/ was always meant to be dropped post-clone."
 source_stub: "../../../../docs/sources/datasets/zugferd-corpus.md"
 acquisition_status: completed
 ---
