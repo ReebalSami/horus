@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke clean
+.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke clean
 
 # Default target — list available commands.
 help:
@@ -12,6 +12,7 @@ help:
 	@echo "  mustang-jar     download + checksum-verify Mustang-CLI JAR (validator; ADR-005)"
 	@echo "  zugferd-smoke   end-to-end smoke: factur-x generate + Mustang validate (ADR-005)"
 	@echo "  inference-smoke real-model smoke: load Granite-Docling-258M via mlx-vlm + Transformers+MPS (ADR-007)"
+	@echo "  orchestrated-smoke  Docling StandardPdfPipeline smoke on the ZUGFeRD invoice (ADR-008)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -94,6 +95,18 @@ inference-smoke: zugferd-smoke
 	@command -v sips >/dev/null 2>&1 || (echo "ERROR: macOS 'sips' not found. inference-smoke requires macOS." && exit 1)
 	sips -s format png --resampleWidth 2480 data/raw/smoke/invoice-001.pdf --out $(INFERENCE_SMOKE_PNG)
 	uv run python scripts/inference_smoke.py $(INFERENCE_SMOKE_PNG)
+
+# Orchestrated-baseline smoke (ADR-008). Loads Docling's default
+# StandardPdfPipeline (orchestrated specialists: layout + OCR + table
+# recognition) and runs it on the ZUGFeRD smoke invoice. Captures load /
+# convert wall-times, output char count, structural counts (pages, tables,
+# pictures), and a markdown snippet for ADR §"Captured transcript". Single-
+# backend by design (plan Q4 = A: Docling-only smoke); MinerU pipeline
+# backend smoke is deferred to pilot #13. First-run downloads docling-ibm-
+# models layout + table-structure weights (~hundreds of MB; cached in
+# ~/.cache/ via huggingface hub default).
+orchestrated-smoke: zugferd-smoke
+	uv run python scripts/orchestrated_smoke.py data/raw/smoke/invoice-001.pdf
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist

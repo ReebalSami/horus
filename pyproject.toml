@@ -9,8 +9,10 @@ authors = [
     { name = "Reebal Sami" },
 ]
 dependencies = [
+    "docling>=2.93.0",
     "factur-x>=4.2",
     "fpdf2>=2.8.7",
+    "mineru>=3.1.11",
     "mlx-vlm>=0.5.0",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
@@ -71,6 +73,11 @@ ignore_missing_imports = true
 # (no override needed for transformers itself).
 [[tool.mypy.overrides]]
 module = ["mlx_vlm", "mlx_vlm.*"]
+ignore_missing_imports = true
+
+# ADR-008: docling ships py.typed (no override needed); mineru does NOT ship py.typed.
+[[tool.mypy.overrides]]
+module = ["mineru", "mineru.*"]
 ignore_missing_imports = true
 
 [tool.ruff]
