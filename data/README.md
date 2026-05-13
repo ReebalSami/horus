@@ -54,8 +54,24 @@ make data-manifest SLUG=<slug> LANG=<lang> SOURCE_URL=<url> LICENSE_SPDX=<spdx>
 Tracked as a checklist in issue #12. Sub-issues #25 (SROIE) and #26 (GI 2021) are
 user-action items assigned to @ReebalSami.
 
+## `acquisition_status` field semantics
+
+Each dataset stub at `docs/sources/datasets/<slug>.md` and each downloaded MANIFEST
+carries an `acquisition_status` field with one of these values (locked in
+during the M2D.5 issue #12 Q&A round, Q5):
+
+| Value | Meaning |
+|---|---|
+| `completed` | Files are downloaded under `data/raw/<lang>/<slug>/`, sample-load passed, MANIFEST exists. |
+| `pending-user-action` | Requires human action (registration, author request, manual permission). Tracked via a sub-issue of #12. |
+| `deferred` | Tier-3 dataset; not in scope for the current milestone. Re-evaluate at next sprint review. |
+| `skipped` | Explicitly de-scoped. Reason captured in the stub body. Won't be acquired without an ADR change. |
+
+Stubs with status `completed` link to their MANIFEST via the `data_manifest:` field.
+
 ## Provenance
 
 - `docs/prompts/stages/02-brainstorm.md` §6.2 (dataset table) + §9 + §9 amendments
 - Issue #8: Repo structural prep (M2D.5 step 1)
 - Issue #12: Dataset downloads (M2D.5 step 3)
+- Sub-issues: #25 (SROIE), #26 (GI 2021), #28 (inv-cdip-tobacco images) — all `pending-user-action`
