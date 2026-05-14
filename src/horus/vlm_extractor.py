@@ -747,19 +747,25 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         ),
     },
     "zai-org/GLM-OCR": {
-        "extractor_class": GLMOCRExtractor,
+        "extractor_class": MLXVLMExtractor,
         "category": 2,
         "prompt_template": "Recognize all text in the image and output in markdown format",
         "max_tokens": 2048,
-        "quant_target": "native",
-        "alt_model_id": None,
-        "license": "unknown",  # GitHub repo confirmed apache-2.0/mit-like; verify at install time
+        "quant_target": "mlx-4bit",
+        "alt_model_id": "mlx-community/GLM-OCR-4bit",
+        "license": "mit",  # verified from HF model card tags + mlx-community port
         "needs_trust_remote_code": False,
         "note": (
-            "glm4v arch (likely); 0.9 B params; OmniDocBench v1.5 = 94.62 "
-            "(SOTA at the tier, Feb 2026 release from Z.ai). transformers<5 "
-            "conflict => vLLM/Ollama/SGLang/MLX path required in PR(b). "
-            "Per ADR-009 §3.7 escalation rule: if no path works, file sub-issue."
+            "glm_ocr arch; 0.9 B params; OmniDocBench v1.5 = 94.62 "
+            "(SOTA at the tier, Feb 2026 release from Z.ai). Multilingual "
+            "(zh/en/fr/es/ru/de/ja/ko per HF tags) — incl. DE for HORUS's "
+            "German invoice substrate. PR(b) Step 9 pivoted from the "
+            "GLMOCRExtractor skeleton (which was scoped to handle the "
+            "documented transformers<5.0.0 conflict via vLLM/Ollama/SGLang) "
+            "to MLXVLMExtractor + mlx-community/GLM-OCR-4bit (727 downloads, "
+            "mit-licensed). mlx-vlm 0.5.0 ships built-in glm_ocr arch "
+            "support, sidestepping the transformers<5 conflict at the "
+            "horus pyproject.toml level entirely."
         ),
     },
     # ---- Category 3 — General multimodal VLMs ----------------------------

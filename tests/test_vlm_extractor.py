@@ -130,7 +130,6 @@ def test_get_extractor_returns_correct_class_per_model_id() -> None:
     """`get_extractor()` resolves each cohort model_id to the right extractor class."""
     from horus.vlm_extractor import (
         COHORT_MANIFEST,
-        GLMOCRExtractor,
         MLXVLMExtractor,
         TransformersMPSExtractor,
         get_extractor,
@@ -159,9 +158,11 @@ def test_get_extractor_returns_correct_class_per_model_id() -> None:
     paddle = get_extractor("PaddlePaddle/PaddleOCR-VL")
     assert isinstance(paddle, MLXVLMExtractor)
 
-    # GLM-OCR uses GLMOCRExtractor (PR(b)).
+    # GLM-OCR routes through MLXVLMExtractor (PR(b) Step 9 pivot —
+    # mlx-community 4-bit port; mlx-vlm 0.5.0 has built-in glm_ocr support,
+    # sidesteps transformers<5.0.0 conflict).
     glm = get_extractor("zai-org/GLM-OCR")
-    assert isinstance(glm, GLMOCRExtractor)
+    assert isinstance(glm, MLXVLMExtractor)
 
     # Every cohort model_id resolves without raising.
     for model_id in COHORT_MANIFEST:
