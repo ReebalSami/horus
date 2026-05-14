@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | Accepted (smoke evidence captured 2026-05-14 — see §"Decision + integration thoughts" §"Smoke evidence — PR(a) cohort entries"; PR(b) appends 7 additional smoke transcripts via mid-sprint amendment per ADR-018) |
+| **Status** | Accepted (PR(a) smoke evidence captured 2026-05-14 — see §"Decision + integration thoughts" §"Smoke evidence — PR(a) cohort entries"; PR(b) cohort completion captured 2026-05-14 — see §"Decision + integration thoughts" §"Smoke evidence — PR(b) results"; full 10/10 cohort smoke evidence on disk per §"Source archival" §"Transcripts") |
 | **Date** | 2026-05-14 |
 | **Milestone** | M2D.5 step 3 — Pilot-loop cohort enablement (issue #14, sub of #13) |
 | **Authored by** | Cascade D (M2D.5 cohort-selection session, plan `~/.windsurf/plans/adr-009-pilot-vlm-cohort-fbbfa0.md`) |
@@ -174,43 +174,43 @@ Constraints:
 - `COHORT_MANIFEST` is the single source of truth for per-model variation: prompt template, max_tokens, quant target, alt model ID, license, `needs_trust_remote_code` flag, free-form note field
 - `MLXVLMExtractor` propagates `trust_remote_code=True` through `mlx_vlm.load(...)` `**kwargs` to the underlying `AutoProcessor.from_pretrained` call (mlx_vlm/utils.py:563); see PR(a) Step 6 commit for the trust-propagation discovery via DeepSeek-OCR-2 install bisection
 
-### Quantization strategy (mixed)
+### Quantization strategy (mixed) — post-PR(b) authoritative state
 
-| Model | Dispatcher | Quant | Quant source / fallback |
-|---|---|---|---|
-| Granite-Docling-258M | MLXVLMExtractor | bf16 | official `ibm-granite/granite-docling-258M-mlx` |
-| MinerU-2.5-Pro VLM 1.2B | TransformersMPSExtractor | bf16 | HF Transformers + MPS (ADR-007 path) |
-| olmOCR-2-7B | MLXVLMExtractor | **4-bit** | `mlx-community/olmOCR-2-7B-1025-mlx-4bit` |
-| DeepSeek-OCR-2 | MLXVLMExtractor | **4-bit** | `mlx-community/DeepSeek-OCR-2-4bit` (`custom_code`) |
-| PaddleOCR-VL | PaddleOCRExtractor | whatever PaddleOCR provides | PaddlePaddle native quant |
-| GLM-OCR | GLMOCRExtractor | depends on backend | vLLM / Ollama / SGLang (TBD per install attempt) |
-| Gemma-4-E4B-it | MLXVLMExtractor | **4-bit** | `lmstudio-community/gemma-4-E4B-it-MLX-4bit` |
-| Qwen3-VL-4B-Instruct | MLXVLMExtractor (if port) or TransformersMPSExtractor | 4-bit or bf16 | TBD at install time (PR(b)) |
-| PaliGemma-2-3B-mix-448 | TransformersMPSExtractor | bf16 | HF Transformers + MPS (gated; requires Google T&C) |
-| Molmo-7B-D-0924 | TransformersMPSExtractor (or MLXVLMExtractor if port) | **4-bit if MLX port** else bf16 with OOM risk | TBD at install time (PR(b)) |
+| Model | Dispatcher | Quant | Quant source / fallback | PR(b) pivot |
+|---|---|---|---|---|
+| Granite-Docling-258M | MLXVLMExtractor | bf16 | official `ibm-granite/granite-docling-258M-mlx` | — (PR(a)) |
+| MinerU-2.5-Pro VLM 1.2B | TransformersMPSExtractor | bf16 | HF Transformers + MPS (ADR-007 path); tied-embeddings rescue per ba9dac7 | — (PR(b) Step 1 wired the tied-embeddings rescue) |
+| olmOCR-2-7B | MLXVLMExtractor | **4-bit** | `mlx-community/olmOCR-2-7B-1025-mlx-4bit` | — |
+| DeepSeek-OCR-2 | MLXVLMExtractor | **4-bit** | `mlx-community/DeepSeek-OCR-2-4bit` (`custom_code`) | — (PR(a)) |
+| PaddleOCR-VL | MLXVLMExtractor | **4-bit** | `mlx-community/PaddleOCR-VL-4bit` (`custom_code`) | **PIVOTED**: skeleton-to-MLX (Step 8). mlx-vlm 0.5.0 ships `paddleocr_vl` arch built-in; sidesteps the heavy `paddlepaddle` dep entirely. `PaddleOCRExtractor` skeleton retained for the alternative paddlepaddle-native path. |
+| GLM-OCR | MLXVLMExtractor | **4-bit** | `mlx-community/GLM-OCR-4bit` (mit) | **PIVOTED**: skeleton-to-MLX (Step 9). mlx-vlm 0.5.0 ships `glm_ocr` arch built-in; sidesteps the documented `transformers<5.0.0` conflict at the `pyproject.toml` level entirely. `GLMOCRExtractor` skeleton retained for the alternative vLLM / Ollama / SGLang path. |
+| Gemma-4-E4B-it | MLXVLMExtractor | **4-bit** | `lmstudio-community/gemma-4-E4B-it-MLX-4bit` | — (PR(a)) |
+| Qwen3-VL-4B-Instruct | TransformersMPSExtractor | **bf16** | base model `Qwen/Qwen3-VL-4B-Instruct` (no alt port) | **TRIPLE-FAIL ESCALATION**: MLX 4-bit (degenerate null-byte output) → MLX 8-bit (Metal watchdog SIGABRT) → bf16 TransformersMPSExtractor (35.10 GiB Metal buffer-cap) — see Step 5 below. M1 Pro 16 GB hardware ceiling for this 4 B-param Qwen3-VL family. |
+| PaliGemma-2-3B-mix-448 | TransformersMPSExtractor | bf16 | HF Transformers + MPS (gated; requires Google T&C) | — quant unchanged; prompt overridden (see §"Per-model native prompt strategy" table below) |
+| Molmo-7B-D-0924 | MLXVLMExtractor | **4-bit** | `mlx-community/Molmo-7B-D-0924-4bit` (`custom_code`) | **PIVOTED**: TBD-at-install → MLX 4-bit attempted (Step 7); hit MLX core `metal::malloc` 14.4 GB buffer-size bug (mlx#3054 same failure mode); not escalated to higher quant tiers per Step 5 precedent. |
 
 **Non-comparability footnote** (verbatim — pilot #13 must internalise):
 
 > Per-model quant level varies in this cohort smoke. Runtime numbers (load_seconds, extract_seconds) are NOT directly comparable across models — a 4-bit olmOCR-2 will be faster than a bf16 PaliGemma, but this says nothing about the underlying architectures. **Pilot #13's first design constraint should be uniform quantization** (e.g., all models in MLX 4-bit, or all in fp16 transformers). The mixed-quant choice here is a `make-sure-it-works` concession: ADR-008 established that smoke is install-validity proof, not eval-grade benchmarking, and the same scope applies to ADR-009's smoke.
 
-### Per-model native prompt strategy
+### Per-model native prompt strategy — post-PR(b) authoritative state
 
-| Model | Native prompt | Source |
-|---|---|---|
-| Granite-Docling-258M | `"Convert this page to docling."` | ADR-007 (DocTags output convention) |
-| MinerU-2.5-Pro VLM | `"OCR this document"` | OmniDocBench eval convention |
-| olmOCR-2-7B | `"Recognize all the text in the image."` | HF model card usage example |
-| DeepSeek-OCR-2 | `"<image>\nFree OCR."` | HF model card (deepseek_vl_v2 token convention) |
-| PaddleOCR-VL | (no prompt — pipeline call) | PaddleOCR API convention |
-| GLM-OCR | `"Recognize all text in the image and output in markdown format"` | HF model card usage example |
-| Gemma-4-E4B-it | `"Extract all text and structure from this invoice. Return as markdown."` | Free-form (Cat 3 convention) |
-| Qwen3-VL-4B-Instruct | (free-form, same as Gemma) | Cat 3 convention |
-| PaliGemma-2-3B-mix-448 | `"caption en"` or task-prefix | PaliGemma task-prefix convention |
-| Molmo-7B-D-0924 | (free-form, same as Gemma) | Cat 3 convention |
+| Model | Native prompt | Source | PR(b) override |
+|---|---|---|---|
+| Granite-Docling-258M | `"Convert this page to docling."` | ADR-007 (DocTags output convention) | — |
+| MinerU-2.5-Pro VLM | `"OCR this document"` | OmniDocBench eval convention | — |
+| olmOCR-2-7B | `"Extract all text and structure from this invoice. Return as markdown."` | Cohort-canonical (free-form; cohort-comparability default per ADR-009 §"Smoke evidence — PR(b) results") | — kept free-form; semantic-failure profile captured (see Step 4) |
+| DeepSeek-OCR-2 | `"<image>\nFree OCR."` | HF model card (deepseek_vl_v2 token convention) | — (PR(a) blocked at Type B) |
+| PaddleOCR-VL | `"OCR:"` | Official vLLM PaddleOCR-VL recipe (TASKS dict: `ocr` / `Table Recognition:` / `Formula Recognition:` / `Chart Recognition:`) | **OVERRIDE**: free-form HORUS-canonical → `"OCR:"` after first attempt produced chart-task degenerate-refusal loop (Step 8 — see §"Smoke evidence — PR(b) results"). Architecturally task-prefix-sensitive same as PaliGemma. |
+| GLM-OCR | `"Recognize all text in the image and output in markdown format"` | HF model card usage example | — kept (semantic) |
+| Gemma-4-E4B-it | `"Extract all text and structure from this invoice. Return as markdown."` | Free-form (Cat 3 convention) | — (PR(a)) |
+| Qwen3-VL-4B-Instruct | `"Extract all text and structure from this invoice. Return as markdown."` | Free-form (Cat 3 convention) | — (model never reached generation across all three quant tiers; see Step 5) |
+| PaliGemma-2-3B-mix-448 | `"ocr"` | PaliGemma 2 mix task-prefix vocabulary (`caption en` / `ocr` / `detect <class>` / `segment <class>` / `answer en` / `question en`) | **OVERRIDE**: free-form HORUS-canonical → `"ocr"` after first attempt produced canonical out-of-distribution refusal (`Sorry, as a base VLM I am not trained to answer this question.<eos>`); see Step 6. |
+| Molmo-7B-D-0924 | `"Extract all text and structure from this invoice. Return as markdown."` | Free-form (Cat 3 convention) | — (model crashed at first generation token; see Step 7) |
 
-**Forward-pointer note for pilot #13** (verbatim):
+**Forward-pointer note for pilot #13** (verbatim, expanded post-PR(b)):
 
-> Per-model native prompts used for smoke evidence (model-card-canonical usage). The choice of prompt strategy for the full pilot evaluation (#13) — single canonical / per-model native / two-prompt sweep / per-category — is a separate methodological question deferred to pilot #13's design. **Pilot #13 should consider a two-prompt arm** to disentangle prompt-strategy effects from architecture effects in the H2 single-shot-vs-orchestrated comparison.
+> Per-model native prompts used for smoke evidence (model-card-canonical or HORUS-canonical free-form, whichever surfaced). PR(b) demonstrated that **prompt-prefix sensitivity is the dominant Cat 2 + Cat 3 failure mode for HORUS-canonical free-form prompts**: PaliGemma + PaddleOCR-VL both required canonical task-prefix overrides (`ocr` / `OCR:`); HORUS-canonical free-form prompts triggered refusal or wrong-task routing in both. Pilot #13 must per-model-optimize prompts for at least Cat 2 specialized-VLM and Cat 3 task-prefix-sensitive-VLM rows, OR commit to the cohort-canonical free-form prompt and accept the asymmetric prompt-shape coverage in the H2 single-shot-vs-orchestrated comparison. The two-prompt arm originally proposed (cohort-canonical + per-model-native) remains the most defensible methodological framing.
 
 ### Smoke methodology (page-1-only, ADR-007 pattern)
 
@@ -338,6 +338,255 @@ This is the **upper-region anchor** for the cohort cross-section. Cat 3's transf
 
 `scripts/cohort_smoke.py` currently bundles HF download time + model load time into a single `load_seconds` measurement. The Gemma 989.35 s figure conflates a 16-min one-time download with a sub-10-second cache-hit load. Disambiguating this in the runner is a known follow-up; the current measurement is fine for install-validity proof (the smoke purpose) but pilot #13 must use a separate mechanism (e.g., warm-cache loop or explicit cache-warm pre-step) for runtime measurement that is comparable across models.
 
+### Smoke evidence — PR(b) results (7 of 10)
+
+PR(b) covers the remaining 7 cohort entries: MinerU-2.5-Pro VLM 1.2B + olmOCR-2-7B (Cat 1 fill-out), PaddleOCR-VL + GLM-OCR (Cat 2 fill-out), and Qwen3-VL-4B-Instruct + PaliGemma-2-3B-mix-448 + Molmo-7B-D-0924 (Cat 3 fill-out). End of PR(b) Step 9 = end of cohort smoke evidence collection: 10 of 10 transcripts on disk, full per-Cat narrative below.
+
+PR(b) surfaced four architectural-pattern observations not visible in PR(a)'s 3-point cross-section, each load-bearing for the cohort's interpretability in pilot #13:
+
+1. **Hardware ceiling at 4 B-effective on M1 Pro 16 GB** — Cat 3 has 50% deployability rate (2/4); plain 4 B+ multimodal VLMs (Qwen3-VL 4 B, Molmo 7 B) are blocked by RAM-cliff and/or upstream MLX bugs. Matformer (Gemma-4 4-B-effective via routing) and small task-tuned (PaliGemma 3 B with prompt override) are the deployable patterns.
+2. **Prompt-prefix sensitivity is the dominant Cat 2 + Cat 3 free-form-prompt failure mode** — PaliGemma + PaddleOCR-VL both required canonical task-prefix overrides (`ocr` / `OCR:`); HORUS-canonical free-form prompts triggered refusal or wrong-task routing.
+3. **Smallest model wins on field-level accuracy** — PaddleOCR-VL at 0.96 B params extracts more unique fields than 7 B olmOCR-2; GLM-OCR at 0.9 B has the highest per-character precision in cohort. Cat 2 architectural specialization beats Cat 3 raw parameter count for document parsing.
+4. **MLX-vs-PyTorch-MPS runtime path matters at the same parameter count** — Qwen3-VL-4B's triple-fail showed MLX 4-bit (degenerate) vs MLX 8-bit (Metal watchdog) vs PyTorch-MPS bf16 (35.10 GiB Metal buffer-cap) all hit different walls. Pilot #13 hardware (M3 Max 64+ GB / Linux + CUDA / hosted inference) needs to re-evaluate every Cat 3 entry that failed on M1 Pro 16 GB.
+
+#### Cat 1 — MinerU-2.5-Pro VLM 1.2B (strongest Cat 1 cohort entry)
+
+Full transcript: `docs/sources/transcripts/mineru-2-5-pro-vlm.txt`. Summary:
+
+```text
+Status:                ok
+Load wall-time:       19.50 s   (cached + tied-embeddings rescue applied per ba9dac7)
+Extract wall-time:    14.45 s
+Output length:           940 chars
+Backend:               transformers-mps
+Quant:                 bf16
+Prompt:                "OCR this document"  (max_tokens=2048)
+```
+
+Quality profile (qualitative; pilot #13 quantifies):
+
+- **Structural format**: ✓ valid DocTags with `<page>` / `<text bbox="...">` annotations — model speaks its native protocol cleanly
+- **Field-level extraction**: ✓ accurate on document type (`Handelsrechnung 380` UN/EDIFACT), invoice number (471102), invoice date (05.08.2018), Liefer-/Leistungsdatum (05.03.2018), currency (EUR explicit), seller GLN (4000001123452 EXACT), Steuernummer (201/113/40209), seller address (Lieferantenstraße 20 DE 90893 München), buyer name (Kunden AG Mitte), buyer address (Frankfurt)
+- **OCR errors**: minor — "Lieferent" (should be "Lieferant"; 1-letter OCR error)
+- **Output coherence**: clean; no degenerate-tail or repetition
+- **Tied-embeddings rescue**: PR(b) Step 1 (commit `ba9dac7`) wired the tied-embeddings rescue for nested-`text_config` VLMs; required for MinerU's particular `state_dict` packaging quirk where `lm_head.weight` is missing and must be tied from `embed_tokens.weight`. Documented inline in `MLXVLMExtractor.load()` for potential reuse with Molmo / PaliGemma if they exhibit the same packaging.
+
+This is the **strongest Cat 1 entry** in the cohort — best-in-class structural protocol + field-level accuracy at 1.2 B params (5x smaller than olmOCR-2 at 7 B; orchestrated-pipeline VLM stage from ADR-008). The PR(b) Step 1 tied-embeddings rescue is the dispatcher's first non-trivial cross-model affordance (PR(a)'s rescue work was DeepSeek-OCR-2-specific via mlx_vlm's hidden silent-swallow chain).
+
+#### Cat 1 — olmOCR-2-7B (partial-success with role-swap + Steuernummer wrong)
+
+Full transcript: `docs/sources/transcripts/olmocr-2-7b.txt`. Summary:
+
+```text
+Status:                ok
+Load wall-time:      960.30 s   (first-time download dominates 4.62 GB)
+Extract wall-time:    35.40 s
+Output length:           314 chars
+Backend:               mlx-vlm
+Quant:                 mlx-4bit (mlx-community/olmOCR-2-7B-1025-mlx-4bit)
+Prompt:                "Extract all text and structure from this invoice. Return as markdown."  (cohort-canonical)
+```
+
+Quality profile:
+
+- **Document type**: partial — got `Handelsrechnung` but missed UN/EDIFACT code `(380)`
+- **Invoice number**: ✓ 471102
+- **Invoice date**: ✗ WRONG — `05.03.2018` is the Liefer-/Leistungsdatum; the actual invoice date is `05.08.2018`. Model collapsed the two date fields onto a single label.
+- **Role-swap (catastrophic)**: ✗ — labels seller as `Kunden AG Mitte (Frankfurt)`, which is the BUYER. The actual seller is `Lieferent GmbH München`. Severe semantic confusion of buyer-vs-seller roles — the kind of error that would silently corrupt downstream RAG validation.
+- **Steuernummer**: ✗ WRONG — fabricated `12-345-6789` instead of the actual `201/113/40209`
+- **Buyer block**: omitted (buyer's address Kundenstraße 15 / Frankfurt 69876 is in the source but not extracted)
+- **Output coherence**: clean (no degenerate tail) but TRUNCATED — only 314 chars, model emitted EOS prematurely after the seller block
+
+This is a partial-success with a CRITICAL semantic-failure profile — role-swap of buyer-vs-seller is the most dangerous failure mode for an invoice-extraction VLM because the output is syntactically clean and would pass naive validation. olmOCR-2 at 7 B params is OUT-PERFORMED by 0.96 B PaddleOCR-VL and 0.9 B GLM-OCR on field-level accuracy on the same input — the within-Cat-1 finding that purpose-training-on-docs at 7 B does not guarantee correctness on German invoice substrate (English-only training distribution caveat per HF model card). Pilot #13 must measure semantic-failure rate (not just F1) to surface this profile.
+
+#### Cat 2 — PaddleOCR-VL (STRONGEST cross-Cat field coverage)
+
+Full transcript: `docs/sources/transcripts/paddleocr-vl.txt`. Two-attempt prompt-prefix escalation chain — see PR(b) Step 8 commit `d26685d` for full first-attempt evidence.
+
+```text
+Status:                ok
+Load wall-time:        0.98 s   (warm cache after Step 8 first attempt's 715 MB download)
+Extract wall-time:    40.78 s
+Output length:         2354 chars
+Backend:               mlx-vlm
+Quant:                 mlx-4bit (mlx-community/PaddleOCR-VL-4bit)
+Prompt:                "OCR:"  (canonical task prefix per official vLLM PaddleOCR-VL recipe)
+First attempt prompt:  "Extract all text and structure from this invoice. Return as markdown."
+                       → 8047 chars degenerate refusal-loop ("*Note: The image is a
+                       photograph of a product, not a chart or graph...")
+```
+
+Quality profile (lines 19-50 of transcript — production-tier portion):
+
+- **Document type**: ✓ EXACT — `Handelsrechnung (380)` (matches GLM-OCR; better than MinerU's omitted code; better than PaliGemma's "Handelerstellung 2400" garble)
+- **Invoice number + date + Liefer-/Leistungsdatum**: ✓ all correct (date matches MinerU and PaliGemma; better than olmOCR-2 + GLM-OCR which got the date wrong)
+- **Currency**: ✓ explicit `Wahrung: EUR`
+- **UNIQUE FIELDS** captured (no other model in cohort got these):
+  - `Verkäufer Number: 549910` — seller number from EN16931 schema
+  - `Käufer Number: GE2020211` — buyer number from EN16931 schema
+- **GLN**: ✓ EXACT `4000001123452` (PaliGemma had 1-digit error to `0001123452`)
+- **Seller address**: ✓ FULL `Lieferantenstraße 20 DE 90893 München` (PaliGemma garbled to "Liebwartestraße"; olmOCR-2 omitted)
+- **Buyer block**: ✓ FULL with `Kunden AG Mitte / Kundenstraße 15 DE 69876 Frankfurt`
+- **Errors / partial fields**: seller name `Unหมด QmbH` Unicode-corrupted (Thai-script bleed-through; should be `Lieferent GmbH`); USt-IdNr `DE12456789` 1-digit short
+- **Degenerate-zero-tail (line 53)**: `Schreibung: 200000...0000` (~700 zeros) — typical late-generation token-distribution collapse. Doesn't degrade the meaningful 90% of the output. Truncating at first sustained zero-stream yields clean production output.
+
+Architectural readout: **STRONGEST single-shot extraction in the cohort** on field-level accuracy for the German EN16931 invoice substrate. PaddleOCR-VL is officially designed as STAGE 2 of a `PP-DocLayoutV2` (layout detection) → per-region call to PaddleOCR-VL with task-appropriate prompt; feeding a full invoice page is OOD per Baidu's vLLM recipe. The fact that 0.96 B params extracts more unique fields than 7 B olmOCR-2 EVEN OUTSIDE its canonical pipeline is the strongest evidence in the cohort that **Cat 2 architectural specialization beats Cat 3 raw parameter count** for the document-parsing task. Pilot #13 should evaluate the canonical PP-DocLayoutV2 + PaddleOCR-VL pipeline for the field-level-accuracy upper bound.
+
+#### Cat 2 — GLM-OCR (cleanest output with partial coverage)
+
+Full transcript: `docs/sources/transcripts/glm-ocr.txt`. Summary:
+
+```text
+Status:                ok
+Load wall-time:      174.97 s   (1.25 GB download dominates)
+Extract wall-time:    33.75 s
+Output length:           276 chars
+Backend:               mlx-vlm
+Quant:                 mlx-4bit (mlx-community/GLM-OCR-4bit, mit license)
+Prompt:                "Recognize all text in the image and output in markdown format"
+                       (HF model card example)
+```
+
+Quality profile (full 276-char output):
+
+- **Document type**: ✓ EXACT (matches PaddleOCR-VL)
+- **Invoice number**: ✓
+- **Invoice date**: ✗ WRONG (05.03 vs 05.08 — same error pattern as olmOCR-2)
+- **Currency**: ✓ explicit
+- **`Verkäufer Nummer 549910`**: ✓ (matches PaddleOCR-VL — only 2 cohort entries got this)
+- **Seller GLN**: ✓ EXACT
+- **Seller name**: ✓✓ **`Lieferant GmbH` — FIRST AND ONLY model in cohort to get the seller name COMPLETELY CORRECT** (MinerU had "Lieferent" — 1 letter off; PaliGemma garbled to "Werkbuffet"; PaddleOCR-VL had Unicode-corrupted "Unหมด QmbH" with Thai-script bleed-through)
+- **Steuernummer**: ✓
+- **Errors**: seller ZIP `DE 80333 München` ✗ WRONG (real is `DE 90893 München`); USt-IdNr label-only with no value
+- **Buyer block + Bemerkungen**: ENTIRELY OMITTED — model stopped after seller block (likely premature EOS or training-distribution coverage gap)
+- **Output coherence**: CLEANEST IN COHORT. Zero degenerate-repetition tail. Zero hallucinations. Zero zero-stream collapse.
+
+Architectural readout: GLM-OCR's profile is the **inverse of PaddleOCR-VL's** — premature-stop (incomplete coverage but zero tail) vs over-generation-with-tail (full coverage but zero-tail at end). At nearly identical parameter count (0.9 B vs 0.96 B) and same Cat 2 classification, the two models exhibit OPPOSITE failure modes — a methodologically valuable within-Cat-2 architecture-vs-architecture comparison at fixed parameter count. Multilingual support per HF tags (zh/en/fr/es/ru/de/ja/ko) is a clean fit for HORUS's German invoice substrate. mit license is a clean thesis-distribution path. Pilot #13's quantitative evaluation should bracket precision-vs-recall on this Cat 2 pair: GLM-OCR maximizes precision; PaddleOCR-VL maximizes recall.
+
+#### Cat 3 — PaliGemma-2-3B-mix-448 (partial-success with prompt override + degenerate repetition)
+
+Full transcript: `docs/sources/transcripts/paligemma2-3b-mix-448.txt`. Two-attempt prompt-prefix escalation — see PR(b) Step 6 commit `f56b2b7` for full first-attempt evidence.
+
+```text
+Status:                ok
+Load wall-time:       32.42 s   (warm cache after first attempt's 6.07 GB download)
+Extract wall-time:    47.01 s
+Output length:           942 chars
+Backend:               transformers-mps
+Quant:                 bf16  (gated; user accepted gemma-license at PR(b) gate-acceptance time)
+Prompt:                "ocr"  (canonical PaliGemma 2 mix task prefix)
+First attempt prompt:  "caption en\nExtract all text and structure from this invoice. Return as markdown."
+                       → 67 chars: "Sorry, as a base VLM I am not trained to answer
+                       this question.<eos>"  (canonical out-of-distribution refusal)
+```
+
+Quality profile:
+
+- **Correct fields**: invoice number (471102), invoice date (05.08.2018 — got this right where olmOCR-2 + GLM-OCR didn't), Liefer-/Leistungsdatum (05.03.2018), Steuernummer (201/113/40209 — correct, where olmOCR-2 didn't), buyer name (Kunden AG Mitte), buyer DE 69876 Frankfurt, GLN fragment "0001123452" (1-digit short), Bemerkungen detected
+- **OCR transcription errors typical of doc-VLMs on German**: `Handelerstellung (2400)` ← `Handelsrechnung (380)` (UN/EDIFACT code completely garbled), `Liebwartestraße 20` ← `Lieferantenstraße 20` (street name garbled phonetically), `Büffer/Leistungsempfänger` ← `Käufer/Leistungsempfänger` (Käufer mangled), `Bemerkingen` ← `Bemerkungen`, `REG Regulatory Information` hallucinated English text not in source
+- **Degenerate loop (lines 42-75)**: model emits the buyer block once correctly (lines 30-37), then restarts and produces 3-4 lightly-varying copies of the same Anschrift / Steuernummer / Telefon / Käufer / Kunden-AG-Frankfurt block. Milder than Granite-Docling's degenerate token loop — the looped content is COHERENT (real field content with OCR errors), not identical-line fabrication.
+
+Architectural readout: PaliGemma-2-3B is **task-prefix-sensitive** — free-form prompts trigger the canonical out-of-distribution refusal `Sorry, as a base VLM I am not trained to answer this question.<eos>`; canonical `ocr` task-prefix produces production-tier extraction (better than olmOCR-2 on date + Steuernummer despite 2-3x smaller param count). The mix-tuned variant retains the prefix-sensitivity property — "mix" expands the prefix vocabulary, not the prompt format. Within-Cat-3 finding: a 3 B task-tuned model with prompt-prefix override outperforms a 4.44 B free-form-trained model that fails to deploy at all (Qwen3-VL — see below).
+
+#### Cat 3 — Qwen3-VL-4B-Instruct (RAM-cliff — triple-fail escalation)
+
+Full transcript: `docs/sources/transcripts/qwen3-vl-4b-instruct.txt`. **Triple-fail escalation chain across all three viable quant tiers** — see PR(b) Step 5 commit `1a19086` for the full evidence record.
+
+```text
+Final-attempt status:           error
+Final-attempt load wall-time:  1323.24 s
+Final-attempt error:            RuntimeError: Invalid buffer size: 35.10 GiB
+                                (transformers/generation/utils.py:_prefill →
+                                 model forward → MPS backend → buffer rejected)
+```
+
+Three-tier escalation chain (all on M1 Pro 16 GB):
+
+| Tier | Backend | Wall | Outcome | Failure mode |
+|---|---|---|---|---|
+| MLX 4-bit (`lmstudio-community/Qwen3-VL-4B-Instruct-MLX-4bit`, 163.3K downloads) | mlx-vlm | 626 s (load 457 + extract 168) | degenerate output | quantization-vs-capacity — 2048 chars of `\x00` null bytes; community consensus on r/LocalLLaMA confirms 4-bit too aggressive for this 4 B-param Qwen3-VL family |
+| MLX 8-bit (`lmstudio-community/Qwen3-VL-4B-Instruct-MLX-8bit`, 158.6K downloads) | mlx-vlm | ~13 min (download) + SIGABRT | macOS Metal command-buffer watchdog | `kIOGPUCommandBufferCallbackErrorImpactingInteractivity` — first-token forward-pass kernel exceeded the per-Metal-command-buffer interactivity threshold on M1 Pro / 14 GPU cores. Hardware-OS-level constraint, NOT a model bug. |
+| bf16 (`Qwen/Qwen3-VL-4B-Instruct`, no alt port) | transformers-mps | 1323 s (download 21 min + load 1 min) | RuntimeError | `Invalid buffer size: 35.10 GiB` — prefill activations + KV cache for 8602-token image prompt require a single 35.10 GB Metal buffer, which exceeds Metal's per-buffer allocation cap. PyTorch MPS does NOT chunk attention across multiple buffers for this kernel. Hardware ceiling cleanly hit. |
+
+Architectural readout: **Qwen3-VL-4B-Instruct is undeployable on M1 Pro 16 GB at any production-viable quant tier.** Three orthogonal failure modes (quantization-vs-capacity, OS-watchdog, Metal-buffer-cap) demonstrate the hardware-ceiling is real and structural — not a single-config bug. This is the first hard Cat 3 hardware-ceiling finding. Pilot #13's evaluation matrix must bracket: (a) larger Apple Silicon configurations (M3 Max 64+ GB), (b) non-Apple GPU hardware (Linux + CUDA), or (c) accept architecture-restricted Cat 3 sampling (only Matformer / MoE / sub-4-B-effective models run on M1 Pro 16 GB). The within-family pair Qwen3-VL-4B (free-form prompt) vs Gemma-4-E4B-it (Matformer 4-B-effective via routing) is the cohort's clearest architecture-vs-architecture comparison at fixed effective-param count: Matformer wins on this hardware.
+
+#### Cat 3 — Molmo-7B-D-0924 (MLX core bug — RAM-cliff confirmation)
+
+Full transcript: `docs/sources/transcripts/molmo-7b-d-0924.txt`. Summary:
+
+```text
+Status:                error
+Load wall-time:      821.49 s   (5.32 GB download dominates ~13.6 min)
+Backend:               mlx-vlm
+Quant:                 mlx-4bit (mlx-community/Molmo-7B-D-0924-4bit, custom_code)
+Error:                 RuntimeError: [metal::malloc] Attempting to allocate
+                       15458107392 bytes which is greater than the maximum
+                       allowed buffer size of 9534832640 bytes.
+Crash site:            mlx_vlm/generate.py:1340 generate_step → mx.async_eval
+                       (first-token forward pass)
+```
+
+This is the **same failure mode** documented in upstream [ml-explore/mlx#3054](https://github.com/ml-explore/mlx/issues/3054) for `mlx-community/Qwen2-VL-2B-Instruct-4bit`. Both share: identical error string format, identical crash site (`generate.py:generate_step → mx.async_eval`), allocation requested orders-of-magnitude larger than the model's parameter footprint can justify (Molmo 7 B at 4-bit ≈ 3.5 GB weights; a 14.4 GB single buffer for first-generation activations is computationally implausible — MLX's tensor-size calculation for some VLM attention shapes is incorrect).
+
+This is **NOT a horus-side wiring bug** (DeepSeek-OCR-2 with the identical `needs_trust_remote_code=True` + custom_code path succeeded in PR(a) Step 6), **NOT a port-specific issue** (the 168-download mlx-community port has been on HF since 2024-11-20 with no reported correctness issues), and **NOT a quantization-vs-capacity issue** (4-bit weights load fine; the crash is in activation buffer allocation during forward pass).
+
+Decision-not-to-escalate rationale: Step 5 (Qwen3-VL-4B) already established the M1 Pro 16 GB hardware ceiling via the triple-fail escalation chain. Molmo at 7 B is a strict superset of the failure surface — 6-bit / 8-bit / bf16 attempts would add gauge-redundant evidence (same conclusion at higher cost). The acceptance criterion for cohort smoke is HONEST EVIDENCE of model deployability on M1 Pro 16 GB; we have it. Pilot #13 on different hardware can re-run.
+
+Within-lab pair comparison (per ADR-009 §"Decision — Cat 1" + §"Decision — Cat 3" methodological control): olmOCR-2-7B (Cat 1, purpose-trained-on-docs) and Molmo-7B-D-0924 (Cat 3, general-multimodal) are both Allen AI, both `qwen2_5_vl` lineage, same 7-8 B param count, same MLX 4-bit quant tier. olmOCR-2 RUNS at MLX 4-bit on M1 Pro 16 GB with the identical extractor pattern; Molmo CRASHES at the same quant tier on the same hardware. The lab effect is held constant, the architecture is held constant — the **purpose-training-on-docs effect** isolates as the load-bearing variable for deployability at this parameter count on this hardware.
+
+#### Cross-Cat field-level comparison (best-prompt-per-model + best-quant-per-model)
+
+Full table on the German EN16931 invoice substrate, 10/10 cohort entries:
+
+| Field | Granite 0.3 B (Cat 1) | MinerU 1.2 B (Cat 1) | olmOCR-2 7 B (Cat 1) | DeepSeek 3.4 B (Cat 2) | PaddleOCR 0.96 B (Cat 2) | GLM-OCR 0.9 B (Cat 2) | Gemma-4 4 B-eff (Cat 3) | PaliGemma 3 B (Cat 3) | Qwen3-VL 4 B (Cat 3) | Molmo 7 B (Cat 3) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Doc type (`Handelsrechnung 380`) | hallucinated | ✓ partial | ✓ partial | Type B | ✓ EXACT | ✓ EXACT | ✓ | ✗ garbled | RAM-cliff | MLX bug |
+| Invoice number | hallucinated | ✓ 471102 | ✓ 471102 | — | ✓ 471102 | ✓ 471102 | ✓ | ✓ | — | — |
+| Invoice date 05.08.2018 | hallucinated | ✓ | ✗ (05.03) | — | ✓ | ✗ (05.03) | ✗ (05.09) | ✓ | — | — |
+| Liefer-/Leistungsdatum | hallucinated | ✓ | ✓ | — | ✓ | ✓ | — | ✓ | — | — |
+| Currency EUR | hallucinated | ✓ | ✓ | — | ✓ explicit | ✓ explicit | — | ✗ omitted | — | — |
+| Seller name | hallucinated | ✓ "Lieferent" | ✗ role-swap | — | ≈ Unicode-corrupt | ✓✓ "Lieferant GmbH" | ✗ [Name fehlt] | ✗ "Werkbuffet" | — | — |
+| Seller GLN 4000001123452 | hallucinated | ✓ | ✗ | — | ✓ EXACT | ✓ EXACT | ✓ EXACT | ≈ 1-digit short | — | — |
+| Seller Steuernummer | hallucinated | ✓ | ✗ wrong | — | ✓ | ✓ | ✓ | ✓ | — | — |
+| Seller USt-IdNr | hallucinated | ✓ | ✗ wrong | — | ≈ 1-digit short | ✗ label-only | ✗ omitted | ✗ omitted | — | — |
+| **Verkäufer Number 549910** | hallucinated | ? | ✗ | — | ✓ UNIQUE | ✓ UNIQUE | ✗ | ✗ | — | — |
+| Buyer name (Kunden AG Mitte) | hallucinated | ✓ | ✗ role-swap | — | ✓ | ✗ omitted | ✓ | ✓ | — | — |
+| Buyer address (Frankfurt) | hallucinated | ✓ | ✗ omitted | — | ✓ | ✗ omitted | ✓ | ✓ | — | — |
+| **Käufer Number GE2020211** | hallucinated | ? | ✗ | — | ✓ UNIQUE | ✗ omitted | ✗ | ✗ | — | — |
+| Output length (chars) | 3743 (with loop) | 940 | 314 | 0 (Type B) | 2354 | 276 | 974 | 942 | 0 / 2048 nulls | 0 |
+| Output coherence | degenerate loop | clean | clean (truncated) | — | clean + zero-tail | cleanest | clean | repetition tail | — | — |
+| Total params | 0.3 B | 1.2 B | 7 B | 3.4 B | 0.96 B | 0.9 B | 4 B effective | 3 B | 4.4 B | 7 B |
+
+Notation: `✓ EXACT` = extracted exactly as in source; `✓` = correct (may have minor formatting variation); `≈` = single-digit / single-character OCR error; `✗` = wrong, omitted, or hallucinated; `?` = extraction unclear from snippet (full transcript may have it); `—` = model didn't reach this field due to upstream blocker (Type B / RAM-cliff / MLX bug).
+
+#### Whole-cohort observations (load-bearing for pilot #13)
+
+1. **Smallest model wins on field-level accuracy.** PaddleOCR-VL at 0.96 B params extracts more unique fields than 7 B olmOCR-2 (`Verkäufer Number` + `Käufer Number` are exclusive to PaddleOCR + GLM-OCR, both ≤1 B). GLM-OCR at 0.9 B has the highest per-character precision in cohort and is the only model to get the seller name `Lieferant GmbH` completely correct. **Cat 2 architectural specialization beats Cat 3 raw parameter count for document parsing**, even when used SINGLE-SHOT outside the canonical 2-stage pipeline. With proper PP-DocLayoutV2 preprocessing, the field-level accuracy ceiling is likely substantially higher.
+2. **Hardware ceiling at 4 B-effective on M1 Pro 16 GB.** Cat 3 has 50% deployability rate (2/4); plain 4 B+ multimodal VLMs (Qwen3-VL 4 B, Molmo 7 B) are blocked by RAM-cliff and/or upstream MLX bugs. Matformer (Gemma-4 4-B-effective via routing) and small task-tuned (PaliGemma 3 B with prompt override) are the deployable Cat 3 patterns.
+3. **Prompt-prefix sensitivity is the dominant Cat 2 + Cat 3 free-form-prompt failure mode.** PaliGemma + PaddleOCR-VL both required canonical task-prefix overrides (`ocr` / `OCR:`); HORUS-canonical free-form prompts triggered refusal or wrong-task routing in both. Pilot #13 must per-model-optimize prompts for at least these two model-classes, OR commit to the cohort-canonical free-form prompt and accept the asymmetric prompt-shape coverage.
+4. **MLX-vs-PyTorch-MPS runtime path matters at the same parameter count.** Step 5's Qwen3-VL-4B triple-fail showed MLX 4-bit (degenerate) vs MLX 8-bit (Metal watchdog) vs PyTorch-MPS bf16 (35.10 GiB Metal buffer-cap) all hit different walls. Pilot #13 hardware (M3 Max 64+ GB / Linux + CUDA / hosted inference) needs to re-evaluate every Cat 3 entry that failed on M1 Pro 16 GB.
+5. **Within-lab control isolates purpose-training-on-docs effect.** olmOCR-2-7B (Cat 1) and Molmo-7B-D-0924 (Cat 3) — same lab (Allen AI), same architecture (`qwen2_5_vl`), same parameter count (7 B), same MLX 4-bit quant tier, same dispatcher path — split as: olmOCR-2 RUNS (with role-swap semantic failure); Molmo CRASHES (MLX core tensor-size bug). Lab + architecture held constant; purpose-training-on-docs isolates as the load-bearing variable for deployability AND quality at this tier.
+6. **Granite-Docling-258M lower-bound holds on real German invoice substrate.** PR(a)'s synthetic-invoice baseline-of-failure profile (hallucinated content + degenerate token loop) reproduces on `EN16931_Einfach.pdf` (substrate-shift; same outcome). The Cat 1 lower-bound is empirically anchored.
+7. **DeepSeek-OCR-2 Type B install-conflict remains unresolved at PR(b) merge.** Cat 2 representation at PR(b) merge time = PaddleOCR-VL + GLM-OCR; the `mlx-community/DeepSeek-OCR-2-4bit` `LlamaFlashAttention2` import gap (PR(a) Step 6) requires either a model-side fix from upstream or a HORUS-side transformers downgrade incompatible with the rest of the cohort. Pilot #13 inherits the documented Type B and re-evaluates the Contexts Optical Compression hypothesis with v2.
+8. **Skeleton extractor pattern proved over-broad.** 2 of 3 PR(b)-scoped skeletons (`PaddleOCRExtractor`, `GLMOCRExtractor`) became unnecessary at PR(b) merge time because mlx-vlm 0.5.0 ships built-in support for both `paddleocr_vl` and `glm_ocr` archs. Both skeletons are RETAINED in the codebase for the documented alternative paths (paddlepaddle / vLLM / Ollama / SGLang) that pilot #13 may want for cross-runtime validation of the same models. Methodological lesson: install-time architecture discovery should precede skeleton design in future ADRs.
+
+#### PR(b) commit graph
+
+8 commits on `feat/adr-009-cohort-completion`:
+
+| SHA | Step | Headline |
+|-----|------|----------|
+| `ba9dac7` | 1 | tied-embeddings rescue for nested-`text_config` VLMs (MinerU + future) |
+| `591aa92` | 2-3 | MinerU-2.5-Pro VLM smoke (Cat 1 success) |
+| `3bec415` | 4 | olmOCR-2-7B smoke (Cat 1 partial-success with role-swap) |
+| `1a19086` | 5 | Qwen3-VL-4B triple-fail escalation chain (Cat 3 RAM-cliff) |
+| `f56b2b7` | 6 | PaliGemma-2-3B prompt-prefix-fix (Cat 3 partial-success) |
+| `5847414` | 7 | Molmo-7B-D MLX core bug (Cat 3 RAM-cliff confirmation) |
+| `d26685d` | 8 | PaddleOCR-VL OCR-prefix-fix + skeleton-to-MLX pivot (Cat 2 strongest) |
+| `04d79b1` | 9 | GLM-OCR mlx-pivot (Cat 2 cleanest) — cohort smokes complete |
+
+End of PR(b) Step 9 = end of cohort smoke evidence collection. Step 10 (this commit) is the ADR amendment; Step 11 is PR push + merge via `@release-manager`.
+
 ### Install constraints — Type taxonomy (Type A / B / C)
 
 Per plan §6 A2 escalation lemma. Honest disclosure of the taxonomy:
@@ -383,7 +632,7 @@ Per `horus-source-archival` rule + ADR-002. PR(a) Step 4 authored 8 new stubs + 
 - `docs/sources/papers/deepseek-2025-contexts-optical-compression.md` — **new** (PR(a) Step 4). DeepSeek-OCR v1 architectural paper (Contexts Optical Compression precedent).
 - `docs/sources/papers/deepseek-2026-deepseek-ocr-2.md` — **new** (PR(a) Step 4). DeepSeek-OCR-2 paper (v2 evolution + license upgrade).
 
-**Transcripts (PR(a) smoke evidence; new directory per plan §8 O1)**:
+**Transcripts — PR(a) smoke evidence (3 of 10; new directory per plan §8 O1)**:
 
 - `docs/sources/transcripts/README.md` — **new** (PR(a) Step 5). Convention doc for the transcript directory.
 - `docs/sources/transcripts/granite-docling-258m.txt` — **new** (PR(a) Step 5). Cat 1 baseline-of-failure transcript.
@@ -391,7 +640,17 @@ Per `horus-source-archival` rule + ADR-002. PR(a) Step 4 authored 8 new stubs + 
 - `docs/sources/transcripts/deepseek-ocr-2.diagnostic.md` — **new** (PR(a) Step 6). Cat 2 Type B inner-exception bisection diagnostic.
 - `docs/sources/transcripts/gemma-4-e4b-it.txt` — **new** (PR(a) Step 7). Cat 3 success transcript.
 
-PR(b) will add 7 transcripts (one per remaining cohort model) to this directory + amend §"Decision + integration thoughts" §"Smoke evidence" with per-Cat narrative.
+**Transcripts — PR(b) cohort completion (7 of 10; one per remaining cohort model)**:
+
+- `docs/sources/transcripts/mineru-2-5-pro-vlm.txt` — **new** (PR(b) Step 2-3). Cat 1 success — strongest Cat 1 entry (commit `591aa92`). bf16 / TransformersMPSExtractor + tied-embeddings rescue per `ba9dac7`.
+- `docs/sources/transcripts/olmocr-2-7b.txt` — **new** (PR(b) Step 4). Cat 1 partial-success with role-swap + Steuernummer wrong (commit `3bec415`). MLX 4-bit / `mlx-community/olmOCR-2-7B-1025-mlx-4bit`.
+- `docs/sources/transcripts/paddleocr-vl.txt` — **new** (PR(b) Step 8). Cat 2 success — STRONGEST cross-Cat field coverage (commit `d26685d`). MLX 4-bit / `mlx-community/PaddleOCR-VL-4bit`. Two-attempt prompt-prefix escalation (free-form refusal → canonical `OCR:`).
+- `docs/sources/transcripts/glm-ocr.txt` — **new** (PR(b) Step 9). Cat 2 success — cleanest output, partial coverage (commit `04d79b1`). MLX 4-bit / `mlx-community/GLM-OCR-4bit`.
+- `docs/sources/transcripts/qwen3-vl-4b-instruct.txt` — **new** (PR(b) Step 5). Cat 3 RAM-cliff — final-attempt bf16 transcript (commit `1a19086`). Triple-fail escalation chain (MLX 4-bit / 8-bit / bf16) documented in commit + manifest note.
+- `docs/sources/transcripts/paligemma2-3b-mix-448.txt` — **new** (PR(b) Step 6). Cat 3 partial-success with prompt override + degenerate repetition (commit `f56b2b7`). bf16 / TransformersMPSExtractor. Two-attempt prompt-prefix escalation (free-form refusal → canonical `ocr`).
+- `docs/sources/transcripts/molmo-7b-d-0924.txt` — **new** (PR(b) Step 7). Cat 3 MLX core bug — `metal::malloc` 14.4 GB buffer-size cliff (commit `5847414`). MLX 4-bit / `mlx-community/Molmo-7B-D-0924-4bit`. Same failure mode as upstream `mlx-community/Qwen2-VL-2B-Instruct-4bit` per `ml-explore/mlx#3054`.
+
+End of PR(b) Step 9 = 10/10 cohort transcripts on disk; per-Cat narrative + cross-Cat field-level comparison + whole-cohort observations all amended into §"Decision + integration thoughts" §"Smoke evidence — PR(b) results (7 of 10)" above.
 
 ## Consequences
 
@@ -417,5 +676,7 @@ PR(b) will add 7 transcripts (one per remaining cohort model) to this directory 
 - Issue: `ReebalSami/horus#14` (sub of #13)
 - Brainstorm refs: `docs/prompts/stages/02-brainstorm.md` §3 D8 (multi-architecture comparison) + §6.1 (purpose-training hypothesis) + §7.1 (Oct-2025 wave) + §7.2 (Apple-Silicon throughput) + §8.1 (initial cohort) + §9.1 (Qwen3-VL amendment) + §13 (RAG validator forward-pointer)
 - Workspace rules applied: `horus-decision-discipline.md`, `horus-source-archival.md`, `know-your-hardware.md`, `make-sure-it-works.md`, `context7-and-docs-first.md`, `branch-and-pr-required.md`, `no-terminal-oneline-scripts.md`
-- Smoke evidence captured: 2026-05-14 (PR(a) — 3 of 10 cohort entries)
+- Smoke evidence captured: 2026-05-14 (PR(a) — 3 of 10 cohort entries; PR(b) — 7 of 10 remaining cohort entries; full 10/10 cohort smoke evidence on disk under `docs/sources/transcripts/`)
 - Cascade D / M2D.5 / `fbbfa0`
+- PR(b) plan: `~/.windsurf/plans/horus-adr-009-prb-kickoff-ba69f3.md` (kickoff handoff at `~/.windsurf/handoffs/horus-adr-009-prb-202605141837-coding.md`)
+- PR(b) commit graph (8 commits on `feat/adr-009-cohort-completion`): `ba9dac7` → `591aa92` → `3bec415` → `1a19086` → `f56b2b7` → `5847414` → `d26685d` → `04d79b1` (cohort smokes complete)
