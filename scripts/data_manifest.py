@@ -21,6 +21,7 @@ Invoke via Makefile:
         SOURCE_URL=<url> SOURCE_TYPE=<type> \\
         LICENSE_SPDX=<spdx> LICENSE_URL=<url>
 """
+
 import argparse
 import hashlib
 import subprocess
@@ -57,7 +58,7 @@ def get_git_info(target_dir: Path) -> tuple[str, str]:
             parts = result.stdout.strip().split("|", 1)
             if len(parts) == 2:
                 return parts[0], parts[1]
-        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+        except subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError:
             pass
     return "", ""
 
