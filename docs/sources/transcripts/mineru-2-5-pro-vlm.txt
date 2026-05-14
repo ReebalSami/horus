@@ -1,0 +1,44 @@
+========================================================================
+HORUS cohort smoke — ADR-009 §Decision evidence
+========================================================================
+Image:          /Users/reebal/Projects/horus/data/raw/smoke/EN16931_Einfach.page1.png
+Image size:     713,699 bytes
+Cohort size:    1 model(s)
+Ordering:       transformers-first
+
+------------------------------------------------------------------------
+Model:          opendatalab/MinerU2.5-Pro-2604-1.2B
+Category:       Cat 1
+Backend:        transformers-mps
+Status:         ok
+Load wall-time:       20.23 s
+Extract wall-time:   938.08 s
+Output length:          940 chars
+Output snippet (first 4000 chars):
+
+<fcel>Handelsrechnung (380) Nr. 471102 vom 05.08.2018<lcel><nl>
+<fcel>Währung:<fcel>EUR<nl>
+<fcel>Liefer- und Leistungsdatum:<fcel>05.03.2018<nl>
+<fcel>Verkäufer<ecel><nl>
+<fcel>Nummer:<fcel>549910<nl>
+<fcel>Globale Nummer:<fcel>4000001123452 (GLN)<nl>
+<fcel>Name:<fcel>Lieferent GmbH<nl>
+<fcel>Anschrift:<fcel>Lieferantenstraße 20<nl>
+<ecel><fcel>DE 0389 München<nl>
+<fcel>Steuernummer:<fcel>201/113/40209<nl>
+<fcel>USt.-Id.-Nr.:<fcel>DE123456789<nl>
+<fcel>Käufer/Leistungsempfänger<ecel><nl>
+<fcel>Nummer:<fcel>GE202011<nl>
+<fcel>Name:<fcel>Kunden AG Mitte<nl>
+<fcel>Anschrift:<fcel>Kundgestraße 15<nl>
+<ecel><fcel>DE 69876 Frankfurt<nl>
+<fcel>Bemerkungen<ecel><nl>
+<fcel>Bemerkung<fcel>Rechnung gemäß Bestellung vom 01.03.2018.<nl>
+<fcel>Betreff:<fcel>REG Regulatory Information<nl>
+<fcel>Institute<fcel>Lieferant GmbHLieferantenstraße 200300 MünchenDeutschlandGeschäftstätigkeit: Hans MeisterHandelsregsteunnummer: NA 123<nl>
+<|im_end|>
+------------------------------------------------------------------------
+
+========================================================================
+SUMMARY: 1/1 cohort models ran to completion
+========================================================================
