@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke data-manifest clean
+.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest clean
 
 # Default target — list available commands.
 help:
@@ -13,6 +13,7 @@ help:
 	@echo "  zugferd-smoke   end-to-end smoke: factur-x generate + Mustang validate (ADR-005)"
 	@echo "  inference-smoke real-model smoke: load Granite-Docling-258M via mlx-vlm + Transformers+MPS (ADR-007)"
 	@echo "  orchestrated-smoke  Docling StandardPdfPipeline smoke on the ZUGFeRD invoice (ADR-008)"
+	@echo "  cohort-smoke    cohort-VLM smoke runner (ADR-009; MODEL=ID or MODELS=A,B for subset; OUT=path for transcript file)"
 	@echo "  data-manifest   generate MANIFEST.md + sha256.txt for a downloaded dataset corpus"
 	@echo "  clean           remove build artifacts and caches"
 
@@ -96,6 +97,42 @@ inference-smoke: zugferd-smoke
 	@command -v sips >/dev/null 2>&1 || (echo "ERROR: macOS 'sips' not found. inference-smoke requires macOS." && exit 1)
 	sips -s format png --resampleWidth 2480 data/raw/smoke/invoice-001.pdf --out $(INFERENCE_SMOKE_PNG)
 	uv run python scripts/inference_smoke.py $(INFERENCE_SMOKE_PNG)
+
+# Cohort smoke (ADR-009). Loads each cohort model in turn (via
+# `horus.vlm_extractor.get_extractor()`), runs page-1 of the real corpus PDF
+# `EN16931_Einfach.pdf` through it, and emits ADR-007-style transcript blocks
+# suitable for embedding in ADR-009 §Decision. Per-model invocation supported:
+#   make cohort-smoke MODEL=ibm-granite/granite-docling-258M-mlx
+# Subset via comma-separated list:
+#   make cohort-smoke MODELS=ibm-granite/granite-docling-258M-mlx,deepseek-ai/DeepSeek-OCR-2
+# Redirect transcript to a file (for ADR §Decision embedding):
+#   make cohort-smoke OUT=/tmp/granite.txt MODEL=ibm-granite/granite-docling-258M-mlx
+#
+# Uses macOS `sips` for PDF->PNG rasterization (same as inference-smoke). The
+# resampleWidth=2480 is ~300 DPI for A4; model processors (per ADR-007) resize
+# to a longest_edge cap internally so further resolution is wasted.
+COHORT_SMOKE_PDF := data/raw/german/zugferd-corpus/XML-Rechnung/FX/EN16931_Einfach.pdf
+COHORT_SMOKE_PNG := data/raw/smoke/EN16931_Einfach.page1.png
+
+cohort-smoke:
+	@command -v sips >/dev/null 2>&1 || (echo "ERROR: macOS 'sips' not found. cohort-smoke requires macOS." && exit 1)
+	@mkdir -p data/raw/smoke
+	@if [ ! -f "$(COHORT_SMOKE_PDF)" ]; then \
+		echo "ERROR: $(COHORT_SMOKE_PDF) not found."; \
+		echo "Acquire the zugferd-corpus first (see data/raw/german/zugferd-corpus/README.md)."; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(COHORT_SMOKE_PNG)" ]; then \
+		echo "Rasterizing $(COHORT_SMOKE_PDF) page 1 -> $(COHORT_SMOKE_PNG) ..."; \
+		sips -s format png --resampleWidth 2480 $(COHORT_SMOKE_PDF) --out $(COHORT_SMOKE_PNG) >/dev/null; \
+	else \
+		echo "Reusing existing $(COHORT_SMOKE_PNG)."; \
+	fi
+	uv run python scripts/cohort_smoke.py $(COHORT_SMOKE_PNG) \
+		$(if $(MODEL),--model "$(MODEL)") \
+		$(if $(MODELS),--models "$(MODELS)") \
+		$(if $(OUT),--out "$(OUT)") \
+		$(if $(MAX_TOKENS),--max-tokens $(MAX_TOKENS))
 
 # Orchestrated-baseline smoke (ADR-008). Loads Docling's default
 # StandardPdfPipeline (orchestrated specialists: layout + OCR + table
