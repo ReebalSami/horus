@@ -10,7 +10,7 @@
 | ADR-006 | Visual PDF renderer for synthetic ZUGFeRD invoices — fpdf2 (py-pdf ecosystem) | Accepted |
 | ADR-007 | Local-VLM inference framework — dual-track: MLX-VLM (primary, MLX-ported §8.1 cohort) + HuggingFace Transformers + MPS (fallback, non-MLX-ported cohort) | Accepted |
 | ADR-008 | Orchestrated-baseline document pipeline — dual-track: Docling (primary, IBM Research) + MinerU pipeline backend (cross-check, OpenDataLab) | Accepted |
-| ADR-009 | Pilot-loop VLM cohort selection — 10 models in 3 categories (end-to-end / architecturally innovative / general multimodal); resolves the "cohort ADR #14" forward-pointer from ADR-007 and ADR-008 | Proposed |
+| ADR-009 | Pilot-loop VLM cohort selection — 10 models in 3 categories (end-to-end / architecturally innovative / general multimodal); resolves the "cohort ADR #14" forward-pointer from ADR-007 and ADR-008 | Accepted |
 
 ## Conventions
 

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | Proposed (smoke evidence captured 2026-05-14; flips to Accepted on PR(a) merge) |
+| **Status** | Accepted (smoke evidence captured 2026-05-14 — see §"Decision + integration thoughts" §"Smoke evidence — PR(a) cohort entries"; PR(b) appends 7 additional smoke transcripts via mid-sprint amendment per ADR-018) |
 | **Date** | 2026-05-14 |
 | **Milestone** | M2D.5 step 3 — Pilot-loop cohort enablement (issue #14, sub of #13) |
 | **Authored by** | Cascade D (M2D.5 cohort-selection session, plan `~/.windsurf/plans/adr-009-pilot-vlm-cohort-fbbfa0.md`) |
