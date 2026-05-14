@@ -383,6 +383,19 @@ class TransformersMPSExtractor:
             dtype=torch.bfloat16,
             trust_remote_code=self._needs_trust_remote_code,
         )
+        # Tied-embeddings rescue for nested-text_config VLMs (MinerU-2.5-Pro VLM
+        # packaging quirk; potentially also PaliGemma / Molmo / future models).
+        # When `tie_word_embeddings: true` lives only in `text_config` (not at
+        # the top level), `Qwen2VLForConditionalGeneration` etc. read the
+        # top-level default (False) and DO NOT auto-tie. Result: `lm_head.weight`
+        # is randomly initialized — generation produces gibberish without this
+        # rescue. Discovered ADR-009 PR(b) Step 2 (MinerU smoke). Calling
+        # `tie_weights()` when `tie_word_embeddings=False` is a no-op, so this
+        # is safe for all other models.
+        text_cfg = getattr(model.config, "text_config", None)
+        if text_cfg is not None and getattr(text_cfg, "tie_word_embeddings", False):
+            model.config.tie_word_embeddings = True
+            model.tie_weights()
         # mypy mis-tracks the chained `.to(...)` through transformers' overload
         # soup; the runtime contract (nn.Module.to(str)) is well-established.
         self._model = model.to("mps")  # type: ignore[arg-type]
@@ -701,36 +714,58 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         ),
     },
     "PaddlePaddle/PaddleOCR-VL": {
-        "extractor_class": PaddleOCRExtractor,
+        "extractor_class": MLXVLMExtractor,
         "category": 2,
-        # PaddleOCR-VL takes no free-form prompt; pipeline default is used.
-        # The prompt_template field is present for manifest-schema uniformity.
-        "prompt_template": "(unused — PaddleOCR pipeline default)",
+        # Canonical PaddleOCR-VL task prefix per official vLLM recipe
+        # (https://docs.vllm.ai/projects/recipes/.../PaddleOCR-VL.html).
+        # PaddleOCR-VL is task-prefix-sensitive (same architectural pattern as
+        # PaliGemma — see Step 6 in this PR(b)); free-form HORUS-canonical
+        # prompts trigger wrong-task routing (chart-recognition refusal loop
+        # documented in Step 8 first attempt).
+        "prompt_template": "OCR:",
         "max_tokens": 2048,
-        "quant_target": "native",
-        "alt_model_id": None,
+        "quant_target": "mlx-4bit",
+        "alt_model_id": "mlx-community/PaddleOCR-VL-4bit",
         "license": "apache-2.0",
         "needs_trust_remote_code": True,
         "note": (
             "paddleocr_vl arch; 0.96 B params; OmniDocBench v1.5 = 94.5 "
-            "(SOTA at the tier when released). PaddlePaddle ecosystem — "
-            "adds paddlepaddle dep in PR(b) per ADR-009 §3.7."
+            "(SOTA at the tier when released). custom_code => "
+            "trust_remote_code=True. PR(b) Step 8 pivoted from the "
+            "PaddleOCRExtractor skeleton (which would have required a "
+            "paddlepaddle dep + dedicated ADR per `horus-decision-discipline`) "
+            "to MLXVLMExtractor + mlx-community/PaddleOCR-VL-4bit (57 downloads, "
+            "matches upstream model_id; 1.5 series exists at higher download "
+            "counts but represents a different upstream version). mlx-vlm 0.5.0 "
+            "ships built-in paddleocr_vl arch support, sidestepping the heavy "
+            "paddlepaddle install. PR(b) Step 8 also overrode prompt_template "
+            "from HORUS-canonical free-form to canonical 'OCR:' task prefix "
+            "after first attempt produced a chart-task degenerate-refusal loop "
+            "(see commit message). PaddleOCR-VL is officially designed as "
+            "stage 2 of a PP-DocLayoutV2 + PaddleOCR-VL pipeline (per vLLM "
+            "recipe); single-shot full-page invoice is out-of-distribution."
         ),
     },
     "zai-org/GLM-OCR": {
-        "extractor_class": GLMOCRExtractor,
+        "extractor_class": MLXVLMExtractor,
         "category": 2,
         "prompt_template": "Recognize all text in the image and output in markdown format",
         "max_tokens": 2048,
-        "quant_target": "native",
-        "alt_model_id": None,
-        "license": "unknown",  # GitHub repo confirmed apache-2.0/mit-like; verify at install time
+        "quant_target": "mlx-4bit",
+        "alt_model_id": "mlx-community/GLM-OCR-4bit",
+        "license": "mit",  # verified from HF model card tags + mlx-community port
         "needs_trust_remote_code": False,
         "note": (
-            "glm4v arch (likely); 0.9 B params; OmniDocBench v1.5 = 94.62 "
-            "(SOTA at the tier, Feb 2026 release from Z.ai). transformers<5 "
-            "conflict => vLLM/Ollama/SGLang/MLX path required in PR(b). "
-            "Per ADR-009 §3.7 escalation rule: if no path works, file sub-issue."
+            "glm_ocr arch; 0.9 B params; OmniDocBench v1.5 = 94.62 "
+            "(SOTA at the tier, Feb 2026 release from Z.ai). Multilingual "
+            "(zh/en/fr/es/ru/de/ja/ko per HF tags) — incl. DE for HORUS's "
+            "German invoice substrate. PR(b) Step 9 pivoted from the "
+            "GLMOCRExtractor skeleton (which was scoped to handle the "
+            "documented transformers<5.0.0 conflict via vLLM/Ollama/SGLang) "
+            "to MLXVLMExtractor + mlx-community/GLM-OCR-4bit (727 downloads, "
+            "mit-licensed). mlx-vlm 0.5.0 ships built-in glm_ocr arch "
+            "support, sidestepping the transformers<5 conflict at the "
+            "horus pyproject.toml level entirely."
         ),
     },
     # ---- Category 3 — General multimodal VLMs ----------------------------
@@ -749,30 +784,41 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         ),
     },
     "Qwen/Qwen3-VL-4B-Instruct": {
-        "extractor_class": MLXVLMExtractor,
+        "extractor_class": TransformersMPSExtractor,
         "category": 3,
         "prompt_template": "Extract all text and structure from this invoice. Return as markdown.",
         "max_tokens": 2048,
-        "quant_target": "mlx-4bit",
-        # alt_model_id resolved at PR(b) install time; if no MLX port,
-        # switch extractor_class to TransformersMPSExtractor (per ADR-009 §3.8 O6).
+        "quant_target": "bf16",
         "alt_model_id": None,
         "license": "apache-2.0",
         "needs_trust_remote_code": False,
         "note": (
             "qwen3_vl arch; 4.44 B params; multilingual. v2 §9.1 smaller variant "
-            "(replaces 8B/30B-A3B per ADR-009 §3.2 delta)."
+            "(replaces 8B/30B-A3B per ADR-009 §3.2 delta). PR(b) Step 5 escalation "
+            "chain: MLX 4-bit (lmstudio-community/...-MLX-4bit) produced degenerate "
+            "null-byte output across 2048 tokens (community consensus on r/LocalLLaMA "
+            "confirms 4-bit is too aggressive for this 4 B-param model); MLX 8-bit "
+            "(lmstudio-community/...-MLX-8bit) crashed mid-generation with macOS Metal "
+            "watchdog (kIOGPUCommandBufferCallbackErrorImpactingInteractivity, SIGABRT) "
+            "after first-token forward-pass exceeded the per-Metal-command-buffer "
+            "interactivity threshold on M1 Pro 14-GPU-core. Resolved to bf16 via "
+            "TransformersMPSExtractor (PyTorch MPS, smaller per-kernel command "
+            "buffers) per ADR-009 §3.8 O6 fallback. Cohort delta: only Cat 3 entry "
+            "running through TransformersMPSExtractor instead of MLXVLMExtractor; "
+            "documented as runtime-path-mixed per ADR-009 §3.10."
         ),
     },
     "google/paligemma2-3b-mix-448": {
         "extractor_class": TransformersMPSExtractor,
         "category": 3,
-        # PaliGemma uses task-prefix convention; "caption en" + custom suffix.
-        # Free-form prompt below is HORUS-canonical for invoice extraction;
-        # may need per-model override in PR(b) when smoke surfaces failure mode.
-        "prompt_template": (
-            "caption en\nExtract all text and structure from this invoice as markdown."
-        ),
+        # PaliGemma uses task-prefix convention; PR(b) Step 6 surfaced that
+        # free-form HORUS-canonical prompts trigger the canonical
+        # out-of-distribution refusal ("Sorry, as a base VLM I am not
+        # trained to answer this question.<eos>"). Per-model override to
+        # the canonical "ocr" prefix per the original manifest comment's
+        # authorization. PaliGemma docs (HF model card §Usage) name "ocr"
+        # as the bare-prefix invocation for full-image text extraction.
+        "prompt_template": "ocr",
         "max_tokens": 2048,
         "quant_target": "bf16",
         "alt_model_id": None,
@@ -785,20 +831,24 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         ),
     },
     "allenai/Molmo-7B-D-0924": {
-        "extractor_class": TransformersMPSExtractor,
+        "extractor_class": MLXVLMExtractor,
         "category": 3,
         "prompt_template": "Extract all text and structure from this invoice. Return as markdown.",
         "max_tokens": 2048,
-        # If no MLX port at install time, bf16 on 8B may OOM on M1 Pro 16 GB —
-        # documented as a Cat 3 failure mode per ADR-009 §3.6.
-        "quant_target": "bf16",
-        "alt_model_id": None,
+        "quant_target": "mlx-4bit",
+        "alt_model_id": "mlx-community/Molmo-7B-D-0924-4bit",
         "license": "apache-2.0",
         "needs_trust_remote_code": True,
         "note": (
             "molmo arch; 8.02 B total params; built on Qwen2-7B. EN-only. "
             "Within-lab pair with olmOCR-2 (both Allen AI) — methodological "
-            "control per ADR-009 §8 O5. custom_code => trust_remote_code=True."
+            "control per ADR-009 §8 O5. custom_code => trust_remote_code=True "
+            "(forwarded via mlx_vlm.load kwargs per MLXVLMExtractor §load). "
+            "MLX 4-bit port resolved at PR(b) Step 7 to mlx-community/"
+            "Molmo-7B-D-0924-4bit (168 downloads — lower battle-test signal "
+            "than other cohort ports but the only namespace shipping MLX "
+            "quantizations of this model). bf16 path avoided (predicted "
+            "OOM on M1 Pro 16 GB per Qwen3-VL-4B Step 5 finding)."
         ),
     },
 }

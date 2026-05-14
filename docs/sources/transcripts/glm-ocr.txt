@@ -1,0 +1,36 @@
+========================================================================
+HORUS cohort smoke — ADR-009 §Decision evidence
+========================================================================
+Image:          /Users/reebal/Projects/horus/data/raw/smoke/EN16931_Einfach.page1.png
+Image size:     713,699 bytes
+Cohort size:    1 model(s)
+Ordering:       transformers-first
+
+------------------------------------------------------------------------
+Model:          zai-org/GLM-OCR
+Category:       Cat 2
+Backend:        mlx-vlm
+Status:         ok
+Load wall-time:      174.97 s
+Extract wall-time:    33.75 s
+Output length:          276 chars
+Output snippet (first 4000 chars):
+
+Handelsrechnung (380)  Nr. 471102  vom 05.03.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 05.03.2018
+
+Verkäufer
+Nummer: 549910
+Globale Nummer: 4000001123452 (GLN)
+Name: Lieferant GmbH
+Anschrift: Lieferantenstraße 20
+DE 80333 München
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.:
+------------------------------------------------------------------------
+
+========================================================================
+SUMMARY: 1/1 cohort models ran to completion
+========================================================================

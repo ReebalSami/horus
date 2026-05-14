@@ -1,0 +1,36 @@
+========================================================================
+HORUS cohort smoke — ADR-009 §Decision evidence
+========================================================================
+Image:          /Users/reebal/Projects/horus/data/raw/smoke/EN16931_Einfach.page1.png
+Image size:     713,699 bytes
+Cohort size:    1 model(s)
+Ordering:       transformers-first
+
+------------------------------------------------------------------------
+Model:          allenai/olmOCR-2-7B-1025
+Category:       Cat 1
+Backend:        mlx-vlm
+Status:         ok
+Load wall-time:      849.25 s
+Extract wall-time:   130.66 s
+Output length:          314 chars
+Output snippet (first 4000 chars):
+
+Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 05.03.2018
+
+Käufer/Leistungsempfänger
+Nummer: 549910
+Name: Lieferant GmbH
+Anschrift: Lieferantenstraße 20
+Steuernummer: DE 80333 München
+Ust.-Id.-Nr.: GE2020211
+
+Bemerkung: Nachschlag gerechtfertigt Bestellung vom 01.03.2018
+------------------------------------------------------------------------
+
+========================================================================
+SUMMARY: 1/1 cohort models ran to completion
+========================================================================
