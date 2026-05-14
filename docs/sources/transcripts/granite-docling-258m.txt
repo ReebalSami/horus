@@ -1,0 +1,85 @@
+========================================================================
+HORUS cohort smoke — ADR-009 §Decision evidence
+========================================================================
+Image:          /Users/reebal/Projects/horus/data/raw/smoke/EN16931_Einfach.page1.png
+Image size:     713,699 bytes
+Cohort size:    1 model(s)
+Ordering:       transformers-first
+
+------------------------------------------------------------------------
+Model:          ibm-granite/granite-docling-258M-mlx
+Category:       Cat 1
+Backend:        mlx-vlm
+Status:         ok
+Load wall-time:        0.96 s
+Extract wall-time:    10.80 s
+Output length:         3743 chars
+Output snippet (first 4000 chars):
+
+<doctag><page_header><loc_47><loc_8><loc_174><loc_14>Möglichst nach dem Anschluss vom 2.02.2, (g)Möglichst vom 2.02.2</page_header>
+<text><loc_54><loc_32><loc_323><loc_40>Händlungschemung (3000) Nr. 471102 vom 05.08.2018</text>
+<text><loc_54><loc_55><loc_72><loc_61>Würmer:</text>
+<text><loc_54><loc_66><loc_155><loc_73>Liefer- und Leistungsdatum:</text>
+<text><loc_54><loc_95><loc_94><loc_102>Verkaufer:</text>
+<text><loc_54><loc_106><loc_86><loc_112>Nummern:</text>
+<text><loc_54><loc_117><loc_120><loc_123>Globale Nummer:</text>
+<text><loc_54><loc_128><loc_72><loc_134>Nummern:</text>
+<text><loc_54><loc_140><loc_91><loc_146>Anschrift:</text>
+<text><loc_54><loc_162><loc_113><loc_168>Steuernummer:</text>
+<text><loc_54><loc_172><loc_100><loc_178>US-Id-Nr:</text>
+<text><loc_54><loc_201><loc_156><loc_208>Käufer/Leistungsempfänger</text>
+<text><loc_54><loc_213><loc_86><loc_219>Nummern:</text>
+<text><loc_54><loc_224><loc_81><loc_230>Name:</text>
+<text><loc_54><loc_235><loc_86><loc_241>Anschrift:</text>
+<text><loc_54><loc_264><loc_108><loc_271>Bemerkungen</text>
+<text><loc_54><loc_277><loc_90><loc_283>Bemerkungen</text>
+<text><loc_54><loc_297><loc_80><loc_303>Betreff:</text>
+<text><loc_54><loc_347><loc_72><loc_353>Bemerkungen</text>
+<text><loc_54><loc_358><loc_72><loc_364>Bemerkungen</text>
+<text><loc_54><loc_369><loc_72><loc_375>Bemerkungen</text>
+<text><loc_54><loc_380><loc_72><loc_386>Bemerkungen</text>
+<text><loc_54><loc_391><loc_72><loc_397>Bemerkungen</text>
+<text><loc_54><loc_402><loc_72><loc_408>Bemerkungen</text>
+<text><loc_54><loc_413><loc_72><loc_419>Bemerkungen</text>
+<text><loc_54><loc_424><loc_72><loc_430>Bemerkungen</text>
+<text><loc_54><loc_435><loc_72><loc_441>Bemerkungen</text>
+<text><loc_54><loc_446><loc_72><loc_452>Bemerkungen</text>
+<text><loc_54><loc_457><loc_72><loc_463>Bemerkungen</text>
+<text><loc_54><loc_468><loc_72><loc_474>Bemerkungen</text>
+<text><loc_54><loc_479><loc_72><loc_485>Bemerkungen</text>
+<text><loc_54><loc_490><loc_72><loc_496>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><loc_72><loc_499>Bemerkungen</text>
+<text><loc_54><loc_499><
+------------------------------------------------------------------------
+
+========================================================================
+SUMMARY: 1/1 cohort models ran to completion
+========================================================================

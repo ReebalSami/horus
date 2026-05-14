@@ -286,10 +286,16 @@ class MLXVLMExtractor:
         self._model = None
         self._processor = None
         # Clear MLX Metal cache (best-effort; varies across mlx versions).
+        # mlx>=0.30 promotes `mx.clear_cache` to the top level; older versions
+        # only expose `mx.metal.clear_cache`. Prefer the new API; fall back
+        # to the legacy one. A DeprecationWarning fires on the legacy path
+        # in newer mlx versions which is what motivated this dual lookup.
         try:
             import mlx.core as mx
 
-            if hasattr(mx, "metal") and hasattr(mx.metal, "clear_cache"):
+            if hasattr(mx, "clear_cache"):
+                mx.clear_cache()
+            elif hasattr(mx, "metal") and hasattr(mx.metal, "clear_cache"):
                 mx.metal.clear_cache()
         except Exception:  # noqa: BLE001 — cleanup is best-effort
             pass
