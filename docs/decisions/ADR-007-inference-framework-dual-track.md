@@ -7,6 +7,7 @@
 | **Milestone** | M2D.5 step 3 — VLM-inference enablement (issue #10) |
 | **Authored by** | Cascade D (M2D.5 inference-stack session, plan `~/.windsurf/plans/horus-issue-10-inference-framework-adr-9964f0.md`) |
 | **Issue** | `ReebalSami/horus#10` |
+| **Forward-pointer resolution** | The "cohort ADR #14" forward-pointer in §"Decision + integration thoughts" (finding 3 — `the 258M tier is empirically excluded from HORUS's pilot loop`) is resolved by **ADR-009** (`docs/decisions/ADR-009-pilot-vlm-cohort.md`). ADR-009 keeps Granite-Docling-258M as the **baseline-of-failure anchor for Cat 1** (lower-bound reference; cohort architectures should ALL beat it). Both ADRs co-exist; this ADR is NOT superseded. |
 | **Supersession trigger** | (a) MLX-VLM lapses maintenance (no release ≥ 6 months AND issue tracker stalls AND a breaking change in MLX core remains unaddressed) → fallback = Transformers + MPS only with degraded throughput; OR (b) Brainstorm §8.1 cohort fully MLX-ported in upstream `mlx-vlm` (Transformers + MPS branch obsolete) → simplify to MLX-VLM-only; OR (c) HORUS distribution context shifts to non-Apple-Silicon target hardware (Linux + CUDA via cloud) → fallback = Transformers (CUDA backend) + drop MLX-VLM; AWS escalation per `know-your-hardware`; OR (d) Apple Core ML reaches converter maturity (full multimodal Idefics3 / SigLIP2 / Qwen-VL conversion paths working end-to-end) → re-evaluate Core ML as primary inference path. |
 
 ## Context
