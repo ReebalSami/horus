@@ -789,12 +789,14 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
     "google/paligemma2-3b-mix-448": {
         "extractor_class": TransformersMPSExtractor,
         "category": 3,
-        # PaliGemma uses task-prefix convention; "caption en" + custom suffix.
-        # Free-form prompt below is HORUS-canonical for invoice extraction;
-        # may need per-model override in PR(b) when smoke surfaces failure mode.
-        "prompt_template": (
-            "caption en\nExtract all text and structure from this invoice as markdown."
-        ),
+        # PaliGemma uses task-prefix convention; PR(b) Step 6 surfaced that
+        # free-form HORUS-canonical prompts trigger the canonical
+        # out-of-distribution refusal ("Sorry, as a base VLM I am not
+        # trained to answer this question.<eos>"). Per-model override to
+        # the canonical "ocr" prefix per the original manifest comment's
+        # authorization. PaliGemma docs (HF model card §Usage) name "ocr"
+        # as the bare-prefix invocation for full-image text extraction.
+        "prompt_template": "ocr",
         "max_tokens": 2048,
         "quant_target": "bf16",
         "alt_model_id": None,

@@ -1,0 +1,80 @@
+========================================================================
+HORUS cohort smoke — ADR-009 §Decision evidence
+========================================================================
+Image:          /Users/reebal/Projects/horus/data/raw/smoke/EN16931_Einfach.page1.png
+Image size:     713,699 bytes
+Cohort size:    1 model(s)
+Ordering:       transformers-first
+
+------------------------------------------------------------------------
+Model:          google/paligemma2-3b-mix-448
+Category:       Cat 3
+Backend:        transformers-mps
+Status:         ok
+Load wall-time:       32.42 s
+Extract wall-time:    47.01 s
+Output length:          942 chars
+Output snippet (first 4000 chars):
+
+Handelerstellung (2400) Nr. 471102 vom 05.08.2018
+05.03.2018
+Liefer- und Leistungsdatum:
+Werkbuffet
+6000001123452 [GLN]
+Globale Nummer:
+Anschrift:
+Liebwartestraße 20
+Steuernummer:
+201/113/40209
+Telefon:
+Büffer/Leistungsempfänger
+0000001123
+Name:
+Kunden AG Mitte
+DE 69876 Frankfurt
+Bemerkungen
+Bemerkung
+Sehr gut gepflegt und sauber
+Büroraft:
+REG Regulatory Information
+Telefon:
+0600001123452 [GLN]
+Anschrift:
+Liebwartestraße 20
+Steuernummer:
+201/113/40209
+Telefon:
+Büffer/Leistungsempfänger
+Name:
+Kunden AG Mitte
+DE 69876 Frankfurt
+Bemerkingen
+Sehr gut gepflegt und sauber
+Büroraft:
+REG Regulatory Information
+Telefon:
+0600001123452 [GLN]
+Anschrift:
+Liebwartestraße 20
+Steuernummer:
+201/113/40209
+Telefon:
+Büffer/Leistungsempfänger
+Name:
+Kunden AG Mitte
+DE 69876 Frankfurt
+Bemerkingen
+Sehr gut gepflegt und sauber
+Büroraft:
+REG Regulatory Information
+Telefon:
+0600001123452 [GLN]
+Anschrift:
+Liebwartestraße 20
+Steuernummer:
+201/113/40209<eos>
+------------------------------------------------------------------------
+
+========================================================================
+SUMMARY: 1/1 cohort models ran to completion
+========================================================================
