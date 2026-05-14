@@ -9,9 +9,12 @@ authors = [
     { name = "Reebal Sami" },
 ]
 dependencies = [
+    "addict>=2.4.0",
     "docling>=2.93.0",
+    "einops>=0.8.2",
     "factur-x>=4.2",
     "fpdf2>=2.8.7",
+    "matplotlib>=3.10.9",
     "mineru>=3.1.11",
     "mlx-vlm>=0.5.0",
     "pydantic>=2.13.4",

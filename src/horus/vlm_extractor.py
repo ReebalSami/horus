@@ -205,8 +205,19 @@ class MLXVLMExtractor:
         # which is heavy on first import).
         from mlx_vlm import load as mlx_load
 
+        # Forward `trust_remote_code` through mlx_vlm.load **kwargs to the
+        # underlying AutoProcessor.from_pretrained call (mlx_vlm.utils:563).
+        # Required for models with custom processor classes shipped as .py
+        # files in the repo (e.g. DeepSeek-OCR-2's processor_config.json
+        # references a class defined in modeling_deepseekocr2.py). Without
+        # this flag AutoProcessor raises:
+        #   ValueError: Unrecognized processing class in <cache-path>
+        load_kwargs: dict[str, Any] = {}
+        if self._needs_trust_remote_code:
+            load_kwargs["trust_remote_code"] = True
+
         load_start = time.perf_counter()
-        self._model, self._processor = mlx_load(self._effective_model_id)
+        self._model, self._processor = mlx_load(self._effective_model_id, **load_kwargs)
         self._load_seconds = time.perf_counter() - load_start
         self._loaded = True
 

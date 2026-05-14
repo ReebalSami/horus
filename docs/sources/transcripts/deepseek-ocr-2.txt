@@ -1,0 +1,49 @@
+========================================================================
+HORUS cohort smoke — ADR-009 §Decision evidence
+========================================================================
+Image:          /Users/reebal/Projects/horus/data/raw/smoke/EN16931_Einfach.page1.png
+Image size:     713,699 bytes
+Cohort size:    1 model(s)
+Ordering:       transformers-first
+
+------------------------------------------------------------------------
+Model:          deepseek-ai/DeepSeek-OCR-2
+Category:       Cat 2
+Backend:        mlx-vlm
+Status:         error
+Load wall-time:        0.00 s
+Error:          ValueError: Unrecognized processing class in /Users/reebal/.cache/huggingface/hub/models--mlx-community--DeepSeek-OCR-2-4bit/snapshots/378131e9d1a6fb1fa2e130d2e81e46ada0a2c10d. Can't instantiate a processor, a tokenizer, an image processor, a video processor or a feature extractor for this model. Make sure the repository contains the files of at least one of those processing classes.
+Traceback (truncated):
+Traceback (most recent call last):
+  File "/Users/reebal/Projects/horus/scripts/cohort_smoke.py", line 186, in _run_one
+    extractor.load()
+    ~~~~~~~~~~~~~~^^
+  File "/Users/reebal/Projects/horus/src/horus/vlm_extractor.py", line 220, in load
+    self._model, self._processor = mlx_load(self._effective_model_id, **load_kwargs)
+                                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/mlx_vlm/utils.py", line 429, in load
+    processor = load_processor(model_path, True, eos_token_ids=eos_token_id, **kwargs)
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/mlx_vlm/utils.py", line 563, in load_processor
+    processor = AutoProcessor.from_pretrained(model_path, use_fast=True, **kwargs)
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/mlx_vlm/models/base.py", line 476, in _patched_auto_processor_from_pretrained
+    return previous_from_pretrained.__func__(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        cls, pretrained_model_name_or_path, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/mlx_vlm/models/base.py", line 476, in _patched_auto_processor_from_pretrained
+    return previous_from_pretrained.__func__(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        cls, pretrained_model_name_or_path, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+ValueError: Unrecognized processing class in /Users/reebal/.cache/huggingface/hub/models--mlx-community--DeepSeek-OCR-2-4bit/snapshots/378131e9d1a6fb1fa2e130d2e81e46ada0a2c10d. Can't instantiate a processor, a tokenizer, an image processor, a video processor or a feature extractor for this model. Make sure the repository contains the files of at least one of those processing classes.
+
+------------------------------------------------------------------------
+
+========================================================================
+SUMMARY: 0/1 cohort models ran to completion
+Failed:  ['deepseek-ai/DeepSeek-OCR-2']
+========================================================================
