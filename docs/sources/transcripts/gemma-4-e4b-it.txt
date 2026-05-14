@@ -1,0 +1,56 @@
+========================================================================
+HORUS cohort smoke — ADR-009 §Decision evidence
+========================================================================
+Image:          /Users/reebal/Projects/horus/data/raw/smoke/EN16931_Einfach.page1.png
+Image size:     713,699 bytes
+Cohort size:    1 model(s)
+Ordering:       transformers-first
+
+------------------------------------------------------------------------
+Model:          google/gemma-4-E4B-it
+Category:       Cat 3
+Backend:        mlx-vlm
+Status:         ok
+Load wall-time:      989.35 s
+Extract wall-time:    19.01 s
+Output length:          974 chars
+Output snippet (first 4000 chars):
+
+# Handelsrechnung (380) Nr. 471102 vom 05.09.2018
+
+## Kopfzeile
+* **Dokumenttyp:** Handelsrechnung (380)
+* **Rechnungsnummer:** 471102
+* **Datum:** 05.09.2018
+
+## Angaben zum Verkäufer
+* **Verkäufer:** [Name fehlt]
+* **Nummern:** [Nummern fehlen]
+* **Globale Nummer:** 4000001123452 (GLN)
+* **Anschrift:** Lieferantenstraße 20
+
+## Angaben zum Käufer/Leistungsempfänger
+* **Käufer/Leistungsempfänger:** [Name fehlt]
+* **Nummern:** [Nummern fehlen]
+* **Name:** Kunden AG Mitte
+* **Anschrift:** [Adresse fehlt]
+* **DE:** 69876 Frankfurt
+
+## Zahlungs-/Rechnungsdaten
+* **Liefer- und Leistungsdatum:** 05.03.2018
+* **Steuernummer:** 201/113/40209
+* **Umsatzsteuer-ID:** [ID fehlt]
+
+## Bemerkungen
+* **Bemerkung:** Rechnung gemäß Bestellung vom 01.03.2018.
+
+## Inhalt
+* **Betreff:** REG - Regulatory information
+
+---
+**Hinweis:** Einige Felder im Originalbild sind leer oder nicht lesbar, daher sind die entsprechenden Informationen in der Extraktion als "[fehlt]" gekennzeichnet.
+------------------------------------------------------------------------
+
+========================================================================
+SUMMARY: 1/1 cohort models ran to completion
+========================================================================
