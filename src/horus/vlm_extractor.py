@@ -383,6 +383,19 @@ class TransformersMPSExtractor:
             dtype=torch.bfloat16,
             trust_remote_code=self._needs_trust_remote_code,
         )
+        # Tied-embeddings rescue for nested-text_config VLMs (MinerU-2.5-Pro VLM
+        # packaging quirk; potentially also PaliGemma / Molmo / future models).
+        # When `tie_word_embeddings: true` lives only in `text_config` (not at
+        # the top level), `Qwen2VLForConditionalGeneration` etc. read the
+        # top-level default (False) and DO NOT auto-tie. Result: `lm_head.weight`
+        # is randomly initialized — generation produces gibberish without this
+        # rescue. Discovered ADR-009 PR(b) Step 2 (MinerU smoke). Calling
+        # `tie_weights()` when `tie_word_embeddings=False` is a no-op, so this
+        # is safe for all other models.
+        text_cfg = getattr(model.config, "text_config", None)
+        if text_cfg is not None and getattr(text_cfg, "tie_word_embeddings", False):
+            model.config.tie_word_embeddings = True
+            model.tie_weights()
         # mypy mis-tracks the chained `.to(...)` through transformers' overload
         # soup; the runtime contract (nn.Module.to(str)) is well-established.
         self._model = model.to("mps")  # type: ignore[arg-type]
