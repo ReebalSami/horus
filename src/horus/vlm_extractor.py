@@ -714,20 +714,36 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         ),
     },
     "PaddlePaddle/PaddleOCR-VL": {
-        "extractor_class": PaddleOCRExtractor,
+        "extractor_class": MLXVLMExtractor,
         "category": 2,
-        # PaddleOCR-VL takes no free-form prompt; pipeline default is used.
-        # The prompt_template field is present for manifest-schema uniformity.
-        "prompt_template": "(unused — PaddleOCR pipeline default)",
+        # Canonical PaddleOCR-VL task prefix per official vLLM recipe
+        # (https://docs.vllm.ai/projects/recipes/.../PaddleOCR-VL.html).
+        # PaddleOCR-VL is task-prefix-sensitive (same architectural pattern as
+        # PaliGemma — see Step 6 in this PR(b)); free-form HORUS-canonical
+        # prompts trigger wrong-task routing (chart-recognition refusal loop
+        # documented in Step 8 first attempt).
+        "prompt_template": "OCR:",
         "max_tokens": 2048,
-        "quant_target": "native",
-        "alt_model_id": None,
+        "quant_target": "mlx-4bit",
+        "alt_model_id": "mlx-community/PaddleOCR-VL-4bit",
         "license": "apache-2.0",
         "needs_trust_remote_code": True,
         "note": (
             "paddleocr_vl arch; 0.96 B params; OmniDocBench v1.5 = 94.5 "
-            "(SOTA at the tier when released). PaddlePaddle ecosystem — "
-            "adds paddlepaddle dep in PR(b) per ADR-009 §3.7."
+            "(SOTA at the tier when released). custom_code => "
+            "trust_remote_code=True. PR(b) Step 8 pivoted from the "
+            "PaddleOCRExtractor skeleton (which would have required a "
+            "paddlepaddle dep + dedicated ADR per `horus-decision-discipline`) "
+            "to MLXVLMExtractor + mlx-community/PaddleOCR-VL-4bit (57 downloads, "
+            "matches upstream model_id; 1.5 series exists at higher download "
+            "counts but represents a different upstream version). mlx-vlm 0.5.0 "
+            "ships built-in paddleocr_vl arch support, sidestepping the heavy "
+            "paddlepaddle install. PR(b) Step 8 also overrode prompt_template "
+            "from HORUS-canonical free-form to canonical 'OCR:' task prefix "
+            "after first attempt produced a chart-task degenerate-refusal loop "
+            "(see commit message). PaddleOCR-VL is officially designed as "
+            "stage 2 of a PP-DocLayoutV2 + PaddleOCR-VL pipeline (per vLLM "
+            "recipe); single-shot full-page invoice is out-of-distribution."
         ),
     },
     "zai-org/GLM-OCR": {

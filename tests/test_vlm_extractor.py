@@ -132,7 +132,6 @@ def test_get_extractor_returns_correct_class_per_model_id() -> None:
         COHORT_MANIFEST,
         GLMOCRExtractor,
         MLXVLMExtractor,
-        PaddleOCRExtractor,
         TransformersMPSExtractor,
         get_extractor,
     )
@@ -155,9 +154,10 @@ def test_get_extractor_returns_correct_class_per_model_id() -> None:
     mineru = get_extractor("opendatalab/MinerU2.5-Pro-2604-1.2B")
     assert isinstance(mineru, TransformersMPSExtractor)
 
-    # PaddleOCR-VL uses PaddleOCRExtractor (PR(b)).
+    # PaddleOCR-VL routes through MLXVLMExtractor (PR(b) Step 8 pivot —
+    # mlx-community 4-bit port; mlx-vlm 0.5.0 has built-in paddleocr_vl support).
     paddle = get_extractor("PaddlePaddle/PaddleOCR-VL")
-    assert isinstance(paddle, PaddleOCRExtractor)
+    assert isinstance(paddle, MLXVLMExtractor)
 
     # GLM-OCR uses GLMOCRExtractor (PR(b)).
     glm = get_extractor("zai-org/GLM-OCR")
