@@ -1,0 +1,50 @@
+========================================================================
+HORUS cohort smoke — ADR-009 §Decision evidence
+========================================================================
+Image:          /Users/reebal/Projects/horus/data/raw/smoke/EN16931_Einfach.page1.png
+Image size:     713,699 bytes
+Cohort size:    1 model(s)
+Ordering:       transformers-first
+
+------------------------------------------------------------------------
+Model:          Qwen/Qwen3-VL-4B-Instruct
+Category:       Cat 3
+Backend:        transformers-mps
+Status:         error
+Load wall-time:     1323.24 s
+Error:          RuntimeError: Invalid buffer size: 35.10 GiB
+Traceback (truncated):
+Traceback (most recent call last):
+  File "/Users/reebal/Projects/horus/src/horus/vlm_extractor.py", line 461, in extract
+    generated_ids = self._model.generate(
+        **inputs,
+        max_new_tokens=max_tokens,
+        do_sample=False,
+    )
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/transformers/generation/utils.py", line 2560, in generate
+    result = decoding_method(
+        self,
+    ...<5 lines>...
+        **model_kwargs,
+    )
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/transformers/generation/utils.py", line 2753, in _sample
+    outputs = self._prefill(
+        input_ids,
+    ...<2 lines>...
+        is_first_iteration=not generation_config.is_assistant,
+    )
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/transformers/generation/utils.py", line 3799, in _prefill
+    return self(**model_inputs, return_dict=True)
+  File "/Users/reebal/Projects/horus/.venv/lib/python3.14/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+RuntimeError: Invalid buffer size: 35.10 GiB
+
+------------------------------------------------------------------------
+
+========================================================================
+SUMMARY: 0/1 cohort models ran to completion
+Failed:  ['Qwen/Qwen3-VL-4B-Instruct']
+========================================================================

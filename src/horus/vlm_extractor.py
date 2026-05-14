@@ -762,19 +762,28 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         ),
     },
     "Qwen/Qwen3-VL-4B-Instruct": {
-        "extractor_class": MLXVLMExtractor,
+        "extractor_class": TransformersMPSExtractor,
         "category": 3,
         "prompt_template": "Extract all text and structure from this invoice. Return as markdown.",
         "max_tokens": 2048,
-        "quant_target": "mlx-4bit",
-        # alt_model_id resolved at PR(b) install time; if no MLX port,
-        # switch extractor_class to TransformersMPSExtractor (per ADR-009 §3.8 O6).
+        "quant_target": "bf16",
         "alt_model_id": None,
         "license": "apache-2.0",
         "needs_trust_remote_code": False,
         "note": (
             "qwen3_vl arch; 4.44 B params; multilingual. v2 §9.1 smaller variant "
-            "(replaces 8B/30B-A3B per ADR-009 §3.2 delta)."
+            "(replaces 8B/30B-A3B per ADR-009 §3.2 delta). PR(b) Step 5 escalation "
+            "chain: MLX 4-bit (lmstudio-community/...-MLX-4bit) produced degenerate "
+            "null-byte output across 2048 tokens (community consensus on r/LocalLLaMA "
+            "confirms 4-bit is too aggressive for this 4 B-param model); MLX 8-bit "
+            "(lmstudio-community/...-MLX-8bit) crashed mid-generation with macOS Metal "
+            "watchdog (kIOGPUCommandBufferCallbackErrorImpactingInteractivity, SIGABRT) "
+            "after first-token forward-pass exceeded the per-Metal-command-buffer "
+            "interactivity threshold on M1 Pro 14-GPU-core. Resolved to bf16 via "
+            "TransformersMPSExtractor (PyTorch MPS, smaller per-kernel command "
+            "buffers) per ADR-009 §3.8 O6 fallback. Cohort delta: only Cat 3 entry "
+            "running through TransformersMPSExtractor instead of MLXVLMExtractor; "
+            "documented as runtime-path-mixed per ADR-009 §3.10."
         ),
     },
     "google/paligemma2-3b-mix-448": {
