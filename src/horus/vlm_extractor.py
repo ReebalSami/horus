@@ -809,20 +809,24 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         ),
     },
     "allenai/Molmo-7B-D-0924": {
-        "extractor_class": TransformersMPSExtractor,
+        "extractor_class": MLXVLMExtractor,
         "category": 3,
         "prompt_template": "Extract all text and structure from this invoice. Return as markdown.",
         "max_tokens": 2048,
-        # If no MLX port at install time, bf16 on 8B may OOM on M1 Pro 16 GB —
-        # documented as a Cat 3 failure mode per ADR-009 §3.6.
-        "quant_target": "bf16",
-        "alt_model_id": None,
+        "quant_target": "mlx-4bit",
+        "alt_model_id": "mlx-community/Molmo-7B-D-0924-4bit",
         "license": "apache-2.0",
         "needs_trust_remote_code": True,
         "note": (
             "molmo arch; 8.02 B total params; built on Qwen2-7B. EN-only. "
             "Within-lab pair with olmOCR-2 (both Allen AI) — methodological "
-            "control per ADR-009 §8 O5. custom_code => trust_remote_code=True."
+            "control per ADR-009 §8 O5. custom_code => trust_remote_code=True "
+            "(forwarded via mlx_vlm.load kwargs per MLXVLMExtractor §load). "
+            "MLX 4-bit port resolved at PR(b) Step 7 to mlx-community/"
+            "Molmo-7B-D-0924-4bit (168 downloads — lower battle-test signal "
+            "than other cohort ports but the only namespace shipping MLX "
+            "quantizations of this model). bf16 path avoided (predicted "
+            "OOM on M1 Pro 16 GB per Qwen3-VL-4B Step 5 finding)."
         ),
     },
 }
