@@ -129,9 +129,9 @@ The rule activates when intent signals experiment / config / training / inferenc
 
 ## L3 promotion plan
 
-Pre-committed to surface for L3 promotion at the next `@sprint-review` per Q7 of the resume-rethink plan (`~/.windsurf/plans/cascade-d-resume-rethink-2f7f5a.md` §1). The shape is generic enough to apply to any python-ml-uv project (the YAML + Pydantic + papermill pattern is industry-standard for ML research repos). If `@sprint-review` confirms the pattern proves valuable across other consumers, route via `@update-horizontal` to `~/.windsurf/templates/python-ml-uv/rules/config-discipline.md`.
+> **Status: COMPLETE (2026-05-16, ADR-011 Bundle 4).** Generic version added at `~/.windsurf/templates/python-ml-uv/rules/config-discipline.md` for new python-ml-uv consumers via `/start-project` step 6a bootstrap. This L2 file remains HORUS's active rule (Windsurf workspace scope) — L3 templates are not runtime-loaded. The "would supersede" language in the original 2026-05-10 plan was an inaccurate paraphrase of the @sprint-review L1 promotion model; L3 templates only source new project rules at bootstrap-time and do not replace existing project-local rules. Cross-file references to `horus-config-discipline.md` (ADR-004, brainstorm §10, AGENTS.md, cascade-system handoffs) remain unchanged. See ADR-011 §"Bundle 4 — L3 promotion of `config-discipline` rule" for the additive-promotion rationale.
 
-The L3 promotion would supersede the L2 rule (per `document-as-you-go` retention policy — supersession, not deletion). Until promotion, the L2 rule is authoritative for HORUS.
+Original plan (kept for record): pre-committed to surface for L3 promotion at the next `@sprint-review` per Q7 of the resume-rethink plan (`~/.windsurf/plans/cascade-d-resume-rethink-2f7f5a.md` §1). The shape is generic enough to apply to any python-ml-uv project (the YAML + Pydantic + papermill pattern is industry-standard for ML research repos). Promotion executed via this PR rather than via `@sprint-review` because it was tightly coupled to ADR-011's MLflow tracker integration (the YAML-as-source-of-truth contract is precisely what makes `cohort_smoke.py --cfg configs/cohort-smoke.yaml` work).
 
 ## Source
 

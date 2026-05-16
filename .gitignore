@@ -46,6 +46,9 @@ Thumbs.db
 artifacts/
 checkpoints/
 mlruns/
+mlartifacts/
+mlflow.db
+mlflow.db-journal
 wandb/
 tb_logs/
 lightning_logs/

@@ -12,7 +12,9 @@ naming + architectural ratification.
 
 Public surface (lazy-imported by callers):
   - `horus.seeding`   — `set_global_seed` (deterministic experiments)
-  - `horus.tracking`  — `Tracker` Protocol + `DEFAULT_TRACKER` (stdout)
+  - `horus.tracking`  — `Tracker` Protocol + `Run` dataclass + `StdoutTracker` (default,
+                        zero-dep) + `MLflowTracker` (MLflow-backed, per ADR-011) +
+                        `get_tracker(cfg)` factory + `DEFAULT_TRACKER`
   - `horus.config`    — `ExperimentConfig` schema (Pydantic Settings + YAML; see ADR-004)
 """
 

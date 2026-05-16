@@ -1,0 +1,30 @@
+# cohort-smoke.yaml — ADR-011 smoke evidence + cohort_smoke MLflow integration
+#
+# Lock file for `make cohort-smoke MODEL=<model_id> CFG=configs/cohort-smoke.yaml`.
+# When the cohort_smoke runner is invoked with this CFG, it constructs an
+# `MLflowTracker` via `horus.tracking.get_tracker(cfg)` and logs each cohort
+# model run as a nested MLflow run under a parent "cohort-sweep" run.
+#
+# `tracking_uri: null` triggers MLflow 3.7+'s SQLite default backend at
+# `sqlite:///mlflow.db` + artifact root `./mlartifacts/` (both gitignored).
+# Override via `HORUS_MLFLOW__TRACKING_URI=<uri>` env var per pydantic-settings
+# nested-delimiter convention.
+#
+# Per horus-config-discipline + ADR-004: every knob lives in this YAML, never
+# in `scripts/cohort_smoke.py`. Adding new knobs requires extending
+# `src/horus/config.py`'s `ExperimentConfig` Pydantic schema (currently:
+# `seed: int` + `mlflow: MLflowConfig`).
+#
+# Refs: ADR-011 §Decision (smoke evidence procedure), ADR-009 (cohort manifest
+# substrate), ADR-004 (config-library), horus-config-discipline.md (L2 rule).
+
+seed: 42
+
+mlflow:
+  experiment_name: cohort-smoke
+  run_tags:
+    stage: smoke
+    cohort: adr-009-pilot-cohort
+    issue: "16"
+    adr: ADR-011
+  tracking_uri: null
