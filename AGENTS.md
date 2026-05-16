@@ -53,11 +53,19 @@ Handoff context: `cascade-system/docs/handoffs/cascade-d-master-thesis.md`.
 ## Toolchain (Python ML / research)
 
 - Python 3.14+ (pinned in `.python-version`)
-- `uv` (Astral) — exclusive package manager
-- Runtime: `pydantic` / `pydantic-settings` / `pyyaml` / `torch` — pinned in `pyproject.toml` `[project] dependencies`
-- Dev: `pytest` / `ruff` / `mypy` / `jupytext` / `papermill` / `types-pyyaml` — pinned in `pyproject.toml` `[dependency-groups] dev`
+- `uv` (Astral) — exclusive package manager (per `uv-discipline`)
+- **Runtime deps** (pinned in `pyproject.toml` `[project] dependencies`), grouped by purpose:
+  - **Config + I/O**: `pydantic` / `pydantic-settings` / `pyyaml` (ADR-004; per `horus-config-discipline`)
+  - **ML inference (PyTorch + Apple Silicon)**: `torch` / `torchvision` / `transformers` / `mlx-vlm` / `einops` / `addict` / `matplotlib` (ADR-007 dual-track local-VLM)
+  - **Orchestrated document pipeline**: `docling` (primary) / `mineru` (cross-check) (ADR-008)
+  - **ZUGFeRD / Factur-X synthetic-invoice + extraction**: `factur-x` (Akretion, FNFE-MPE Python reference — generator + canonical XML extractor; ADR-005 + ADR-010) / `fpdf2` (visual-PDF renderer; ADR-006)
+- **External Java tooling** (gitignored under `tools/`, fetched via Make):
+  - `tools/mustangproject/Mustang-CLI-2.23.0.jar` (ADR-005) — cross-tool validator (`--action validate`) + cross-tool extractor (`--action extract`, ADR-010); fetched via `make mustang-jar`; SHA-256-pinned
+- **Dev deps** (pinned in `pyproject.toml` `[dependency-groups] dev`): `pytest` / `ruff` / `mypy` / `jupytext` / `papermill` / `types-pyyaml`
 - `make install && make test` — bootstrap validation (must always pass before merge)
 - `make experiment NB=experiments/<slug>.py CFG=configs/<slug>.yaml` — single-cfg-path experiment runner per `horus-config-discipline`
+- `make zugferd-smoke` — end-to-end synthetic-invoice generation + Mustang validation (ADR-005)
+- `make cohort-smoke MODEL=<id>` — per-model VLM smoke against the cohort manifest (ADR-009)
 
 ## Pre-loaded thesis context (read-only)
 
