@@ -13,7 +13,7 @@ help:
 	@echo "  zugferd-smoke   end-to-end smoke: factur-x generate + Mustang validate (ADR-005)"
 	@echo "  inference-smoke real-model smoke: load Granite-Docling-258M via mlx-vlm + Transformers+MPS (ADR-007)"
 	@echo "  orchestrated-smoke  Docling StandardPdfPipeline smoke on the ZUGFeRD invoice (ADR-008)"
-	@echo "  cohort-smoke    cohort-VLM smoke runner (ADR-009; MODEL=ID or MODELS=A,B for subset; OUT=path for transcript file)"
+	@echo "  cohort-smoke    cohort-VLM smoke runner (ADR-009; MODEL=ID or MODELS=A,B for subset; OUT=path for transcript file; CFG=configs/<slug>.yaml for ADR-011 MLflow tracking)"
 	@echo "  data-manifest   generate MANIFEST.md + sha256.txt for a downloaded dataset corpus"
 	@echo "  clean           remove build artifacts and caches"
 
@@ -107,6 +107,8 @@ inference-smoke: zugferd-smoke
 #   make cohort-smoke MODELS=ibm-granite/granite-docling-258M-mlx,deepseek-ai/DeepSeek-OCR-2
 # Redirect transcript to a file (for ADR §Decision embedding):
 #   make cohort-smoke OUT=/tmp/granite.txt MODEL=ibm-granite/granite-docling-258M-mlx
+# ADR-011 MLflow tracking (opt-in; CFG= triggers the parent/nested run wire):
+#   make cohort-smoke MODEL=ibm-granite/granite-docling-258M-mlx CFG=configs/cohort-smoke.yaml
 #
 # Uses macOS `sips` for PDF->PNG rasterization (same as inference-smoke). The
 # resampleWidth=2480 is ~300 DPI for A4; model processors (per ADR-007) resize
@@ -132,7 +134,8 @@ cohort-smoke:
 		$(if $(MODEL),--model "$(MODEL)") \
 		$(if $(MODELS),--models "$(MODELS)") \
 		$(if $(OUT),--out "$(OUT)") \
-		$(if $(MAX_TOKENS),--max-tokens $(MAX_TOKENS))
+		$(if $(MAX_TOKENS),--max-tokens $(MAX_TOKENS)) \
+		$(if $(CFG),--cfg "$(CFG)")
 
 # Orchestrated-baseline smoke (ADR-008). Loads Docling's default
 # StandardPdfPipeline (orchestrated specialists: layout + OCR + table
