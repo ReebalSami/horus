@@ -13,6 +13,7 @@
 | ADR-009 | Pilot-loop VLM cohort selection — 10 models in 3 categories (end-to-end / architecturally innovative / general multimodal); resolves the "cohort ADR #14" forward-pointer from ADR-007 and ADR-008 | Accepted (amended 2026-05-15 — Amendment 1: evidence-limitation reframing + XML-grounded factual corrections) |
 | ADR-010 | ZUGFeRD XML-extraction script — ratifies `factur-x` (already-installed Python library) as canonical extraction engine + Mustang as opt-in cross-tool verification route; ships `scripts/extract_zugferd_xml.py` as load-bearing infrastructure for pilot #13's XML-grounded F1 evaluation harness | Accepted |
 | ADR-011 | Experiment-tracker integration — MLflow (full package, self-hosted local SQLite + filesystem artifact root); extends `Tracker` Protocol with `start_run`/`end_run`/`log_dict`/`set_tag` for pilot #13's per-field heatmap + hardware-fingerprint logging; closes `horus-config-discipline` Bundle 4 via additive L3 promotion to the `python-ml-uv` template | Accepted |
+| ADR-012 | CII XML → ground-truth field dict — parser substrate for pilot #13's per-field F1 evaluation; ships `src/horus/eval/ground_truth.py` with 16-field EN16931-anchored English-keyed dict (`GroundTruth(header=...)`, BT-* preserved as record attribute), three-route dict-equivalence proven across the FX corpus, normalizer dispatch via `FieldSpec` registry; pilot #13's PR(a) of the locked 3-PR split | Accepted |
 
 ## Conventions
 
