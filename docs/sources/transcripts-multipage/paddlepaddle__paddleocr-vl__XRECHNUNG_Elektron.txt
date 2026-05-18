@@ -1,0 +1,120 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    PaddlePaddle/PaddleOCR-VL
+# Invoice:  XRECHNUNG_Elektron
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  78.46s total
+
+===== PAGE 1 =====
+Schlussrechnung Bau (877)  Nr. 181301674  vom   25.04.2018
+Währung:
+EUR
+Liefer- und Leistungsbatum:
+06.03.2018
+Zahlungsreferenz:
+Rechnung 181301674
+Leitwege-ID:
+04011000-12345-34
+Buchungsreferenz:
+420
+Weitere Referenz:
+Aufmass
+Art der Referenz:Referenzpapier (916)
+Weitere Referenz:
+ElektronRapport
+Art der Referenz:Referenzpapier (916)
+Verkäufer
+Globale Nummer:
+4000001123452  (GLN)
+Name:
+ELEKTRON Industrieservice GmbH
+Ansprechpartner:
+Max Mustermann
+Abteilung:
+Muster-Einkauf
+Anschrift:
+Erfurter Strasse 13
+Telefon:
+DE 74465 Demoort
++49891234567
+E-Mail:
+Max@Mustermann.de
+Steuernummer:
+201/113/40209
+USt.-Id.-Nr.:
+DE123456789
+Bemerkungen
+Rapport-Nr.: 42389 vom 08.03.2018
+Bemerkung
+Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.
+Seite 1
+von 3
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Pos
+Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung
+Nettopreis
+Menge
+Steuersatz
+Nettobetrag
+01
+01 Beamermontage Für die doppelte Verlegung, falls erforderlich.
+getLineTradeAgreementBruttopreis : 43,20
+Beamer-Deckenhalterung
+122,50
+1 Stk
+19 %
+02 Außerhalb Angebot
+getLineTradeAgreementBruttopreis : 122,50
+Umsatzsteueraufschlüsselung
+Art (Kategorie)
+Warenwert
+Zu-/Abschlag
+Basisbetrag
+Steuersatz [%]
+Steuerbetrag
+Umsatzsteuer (S)
+252,10
+19
+47,90
+Belegsummen
+Positionssumme
+252,10
+0,00
+0,00
+Gesamtbetrag der Zuschläge
+Rechnungssumme ohne USt.
+Steuerbetrag
+Bruttosumme
+300,00
+Erhaltene Anzahlungen
+Zahlbetrag
+300,00
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlbar sofort rein netto
+Seite 2
+von 3
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Zahlungsart
+Zahlungstyp (codiert):
+58 - per SEPA ÜBERWEISUNG
+IBAN :
+DE91100000000123456789
+Rechnungsbegleitende Unterlagen
+Name
+Dateiname
+Art
+Aufmass.png
+Aufmass.png
+image/png
+ElektronRapport
+ElektronRapport.pdf
+application/pdf
+Seite 3
+von 3

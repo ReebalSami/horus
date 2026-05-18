@@ -1,0 +1,84 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  39.44s total
+
+===== PAGE 1 =====
+# Handelsrechnung (380) Nr. R18-31 vom 03.10.2018
+
+## Verkäufer
+* **Name:** Physiotherapeutin
+* **Ansprechpartner:** Tanja Tinder
+* **Anschrift:** Musterstraße 12
+* **Telefon:** 015119630027
+* **E-Mail:** tanja.tinder@beispiel-provider.de
+* **USt.-Id.-Nr.:** DE136695976
+
+## Käufer/Leistungsempfänger
+* **Name:** Liselotte Müller
+* **Anschrift:** Rechnungsstraße 12
+* **Ort:** DE 12345 Beispielstadt
+
+---
+
+## Leistungsbeschreibung
+
+| Pos | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| 0 | Physiotherapie | 26,00 | 10 | 0 % | 260,00 |
+| 1 | Hausbesuch | 12,00 | 10 | 0 % | 120,00 |
+
+**Anmerkungen:**
+* **Physiotherapie:** Behandlungen aufgrund der Verordnung von Frau Dr. Heinlein vom 05.09.2018 an folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 14.10.2018; 17.10.2018; 22.10.2018; 30.10.2018.
+* **Hausbesuch:** An folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 14.10.2018; 17.10.2018; 22.10.2018; 30.10.2018.
+
+---
+*Seite 1 von 2*
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format:
+
+## Document Details
+* **Document Type:** Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+* **Page:** Seite 2 von 2
+
+## Invoice Summary (Umsatzsteuererklärungsschlüsselung)
+
+| Field | Value |
+| :--- | :--- |
+| **Art (Kategorie)** | Umsatzsteuer (E) |
+| **Description** | Steuerfreie Leistungen nach §4 Nr. 14 UStG |
+| **Warenwert** | |
+| **Zu-/Abschlag** | |
+| **Basisbetrag** | 380,00 |
+| **Steuersatz [%]** | 0 |
+| **Steuerbetrag** | 0,00 |
+
+## Totals (Belegsummen)
+
+| Field | Amount |
+| :--- | :--- |
+| **Positionssumme** | |
+| **Gesamtbetrag der Zuschläge** | |
+| **Gesamtbetrag der Abschläge** | |
+| **Rechnungssumme ohne USt.** | 380,00 |
+| **Steuerbetrag** | 0,00 |
+| **Bruttosumme** | 380,00 |
+| **Erhaltene Anzahlungen** | |
+| **Zahlbetrag** | 380,00 |
+
+## Payment Terms (Zahlungsbedingungen)
+
+* **Description:** Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.
+* **Due Date (Fälligkeit):** 21.11.2018
+* **Payment Status (Teilzahlung):**
+
+## Payment Details (Zahlungsart)
+
+* **Payment Method (Zahlungstyp - codiert):** 30 - per Überweisung (SEPA)
+* **Account Holder (Kontoname):** Tanja Tinder
+* **IBAN:** DE0212030300000202051

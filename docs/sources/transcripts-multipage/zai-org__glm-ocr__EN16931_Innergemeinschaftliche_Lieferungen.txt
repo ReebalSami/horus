@@ -1,0 +1,69 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Innergemeinschaftliche_Lieferungen
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  95.95s total
+
+===== PAGE 1 =====
+Gutschrift (Selbst ausgestellte Rechnung) (389)  Nr. 47110818  vom 31.10.2018
+
+Währung: EUR
+Abrechnungszeitraum: 01.10.2018 bis 31.10.2018
+
+Verkäufer
+Nummer: 12345676
+Name: Global Supplies Ltd.
+Anschrift: 153 Victoria Street
+GB SW1B 3BN London
+USt.-Id.-Nr.: GB123456789
+
+Bemerkungen
+Nummer: 12345676
+Name: Global Supplies Ltd.
+Anschrift: 153 Victoria Street
+GB SW1B 3BN London
+USt.-Id.-Nr.: GB123456789
+
+Bemerkungen
+Nummer: 12345676
+Name: Global Supplies Ltd.
+Anschrift: 153 Victoria Street
+GB SW1B 3BN London
+USt.-Id.-Nr.: GB123456789
+===== PAGE 2 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr (Art)
+
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+
+1 Toolbox 0815CO-123/V2A Stahlcoil
+Basismenge: 1 Stk 10 Stk 0 % 1.000,00
+
+getLineTradeAgreementBruttopreis :
+• Berechnungszeitraum: 01.10.2018 bis 31.10.2018
+• Herkunftsland: DE
+
+2 BR-4529-ZFIM-712/A2A Stoßfänger
+Basismenge: 1 Stk 10 Stk 0 % 1.000,00
+
+getLineTradeAgreementBruttopreis :
+• Berechnungszeitraum: 01.10.2018 bis 31.10.2018
+• Herkunftsland: DE
+
+Seite 2 von 3
+===== PAGE 3 =====
+Zahlungsbedingungen
+
+Beschreibung Fälligkeit Teilzahlung
+30.11.2018
+
+Zahlungsart
+
+Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG
+Kontoname : Global Supplies Financial Services
+IBAN : DE12 1234 4321 9876 00

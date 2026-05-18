@@ -4,7 +4,7 @@
 # Pages:    3
 # DPI:      300
 # Errors:   0/3
-# Extract:  11.21s total
+# Extract:  11.83s total
 
 ===== PAGE 1 =====
 <doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>

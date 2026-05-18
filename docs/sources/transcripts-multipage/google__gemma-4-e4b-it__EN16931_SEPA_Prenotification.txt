@@ -1,0 +1,116 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_SEPA_Prenotification
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  45.54s total
+
+===== PAGE 1 =====
+# Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+
+## Angaben zur Rechnung
+
+* **Währung:** EUR
+* **Liefer- und Leistungsdatum:** 05.03.2018
+* **Gläubiger ID bei Lastschrift:** DE98ZZ0999999999
+* **Mandatsreferenz d. Lastschrift:** REF A-123
+
+## Verkäufer
+
+* **Nummer:** 549910
+* **Globale Nummer:** 4000001123452 (GLN)
+* **Name:** Lieferant GmbH
+* **Anschrift:** Lieferantenstraße 20, DE 80333 München
+
+## Käufer/Leistungsempfänger
+
+* **Nummer:** GE2020211
+* **Name:** Kunden AG Mitte
+* **Anschrift:** Kundenstraße 15, DE 69876 Frankfurt
+
+## Bemerkungen
+
+* **Bemerkung:** Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+* **Betreff:** AAK - Price conditions
+* **Inhalt:** Es bestehen Rabatt- und Bonusvereinbarungen.
+* **Betreff:** REG - Regulatory information
+* **Inhalt:**
+    * **Lieferant GmbH**
+    * **Lieferantenstraße 20**
+    * **80333 München**
+    * **Deutschland**
+    * **Geschäftsführer: Hans Muster**
+    * **Handelsregisternummer: H A 123**
+
+***
+
+**Seite 1 von 3**
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format:
+
+## 🧾 Invoice Details
+
+*(Note: Specific invoice numbers, dates, and company names are not fully present in the provided image snippets, but the structure is maintained.)*
+
+---
+
+## 📦 Positiodaten (Item Details)
+
+| Pos | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | Brennblätter A4 | 9,9000 | 20 Stk | 19 % | 198,00 |
+| | *[Detail: BT100A4, 4012345001235 (GTIN)]* | | | | |
+| | *[Detail: getLineTradeAgreementBruttotpreis : 9,9000]* | | | | |
+| 2 | Joghurt Banane | 5,5000 | 50 Stk | 7 % | 275,00 |
+| | *[Detail: ARNR2, 4000050986428 (GTIN)]* | | | | |
+| | *[Detail: getLineTradeAgreementBruttotpreis : 5,5000]* | | | | |
+
+---
+
+## 📊 Umsatzsteueraufschlüsselung (VAT Breakdown)
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (S) | | | 275,00 | 7 | 19,25 |
+| Umsatzsteuer (S) | | | 198,00 | 19 | 37,62 |
+
+---
+
+## ➕ Belegsummen (Totals)
+
+| Description | Amount |
+| :--- | :---: |
+| Positionssumme | 473,00 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| **Rechnungssumme ohne USt.** | **473,00** |
+| Steuerbetrag | 56,87 |
+| Bruttosumme | 529,87 |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **529,87** |
+
+---
+
+## 💳 Zahlungsbedingungen (Payment Terms)
+
+**Beschreibung:** Der Betrag in Höhe von EUR 529,87 wird am 20.03.2018 von Ihrem Konto per SEPA-Lastschrift eingezogen.
+
+**Fälligkeit:** *(Date not specified in the payment terms section)*
+
+**Teilzahlung:** *(Not applicable/Not mentioned)*
+
+---
+*Page 2 of 3*
+===== PAGE 3 =====
+# Invoice Extraction
+
+## Document Details
+* **Document Type:** Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+* **Page:** Seite 3 von 3
+
+## Payment Information (Zahlungsart)
+* **Payment Type (Zahlungstyp):** 59
+* **Buyer IBAN (Käufer-IBAN):** DE2186000000086001055

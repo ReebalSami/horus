@@ -4,7 +4,7 @@
 # Pages:    3
 # DPI:      300
 # Errors:   0/3
-# Extract:  95.14s total
+# Extract:  95.18s total
 
 ===== PAGE 1 =====
 Handelsrechnung (380)  Nr. 471102  vom 05.03.2018

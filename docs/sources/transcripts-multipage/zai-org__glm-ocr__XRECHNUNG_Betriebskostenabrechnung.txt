@@ -1,0 +1,98 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  XRECHNUNG_Betriebskostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  96.30s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom  05.03.2018
+
+Währung: EUR
+Abrechnungszeitraum: 01.01.2010 bis 31.12.2010
+Leitwege-ID: 04011000-12345-34
+Weitere Referenz: Abrechnung 2010
+Art der Referenz: Referenzpapier (916)
+
+Verkäufer
+Globale Nummer: 4000001123452 (GLN)
+Name: Grundbesitz GmbH & Co.
+Ansprechpartner: Max Mustermann
+Abteilung: Art der Referenz: Referenzpapier (916)
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Bemerkungen
+
+Bemerkung
+Rechnung gemäß Betriebskostenrechnung vom 21.11.2011.
+
+Betreff:
+REG Regulatory information
+
+Grundbesitz GmbH & Co.
+Musterstraße 42
+75645 Frankfurt
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+Positionsdaten
+
+Pos Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr
+Inhalt
+Grundbesitz GmbH & Co.
+Musterstraße 42
+75645 Frankfurt
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+Nettopreis Menge Steuersatz Nettobetrag
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr
+Beschreibung
+Inhalt
+Grundbesitz GmbH & Co.
+Musterstraße 42
+75645 Frankfurt
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+15.387,08
+
+15.387,08
+
+Erhaltene Anzahlungen
+-17808,00
+
+Zahlbetrag
+502,63
+===== PAGE 3 =====
+Zahlungsbedingungen
+
+Beschreibung
+Fälligkeit
+Teilzahlung
+04.04.2018
+
+Zahlungsart
+
+Zahlung per SEPA Überweisung.
+
+Zahlungstyp (codiert):
+58 - per SEPA ÜBERWEISUNG
+
+Kontoname : Kunden AG
+
+IBAN : DE0212030000000202051
+
+Verkäufer-BIC: BYLADEM1001
+
+Rechnungsbegleichende Unterlagen

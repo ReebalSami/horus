@@ -1,0 +1,89 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  EN16931_Kraftfahrversicherung_Bruttopreise
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  17.07s total
+
+===== PAGE 1 =====
+<doctag><page_header><loc_48><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_30><loc_432><loc_39>Rechnung des Versicherers (575) Nr. 00.123.456.7-2018-1 vom 11.03.2018</section_header_level_1>
+<otsl><loc_54><loc_52><loc_454><loc_75><fcel>Währung:<fcel>EUR<nl><fcel>Liefer- und Leistungsdatum:<fcel>30.06.2018<nl></otsl>
+<otsl><loc_54><loc_94><loc_454><loc_164><fcel>Verkäufer<ecel><nl><fcel>Nummer:<fcel>549910<nl><fcel>Name:<fcel>MVM Musterhafter Versicherungsverein Musterstadt a.G.<nl><fcel>Anschrift:<fcel>Musterstr. 12<nl><ecel><fcel>DE 12345 Musterstadt<nl><fcel>USt.-Id.-Nr.:<fcel>DE234567891<nl></otsl>
+<section_header_level_1><loc_58><loc_193><loc_156><loc_200>Käufer/Leistungsempfänger</section_header_level_1>
+<text><loc_58><loc_211><loc_81><loc_217>Name:</text>
+<text><loc_58><loc_229><loc_92><loc_235>Anschrift:</text>
+<text><loc_58><loc_262><loc_108><loc_268>Bemerkungen</text>
+<text><loc_58><loc_277><loc_90><loc_282>Bemerkung</text>
+<text><loc_58><loc_295><loc_80><loc_300>Betreff:</text>
+<text><loc_58><loc_348><loc_78><loc_353>Inhalt</text>
+<text><loc_58><loc_399><loc_76><loc_405>Bez.</text>
+<text><loc_58><loc_412><loc_76><loc_418>Bez.</text>
+<text><loc_58><loc_427><loc_76><loc_433>Bez.</text>
+<text><loc_58><loc_440><loc_76><loc_446>Bez.</text>
+<text><loc_58><loc_454><loc_76><loc_460>Bez.</text>
+<text><loc_58><loc_467><loc_76><loc_473>Bez.</text>
+<text><loc_58><loc_480><loc_76><loc_486>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.</text>
+<text><loc_58><loc_499><loc_76><loc_499>Bez.
+===== PAGE 2 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_42><loc_117><loc_50>Positionsdaten</section_header_level_1>
+<otsl><loc_54><loc_52><loc_455><loc_165><fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl><fcel>1<ecel><fcel>Kfz-Haftpflicht SF25 (30 %) Typkl. 18 Regio R9<fcel>67,2244<fcel>1<fcel>0 %<fcel>80,00<nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 80,0006<ecel><ecel><ecel><ecel><nl><ecel><ecel><fcel>Endthält 19% Versicherungssteuer = 12,7726 €<ecel><ecel><ecel><ecel><nl><fcel>2<fcel>Vollkasko SF25 (30 %) Typkl. 21 Regio R4<fcel>117,6471<fcel>1<fcel>0 %<fcel>140,00<ecel><nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 140,0000<ecel><ecel><ecel><ecel><nl><ecel><fcel>Endthält 19% Versicherungssteuer = 22,3529 €<ecel><ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_55><loc_194><loc_179><loc_201>Umsatzsteueraufschlüsselung</section_header_level_1>
+<otsl><loc_55><loc_203><loc_452><loc_244><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (E) Umsatzsteuerbefreit nach $4 Nr. 10a UStG<fcel>220,00<fcel>0<fcel>0<fcel>0,00<fcel>0,00<nl></otsl>
+<section_header_level_1><loc_55><loc_265><loc_114><loc_272>Belegsummen</section_header_level_1>
+<otsl><loc_177><loc_279><loc_457><loc_414><fcel>Positionssumme<fcel>220,00<nl><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><fcel>Rechnungssumme ohne USt.<fcel>220,00<nl><fcel>Steuerbetrag<fcel>0,00<nl><fcel>Bruttosumme<fcel>220,00<nl><fcel>Offene Zahlungen<fcel>220,00<nl><fcel>Zahlbetrag<fcel>440,00<nl></otsl>
+<page_footer><loc_415><loc_490><loc_452><loc_495>Seite 2 von 3</page_footer>
+</doctag>
+===== PAGE 3 =====
+<doctag><page_header><loc_48><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_42><loc_146><loc_50>Zahlungsbedingungen</section_header_level_1>
+<section_header_level_1><loc_59><loc_54><loc_105><loc_60>Beschreibung</section_header_level_1>
+<text><loc_338><loc_54><loc_368><loc_60>Fälligkeit</text>
+<text><loc_399><loc_54><loc_437><loc_60>Teilzahlung</text>
+<text><loc_59><loc_64><loc_333><loc_89>Einen zu zahlenden Beitrag überweisen Sie bitte auf folgende Bankverbindung: DE75123456780000001234, BIC WELADED1MST, Sparkasse Musterstadt Ost. Einfacher für Sie ist es, wenn Sie uns ein SEPA-Lastschriftmandat erteilen. Wir würden dann zu den Fälligkeiten 01.07.2018, 01.10.2018 den jeweiligen Beitrag von dem uns bekannten Konto abbuchen. In diesem Fall würden Sie, sofern sich keine Beitragsänderung ergibt, zukünftig keine Zwischenrechnung erhalten.</text>
+<text><loc_59><loc_89><loc_283><loc_101>Beitragsgutschein aus Ihrem Vertrag erstatten wir per Scheck. Rabattservice: Wenn Sie im laufenden Kalenderjahr nur einen Kfz-Häftpflichtschaden oder nur einen Vollkaskoschaden melden, gilt für Sie der Rabattretter.</text>
+<page_footer><loc_415><loc_490><loc_452><loc_495>Seite3 von 3</page_footer>
+</doctag>

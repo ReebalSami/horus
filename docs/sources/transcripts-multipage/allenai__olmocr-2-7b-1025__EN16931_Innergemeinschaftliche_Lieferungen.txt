@@ -1,0 +1,65 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Innergemeinschaftliche_Lieferungen
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  385.49s total
+
+===== PAGE 1 =====
+Gutschrift (Selbst ausgestellte Rechnung) (389) Nr. 47110818 vom 31.10.2018
+
+Währung: EUR
+Abrechnungszeitraum: 01.10.2018 bis 31.10.2018
+
+Käufer/Leistungsempfänger
+Nummer: 75969813
+Name: Metallbau Leipzig GmbH & Co. KG
+Anschrift: Pappelallee 15
+USt.-Id.-Nr.: DE123456789
+
+Abweichender Zahlungsempfänger
+Nummer: 432156789 (DUN)
+Name: Global Supplies Financial Services
+Anschrift: Hof 3
+Betreff: REG Regulatory information
+
+Mitglieder der Geschäftsleitung:
+Geschäftsführerin: Johanna Musterfrau
+Prokuristin: Isabell Herrlich
+HRB Berlin 13086
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Positionsdaten
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Toolbox 0815CO-123 /V2A | Stahlcoil Basismenge: 1 Stk | 10 Stk | 0 % | 1.000,00 |
+
+getLineTradeAgreementBruttopreis:
+• Berechnungszeitraum: 01.10.2018 bis 31.10.2018
+• Herkunftsland: DE
+
+Umsatzsteueraufschlüsselung
+
+Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag
+--- | --- | --- | --- | --- | ---
+Stahlcoil | 2.000,00 | 0,00 | 2.000,00 | 0,00 | 0,00
+
+Positionssumme
+Rechnungssumme ohne USt. | 2.000,00 | 0,00 | 2.000,00 | 0,00 | 0,00
+
+Erhaltene Anzahlungen
+Zahlbetrag | 2.000,00 | 0,00 | 2.000,00 | 0,00 | 0,00
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Zahlungsbedingungen
+
+| Zahlungsart | Beschreibung | Fälligkeit | Teilzahlung |
+|-------------|--------------|-----------|-------------|
+|           | 58 - per SEPA ÜBERWEISUNG | 30.11.2018 |           |
+
+Kontoname: Global Supplies Financial Services
+IBAN: DE12 1234 4321 9876 00

@@ -1,0 +1,106 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Elektron
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  46.51s total
+
+===== PAGE 1 =====
+# Invoice Extraction
+
+## Document Details
+* **Document Type:** Rechnung (Invoice)
+* **Invoice Number:** 181301674
+* **Date:** 25.04.2018
+
+## Billing Information (Seller/Service Provider)
+* **Währung (Currency):** EUR
+* **Liefer- und Leistungsdatum (Delivery/Service Date):** 06.03.2018
+* **Zahlungsreferenz (Payment Reference):** (Not specified in the main header, but contextually related to the invoice number)
+* **Referenz des Käufers (Customer Reference):** Liselotte Müller-Lüdenscheidt
+* **Buchungsreferenz (Booking Reference):** 420
+* **Weitere Referenz (Additional Reference):** 13130162
+* **Art der Referenz (Reference Type):** Referenzpapier (916)
+* **Weitere Referenz (Additional Reference):** 42389
+* **Art der Referenz (Reference Type):** Referenzpapier (916)
+
+## Buyer/Recipient Information (Purchaser)
+* **Verkäufer (Seller/Service Provider - *Note: This section seems to detail the service provider/seller based on the context of the invoice structure*):**
+    * **Nummer (Number):** 549910
+    * **Name:** ELEKTRON Industrieservice GmbH
+    * **Anschrift (Address):** Erfurter Strasse 13
+    * **USt.-Id.-Nr. (VAT ID):** DE 74465 Demoort
+* **Käufer/Leistungsempfänger (Buyer/Service Recipient):**
+    * **Nummer (Number):** 16259
+    * **Name:** ConsultingService GmbH
+    * **Anschrift (Address):** Musterstr. 18
+    * **VAT ID:** DE 76138 Karlsruhe
+
+## Remarks/Notes
+* **Bemerkung (Remark):**
+    * **Rapport-Nr.:** 42389 vom 08.03.2018
+    * **Details:** Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamer an die Deckenplatte montiert. Anschlusskabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammenggebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.
+
+---
+*Page navigation indicates this is Page 1 of 3.*
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format.
+
+## Positonsdaten (Item Details)
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| 01 | | | TGA Obermonteur/Monteur | 43,20 | 3 Stk | 19 % | 129,60 |
+| 02 | | | Beamer-Deckenhalterung | 122,50 | 1 Stk | 19 % | 122,50 |
+
+## Umsatzsteueraufschlüsselung (VAT Breakdown)
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz (%) | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (5) | | | 252,10 | 19 | 47,90 |
+
+## Belegsummen (Invoice Totals)
+
+| Description | Amount |
+| :--- | :---: |
+| Positionssumme | 252,10 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 252,10 |
+| Steuerbetrag | 47,90 |
+| Bruttosumme | 300,00 |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **300,00** |
+
+## Zahlungsbedingungen (Payment Terms)
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+| :--- | :--- | :---: |
+| Zahlbar sofort rein netto | | |
+
+***
+
+**Document Context:**
+* **Document Type:** Rechnung (Invoice)
+* **Reference:** Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+* **Page:** Seite 2 von 3
+===== PAGE 3 =====
+# Invoice Information
+
+## Payment Details
+
+*   **Payment Type (codicet):** 58 - per SEPA TRANSFER
+*   **IBAN:** DE9110000000123456789
+
+## Attached Documents
+
+| Name | Datename | Art |
+| :--- | :--- | :--- |
+| | | |
+
+***
+
+**Document Context:** This appears to be a page from an invoice or payment instruction document, specifically page 3 of 3.

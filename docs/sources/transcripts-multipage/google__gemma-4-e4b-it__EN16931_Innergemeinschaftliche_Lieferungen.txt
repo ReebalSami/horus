@@ -1,0 +1,120 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Innergemeinschaftliche_Lieferungen
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  43.52s total
+
+===== PAGE 1 =====
+# Gutschrift (Selbst ausgestellte Rechnung) (389) Nr. 47110818 vom 31.10.2018
+
+**Währung:** EUR
+**Abrechnungszeitraum:** 01.10.2018 bis 31.10.2018
+
+---
+
+## Verkäufer
+
+**Nummer:** 12345676
+**Name:** Global Supplies Ltd.
+**Anschrift:** 153 Victoria Street, GB SW1B 3BN London
+**Ust.-Id.-Nr.:** GB123456789
+
+---
+
+## Käufer/Leistungsempfänger
+
+**Nummer:** 75969813
+**Name:** Metallbau Leipzig GmbH & Co. KG
+**Anschrift:** Pappalallee 15, Hof 3, DE 12345 Leipzig
+**Ust.-Id.-Nr.:** DE123456789
+
+---
+
+## Abweichender Warenempfänger
+
+**Nummer:** 75969815
+**Name:** Metallbau Leipzig GmbH & Co. KG
+**Anschrift:** Eichenpromenade 37, Tor 1, DE 12347 Mittalstadt
+
+---
+
+## Abweichender Zahlungsempfänger
+
+**Globale Nummer:** 432156789 (DUN)
+**Name:** Global Supplies Financial Services
+
+---
+
+## Bemerkungen
+
+**Betreff:** REG Regulatory information
+
+**Inhalt:**
+*   **Mitglieder der Geschäftsleitung:**
+    *   **Geschäftsführerin:** Johanna Musterfrau
+    *   **Prokuristin:** Isabelle Herrlich
+    *   **HRB Berlin 13086**
+
+---
+*Seite 1 von 3*
+===== PAGE 2 =====
+# Invoice Extraction
+
+## Positsionendaten
+
+| Pos | Art-Nr. Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | Toolbox 0815CO-123 /V2A | Stahlcoil Basismenge: 1 Stk | | 10 Stk | 0 % | 1.000,00 |
+| | | * Berechnungszeitraum: 01.10.2018 bis 31.10.2018 | | | | |
+| | | * Herkunftland: DE | | | | |
+| 2 | BR-4529-ZFIM-712 /A2A | Stoßfänger Basismenge: 1 Stk | | 10 Stk | 0 % | 1.000,00 |
+| | | * Berechnungszeitraum: 01.10.2018 bis 31.10.2018 | | | | |
+| | | * Herkunftland: DE | | | | |
+
+## Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (K) Mehrwertsteuerbefreiung für die innereigeninschaftliche Lieferung von Waren und Dienstleistungen in der EU | | | 2.000,00 | 0 | 0,00 |
+
+## Belegsummen
+
+| Item | Amount |
+| :--- | :---: |
+| Positionssumme | 2.000,00 |
+| Gesamtbetrag der Zuschläge | |
+| Gesamtbetrag der Abschläge | |
+| Rechnungssumme ohne USt. | 2.000,00 |
+| Steuerbetrag | 0,00 |
+| Bruttosumme | 2.000,00 |
+| Erhaltene Anzahlungen | |
+| Zahlbetrag | 2000,00 |
+
+***
+
+**Document Context:**
+* **Document Type:** Rechnung (Invoice)
+* **Reference:** Beispiel-Rechnungen für ZUGFeRD 2.2. (c) FiRD 2022
+* **Page:** Seite 2 von 3
+===== PAGE 3 =====
+# Invoice Details
+
+## Payment Terms
+
+| Description | Due Date | Partial Payment |
+| :--- | :--- | :--- |
+| **Payment Terms** | 30.11.2018 | |
+
+## Payment Information
+
+| Field | Detail |
+| :--- | :--- |
+| **Payment Type (codient):** | 58 - per SEPA TRANSFER |
+| **Account Name:** | Global Supplies Financial Services |
+| **IBAN:** | DE12 1234 4321 9876 00 |
+
+***
+
+*This document is page 3 of 3.*

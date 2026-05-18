@@ -1,0 +1,137 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Reisekostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  53.19s total
+
+===== PAGE 1 =====
+# Handelsrechnung (380) Nr. 280081 vom 13.07.2018
+
+## Verkäufer
+* **Nummer:** 549910
+* **Globale Nummer:** 400001123452 (GLN)
+* **Name:** Lieferant GmbH
+* **Anschrift:** Lieferantenstraße 20
+* **Steuernummer:** DE 80333 München
+* **Ust.-Id.-Nr.:** 201/113/40209
+* **Referenz:**
+    * **Währung:** EUR
+    * **Abrechnungszeitraum:** 09.07.2018 bis 11.07.2018
+    * **Weitere Referenz:** 42389
+    * **Art der Referenz:Referenzpapier:** 916
+    * **Weitere Referenz:** 42390
+    * **Art der Referenz:Referenzpapier:** 916
+
+## Käufer/Leistungsempfänger
+* **Nummer:** GE2020211
+* **Name:** Kunden AG Mitte
+* **Anschrift:** Kundenstraße 15
+* **Referenz:** DE 69876 Frankfurt
+
+## Abweichender Warenempfänger
+* **Name:** Musterfirma Nürnberg
+* **Anschrift:** Am Bahnhof 42
+* **Referenz:** DE 75319 Nürnberg
+
+***
+
+**Seite 1 von 3**
+===== PAGE 2 =====
+# Invoice Extraction
+
+## Document Details
+* **Document Type:** Beispiel-Rechnungen für ZUGFeRD 2.2-2, (c) FeRD 2022
+* **Page:** Seite 2 von 3
+
+## Remarks (Bemerkungen)
+
+**Item 1:**
+* **Subject (Betreff):** REG
+* **Details:** Regulatory information
+* **Subject (Betreff):**
+* **Details:** Liselotte Müllermann, Kumpelstr. 54, 12345 Berlin
+* **Invoice Number (Handelsregisternummer):** H A 713
+
+**Item 2:**
+* **Subject (Betreff):** AAI
+* **Details:** General information
+* **Subject (Betreff):**
+* **Details:** Flug wurde vom Auftraggeber gebucht.
+
+**Item 3:**
+* **Subject (Betreff):** AAI
+* **Details:** General information
+* **Subject (Betreff):**
+* **Details:** Reise: Musterreisekostenabrechnung
+* **Details:** Zweck: Workshop in Nürnberg
+* **Details:** Land: Deutschland
+* **Details:** Strecke: Berlin - Berlin
+
+## Line Items (Positionsdaten)
+
+| Pos | Description (Beschreibung) | Unit Price (Nettopreis) | Quantity (Menge) | Tax Rate (Steuersatz) | Total (Nettobetrag) |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | Übernachtung. 2 Nächte Hotel | 158,88 | 1 | 7 % | 158,88 |
+| | *getLineTradeAgreementBrenttpreis : 158,88* | | | | |
+| 2 | Verpflegung Frühstück | 11,76 | 1 | 19 % | 11,76 |
+| | *getLineTradeAgreementBrenttpreis : 14,00* | | | | |
+| 3 | Fahrtkosten, Taxi Berlin | 23,36 | 1 | 7 % | 23,36 |
+| | *getLineTradeAgreementBrenttpreis : 25,00* | | | | |
+| 4 | Fahrtkosten, Taxi Nürnberg | 20,09 | 1 | 7 % | 20,09 |
+| | *getLineTradeAgreementBrenttpreis : 21,50* | | | | |
+===== PAGE 3 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format:
+
+## Summary of Charges (Umsatzsteuererklärung)
+
+| Description | Amount |
+| :--- | :--- |
+| **Umsatzsteuer (Sales Tax)** | |
+| Sales Tax (5) | |
+| Sales Tax (5) | |
+| **Total Taxable Amount (Net)** | *(Implied from totals)* |
+| **Total Tax Amount (Gross)** | *(Implied from totals)* |
+
+**Detailed Breakdown:**
+
+| Item | Amount |
+| :--- | :--- |
+| **Sales Tax (5)** | 202.33 |
+| **Sales Tax (5)** | 11.76 |
+| **Total Sales Tax (Net/Gross)** | 214.09 |
+
+---
+
+## Payment Summary (Belegsummen)
+
+| Description | Amount |
+| :--- | :--- |
+| Position Sum (Positionssumme) | 214.09 |
+| Amount Due from Surcharges (Gesamtbetrag der Zuschläge) | 0.00 |
+| Amount Due from Deductions (Gesamtbetrag der Abschläge) | -0.00 |
+| **Total Amount Due (including VAT)** (Rechnungssumme ohne USt.) | 214.09 |
+| Tax Amount (Steuerbetrag) | 16.39 |
+| **Gross Total (Bruttosumme)** | 230.48 |
+| Received Advance Payments (Erhaltene Anzahlungen) | -0.00 |
+| **Balance Due (Zahlbetrag)** | 230.48 |
+
+---
+
+## Payment Terms (Zahlungsbedingungen)
+
+*   **Payment Due:** Within 30 days of the invoice date (Fällig seit 12.08.2018).
+*   **Discount:** 3% discount available if paid within 10 days of the invoice date (bis 15.03.2018).
+
+---
+
+## Attached Documents (Rechnungsbegleitende Unterlagen)
+
+*(No specific documents listed in the provided image snippet, only the section header.)*
+
+| Name | Document Name | Art (Type) |
+| :--- | :--- | :--- |
+| | | |

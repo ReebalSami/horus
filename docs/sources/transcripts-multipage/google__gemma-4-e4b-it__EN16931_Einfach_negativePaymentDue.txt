@@ -4,7 +4,7 @@
 # Pages:    2
 # DPI:      300
 # Errors:   0/2
-# Extract:  35.61s total
+# Extract:  35.66s total
 
 ===== PAGE 1 =====
 # Handelsrechnung (Invoice)

@@ -1,0 +1,67 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_RechnungsUebertragung
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  126.44s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 9314110911/00/M/00/N  vom  01.10.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 29.09.2018
+Bestellung: B123456789
+Lieferavis: L87654321012345
+
+Verkäufer
+
+Nummer: 549910
+Globale Nummer: 4333741000005 (GLN)
+Name: MUSTER-Autovermietung
+Anschrift: Musterstr. 99
+DE 9919 MUSTERHAUSEN
+===== PAGE 2 =====
+Bemerkungen
+
+Betreff: REG  Regulatory information
+
+MUSTER-Autovermietung GMBH
+Musterstr. 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Maxima Musterfrau
+USt-IdNr: DE136695976
+Telefon: +49 711-50885524
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+===== PAGE 3 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+1 Miettage 86,550 2 Tag(e) 19 % 173,10
+Weitere Eigenschaften: Fahrzeug-Kennzeichen: M-MM 0000
+Navigationssystem - Garantie 5,040 2 19 % 10,08
+Inklusiv-Kilometer waren: 873
+Vollkasko 23,100 2 19 % 46,20
+Inklusiv-Kilometer waren: 873
+Vollkasko 23,100 2 19 % 46,20
+===== PAGE 4 =====
+Belegsummen
+
+Positionssumme 286,52
+
+Gesamtbetrag der Zuschläge 0,00
+
+Gesamtbetrag der Abschläge -0,00
+
+Rechnungssumme ohne USt. 286,52
+
+Steuerbetrag 54,44
+
+Bruttosumme 340,96
+
+Erhaltene Anzahlungen -0,00

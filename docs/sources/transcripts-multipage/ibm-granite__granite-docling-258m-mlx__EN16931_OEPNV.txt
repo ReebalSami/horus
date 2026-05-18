@@ -1,0 +1,44 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  9.09s total
+
+===== PAGE 1 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_14>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_30><loc_368><loc_40>Handelsrechnung (380) Nr. E2018092011804 vom 20.09.2018</section_header_level_1>
+<otsl><loc_55><loc_53><loc_453><loc_95><fcel>Währung:<fcel>EUR<nl><fcel>Liefer- und Leistungsdatum:<fcel>20.09.2018<nl><fcel>Referenz des Käufers:<fcel>05 158 004 - 11023 - 45<nl><fcel>Bestellung:<fcel>2018092011804<nl></otsl>
+<otsl><loc_55><loc_116><loc_453><loc_213><fcel>Verkäufer<fcel>549910<nl><fcel>Nummer:<fcel>Verkehrsbetriebe GmbH<nl><fcel>Name:<fcel>Torti Mayer<nl><fcel>Ansprechpartner:<fcel>Musterstraße 3<nl><fcel>Telefon:<fcel>DE 12345 Berlin<nl><fcel>USt.-Id.-Nr.:<fcel>tm@verkehrsbetriebe.de DE123456789<nl></otsl>
+<section_header_level_1><loc_58><loc_236><loc_156><loc_243>Käufer/Leistungsempfänger</section_header_level_1>
+<text><loc_58><loc_247><loc_94><loc_253>Nummer:</text>
+<text><loc_58><loc_258><loc_84><loc_264>Name:</text>
+<text><loc_58><loc_269><loc_92><loc_275>Anschrift:</text>
+<text><loc_58><loc_304><loc_108><loc_310>Bemerkungen</text>
+<text><loc_58><loc_318><loc_80><loc_324>Betreff:</text>
+<text><loc_134><loc_318><loc_177><loc_324>ADU Note</text>
+<text><loc_120><loc_337><loc_137><loc_342>Inhalt</text>
+<text><loc_132><loc_377><loc_153><loc_382>Art-Nr-Kunde</text>
+<text><loc_132><loc_383><loc_153><loc_388>Art-Nr-Lief.</text>
+<text><loc_132><loc_389><loc_153><loc_394>Art-Nr</text>
+<text><loc_132><loc_395><loc_144><loc_400>(Art)</text>
+<text><loc_58><loc_404><loc_62><loc_409>0</text>
+<text><loc_132><loc_404><loc_215><loc_409>4-Fahrten-Karte Berlin AB</text>
+<text><loc_304><loc_404><loc_315><loc_409>8,41</text>
+<text><loc_436><loc_404><loc_449><loc_409>8,41</text>
+<text><loc_160><loc_422><loc_356><loc_427>Gültig ab 20.09.2018 15:39 Uhr bis 20.09.2018 17:39 Uhr Abschnitt: 1/4</text>
+<page_footer><loc_415><loc_489><loc_452><loc_494>Seite 1 von 2</page_footer>
+</doctag>
+===== PAGE 2 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_14>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_42><loc_179><loc_50>Umsatzsteueraufschlüsselung</section_header_level_1>
+<otsl><loc_55><loc_54><loc_452><loc_87><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<fcel>8,41<fcel>7<fcel>0,59<ecel><ecel><nl></otsl>
+<section_header_level_1><loc_55><loc_108><loc_114><loc_116>Belegsummen</section_header_level_1>
+<otsl><loc_177><loc_121><loc_457><loc_240><fcel>Positionssumme<fcel>8,41<nl><fcel>Gesamtbetrag der Zuschläge<ecel><nl><fcel>Gesamtbetrag der Abschläge<ecel><nl><fcel>Rechnungssumme ohne USt.<fcel>8,41<nl><fcel>Steuerbetrag<fcel>0,59<nl><fcel>Bruttosumme<fcel>9,00<nl><fcel>Erhaltene Anzahlungen<ecel><nl><fcel>Zahlbetrag<fcel>9,00<nl></otsl>
+<section_header_level_1><loc_55><loc_261><loc_146><loc_269>Zahlungsbedingungen</section_header_level_1>
+<otsl><loc_55><loc_273><loc_452><loc_289><fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl><fcel>Zahlungsbedingungen: Der Rechnungsbetrag wurde bereits beglichen.<fcel>03.10.2018<ecel><nl></otsl>
+<section_header_level_1><loc_55><loc_307><loc_104><loc_315>Zahlungsart</section_header_level_1>
+<otsl><loc_55><loc_320><loc_452><loc_350><fcel>Zahlungstyp (codiert):<fcel>30 - per Überweisung (SEPA)<nl><fcel>Kontoname :<fcel>Verkehrsbetriebe GmbH<nl><fcel>IBAN :<fcel>DE12 1234 5678 9012 3456 78<nl><fcel>Verkäufer-BIC:<ecel><nl></otsl>
+<page_footer><loc_415><loc_490><loc_452><loc_495>Seite 2 von 2</page_footer>
+</doctag>

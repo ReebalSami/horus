@@ -1,0 +1,62 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Betriebskostenabrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  253.36s total
+
+===== PAGE 1 =====
+Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+
+Währung: EUR
+Abrechnungszeitraum: 01.01.2010 bis 31.12.2010
+Weitere Referenz: Abrechnung 2010
+Art der Referenz: Referenzpapier (916)
+
+Käufer/Leistungsempfänger
+Name: Beispielmieter GmbH & Co.
+Anschrift: Musterstraße 42
+75645 Frankfurt
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+Bemerkungen
+Bemerkung: Rechnung gemäß Betriebskostenrechnung vom 21.11.2011.
+Betreff: REG Regulatory information
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Positionsdaten
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 4012345001235 (GTIN) | Abrechnungskreis 1 | 15.387,08 | 1 | 19 % | 15.387,08 |
+
+Umsatzsteueraufschlüsselung
+
+Art (Kategorie)
+Warenwert
+Zu-/Abschlag
+Basisbetrag
+Steuersatz [%]
+Steuerbetrag
+
+Positionssumme
+Gesamtbetrag der Zuschläge
+Erhaltene Anzahlungen
+Zahlbetrag
+Fälligkeit
+Teilzahlung
+
+Rechnungsbegleitende Unterlagen
+
+Name
+Dateiname
+Art
+application/pdf
+
+Betriebskostenabrechnung
+Betriebskostenabrechnung.pdf
+application/pdf

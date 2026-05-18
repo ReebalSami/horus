@@ -1,0 +1,61 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  XRECHNUNG_Elektron
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  472.13s total
+
+===== PAGE 1 =====
+Schlussrechnung Bau (877) Nr. 181301674 vom 25.04.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 06.03.2018
+Zahlungsreferenz: Rechnung 181301674
+Leitwege-ID: 04011000-12345-34
+Weitere Referenz: Aufmass
+Globale Nummer: 4000001123452 (GLN)
+Name: ELEKTRON Industrieservice GmbH
+Abteilung: Muster-Einkauf
+Telefon: +49891234567
+USt.-Id.-Nr.: DE123456789
+Nummer: 16259
+Name: ConsultingService GmbH
+Anschrift: Mustererstr. 18
+Bemerkung: Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.
+Bemerkung: Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Positionsdaten
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| --- | --- | --- | --- | --- | --- | --- |
+| 01 | Art-Nr-Lief. | TGA Obermonteur/Monteur | 43,20 | 3 Std | 19 % | 129,60 |
+| 02 | Art-Nr | 02 Außerhalb Angebot | 122,50 | 1 Stk | 19 % | 122,50 |
+
+Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| --- | --- | --- | --- | --- | --- |
+|  |  |  | 252,10 | 19 | 47,90 |
+|  |  |  |  |  | -0,00 |
+|  |  |  |  |  | 300,00 |
+
+Zahlungsbedingungen
+
+| Beschreibung | Zahlbar sofort rein netto | Fälligkeit | Teilzahlung |
+| --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Zahlungsart
+
+Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG
+IBAN: DE91100000000123456789
+
+Rechnungsbegleitende Unterlagen
+
+Name | Dateiname | Art
+Aufmass.png | ElektronRapport.pdf | application/pdf

@@ -4,7 +4,7 @@
 # Pages:    3
 # DPI:      300
 # Errors:   0/3
-# Extract:  285.48s total
+# Extract:  593.98s total
 
 ===== PAGE 1 =====
 <fcel>Handelsrechnung (380) Nr. 471102 vom 05.03.2018<lcel><nl>

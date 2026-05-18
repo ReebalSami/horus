@@ -1,0 +1,141 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  XRECHNUNG_Elektron
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  100.53s total
+
+===== PAGE 1 =====
+Report Verzeichnisse für ZUSCHND 2.2 (1/14/2018)
+Schlussschrift Bau (877) Nr. 181301674 vom 25.04.2018
+Wohnung:
+EUR
+Liefer- und Leistungsdatum:
+06.03.2018
+Wohnungshöhe:
+843301674
+Leitungen: D:
+04011000-12345-94
+Buchungsreferenz:
+420
+Weitere Referenz:
+Address
+Art der Referenz: Referenzpapier (915)
+Weitere Referenz:
+Elektronikrapport
+Art der Referenz: Referenzpapier (915)
+Werkstatt:
+400000123452 (GLN)
+Globale Nummer:
+ELEKTRON Industrieservice GmbH
+Name:
+Anschrift:
+Max Mustermann
+Adresse:
+Muster-Einlauf
+Anschrift:
+Erfurter Straße 13
+DE 76182 Dennoort
+Telefon:
+0901124000
+E-Mail:
+Max@Mustermann.de
+Steuernummer:
+201/113/40209
+USB-ID: Nr.:
+01213456789
+Kläfer/Leistungsempfänger
+Nummer:
+16259
+Name:
+ConsultingService GmbH
+Anschrift:
+Max Mustermann
+Nummer:
+DE 76182 Karlsruhe
+Bemerkingen
+Report Nr.: 42189 vom 08.03.2018
+Im 2. OG BTI Besprechungsraum eine Beamerhaltung an die Deka montiert. Daher eine Deckenplatte mit dem Namen des Besitzers und der Telefonnummer. Die Telefonnummer wird im Text nicht angegeben, daher kann ich diese Frage nicht beantworten. Die Telefonnummer wird im Text angegeben, daher kann ich diese Frage nicht beantworten. Die Telefonnummer wird im Text angegeben, daher kann ich diese Frage nicht beantworten.<eos>
+===== PAGE 2 =====
+Vertrag Bestellungen für ZUSCHND 2.2. (1) Feb 2022
+Positiondaten
+Art der kunde Art der Kunde Art der
+Bestellung
+Nettopreis
+Menge
+Steuernutz
+Nettobetrag
+Pos
+Art Nr.
+1000
+1.50d
+43,20
+19%
+TGA Oberuster/Monteur
+128,60
+01
+01 Besanmontage
+123.50
+19%
+19%
+02
+02 Außenbau Angebot
+getLineTradeAgreement: 123.50
+Beuner-Deckhaltenung
+132.50
+1.50d
+02
+02 Außenbau Angebot
+getLineTradeAgreement: 123.50
+Umsatzsteueraufschlüsselung
+Bezahtung
+Steuernutz (%)
+Steuernutz (%)
+Art (Bezahnung)
+Warnswert
+Zu-Abschlag
+Umsatzsteuer (%)
+252,50
+19
+47,50
+Belegsummen
+Positionssumme
+252,50
+Gesamtheit der Zuschläge
+6.00
+Gesamtheit der Zuschläge
+4.00
+Rechnungsumme ohne USt.
+252.50
+Steuernutz
+47.50
+Bruttosumme
+360.00
+Erhaltene Ansprüchen
+-0.00
+Zahlbetrag
+360.00
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlbar sofort rein netto
+Seite 2 von 3<eos>
+===== PAGE 3 =====
+Vertrag Rechnungen für ZUGFHD 2.3 (1) FeWo 2012
+Zahnungart
+Zahnungstype (kodert):
+S01_pdf (2014) UNTERRECHTSZUG
+IDAN:
+04111300000001278950768
+Rechnungsbegleitende Unterlagen
+Name
+Datum/Name
+Art
+Aufnahme.png
+upload/png
+Elektronikapport
+application/pdf
+Elektronikapport.pdf
+Seite 3 von 3<eos>

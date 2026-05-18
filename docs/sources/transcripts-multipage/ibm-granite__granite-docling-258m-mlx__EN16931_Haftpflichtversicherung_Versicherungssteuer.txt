@@ -1,0 +1,94 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  EN16931_Haftpflichtversicherung_Versicherungssteuer
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  16.52s total
+
+===== PAGE 1 =====
+<doctag><page_header><loc_48><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_30><loc_432><loc_40>Rechnung des Versicherers (575) Nr. 01.234.567.8-2018-1 vom 06.12.2018</section_header_level_1>
+<otsl><loc_54><loc_51><loc_454><loc_75><fcel>Währung:<fcel>EUR<nl><fcel>Liefer- und Leistungsdatum:<fcel>06.12.2018<nl></otsl>
+<otsl><loc_55><loc_92><loc_454><loc_164><fcel>Verkäufer<ecel><nl><fcel>Nummer:<fcel>549910<nl><fcel>Name:<fcel>MVM Musterhafter Versicherungsverein Musterstadt a.G.<nl><fcel>Anschrift:<fcel>Musterstr. 12<nl><ecel><fcel>DE 12345 Musterstadt<nl><fcel>USt.-Id.-Nr.:<fcel>DE234567891<nl></otsl>
+<section_header_level_1><loc_58><loc_193><loc_156><loc_200>Käufer/Leistungsempfänger</section_header_level_1>
+<text><loc_58><loc_211><loc_81><loc_217>Name:</text>
+<text><loc_58><loc_229><loc_92><loc_235>Anschrift:</text>
+<text><loc_58><loc_262><loc_108><loc_268>Bemerkungen</text>
+<text><loc_58><loc_282><loc_90><loc_287>Bemerkung</text>
+<text><loc_58><loc_306><loc_80><loc_311>Betreff:</text>
+<text><loc_58><loc_358><loc_78><loc_363>Inhalt</text>
+<text><loc_58><loc_389><loc_63><loc_394>1</text>
+<text><loc_58><loc_400><loc_63><loc_405>2</text>
+<text><loc_58><loc_412><loc_63><loc_417>3</text>
+<text><loc_58><loc_424><loc_63><loc_429>4</text>
+<text><loc_58><loc_436><loc_63><loc_441>5</text>
+<text><loc_58><loc_449><loc_63><loc_454>6</text>
+<text><loc_58><loc_461><loc_63><loc_466>7</text>
+<text><loc_58><loc_473><loc_63><loc_478>8</text>
+<text><loc_58><loc_485><loc_63><loc_490>9</text>
+<text><loc_58><loc_496><loc_63><loc_500>10</text>
+<text><loc_58><loc_505><loc_63><loc_510>11</text>
+<text><loc_58><loc_516><loc_63><loc_521>12</text>
+<text><loc_58><loc_526><loc_63><loc_531>13</text>
+<text><loc_58><loc_536><loc_63><loc_441>14</text>
+<text><loc_58><loc_445><loc_63><loc_450>14</text>
+<text><loc_58><loc_455><loc_63><loc_460>15</text>
+<text><loc_58><loc_465><loc_63><loc_470>16</text>
+<text><loc_58><loc_475><loc_63><loc_480>17</text>
+<text><loc_58><loc_485><loc_63><loc_490>18</text>
+<text><loc_58><loc_495><loc_63><loc_500>19</text>
+<text><loc_58><loc_505><loc_63><loc_510>20</text>
+<text><loc_58><loc_516><loc_63><loc_521>21</text>
+<text><loc_58><loc_526><loc_63><loc_531>22</text>
+<text><loc_58><loc_536><loc_63><loc_441>23</text>
+<text><loc_58><loc_445><loc_63><loc_450>23</text>
+<text><loc_58><loc_455><loc_63><loc_461>24</text>
+<text><loc_58><loc_465><loc_63><loc_470>25</text>
+<text><loc_58><loc_475><loc_63><loc_480>26</text>
+<text><loc_58><loc_485><loc_63><loc_490>27</text>
+<text><loc_58><loc_495><loc_63><loc_500>28</text>
+<text><loc_58><loc_505><loc_63><loc_510>29</text>
+<text><loc_58><loc_516><loc_63><loc_521>30</text>
+<text><loc_58><loc_526><loc_63><loc_531>31</text>
+<text><loc_58><loc_536><loc_63><loc_441>32</text>
+<text><loc_58><loc_445><loc_63><loc_450>32</text>
+<text><loc_58><loc_455><loc_63><loc_461>33</text>
+<text><loc_58><loc_465><loc_63><loc_470>34</text>
+<text><loc_58><loc_475><loc_63><loc_480>35</text>
+<text><loc_58><loc_485><loc_63><loc_490>36</text>
+<text><loc_58><loc_495><loc_63><loc_500>37</text>
+<text><loc_58><loc_505><loc_63><loc_510>38</text>
+<text><loc_58><loc_516><loc_63><loc_521>39</text>
+<text><loc_58><loc_526><loc_63><loc_531>40</text>
+<text><loc_58><loc_536><loc_63><loc_441>41</text>
+<text><loc_58><loc_445><loc_63><loc_450>41</text>
+<text><loc_58><loc_455><loc_63><loc_461>41</text>
+<text><loc_58><loc_465><loc_63><loc_470>41</text>
+<text><loc_58><loc_475><loc_63><loc_480>42</text>
+<text><loc_58><loc_485><loc_63><loc_490>43</text>
+<text><loc_58><loc_495><loc_63><loc_500>44</text>
+<text><loc_58><loc_505><loc_63><loc_510>45</text>
+<text><loc_58><loc_516><loc_63><loc_521>46</text>
+<text><loc_58><loc_526><loc_63><loc_531>47</text>
+<text><loc_58><loc_536><loc_
+===== PAGE 2 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_42><loc_117><loc_50>Positionsdaten</section_header_level_1>
+<otsl><loc_55><loc_52><loc_459><loc_144><fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief.<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl><fcel>1<fcel>Privathaftpflicht<fcel>50,0000<fcel>1<fcel>0 %<fcel>50,00<fcel>50,00<nl><ecel><fcel>getLineTradeAgreementBruttopreis : 50,0000<ecel><ecel><ecel><ecel><ecel><nl><fcel>2<fcel>Lebensgefährte/in zur Privathaftpflicht<fcel>0,0000<fcel>1<fcel>0 %<fcel>0,00<fcel>0,00<nl><ecel><fcel>getLineTradeAgreementBruttopreis : 0,0000<ecel><ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_55><loc_176><loc_179><loc_184>Umsatzsteueraufschlüsselung</section_header_level_1>
+<otsl><loc_56><loc_187><loc_452><loc_227><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (E)<ecel><ecel><ecel><ecel><ecel><nl><fcel>Umsatzsteuerbefreit nach<ecel><ecel><fcel>50,00<fcel>0<fcel>0,00<nl><fcel>§4 Nr. 10a UStG<ecel><ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_55><loc_247><loc_114><loc_255>Belegsummen</section_header_level_1>
+<otsl><loc_177><loc_261><loc_457><loc_397><fcel>Positionssumme<fcel>50,00<nl><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><fcel>Rechnungssumme ohne USt.<fcel>50,00<nl><fcel>Steuerbetrag<fcel>0,00<nl><fcel>Bruttosumme<fcel>50,00<nl><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><fcel>Zahlbetrag<fcel>50,00<nl></otsl>
+<page_footer><loc_415><loc_490><loc_452><loc_495>Seite 2 von 3</page_footer>
+</doctag>
+===== PAGE 3 =====
+<doctag><page_header><loc_48><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_42><loc_146><loc_50>Zahlungsbedingungen</section_header_level_1>
+<section_header_level_1><loc_59><loc_55><loc_105><loc_61>Beschreibung</section_header_level_1>
+<text><loc_58><loc_64><loc_327><loc_90>Einen zu zahlenden Beitrag überweisen Sie bitte auf folgende Bankverbindung: IBAN DE75123456780000001234, BIC WELDED1MST, Sparkasse Musterstadt Ost. Einfacher für Sie ist es, wenn Sie uns ein SEPA-Lastschriftmandat erteilen. Wir würden dann zu der Fälligkeit 06.12.2018 den Beitrag von dem uns bekannten Konto abbuchen. In diesem Fall würden Sie, sofern sich keine Beitragsänderung ergibt, zukünftig keine Zwischenrechnung erhalten.</text>
+<text><loc_58><loc_96><loc_234><loc_101>Beitragsgutscheinfränsen aus Ihrem Vertrag statten wir per Scheck.</text>
+<page_footer><loc_415><loc_490><loc_452><loc_495>Seite3 von 3</page_footer>
+<text><loc_338><loc_55><loc_368><loc_61>Fälligkeit</text>
+<text><loc_398><loc_55><loc_437><loc_61>Teilzahlung</text>
+</doctag>

@@ -4,7 +4,7 @@
 # Pages:    2
 # DPI:      300
 # Errors:   0/2
-# Extract:  70.11s total
+# Extract:  77.60s total
 
 ===== PAGE 1 =====
 Berichtet Änderungen für ZUSCHND 2.3. (1) FeWo 2018

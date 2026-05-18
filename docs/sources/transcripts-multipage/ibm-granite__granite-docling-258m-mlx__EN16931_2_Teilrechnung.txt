@@ -1,0 +1,32 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  EN16931_2_Teilrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  8.10s total
+
+===== PAGE 1 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_14>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_30><loc_321><loc_40>Handelsrechnung (380) Nr. 471113 vom 13.06.2018</section_header_level_1>
+<otsl><loc_56><loc_53><loc_453><loc_84><fcel>Währung:<fcel>EUR<nl><fcel>Liefer- und Leistungsdatum:<fcel>03.06.2018<nl><fcel>Bestellung:<fcel>2018-471331<nl></otsl>
+<otsl><loc_56><loc_106><loc_453><loc_189><fcel>Verkäufer<fcel>549910<nl><fcel>Globale Nummer:<fcel>4000001123452 (GLN)<nl><fcel>Name:<fcel>Lieferant GmbH<nl><fcel>Anschrift:<fcel>Lieferantenstraße 20<nl><ecel><fcel>DE 80333 München<nl><fcel>Steuernummer:<fcel>201/113/40209<nl><fcel>USt.-Id.-Nr.:<fcel>DE123456789<nl></otsl>
+<otsl><loc_56><loc_209><loc_453><loc_266><fcel>Käufer/Leistungsempfänger<ecel><nl><fcel>Nummer:<fcel>GE2020211<nl><fcel>Name:<fcel>Kunden AG Mitte<nl><fcel>Anschrift:<fcel>Kundenstraße 15<nl><ecel><fcel>DE 69876 Frankfurt<nl></otsl>
+<otsl><loc_56><loc_275><loc_453><loc_328><fcel>Bemerkungen<ecel><nl><fcel>Bemerkung<fcel>Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.<nl><fcel>Betreff:<fcel>AAK Price conditions<nl></otsl>
+<otsl><loc_56><loc_343><loc_453><loc_386><fcel>Inhalt<fcel>Es bestehen Rabatt- und Bonusvereinbarungen.<nl></otsl>
+<text><loc_147><loc_395><loc_242><loc_427>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland Geschäftsführer: Hans Muster Handelsregisternummer: H A 123</text>
+<page_footer><loc_415><loc_488><loc_452><loc_493>Seite 1 von 2</page_footer>
+</doctag>
+===== PAGE 2 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_42><loc_117><loc_50>Positionsdaten</section_header_level_1>
+<otsl><loc_55><loc_52><loc_459><loc_131><fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl><fcel>1<fcel>SFK5 4000050986428 (GTIN)<fcel>Schweinesteak<fcel>5,5000<fcel>4 kg<fcel>7 %<fcel>22,00<nl></otsl>
+<section_header_level_1><loc_55><loc_161><loc_179><loc_169>Umsatzsteueraufschlüsselung</section_header_level_1>
+<otsl><loc_56><loc_172><loc_452><loc_201><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<fcel>22,00<ecel><fcel>7<fcel>1,54<fcel>22,00<nl></otsl>
+<section_header_level_1><loc_55><loc_226><loc_114><loc_234>Belegsummen</section_header_level_1>
+<otsl><loc_177><loc_240><loc_457><loc_359><fcel>Positionssumme<fcel>22,00<nl><fcel>Gesamtbetrag der Zuschläge<ecel><nl><fcel>Gesamtbetrag der Abschläge<ecel><nl><fcel>Rechnungssumme ohne USt.<fcel>22,00<nl><fcel>Steuerbetrag<fcel>1,54<nl><fcel>Bruttosumme<fcel>23,54<nl><fcel>Erhaltene Anzahlungen<ecel><nl><fcel>Zahlbetrag<fcel>23,54<nl></otsl>
+<section_header_level_1><loc_55><loc_379><loc_146><loc_387>Zahlungsbedingungen</section_header_level_1>
+<otsl><loc_58><loc_390><loc_452><loc_400><fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl></otsl>
+<text><loc_58><loc_401><loc_319><loc_407>Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3% Skonto innerhalb 10 Tagen bis 15.06.2018</text>
+<page_footer><loc_415><loc_489><loc_452><loc_494>Seite 2 von 2</page_footer>
+</doctag>

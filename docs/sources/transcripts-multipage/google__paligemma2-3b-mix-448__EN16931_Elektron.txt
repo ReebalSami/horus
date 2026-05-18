@@ -1,0 +1,126 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Elektron
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  92.97s total
+
+===== PAGE 1 =====
+Berichtet Änderungen für ZUSCHND.2.3 (1) FHRD 2018
+Bauzeichnung (204) Nr. 181301674 vom 25.04.2018
+Wohnung:
+EUR
+Liefer- und Leistungsdatum:
+06.03.2018
+Zufälligkeitsvereinbarung:
+Rechnung 181301674
+Reference des Käufers:
+Ullschütz Müller-Lüdenschnitt
+Buchungsreferenz:
+420
+Weitere Referenz:
+11310162
+Art der Referenz: Referenzpapier (915)
+Weitere Referenz:
+42389
+Art der Referenz: Referenzpapier (915)
+Werkstatt:
+Nummer:
+54910
+ELEKTRON Industrieservice GmbH
+Name:
+Anschrift:
+Ehlerer Straße 13
+DE 74465 Demoost
+USt.-Id.-Nr.:
+DE136625976
+Käufer/Leistungsmitglieder
+Nummer:
+15259
+ConsultingService GmbH
+Name:
+Anschrift:
+Mustewitz, 18
+DE 76138 Karlsruhe
+Bemerkungen
+Report Nr. 42389 vom 08.03.2018
+Im 12.09.1817 eingebreitete Bauverarbeitungsanweisungen an die Gebäude wurden. Gültig eine Bauwerksfarbe und eine Bauwerksnummer auf Montage ausstehender gebaut. Ein Stromkabel für den Bäumer, ein VDM- Kabel für den Kellerschrank, eine Schiene für den Kellerschrank, eine Schiene für die Bodenplatte und Bäumer montiert. Bäumer verkehrt und ausgestellt. Diese geschlossen.
+Bemerkung
+Seite 1 von 3<eos>
+===== PAGE 2 =====
+Vertrag Bestellungen für ZUSCHND 2.2. (1) Feb 2022
+Positiondaten
+Art der kunde Art der Kunde Art der
+Bestellung
+Nettopreis
+Menge
+Steuernutz
+Nettobetrag
+Pos
+Art Nr.
+1000
+1.50d
+43,20
+19%
+TGA Oberuster/Monteur
+128,60
+01
+01 Besanmontage
+123.50
+19%
+19%
+02
+02 Außenbau Angebot
+getLineTradeAgreement: 123.50
+Beuner-Deckhaltenung
+132.50
+1.50d
+02
+02 Außenbau Angebot
+getLineTradeAgreement: 123.50
+Umsatzsteueraufschlüsselung
+Bezahtung
+Steuernutz (%)
+Steuernutz (%)
+Art (Bezahnung)
+Warnswert
+Zu-Abschlag
+Umsatzsteuer (%)
+252,50
+19
+47,50
+Belegsummen
+Positionssumme
+252,50
+Gesamtheit der Zuschläge
+6.00
+Gesamtheit der Zuschläge
+4.00
+Rechnungsumme ohne USt.
+252.50
+Steuernutz
+47.50
+Bruttosumme
+360.00
+Erhaltene Ansprüchen
+-0.00
+Zahlbetrag
+360.00
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlbar sofort rein netto
+Seite 2 von 3<eos>
+===== PAGE 3 =====
+Bezugsort: Rechnungen für ZUSCHND 2.3 (1) FeWo 2012
+Zahnungart
+Zahnungstype (kodert):
+SG: 000100000001278950798
+MAN
+Rechnungsbegleitende Unterlagen
+Name
+Datumname
+Art
+Seite 3 von 3<eos>

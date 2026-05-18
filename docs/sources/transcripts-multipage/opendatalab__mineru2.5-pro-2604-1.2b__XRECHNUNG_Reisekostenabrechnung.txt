@@ -1,0 +1,85 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  XRECHNUNG_Reisekostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  314.55s total
+
+===== PAGE 1 =====
+<fcel>Handelsrechnung (380) Nr. 280081 vom 13.07.2018<lcel><nl>
+<fcel>Währung:<fcel>EUR<nl>
+<fcel>Abrechnungszeitraum:<fcel>09.07.2018 bis 11.07.2018<nl>
+<fcel>Leitwege-ID:<fcel>04011000-12345-34<nl>
+<fcel>Weitere Referenz:<fcel>Hotelrechnung<nl>
+<ecel><fcel>Art der Referenz:Referenzpapier (916)<nl>
+<fcel>Weitere Referenz:<fcel>Taxi-Nue-und-Berlin<nl>
+<ecel><fcel>Art der Referenz:Referenzpapier (916)<nl>
+<fcel>Verkäufer<ecel><nl>
+<fcel>Globale Nummer:<fcel>4000001123452 (GLN)<nl>
+<fcel>Name:<fcel>Lieferant GmbH<nl>
+<fcel>Ansprechpartner:<fcel>Max Mustermann<nl>
+<fcel>Abteilung:<fcel>Muster-Einkauf<nl>
+<fcel>Anschrift:<fcel>Lieferantenstraße 20<nl>
+<ecel><fcel>DE 80333 München<nl>
+<fcel>Telefon:<fcel>+49891234567<nl>
+<fcel>E-Mail:<fcel>Max@Mustermann.de<nl>
+<fcel>Steuernummer:<fcel>201/113/40209<nl>
+<fcel>USt.-Id.-Nr.:<fcel>DE123456789<nl>
+<fcel>Käufer/Leistungsempfänger<ecel><nl>
+<fcel>Nummer:<fcel>GE2020211<nl>
+<fcel>Name:<fcel>Kunden AG Mitte<nl>
+<fcel>Anschrift:<fcel>Kundenstraße 15<nl>
+<ecel><fcel>DE 69876 Frankfurt<nl>
+<fcel>Abweichender Warenempfänger<ecel><nl>
+<fcel>Name:<fcel>Musterfirma Nürnberg<nl>
+<fcel>Anschrift:<fcel>Am Bahnhof 42<nl>
+<ecel><fcel>DE 75319 Nürnberg<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Bemerkungen<lcel><ecel><lcel><lcel><lcel><lcel><nl>
+<fcel>Betreff:<lcel><fcel>REG Regulatory information<lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Inhalt<fcel>Listelotte Müllermann, Kumpelstr. 54, 12345 BerlinHandelsregisternummer: H A 713<lcel><lcel><lcel><lcel><nl>
+<fcel>Betreff:<lcel><fcel>AAI General information<lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Inhalt<fcel>Flug wurde vom Auftraggeber gebucht.<lcel><lcel><lcel><lcel><nl>
+<fcel>Betreff:<lcel><fcel>AAI General information<lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Inhalt<fcel>Reise: MusterreisekostenabrechnungZweck: Workshop in NürnbergLand: DeutschlandStrecke: Berlin - Berlin<lcel><lcel><lcel><lcel><nl>
+<fcel>Positionsdaten<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-KundeArt-Nr-Lief.Art-Nr(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<fcel>1<ecel><fcel>Übernachtung, 2 Nächte Hotel<fcel>158,88<fcel>1<fcel>7%<fcel>158,88<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis :<ecel><ecel><ecel><ecel><nl>
+<fcel>2<ecel><fcel>Verpflegung Frühstück<fcel>11,76<fcel>1<fcel>19%<fcel>11,76<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 14,00<ecel><ecel><ecel><ecel><nl>
+<fcel>3<ecel><fcel>Fahrtkosten, Taxi Berlin<fcel>23,36<fcel>1<fcel>7%<fcel>23,36<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 25,00<ecel><ecel><ecel><ecel><nl>
+<fcel>4<ecel><fcel>Fahrtkosten, Taxi Nürnberg<fcel>20,09<fcel>1<fcel>7%<fcel>20,09<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 21,50<ecel><ecel><ecel><ecel><nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<ecel><ecel><fcel>202,33<fcel>7<fcel>14,16<nl>
+<fcel>Umsatzsteuer (S)<ecel><ecel><fcel>11,76<fcel>19<fcel>2,23<nl>
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Positionssumme<ecel><ecel><ecel><fcel>214,09<nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<ecel><ecel><ecel><fcel>0,00<nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<ecel><ecel><ecel><fcel>-0,00<nl>
+<ecel><fcel>Rechnungssumme ohne USt.<ecel><ecel><ecel><fcel>214,09<nl>
+<ecel><fcel>Steuerbetrag<ecel><ecel><ecel><fcel>16,39<nl>
+<ecel><fcel>Bruttosumme<ecel><ecel><ecel><fcel>230,48<nl>
+<ecel><fcel>Erhaltene Anzahlungen<ecel><ecel><ecel><fcel>-0,00<nl>
+<ecel><fcel>Zahlbetrag<ecel><ecel><ecel><fcel>230,48<nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Zahlbar innerhalb 30 Tagen netto bis 12.08.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungsart<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlung per SEPA Überweisung.<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert):<lcel><lcel><fcel>58 - per SEPA ÜBERWEISUNG<lcel><lcel><nl>
+<fcel>Kontoname :<lcel><lcel><fcel>Kunden AG<lcel><lcel><nl>
+<fcel>IBAN :<lcel><lcel><fcel>DE02120300000000202051<lcel><lcel><nl>
+<fcel>Verkäufer-BIC:<lcel><lcel><fcel>BYLADEM1001<lcel><lcel><nl>
+<fcel>Rechnungsbegleitende Unterlagen<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Name<lcel><fcel>Dateiname<lcel><fcel>Art<lcel><nl>
+<fcel>Hotelrechnung<lcel><fcel>Hotelrechnung-Imm0.pdf<lcel><fcel>application/pdf<lcel><nl>
+<fcel>Taxi-Nue-und-Berlin<lcel><fcel>Taxi-Nue-und-Berlin.pdf<lcel><fcel>application/pdf<lcel><nl>
+<|im_end|>

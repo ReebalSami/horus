@@ -1,0 +1,143 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Rechnungskorrektur
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  62.83s total
+
+===== PAGE 1 =====
+# Rechnungskorrektur (384) Nr. RK21012345 vom 16.09.2018
+
+## Angaben zur Rechnung
+
+* **Währung:** EUR
+* **Liefer- und Leistungsdatum:** 05.08.2018
+* **Bestellung:** B123456789
+* **Lieferavis:** L87654321012345
+
+## Verkäufer
+
+* **Nummer:** 549910
+* **Globale Nummer:** 4333741000005 (GLN)
+* **Name:** MUSTERLIEFERANT GMBH
+* **Anschrift:** BAHNHOFSTRASSE 99
+* **USt.-Id.-Nr.:** DE99199 MUSTERHAUSEN
+* **Ort:** DE123456789
+
+## Käufer/Leistungsempfänger
+
+* **Nummer:** 009420
+* **Name:** MUSTER-KUNDE GMBH
+* **Anschrift:** KUNDENWEG 88
+* **Ort:** DE 40235 DUESSELDORF
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the document, presented in Markdown format:
+
+## Document Details
+* **Document Type:** Proforma Invoice / Quotation (Implied by the context of pricing/terms)
+* **Document Title:** Bemerkungen (Remarks/Notes)
+* **Date:** (Not explicitly found in the provided snippet, but implied by the context of the invoice)
+* **Invoice Number:** (Not explicitly found in the provided snippet)
+
+---
+
+## Remarks / Notes Section
+
+### Section 1: Pricing/Terms Remarks
+* **Subject (Betreff):** AAK
+* **Content:** Price conditions
+* **Subject (Betreff):** REG
+* **Content:** Regulatory information
+
+### Section 2: Detailed Remarks (Main Body)
+
+**Remarks/Notes (Bemerkung):**
+* **Supplier/Seller Information (Implied):**
+    * **Company:** MUSTERLIEFERANT GMBH
+    * **Address:** BAHNHOFSTRASSE 99
+    * **Postal Code/City:** 99199 MUSTERHALSEN
+    * **Contact:**
+        * **Telephone:** +49 932 431 0
+        * **Email:** info@musterlieferant.de
+    * **Identification:**
+        * **Tax ID (USt-IdNr.):** DE123456789
+        * **HRB No.:** 372876
+        * **GVWERKSAMTSSTADT:** (Likely a location/registry detail)
+        * **GLN:** 4304171000002
+
+**Remarks/Notes (Bemerkung):**
+* **Payment/Transaction Details:**
+    * **Subject:** Bei Rückfragen:
+    * **Contact:** Telefon: +49 932 431 500
+    * **Email:** max.muster@musterlieferant.de
+
+**Remarks/Notes (Bemerkung):**
+* **Document Reference:**
+    * **Subject:** Ursprungsbeleg - Nr.: R87654321012345
+    * **Subject:** Reklamationsnummer: REKLA-2018-235
+
+**Remarks/Notes (Bemerkung):**
+* **Recipient/Buyer Information (Implied):**
+    * **Role:** Warenempfänger (Recipient)
+    * **GLN:** 4304170808993
+    * **Company:** MUSTER-MARKET
+    * **Address:** HAUPTSTRASSE 44
+    * **Postal Code/City:** 31157 SARSTEDT
+    * **Department:** Abteilung: 8211
+
+---
+*Page navigation indicates this is Page 2 of 4.*
+===== PAGE 3 =====
+# Invoice Extraction
+
+## Positiodaten
+
+| Pos | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | Zitronensäure 100ml | 1,0000 | 1 | 19 % | -5,00 |
+| | *[Details: getLineTradeAgreementettributpreis : 1,0000]* | | | | |
+| 2 | Gelierzucker Extra 250g | 1,4500 | 1 | 7 % | -2,90 |
+| | *[Details: getLineTradeAgreementettributpreis : 1,5000]* | | | | |
+
+## Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (S) | | | -4,85 | 19 | -0,92 |
+| Umsatzsteuer (S) | | | -2,82 | 7 | -0,20 |
+
+## Belegsummen
+
+| Item | Amount |
+| :--- | :---: |
+| Positionssumme | -7,90 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | 0,23 |
+| Rechnungssumme ohne USt. | -7,67 |
+| Steuerbetrag | -1,12 |
+| Bruttosumme | -8,79 |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **-8,79** |
+===== PAGE 4 =====
+# Zu- und Abschläge
+
+| Art | Prozent | Basisbetrag | Basismenge | Steuer | Betrag |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Abschlag Rechnungrobat 1 | | | | | |
+| - 2,00% Basisbetrag: -5,00, MwSt. % 19,0 | | | | 19 % UST (S) | 0,10 |
+| Abschlag Rechnungrobat 1 | | | | | |
+| - 2,00% Basisbetrag: -2,90, MwSt. % 7,0 | | | | 7 % UST (S) | 0,06 |
+| Abschlag Rechnungrobat 2 | | | | | |
+| - 2,00% Basisbetrag: -5,00, MwSt. % 19,0 | | | | 19 % UST (S) | 0,05 |
+| Abschlag Rechnungrobat 2 | | | | | |
+| - 2,90, MwSt. % 7,0 | | | | 7 % UST (S) | 0,02 |
+
+***
+
+**Header Information:**
+
+* **Document Title:** Beispiel-Rechnungen für ZUFGERD 2.2, (c) FED 2022
+* **Page:** Seite 4 von 4

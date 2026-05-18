@@ -1,0 +1,113 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Sachversicherung_berechneter_Steuersatz
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  328.45s total
+
+===== PAGE 1 =====
+Beirat Rechners für ZUSCHRO 2.2. (1/160 2018)
+Rechnung des Versicherers (575) Nr. 00.123.456.7-2018-1 vom 18.04.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+21.05.2018
+Verkäufer
+Nummer:
+549910
+1234567890128 (GLN)
+Globale Nummer:
+MVM Musterhafter
+Name:
+Vereinsverantwortlich Musterstadt a.G.
+Anschrift:
+Musterstr. 12
+DE 12345 Musterstadt
+US-Id.-Nr.:
+DE234567891
+Käufer/Leistungsempfänger
+Herrn
+Max Mustermann
+Name:
+Musterstr. 11
+Anschrift:
+DE 12345 Bad Musterhausen
+Bemerkingen
+Sachversicherungsvertrag Nr. 00.123.456.7 (US-Id-Nr. 1234567890128) eingehalten)
+Bemerkung
+Beirat
+REG. Regulatory Information
+MVM Musterhafter
+Vereinsverantwortlich Musterstadt a.G.
+Versicherungsbüro
+Musterstr. 12
+DE 1234567890128
+Inhaft
+Mo.-Fr. 08.30 - 12.00 Uhr
+Sa. - So. 08.30 - 12.00 Uhr
+Mo.-Fr. 14.00 - 20.00 Uhr
+Mo.-Fr. 14.00 - 20.00 Uhr<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHND 2.3 (1) Feb 2022
+Positiondaten
+Art Nr/Kunde
+Art Nr/Kunde
+Bescheinigung
+Nettopreis
+Menge
+Steuernatz
+Nettobetrag
+Pos
+Art Nr
+Art Nr
+Verbundene Wohngebäudeversicherung
+1.000.000
+1
+0%
+1.163.40
+getrimme/trade/gemischte/topreis: 1.163.4000
+Feuerversicherung: Teil A $ 2.62.000 MX1214
+Hausversicherung: Teil B $ 1.000 MX1214
+Werkzeugversicherung: Teil A $ 1.000 MX1214
+Werkzeugkofferpfosten und zusätzliche Einrichtung gemäß Anlage 10.000 MX1214
+Werkzeugkofferpfosten: Teil A $ 1.000 MX1214
+Entgelt: 16,34 € Versicherungsdauer = 163,40 €
+Umsatzsteueraufschlüsselung
+Art (Kunde)
+Bescheinigung
+Steuernatz (%)
+Steuernbetrag
+Werwerft
+Zu Abschlag
+Umsatzsteuer (€)
+Umsatzsteuerbetgelt nach
+0
+1.163.40
+0.00
+54 Nr. 10a USIG
+Belegsummen
+1.163.40
+Positionsumme
+Gesamtheit der Zuschläge
+0.00
+Gesamtheit der Zuschläge
+-0.00
+Rechnungsumme ohne USt.
+1.163.40
+Steuerbetrag
+0.00
+Bruttosumme
+1.163.40
+Erhaltene Anschlüsse
+-0.00
+Zahlbetrag
+1163.40
+Seite 2 von 3<eos>
+===== PAGE 3 =====
+Vertrag mit Bedingungen für ZUGEHND 2.3 (1) FeWo 2022
+Zahlungsbedingungen
+Fälligkeit
+Teilzahlung
+Beschreibung
+Einen zu zahlbaren Betrag überweißen Sie bitte auf folgende Bankverbindung: IBAN: DE 44 363 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0

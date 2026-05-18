@@ -1,0 +1,96 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Rechnungskorrektur
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  129.28s total
+
+===== PAGE 1 =====
+Rechnungskorrektur (384)  Nr. RK21012345  vom 16.09.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 05.08.2018
+Bestellung: B123456789
+Lieferavis: L87654321012345
+
+Verkäufer
+
+Nummer: 549910
+Globale Nummer: 4333741000005 (GLN)
+Name: MUSTERLIEFERANT GMBH
+Anschrift: BAHNHOFSTRASSE 99
+DE 9919 MUSTERHAUSEN
+===== PAGE 2 =====
+Bemerkungen
+
+Betreff: AAK Price conditions
+
+Inhalt Es bestehen Rabatt- oder Bonusvereinbarungen.
+
+Betreff: REG Regulatory information
+
+Inhalt MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+Geschäftsführung: Max Mustermann
+USt-IdNr: DE123456789
+Telefon: +49 932 431 0
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+===== PAGE 3 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr (Art)
+
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+
+1 ZS997
+4123456000014 (GLN)
+Zitronensäure 100ml
+1,0000 -5 Stk 19 %
+-5,00
+getLineTradeAgreementBruttopreis : 1,0000
+Gesamtbetrag der Abschläge
+VKE/Geb: 1
+Verpackung: Flasche
+Gelierzucker Extra 250g
+1,4500 -2 Stk 7 %
+-5,00
+-2,90
+getLineTradeAgreementBruttopreis : 1,0000
+Verpackung: Flasche
+VKE/Geb: 1
+
+2 GZ250
+4123456000021 (GLN)
+Gelierzucker Extra 250g
+1,4500 -2 Stk 7 %
+-2,90
+getLineTradeAgreementBruttopreis : 1,5000
+Abschlag: 0,0500
+Gesamtbetrag der Abschläge
+VKE/Geb: 1
+
+Rechnungssumme ohne USt.
+-7,67
+Erhaltene Anzahlungen
+-0,00
+Zahlbetrag
+-8,79
+===== PAGE 4 =====
+## Zu- und Abschläge
+
+| Art | Prozent | Basisbetrag | Basismenge | Steuer | Betrag |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Abschlag Rechnungsrabatt 1 | | | | 19 % UST (S) | 0,10 |
+| -2,00% Basisbetrag: -5,00, MwSt. % 19,0 | | | | | |
+| Abschlag Rechnungsrabatt 1 | | | | 7 % UST (S) | 0,06 |
+| -2,00% Basisbetrag: -2,90, MwSt. % 7,0 | | | | | |
+| Abschlag Rechnungsrabatt 2 | | | | 19 % UST (S) | 0,05 |
+| Basisbetrag: -5,00, MwSt. % 19,0 | | | | | |
+| Abschlag Rechnungsrabatt 2 | | | | 7 % UST (S) | 0,02 |

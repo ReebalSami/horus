@@ -1,0 +1,115 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Betriebskostenabrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  35.43s total
+
+===== PAGE 1 =====
+# Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+
+## Allgemeine Informationen
+
+| Feld | Wert |
+| :--- | :--- |
+| **Währung:** | EUR |
+| **Abrechnungszeitraum:** | 01.01.2010 bis 31.12.2010 |
+| **Weitere Referenz:** | Abrechnung 2010 |
+| **Art der Referenz/Referenzpapier:** | (916) |
+
+---
+
+## Verkäufer
+
+| Feld | Wert |
+| :--- | :--- |
+| **Name:** | Grundbesitz GmbH & Co. |
+| **Anschrift:** | Musterstraße 42 |
+| | DE 75645 Frankfurt |
+| **Steuernummer:** | 201/113/40209 |
+| **Ust.-Id.-Nr.:** | DE136695976 |
+
+---
+
+## Käufer/Leistungsempfänger
+
+| Feld | Wert |
+| :--- | :--- |
+| **Name:** | Beispielmieter GmbH |
+| **Anschrift:** | Verwaltung Straße 40 |
+| | DE 12345 Musterstadt |
+
+---
+
+## Abweichender Warenempfänger
+
+| Feld | Wert |
+| :--- | :--- |
+| **Anschrift:** | Verwaltung Straße 40 |
+| **Einheit:** | 5.0G rechts |
+| | DE 12345 Musterstadt |
+
+---
+
+## Bemerkungen
+
+| Feld | Wert |
+| :--- | :--- |
+| **Bemerkung:** | Rechnung gemäß Betriebskostenrechnung vom 21.11.2011. |
+| **Betreff:** | REG - Regulatory Information |
+
+---
+
+## Inhalt
+
+*(Der eigentliche Inhalt/die Positionen der Rechnung sind in diesem Ausschnitt nicht enthalten, aber die folgenden Informationen sind als Fußnote/zusätzliche Daten vorhanden:)*
+
+**Grundbesitz GmbH & Co.**
+Musterstraße 42
+75645 Frankfurt
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+---
+*Seite 1 von 2*
+===== PAGE 2 =====
+# Invoice Extraction
+
+## Positonsdaten
+
+| Pos | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | Abrechnungskreis 1 | 15.387,08 | 1 | 19 % | 15.387,08 |
+
+## Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (S) | | | 15.387,08 | 19 | 2.923,55 |
+
+## Belegsummen
+
+| | Betrag |
+| :--- | :---: |
+| Positionsumme | 15.387,08 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 15.387,08 |
+| Steuerbetrag | 2.923,55 |
+| Bruttosumme | 18.310,63 |
+| Erhaltene Anzahlungen | -1.780,00 |
+| Zahlbetrag | 502,63 |
+
+## Zahlungsbedingungen
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+| :--- | :---: | :---: |
+| | 04.04.2018 | |
+
+## Rechnungsbeleitende Unterlagen
+
+| Name | Dateiname | Art |
+| :--- | :--- | :--- |
+| Betriebskostenabrechnung | Betriebskostenabrechnung.pdf | application/pdf |

@@ -1,0 +1,108 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_1_Teilrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  52.70s total
+
+===== PAGE 1 =====
+# Handelsrechnung (380) Nr. 471102 vom 05.06.2018
+
+## Verkäufer
+* **Nummer:** 549910
+* **Globale Nummer:** 4000001123452 (GLN)
+* **Name:** Lieferant GmbH
+* **Anschrift:** Lieferantenstraße 20
+* **Steuernummer:** DE 80333 München
+* **Ust.-Id.-Nr.:** DE123456789
+
+## Käufer/Leistungsempfänger
+* **Nummer:** GE2020211
+* **Name:** Kunden AG Mitte
+* **Anschrift:** Kundenstraße 15
+* **Ort:** DE 69876 Frankfurt
+
+---
+
+### Rechnungsinformationen
+* **Währung:** EUR
+* **Liefer- und Leistungsdatum:** 03.06.2018
+* **Bestellung:** 2018-471331
+
+### Bemerkungen
+* **Bemerkung:** Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+* **Betreff:** AAK - Price conditions
+* **Inhalt:** Es bestehen Rabatt- und Bonusvereinbarungen.
+* **Betreff:** REG - Regulatory information
+
+### Anhang/Zusatzinformationen
+* **Lieferant GmbH**
+    * Lieferantenstraße 20
+    * 80333 München
+    * Deutschland
+    * Geschäftsführer: Hans Muster
+    * Handelsregisternummer: H A 123
+
+---
+*Dies ist eine Extraktion der Struktur und Inhalte der vorliegenden Rechnung.*
+===== PAGE 2 =====
+# Invoice Extraction
+
+## Positiodaten
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+|---|---|---|---|---|---|---|
+| 1 | KR3M 4012345001235 (GTIN) | Kunstrasen grün 3m breit | 3,3333 | 3 m² | 19 % | 10,00 |
+| | | Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen: | | | | |
+| | | getLineTradeAgreementBruttotpreis : 4,0000 | | | | |
+| | | Abschlag: 0,6667 | | | | |
+| | | 300cm x 100 cm | | | | |
+| 2 | SFKS 4000050986428 (GTIN) | Schwineesteak | 5,5000 | 1 kg | 7 % | 5,50 |
+| | | Bestellt wurden 5 kg Schweinesteak. Mit dieser Rechnung wurden nur die bereits gelieferten Steaks berechnet. Die noch offenen 4 kg Schweinesteak werden separat geliefert und berechnet. | | | | |
+| 3 | GTINWAS 4000001234561 (GTIN) | Mineralwasser Medium 12 x 1,99 PET | 5,4900 | 20 Stk | 7 % | 109,80 |
+| | | getLineTradeAgreementBruttotpreis : 5,4900 | | | | |
+| 4 | PFAS 4000001234578 (GTIN) | Pfand | 2,7700 | 20 | 19 % | 55,46 |
+| | | getLineTradeAgreementBruttotpreis : 2,7700 | | | | |
+
+## Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+|---|---|---|---|---|---|
+| Umsatzsteuer (S) | | | 113,03 | 7 | 7,91 |
+| Umsatzsteuer (S) | | | 64,46 | 19 | 12,25 |
+===== PAGE 3 =====
+# Invoice Extraction
+
+## Belegsummen
+
+| Item | Amount |
+| :--- | :--- |
+| Positionsumme | 180.76 |
+| Gesamtbetrag der Zuschläge | 5.80 |
+| Gesamtbetrag der Abschläge | -9.07 |
+| Rechnungssumme ohne USt. | 177.49 |
+| Steuerbetrag | 20.16 |
+| Bruttosumme | 197.65 |
+| Erhaltene Anzahlungen | -50.00 |
+| Zahlbetrag | 147.65 |
+
+## Zahlungsbedingungen
+
+| Description | Terms |
+| :--- | :--- |
+| Zahlung innerhalb 30 Tagen netto bis 04.07.2018, 3% Skonto innerhalb 10 Tagen bis 15.06.2018 | |
+
+## Zu- und Abschläge
+
+| Art | Prozent | Basisbetrag | Basismenge | Steuer | Betrag |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Abschlag Sondernachlass | | 10,00 | | 19 % USt (S) | -1,00 |
+| Abschlag Sondernachlass | | 115,30 | | 7 % USt (S) | -8,07 |
+| Zuschlag Versandkosten | | 115,30 | | 7 % USt (S) | 5,80 |
+
+***
+
+**Document Details:**
+* **Document Title:** Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+* **Page:** Seite 3 von 3

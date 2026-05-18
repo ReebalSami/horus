@@ -1,0 +1,197 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_ElektronischeAdresse
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  593.78s total
+
+===== PAGE 1 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Mietrechnung (387)   Nr. 9314110911/00/M/00/N   vom   01.10.2018
+
+Währung:           EUR
+Liefer- und Leistungsdatum:  29.09.2018
+Bestellung:           B123456789
+Lieferavis:             L87654321012345
+
+Käufer/Leistungsempfänger
+Nummer:                9314110911
+Name:                    DE 99199 MUSTER-KUNDE GMBH
+Anschrift:               KUNDENENWEG 88
+USt.-Id.-Nr.:             DE 40235 DUESSELDORF
+===== PAGE 2 =====
+Bemerkungen
+
+Betreff: REG  Regulatory information
+
+Bemerkung
+
+Übergabe am 29.09.2018/ 10:35
+Ort: Frankfurt a. M.
+km: 17791
+
+Bemerkung
+
+Übernahme: Frankfurt
+Datum: 01.10.2018
+Zeit: 10:19
+km/in: 18664
+km gefahren: 873
+CO2: 150
+Bruttolistenpreis: 68300
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Positionsdaten
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Art-Nr-Lief. | Miettage | 86,5500 | 2 Tag(e) | 19 % | 173,10 |
+| 2 | Art-Nr | Inklusiv-Kilometer waren: 873 | 23,1000 | 2 | 19 % | 46,20 |
+| 3 | Vollkasko | Personen-Unfallversicherung | 7,9800 | 2 | 19 % | 15,96 |
+| 4 | minimale Selbstbeteiligung | Choice Upgrade | 5,0400 | 2 | 19 % | 10,08 |
+| 6 | Umsatzsteuer (S) |  | 286,52 |  | 19 | 54,44 |
+
+Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag
+===== PAGE 4 =====
+Belegsummen
+
+Positionssumme	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt.	286,52
+Gesamtbetrag der Zuschläge	0,00
+Steuerbetrag	-0,00
+Erhaltene Anzahlungen	340,96
+Rechnungssumme ohne USt

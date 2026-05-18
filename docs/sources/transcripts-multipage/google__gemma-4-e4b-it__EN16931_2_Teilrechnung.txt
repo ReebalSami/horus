@@ -1,0 +1,120 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_2_Teilrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  40.43s total
+
+===== PAGE 1 =====
+# Handelsrechnung (Invoice)
+
+**Invoice Number:** 380
+**Invoice Date:** 13.06.2018
+
+---
+
+## Seller Information (Verkäufer)
+
+*   **Name:** Lieferant GmbH
+*   **Address:** Lieferantenstraße 20
+*   **City/Postal Code:** DE 80333 München
+*   **Tax ID (Steuernummer):** 201/113/40209
+*   **VAT ID (Ust.-Id.-Nr.):** DE123456789
+*   **Invoice Number (Nummer):** 549910
+*   **Global Number:** 4000001123452 (GLN)
+
+## Buyer Information (Käufer/Leistungsempfänger)
+
+*   **Name:** Kunden AG Mitte
+*   **Address:** Kundenstraße 15
+*   **City/Postal Code:** DE 69876 Frankfurt
+*   **Invoice Number (Nummer):** GE2020211
+
+---
+
+## Transaction Details
+
+*   **Invoice Date (Liefer- und Leistungsdatum):** 03.06.2018
+*   **Invoice Date (Rechnungsdatum):** 13.06.2018
+*   **Subject (Betreff):** Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+
+---
+
+## Notes and Additional Information
+
+**Remarks (Bemerkungen):**
+*   (No specific remarks entered in the main section)
+
+**Subject (Betreff):**
+*   AAK - Price conditions
+
+**Content (Inhalt):**
+*   Es bestehen Rabatt- und Bonusvereinbarungen. (There are discount and bonus agreements.)
+
+**Subject (Betreff):**
+*   REG - Regulatory information
+
+**Content (Inhalt):**
+*   **Seller:** Lieferant GmbH
+*   **Seller Address:** Lieferantenstraße 20, 80333 München, Deutschland
+*   **Contact Person:** Hans Muster
+*   **Business Register Number:** H A 123
+
+---
+*Page 1 of 2*
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format:
+
+## Document Header
+* **Document Type:** Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+* **Invoice Number/Reference:** (Not explicitly found, but context suggests this is part of a series)
+* **Date:** (Not explicitly found)
+
+---
+
+## Line Items (Positionsdaten)
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | SFK5 4000050986428 (OTIN) | | Schweinesteak | 5,5000 | 4 kg | 7 % | 22,00 |
+
+**Additional Detail:**
+* Bestellung wurde 5 kg Schweinesteak. Mit dieser Rechnung werden die nachgelieferten 4 kg Steaks berechnet.
+* **Service:** getLineTradeAgreementBruttopreis : 5,5000
+* **Product Detail:** Schweinesteak aus Deutschland
+
+---
+
+## Summary (Umsatzsteueraufschlüsselung)
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (S) | | | 22,00 | 7 | 1,54 |
+
+---
+
+## Totals (Belegsummen)
+
+| Description | Amount |
+| :--- | :---: |
+| Positionssumme | 22,00 |
+| Gesamtbetrag der Zuschläge | |
+| Gesamtbetrag der Abschläge | |
+| **Rechnungssumme ohne USt.** | **22,00** |
+| Steuerbetrag | 1,54 |
+| Bruttosumme | 23,54 |
+| Erhaltene Anzahlungen | |
+| **Zahlbetrag** | **23,54** |
+
+---
+
+## Payment Terms (Zahlungsbedingungen)
+
+* **Payment Terms:** Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3% Skonto innerhalb 10 Tagen bis 15.06.2018
+* **Due Date/Status:** (Implied by terms)
+
+---
+*Page Footer: Seite 2 von 2*

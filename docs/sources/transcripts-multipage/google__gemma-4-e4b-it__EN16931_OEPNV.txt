@@ -1,0 +1,135 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  40.47s total
+
+===== PAGE 1 =====
+# Handelsrechnung (380)
+
+**Nr. E2018092011804**
+**vom 20.09.2018**
+
+---
+
+## Währung:
+EUR
+
+## Liefer- und Leistungsdatum:
+20.09.2018
+
+## Referenz des Käufers:
+05 158 004 - 11023 - 45
+
+## Bestellung:
+2018092011804
+
+---
+
+## Verkäufer
+
+**Nummer:** 549910
+**Name:** Verkehrsbetriebe GmbH
+**Ansprechpartner:** Torti Mayer
+**Anschrift:** Musterstraße 3
+**Telefon:** +493012345678
+**E-Mail:** tm@verkehrsbetriebe.de
+**USt.-Id.-Nr.:** DE123456789
+
+---
+
+## Käufer/Leistungsempfänger
+
+**Nummer:**
+**Name:** Liselotte Müllermann
+**Anschrift:** Beispielstraße 24
+**Ort:** DE 12345 Berlin
+
+---
+
+## Bemerkungen
+
+**Betreff:** ADU Note
+**Inhalt:** Bei Schrittwechsel bitte Ihre Kundenummer 35040727 und Belegnummer 2018092011804 angeben
+
+---
+
+## Positionsdaten
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| 0 | | | 4-Fahrten-Karte Berlin AB | 8,41 | 1 Stk | 7 % | 8,41 |
+
+---
+
+**Gültig ab 20.09.2018 15:39 Uhr bis 20.09.2018 17:39 Uhr Abschnitt: 1/4**
+
+---
+*Seite 1 von 2*
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format:
+
+## Invoice Summary
+
+| Field | Value |
+| :--- | :--- |
+| **Document Type** | Invoice (Implied) |
+| **Invoice Number** | N/A |
+| **Date** | N/A |
+| **Due Date** | N/A |
+
+---
+
+## Line Items / Services Rendered
+
+| Art (Category) | Description | Quantity | Unit Price | Total |
+| :--- | :--- | :--- | :--- | :--- |
+| Umsatzsteuer (5) | Service/Product Detail | N/A | N/A | N/A |
+
+---
+
+## Financial Breakdown (Umsatzsteuererklärung)
+
+| Description | Amount |
+| :--- | :--- |
+| **Net Amount (Warenwert)** | N/A |
+| **Discount (Zu-/Abschlag)** | N/A |
+| **Base Amount (Basisbetrag)** | N/A |
+| **Tax Rate (Steuersatz [%])** | 7 |
+| **Tax Amount (Steuerbetrag)** | 0.59 |
+
+---
+
+## Payment Details (Belegsummen)
+
+| Description | Amount |
+| :--- | :--- |
+| **Subtotal (Positionssumme)** | N/A |
+| **Total Before Discount (Gesamtbetrag der Zuschläge)** | N/A |
+| **Total After Discount (Gesamtbetrag der Abschläge)** | N/A |
+| **Total Including VAT (Rechnungssumme ohne USt.)** | 8.41 |
+| **Tax Amount (Steuerbetrag)** | 0.59 |
+| **Gross Total (Bruttosumme)** | 9.00 |
+| **Advance Payments Received (Erhaltene Anzahlungen)** | N/A |
+| **Balance Due (Zahlbetrag)** | 9.00 |
+
+---
+
+## Payment Terms & Information
+
+**Payment Terms (Zahlungsbedingungen):**
+*   **Terms:** Payment due upon receipt of invoice.
+*   **Due Date:** 03.10.2018
+
+**Payment Information (Zahlungssart):**
+*   **Payment Type (Zahlungstyp):** 30 - per Überweisung (SEPA)
+*   **Recipient Name (Kontoname):** Verkehrsbetriebe GmbH
+*   **IBAN:** DE12 1234 5678 9012 3456 78
+*   **Vendor BIC:** N/A
+
+---
+*Source Document Reference: Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022*

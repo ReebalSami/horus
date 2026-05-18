@@ -1,0 +1,133 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Kraftfahrversicherung_Bruttopreise
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  51.34s total
+
+===== PAGE 1 =====
+# Rechnung des Versicherers (575)
+
+**Nr. 00.123.456.7-2018-1**
+**vom 11.03.2018**
+
+---
+
+## Allgemeine Informationen
+
+*   **Währung:** EUR
+*   **Liefer- und Leistungsdatum:** 30.06.2018
+
+---
+
+## Verkäufer (Leistungserbringer)
+
+*   **Nummer:** 549910
+*   **Name:** MVM Musterhafter
+*   **Adresse:** Versicherungsverein Musterstadt a.G.
+*   **Anschrift:** Musterstr. 12
+*   **Ort/Land:** DE 12345 Musterstadt
+*   **USt.-Id.-Nr.:** DE234567891
+
+---
+
+## Käufer/Leistungsempfänger
+
+*   **Name:** Herr Max Mustermann
+*   **Anschrift:** Musterstr. 11
+*   **Ort/Land:** DE 12346 Bad Musterhausen
+
+---
+
+## Bemerkungen
+
+*   **Bemerkung:** Beitragsrechnung zur Kraftfahrversicherung Nr. 00.123.456.7
+*   **Betreff:** REG - Regulatory information
+
+### Inhalt (Details)
+
+*   **MVM Musterhafter**
+    *   Versicherungsverein Musterstadt a.G.
+    *   Musterbüro
+    *   Musterstr. 12
+    *   12345 Musterstadt
+    *   Tel.: 0123/999 45678
+    *   Fax: 0123/999 45678
+    *   Mo.-Fr. 08:30 - 12:30 Uhr
+    *   Mo.-Fr. 14:00 - 17:00 Uhr
+    *   Mo.-Fr. 8:00 - 20:00 Uhr, Sa 8:00-14:00 Uhr
+
+---
+*Seite 1 von 3*
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format.
+
+## 🧾 Invoice Header Information
+
+* **Document Title:** Beispiel-Rechnungen für ZugFerd 2.2, (c) Ferd 2022
+* **Invoice Sections:** Positionsdaten, Umsatzsteueraufschlüsselung, Belegsummen
+
+---
+
+## 📋 Positionsdaten (Line Items)
+
+| Pos | Art-Nr. Kunde | Art-Nr. Lieferant | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | | | Kfz-Halpflicht SF25 (30 %) Typkl. 18 Regio R9 | 67,2244 | 1 | 0 % | 80,00 |
+| | | | *getLineTradeAgreementButtreptreis : 80,00006* | | | | |
+| | | | *Enthält 19% Versicherungssteuer = 12,7726 €* | | | | |
+| 2 | | | Vollasko SF25 (30 %) Typkl. 21 Regio R4 | 117,6471 | 1 | 0 % | 140,00 |
+| | | | *getLineTradeAgreementButtreptreis : 140,00000* | | | | |
+| | | | *Enthält 19% Versicherungssteuer = 22,3529 €* | | | | |
+
+---
+
+## 📊 Umsatzsteueraufschlüsselung (VAT Breakdown)
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (E) | | | 220,00 | 0 | 0,00 |
+| Umsatzsteuerbefreit nach §4 Nr. 10a UStG | | | | | |
+
+---
+
+## ➕ Belegsummen (Totals)
+
+| Item | Amount |
+| :--- | :---: |
+| Positionssumme | 220,00 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 220,00 |
+| Steuerbetrag | 0,00 |
+| Bruttosumme | 220,00 |
+| Offene Zahlungen | 220,00 |
+| **Zahlbetrag** | **440,00** |
+
+---
+*Page 2 of 3*
+===== PAGE 3 =====
+# Zahlungsbedingungen
+
+**Beschreibung**
+
+Einen zu zahlenden Betrag überweisen Sie bitte auf folgende Bankverbindung:
+
+IBAN: DE75123456780000000001
+BIC: WELADED1MS
+Sort.-Code: 010
+
+Wenn Sie uns ein SEPA-Lastschriftmandat erteilen, wird unser Konto von den Fälligkeit 01.07.2018, 01.10.2018 den jeweiligen Betrag von dem unbekannten Konto abbuchen. In diesem Fall würden Sie kein Geld bezahlen.
+
+Sofern sich keine Betragsänderung ergibt, zukommen wir Ihnen die entsprechende Rechnung erhalten.
+
+Beitragsgutschriften aus Ihrem Vertrag erstatten wir per Scheck.
+
+Rabattservice: Wenn Sie im laufenden Kalenderjahr nur einen Klz-Haftpflichtschaden oder nur einen Vollkaskoschaden melden, gilt für Sie der Rabattretter.
+
+***
+
+*Seite 3 von 3*

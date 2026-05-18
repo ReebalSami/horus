@@ -1,0 +1,72 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  EN16931_1_Teilrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  595.96s total
+
+===== PAGE 1 =====
+<fcel>Handelsrechnung (380) Nr. 471102 vom 05.06.2018<lcel><nl>
+<fcel>Währung:<fcel>EUR<nl>
+<fcel>Liefer- und Leistungsdatum:<fcel>03.06.2018<nl>
+<fcel>Bestellung:<fcel>2018-471331<nl>
+<fcel>Verkäufer<lcel><nl>
+<fcel>Nummer:<fcel>549910<nl>
+<fcel>Globale Nummer:<fcel>4000001123452 (GLN)<nl>
+<fcel>Name:<fcel>Lieferant GmbH<nl>
+<fcel>Anschrift:<fcel>Lieferantenstraße 20<nl>
+<ecel><fcel>DE 80333 München<nl>
+<fcel>Steuernummer:<fcel>201/113/40209<nl>
+<fcel>USt.-Id.-Nr.:<fcel>DE123456789<nl>
+<fcel>Käufer/Leistungsempfänger<lcel><nl>
+<fcel>Nummer:<fcel>GE2020211<nl>
+<fcel>Name:<fcel>Kunden AG Mitte<nl>
+<fcel>Anschrift:<fcel>Kundenstraße 15<nl>
+<ecel><fcel>DE 69876 Frankfurt<nl>
+<fcel>Bemerkungen<lcel><nl>
+<fcel>Bemerkung<fcel>Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.<nl>
+<fcel>Betreff:<fcel>AAK Price conditions<nl>
+<fcel>Inhalt<fcel>Es bestehen Rabatt- und Bonusvereinbarungen.<nl>
+<fcel>Betreff:<fcel>REG Regulatory information<nl>
+<fcel>Inhalt<fcel>Lieferant GmbHLieferantenstraße 2080333 MünchenDeutschlandGeschäftsführer: Hans MusterHandelsregisternummer: H A 123<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<ecel><fcel>KR3M 4012345001235 (GTIN)<fcel>Kunstrasen grün 3m breit<fcel>3,3333<fcel>3 m2<fcel>19 %<fcel>10,00<nl>
+<fcel>1<ecel><fcel>Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 4,0000<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Abschlag: 0,6667<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>300cm x 100 cm<ecel><ecel><ecel><ecel><nl>
+<ecel><fcel>SFK5 4000050986428 (GTIN)<fcel>Schweinesteak<fcel>5,5000<fcel>1 kg<fcel>7 %<fcel>5,50<nl>
+<fcel>2<ecel><fcel>Bestellt wurden 5 kg Schweinesteak. Mit dieser Rechnung werden nur die bereits gelieferten Steaks berechnet. Die noch offenen 4 kg Schweinesteak werden separat geliefert und berechnet.<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 5,5000<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Schweinesteak aus Deutschland<ecel><ecel><ecel><ecel><nl>
+<fcel>3<fcel>GTRWA5 4000001234561 (GTIN)<fcel>Mineralwasser Medium 12 x 1,0l PET<fcel>5,4900<fcel>20 Stk<fcel>7 %<fcel>109,80<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 5,4900<ecel><ecel><ecel><ecel><nl>
+<fcel>4<fcel>PFA5 4000001234578 (GTIN)<fcel>Pfand<fcel>2,7700<fcel>20<fcel>19 %<fcel>55,46<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 2,7700<ecel><ecel><ecel><ecel><nl>
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<lcel><fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<lcel><ecel><ecel><fcel>113,03<fcel>7<fcel>7,91<nl>
+<fcel>Umsatzsteuer (S)<lcel><ecel><ecel><fcel>64,46<fcel>19<fcel>12,25<nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Positionssumme<lcel><lcel><fcel>180,76<lcel><nl>
+<ucel><fcel>Gesamtbetrag der Zuschläge<lcel><lcel><fcel>5,80<lcel><nl>
+<ucel><fcel>Gesamtbetrag der Abschläge<lcel><lcel><fcel>-9,07<lcel><nl>
+<ucel><fcel>Rechnungssumme ohne USt.<lcel><lcel><fcel>177,49<lcel><nl>
+<ucel><fcel>Steuerbetrag<lcel><lcel><fcel>20,16<lcel><nl>
+<ucel><fcel>Bruttosumme<lcel><lcel><fcel>197,65<lcel><nl>
+<ucel><fcel>Erhaltene Anzahlungen<lcel><lcel><fcel>-50,00<lcel><nl>
+<ucel><fcel>Zahlbetrag<lcel><lcel><fcel>147,65<lcel><nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<lcel><nl>
+<fcel>Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3% Skonto innerhalb 10 Tagen bis 15.06.2018<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zu- und Abschläge<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art<fcel>Prozent<fcel>Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<nl>
+<fcel>Abschlag Sondernachlass<fcel>10,00<ecel><fcel>19 % UST (S)<fcel>-1,00<ecel><nl>
+<fcel>Abschlag Sondernachlass<fcel>115,30<ecel><fcel>7 % UST (S)<fcel>-8,07<ecel><nl>
+<fcel>Zuschlag Versandkosten<fcel>115,30<ecel><fcel>7 % UST (S)<fcel>5,80<ecel><nl>
+<|im_end|>

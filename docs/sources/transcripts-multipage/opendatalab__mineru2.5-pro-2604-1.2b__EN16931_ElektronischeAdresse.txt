@@ -1,0 +1,88 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  EN16931_ElektronischeAdresse
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  250.13s total
+
+===== PAGE 1 =====
+<fcel>Mietrechnung (387) Nr. 9314110911/00/M/00/N vom 01.10.2018<lcel><nl>
+<fcel>Währung:<fcel>EUR<nl>
+<fcel>Liefer- und Leistungsdatum:<fcel>29.09.2018<nl>
+<fcel>Bestellung:<fcel>B123456789<nl>
+<fcel>Lieferavis:<fcel>L87654321012345<nl>
+<fcel>Verkäufer<ecel><nl>
+<fcel>Nummer:<fcel>549910<nl>
+<fcel>Globale Nummer:<fcel>4333741000005 (GLN)<nl>
+<fcel>Name:<fcel>MUSTER-Autovermietung<nl>
+<fcel>Anschrift:<fcel>Musterstr. 99<nl>
+<ecel><fcel>DE 99199 MUSTERHAUSEN<nl>
+<fcel>USt.-Id.-Nr.:<fcel>DE136695976<nl>
+<fcel>Käufer/Leistungsempfänger<ecel><nl>
+<fcel>Nummer:<fcel>9314110911<nl>
+<fcel>Name:<fcel>MUSTER-KUNDE GMBH<nl>
+<fcel>Anschrift:<fcel>KUNDENWEG 88<nl>
+<ecel><fcel>DE 40235 DUESSELDORF<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Bemerkungen<lcel><nl>
+<fcel>Betreff:<fcel>REG Regulatory information<nl>
+<fcel>Inhalt<fcel>MUSTER-Autovermietung GMBH
+Musterstr. 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Maxima Musterfrau
+UST-IdNr: DE136695976
+Telefon: +49 711-50885524
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002<nl>
+<fcel>Bemerkung<fcel>Bei Rückfragen:
+Telefon: +49 711-50885524
+E-Mail: info@muster-autovermietung.de<nl>
+<fcel>Bemerkung<fcel>Übergabe am 29.09.2018/ 10:35
+Ort: Frankfurt a. M.
+km: 17791<nl>
+<fcel>Bemerkung<fcel>Rückgabe am 01.10.2018/ 10:19
+Ort: Frankfurt a. M.
+km: 18664<nl>
+<fcel>Bemerkung<fcel>Übernahme: Frankfurt
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300<nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<fcel>1<ecel><fcel>Miettage<fcel>86,5500<fcel>2 Tag(e)<fcel>19 %<fcel>173,10<nl>
+<ecel><ecel><fcel>Weitere Eigenschaften: Fahrzeug-Kennzeichen: M-MM 0000<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Navigationssystem - Garantie<fcel>5,0400<fcel>2<fcel>19 %<fcel>10,08<nl>
+<fcel>2<ecel><fcel>Inklusiv-Kilometer waren: 873<ecel><ecel><ecel><ecel><nl>
+<fcel>3<ecel><fcel>Vollkasko<fcel>23,1000<fcel>2<fcel>19 %<fcel>46,20<nl>
+<fcel>4<ecel><fcel>minimale Selbstbeteiligung<fcel>15,5500<fcel>2<fcel>19 %<fcel>31,10<nl>
+<fcel>5<ecel><fcel>Personen-Unfallversicherung<fcel>7,9800<fcel>2<fcel>19 %<fcel>15,96<nl>
+<fcel>6<ecel><fcel>Choice Upgrade<fcel>5,0400<fcel>2<fcel>19 %<fcel>10,08<nl>
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<lcel><fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<lcel><ecel><ecel><fcel>286,52<fcel>19<fcel>54,44<nl>
+<|im_end|>
+===== PAGE 4 =====
+<fcel>Belegsummen<lcel><lcel><nl>
+<fcel>Positionssumme<fcel>286,52<ecel><nl>
+<fcel>Gesamtbetrag der Zuschläge<fcel>0,00<ecel><nl>
+<fcel>Gesamtbetrag der Abschläge<fcel>-0,00<ecel><nl>
+<fcel>Rechnungssumme ohne USt.<fcel>286,52<ecel><nl>
+<fcel>Steuerbetrag<fcel>54,44<ecel><nl>
+<fcel>Bruttosumme<fcel>340,96<ecel><nl>
+<fcel>Erhaltene Anzahlungen<fcel>-0,00<ecel><nl>
+<fcel>Zahlbetrag<fcel>340,96<ecel><nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><nl>
+<fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.<lcel><lcel><nl>
+<|im_end|>

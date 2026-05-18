@@ -1,0 +1,56 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  498.73s total
+
+===== PAGE 1 =====
+<fcel>Handelsrechnung (380) Nr. R18-31 vom 03.10.2018<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Währung:<lcel><fcel>EUR<lcel><lcel><lcel><lcel><nl>
+<fcel>Verkäufer<lcel><ecel><lcel><lcel><lcel><lcel><nl>
+<fcel>Name:<lcel><fcel>Physiotherapeutin<lcel><lcel><lcel><lcel><nl>
+<fcel>Ansprechpartner:<lcel><fcel>Tanja Tinder<lcel><lcel><lcel><lcel><nl>
+<fcel>Anschrift:<lcel><fcel>Musterstraße 12<lcel><lcel><lcel><lcel><nl>
+<ecel><lcel><fcel>DE 12345 Beispielstadt<lcel><lcel><lcel><lcel><nl>
+<fcel>Telefon:<lcel><fcel>015119630027<lcel><lcel><lcel><lcel><nl>
+<fcel>E-Mail:<lcel><fcel>tanja.tinder@beispiel-provider.de<lcel><lcel><lcel><lcel><nl>
+<fcel>USt.-Id.-Nr.:<lcel><fcel>DE136695976<lcel><lcel><lcel><lcel><nl>
+<fcel>Käufer/Leistungsempfänger<lcel><ecel><lcel><lcel><lcel><lcel><nl>
+<fcel>Name:<lcel><fcel>Liselotte Müller<lcel><lcel><lcel><lcel><nl>
+<fcel>Anschrift:<lcel><fcel>Rechnungsstraße 12<lcel><lcel><lcel><lcel><nl>
+<ecel><lcel><fcel>DE 12345 Beispielstadt<lcel><lcel><lcel><lcel><nl>
+<fcel>Bemerkungen<lcel><ecel><lcel><lcel><lcel><lcel><nl>
+<fcel>Positionsdaten<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<fcel>0<ecel><fcel>Physiotherapie<fcel>26,00<fcel>10<fcel>0 %<fcel>260,00<nl>
+<ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Behandlungen aufgrund der Verordnung von Frau Dr. Heilerin vom 05.09.2018 an folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018<lcel><lcel><lcel><lcel><nl>
+<fcel>1<ecel><fcel>Hausbesuch<fcel>12,00<fcel>10<fcel>0 %<fcel>120,00<nl>
+<ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>An folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018<lcel><lcel><lcel><lcel><nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (E)<ecel><ecel><ecel><ecel><ecel><nl>
+<fcel>Steuerfreie Leistungen<ecel><ecel><fcel>380,00<fcel>0<fcel>0,00<nl>
+<fcel>nach §4 Nr. 14 UStG<ecel><ecel><ecel><ecel><ecel><nl>
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Positionsumme<lcel><lcel><fcel>380,00<lcel><nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<lcel><lcel><ecel><lcel><nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<lcel><lcel><ecel><lcel><nl>
+<ecel><fcel>Rechnungssumme ohne USt.<lcel><lcel><fcel>380,00<lcel><nl>
+<ecel><fcel>Steuerbetrag<lcel><lcel><fcel>0,00<lcel><nl>
+<ecel><fcel>Bruttosumme<lcel><lcel><fcel>380,00<lcel><nl>
+<ecel><fcel>Erhaltene Anzahlungen<lcel><lcel><ecel><lcel><nl>
+<ecel><fcel>Zahlbetrag<lcel><lcel><fcel>380,00<lcel><nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<lcel><nl>
+<fcel>Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.<lcel><lcel><fcel>21.11.2018<ecel><lcel><nl>
+<fcel>Zahlungsart<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert):<lcel><fcel>30 - per Überweisung (SEPA)<lcel><lcel><lcel><nl>
+<fcel>Kontoname :<lcel><fcel>Tanja Tinder<lcel><lcel><lcel><nl>
+<fcel>IBAN :<lcel><fcel>DE02120300000000202051<lcel><lcel><lcel><nl>
+<|im_end|>

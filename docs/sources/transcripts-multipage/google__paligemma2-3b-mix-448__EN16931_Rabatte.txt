@@ -1,0 +1,181 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  120.47s total
+
+===== PAGE 1 =====
+Betrag: Rechnungen für ZUSCHND.Z.3 (1) FHRD 2018
+Handelrechnung (380) Nr. 471102 vom 05.06.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+03.06.2018
+Bestellung:
+2013-471331
+Verkäufer
+400001123452 (GLN)
+Globale Nummer:
+Lieferant GmbH
+Name:
+Anschrift:
+Leberstrasse 20
+DE 80533 München
+Steuernummer:
+201711340209
+USt-Id.-Nr.:
+DE123456789
+Käufer/Leistungsempfänger
+Nummer:
+GI2020211
+Name:
+Kunden AG Mitte
+Anschrift:
+Kundeanstraße 15
+DE 69876 Frankfurt
+Bemerkungen
+Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+Bemerkung
+AKK Price conditions
+Bemerkung
+Bemerkung
+Es bestehen Kredite und Bonusvereinbarungen.
+Inhalt
+REG. Regulatory information
+Bemerkung
+Lieferant GmbH
+Leberstrasse 20
+DE 80533 München
+Anschrift:
+Geschäftsführer: Hans Mueller
+Telefonnummer: 08941 41 41 33
+Inhalt
+Seite 1 von 3<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHRO 2.2. (1) FeWo 2022
+Positiondaten
+Art-Nr.Kunde
+Art-Nr.
+Bestellung
+Nettopreis
+Menge
+Steuernatz
+Nettobetrag
+Pos
+Kunde
+Kunde
+KUNDE
+KUNDE
+3 m²
+K824
+3,333
+10,00
+Kunstrasen grün 3m breit
+300cm x 100 cm
+(0776)
+Wir ermitteln uns diese folgende Positionen aus der Leistung Nr. 2018-51112 in
+1
+getline/Trade Agreement/Bürutopreis: 4,000
+Münzflug: 0,000
+300cm x 100 cm
+5 kg
+2
+Schweinestall
+5,500
+7%
+SPAS
+20 314
+520000086428
+17,50
+(0776)
+getline/Trade Agreement/Bürutopreis: 5,500
+aus Deutschland
+3
+GTBWAL
+Mikrofaser Medium 12 x 1,00 FET
+5,800
+20 314
+109,80
+400001234561
+(0776)
+getline/Trade Agreement/Bürutopreis: 5,4500
+4
+PFA
+19,40
+20
+Plank
+2,700
+400001234578
+(0776)
+getline/Trade Agreement/Bürutopreis: 2,700
+Umsatzsteueraufschlüsselung
+Art (Kategorie)
+Umsatzsteuer
+Zu/Abschlag
+Bestellung
+Steuernatz
+Steuerbetrag
+Umsatzsteuer (S)
+7
+129,37
+9,06
+19
+Umsatzsteuer (S)
+64,40
+12,24<eos>
+===== PAGE 3 =====
+Belegsummen
+Belegsummen für ZUGFHD 2.3, 1.1/14.05.2018
+Belegsummen
+Endsumme
+202,70
+Gesamtheit der Zuschläge
+4,80
+Gesamtheit der Abschläge
+-14,73
+Rechnungsumme ohne USt.
+183,77
+Sturzbetrag
+21,30
+Bruttosumme
+213,07
+Erhaltene Ansprüchen
+56,00
+Zahlbetrag
+183,07
+Zahlungsbedingen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlbar innerhalb 30 Tage netto bis 06.07.2018, 9% Skonto innerhalb 10 Tage bis 15.05.2018
+Zu- und Abschläge
+Bezeichnung
+Beitrags
+Anteil
+Percent
+Begrenzung
+Steuer
+Anteil
+19 % (27,70)
+19 % (27,70)
+19 % (27,70)
+19 % (27,70)
+13,75
+13,75
+13,75
+137,30
+137,30
+137,30
+137,30
+137,30
+137,30
+137,30
+137,30
+137,30
+137,30
+137,30
+137,30
+137,30
+Seite 3 von 3<eos>

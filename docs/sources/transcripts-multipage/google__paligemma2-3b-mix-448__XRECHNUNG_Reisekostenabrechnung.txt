@@ -1,0 +1,168 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  XRECHNUNG_Reisekostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  113.38s total
+
+===== PAGE 1 =====
+Berichtet: Rechnungen für D/E/FHD 2.2, 13.07.2018
+Handelrechnung (380) Nr. 280081 vom 13.07.2018
+Währung:
+EUR
+Abrechnungsstraßens:
+09.07.2018 bis 11.07.2018
+0401.0000-12345-94
+Umschlag-Nr.
+Weitere Referenz:
+Holzrechnung
+Art der Referenz: Referenzpapier (916)
+Weitere Referenz:
+Art der Referenz: Referenzpapier (916)
+Verkäufer
+Globale Nummer:
+400000123452 (GLN)
+Leiternetz GmbH
+Name:
+Ansprechpartner:
+Max Mustermann
+Muster-Einlauf
+Abteilung:
+Leiternetzstraße 20
+Anschrift:
+DE 80313 München
+Telefon:
++4991234567
+E-Mail:
+Max.Mustermann.de
+Str.1111100000
+Strasse:
+USt.-Nr.:
+DE 123456789
+Käufer/Leistungsmitglieder
+Nummer:
+0123456789
+Gunden AG Mitte
+Name:
+Anschrift:
+Kundentreffe 15
+DE 60876 Frankfurt
+Abweichender Warenmitglieder
+Musterfirma Nürnberg
+Anschrift:
+Am Bahnhof 42
+DE 75119 Nürnberg
+Seite 1 von 3<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHND 2.3, 31.Feb.2022
+Bemerkungen
+REG: Regulatory information
+beruft:
+Untertag: Mittagszeit 14.00-17.30
+Untertag: Mittagszeit 14.00-17.30
+Inhalt
+Inhalt
+AAA: General information
+beruft:
+Flug wurde vom Auftragsteller gebucht.
+Inhalt
+AAA: General information
+beruft:
+Reiser: Moderationsstandardeinstellung
+Zurich: Workshop in Nürnberg
+Untertag: Mittagszeit 14.00-17.30
+Inhalt
+Untertag: 14.00-17.30
+Positionsdaten
+Art der Quelle: Art Nr.Leaf:
+Menge
+Steuernatz
+Nettobetrag
+Pos
+Beschreibung
+Datum
+Übernachtung: 2 Nächte Hotel
+118,88
+1
+7%
+118,88
+getLine:Trade Agreement/Infrastructure
+Verflechtung/Frühstück
+11,76
+1
+11,76
+2
+getLine:Trade Agreement/Infrastructure: 14,00
+Fahrkosten, Taxi Berlin
+23,36
+1
+7%
+3
+11,36
+getLine:Trade Agreement/Infrastructure: 25,00
+Fahrkosten, Taxi Nürnberg
+20,09
+1
+7%
+20,09
+getLine:Trade Agreement/Infrastructure: 21,50
+Seite 2 von 3<eos>
+===== PAGE 3 =====
+Betragstrechnungen für ZUSCHND 2.2.01 Feb 2018
+Umsatzsteueraufschlüsselung
+Art (Einzelne)
+Warenwert
+Bezugsbetrag
+Steuersatz (%)
+Steuerbetrag
+Umsatzsteuer (%)
+202,33
+7
+14,16
+Umsatzsteuer (%)
+11,76
+19
+2,23
+Belegsummen
+Positionsumme
+214,09
+Gesamtheit der Zuschläge
+0,00
+Gesamtheit der Zuschläge
+-0,00
+Rechnungssumme ohne USt.
+214,09
+Steuerbetrag
+14,16
+Rechnungssumme
+230,68
+Erhaltene Anzahlungen
+5,00
+Zahlbetrag
+230,68
+Zahlungsbedingungen
+Begleitung
+Fälligkeits
+Teilzahlung
+Zahlbar innerhalb 30 Tagen netto bis 12.08.2018, 9% Skonto innerhalb 10 Tagen bis 15.03.2018
+Zahlungsort
+Zahlung per SEPA-Überweisung.
+Zahlungsart (zzwiler)
+56 - per SEPA-ÜBERWEISUNG
+Kunde-ID
+Umsatzsteuer
+D6221300000000220201
+IBAN
+Bankleitern-BIC
+BYLACE10101
+Rechnungsbegleitende Unterlagen
+Name
+Datumname
+Art
+Hotelbuchung
+Hotelbuchung finca.pdf
+application/pdf
+Hotelbuchung berlin
+application/pdf
+Seite 3 von 3<eos>

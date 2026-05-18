@@ -1,0 +1,154 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Miete
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  67.04s total
+
+===== PAGE 1 =====
+# Mietrechnung (387) Nr. 9314110911/00/M/00/N vom 01.10.2018
+
+## Angaben zur Rechnung
+
+* **Währung:** EUR
+* **Liefer- und Leistungsdatum:** 29.09.2018
+* **Bestellung:** B123456789
+* **Lieferavis:** L87654321012345
+
+## Verkäufer
+
+* **Nummer:** 549910
+* **Globale Nummer:** 4333741000005 (GLN)
+* **Name:** MUSTER-Autovermietung
+* **Anschrift:** Musterstr. 99
+* **USt.-Id.-Nr.:** DE99199 MUSTERHAUSEN
+
+## Käufer/Leistungsempfänger
+
+* **Nummer:** 9314110911
+* **Name:** MUSTER-KUNDE GMBH
+* **Anschrift:** KUNDENWEG 88, DE 40235 DUESSELDORF
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the document, presented in Markdown format:
+
+## Document Details
+* **Document Type:** Invoice/Statement (Implied by the content)
+* **Reference:** Beispiel-Rechnungen für ZUGFeRD 2.2, c) FED 2022
+
+## Remarks/Notes (Bemerkungen)
+
+### Section 1 (Initial Remarks)
+* **Subject (Betreff):** REG - Regulatory information
+* **Content (Inhalt):**
+    * **Company:** MUSTER-Autovermietung GMBH
+    * **Address:** Musterstr. 99
+    * **City/Postal Code:** 99199 MUSTERHAUSEN
+    * **Service:** Geschäftsführung
+    * **Contact:** Max Mustermann
+    * **VAT ID:** DE136695976
+    * **Phone:** +49 711-50885524
+    * **Email:** www.musterlieferant.de
+    * **HRB No.:** 372876
+    * **Location:** Amtgericht Musterstadt
+    * **GLN:** 4304171000002
+
+### Section 2 (Subsequent Remarks - Transaction Details)
+* **Remark (Bemerkung):**
+    * **Transaction:** Return/Pickup (Bei Rückfragen)
+    * **Phone:** +49 711-50885524
+    * **Email:** info@muster-autovermietung.de
+
+### Section 3 (Subsequent Remarks - Transaction Details)
+* **Remark (Bemerkung):**
+    * **Transaction:** Pickup (Übergabe)
+    * **Date:** 29.09.2018
+    * **Time:** 10:35
+    * **Location:** Frankfurt a. M.
+    * **KM:** 17791
+
+### Section 4 (Subsequent Remarks - Transaction Details)
+* **Remark (Bemerkung):**
+    * **Transaction:** Return (Rückgabe)
+    * **Date:** 01.10.2018
+    * **Time:** 10:19
+    * **Location:** Frankfurt a. M.
+    * **KM:** 18664
+
+### Section 5 (Subsequent Remarks - Transaction Details)
+* **Remark (Bemerkung):**
+    * **Transaction:** Handover (Übernahme)
+    * **Date:** 01.10.2018
+    * **Time:** 10:19
+    * **Location:** Frankfurt
+    * **KM/out:** 17791
+    * **KM/in:** 18664
+    * **Service:** 873
+    * **Tax ID:** M-MM 0000
+    * **VAT (CO2):** 150
+    * **Total Price (Bruttolistenpreis):** 68300
+
+---
+*Page navigation footer: Seite 2 von 4*
+===== PAGE 3 =====
+# Invoice Extraction
+
+## Positonsdaten
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | | | Miettage | 86,5500 | 2 Tag(e) | 19 % | 173,10 |
+| | | | *Weitere Eigenschaften:* | | | | |
+| | | | *Fahrzeug-Kennzeichen: M-MM 0000* | | | | |
+| | | | Navigationssystem - Garantie | 5,0400 | 2 | 19 % | 10,08 |
+| 2 | | | | | | | |
+| 3 | | | Vollkasko | 23,1000 | 2 | 19 % | 46,20 |
+| 4 | | | minimale Selbstbeteiligung | 15,5500 | 2 | 19 % | 31,10 |
+| 5 | | | Personen-Unfallversicherung | 7,9800 | 2 | 19 % | 15,96 |
+| 6 | | | Choice Upgrade | 5,0400 | 2 | 19 % | 10,08 |
+
+## Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| Umsatzsteuer (S) | | | 286,52 | 19 | 54,44 |
+
+***
+
+**Document Title:** Beispiel-Rechnungen für ZUGFERD 2.2, (c) FERD 2022
+
+**Page:** Seite 3 von 4
+===== PAGE 4 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format:
+
+## Belegsummen (Summary Amounts)
+
+| Item | Amount |
+| :--- | :--- |
+| Positionsumme (Subtotal) | 286.52 |
+| Gesamtbetrag der Zuschläge (Total Surcharges) | 0.00 |
+| Gesamtbetrag der Abschläge (Total Deductions) | -0.00 |
+| Rechnungssumme ohne USt. (Invoice Total without VAT) | 286.52 |
+| Steuerbetrag (Tax Amount) | 54.44 |
+| Bruttosumme (Gross Total) | 340.96 |
+| Erhaltene Anzahlungen (Advance Payments Received) | -0.00 |
+| Zahlbetrag (Payment Amount) | 340.96 |
+
+---
+
+## Zahlungsbedingungen (Payment Terms)
+
+**Description:**
+Die Leistung wurde erbacht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungssatzbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.
+
+*(Translation: The service was rendered between handover and return. The invoice amount will be debited from your MasterCard credit card. This is not a request for payment. Invoice for your records.)*
+
+---
+
+**Document Metadata:**
+* **Document Title/Reference:** Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+* **Page:** Seite 4 von 4

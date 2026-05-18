@@ -1,0 +1,58 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_1_Teilrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  393.11s total
+
+===== PAGE 1 =====
+Handelsrechnung (380) Nr. 471102 vom 05.06.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 03.06.2018
+Bestellung: 2018-471331
+
+Nummer: 549910
+Name: Lieferantant GmbH
+Anschrift: Lieferantenenstraße 20
+USt.-Id.-Nr.: 201/113/40209
+DE 80333 München
+
+Bemerkung: REG Regulatory information
+Betreff: Lieferantant GmbH
+Inhalt: Deutschland
+Handelsregisternummer: H A 123
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Positionsdaten
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| --- | --- | --- | --- | --- | --- | --- |
+| KR3M 4012345001235 (GTIN) | Kunstrasen grün 3m breit | 3,3333 | 3 m² | 19 % | 10,00 |
+| SFK5 40000050986428 (GTIN) | Schweinesteak | 5,5000 | 1 kg | 7 % | 5,50 |
+| PFA5 4000001234561 (GTIN) | Mineralwasser Medium 12 x 1,0l PET | 64,46 | 20 Stk | 19 % | 12,25 |
+
+Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| --- | --- | --- | --- | --- | --- |
+| Umsatzsteuer (S) | 113,03 | 7 | 7,91 |
+| Umsatzsteuer (S) | 64,46 | 19 | 12,25 |
+
+Seite 2 von 3
+===== PAGE 3 =====
+Belegsummen
+
+Positionssumme 180,76
+Gesamtbetrag der Zuschläge 5,80
+Rechnungssumme ohne USt. 197,65
+Erhaltene Anzahlungen 147,65
+Zu- und Abschläge
+
+Art | Prozent | Basisbetrag | Basismenge | Steuer | Betrag
+--- | --- | --- | --- | --- | ---
+Abschlag Sondernachlass | 10,00 | 115,30 | 7 % UST (S) | -1,00
+Zuschlag Versandkosten | 115,30 | 7 % UST (S) | -8,07
+Zuschlag Versandkosten | 115,30 | 7 % UST (S) | 5,80

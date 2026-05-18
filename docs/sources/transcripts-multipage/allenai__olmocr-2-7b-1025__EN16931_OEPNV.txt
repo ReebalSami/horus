@@ -1,0 +1,46 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  252.30s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)   Nr. E2018092011804   vom   20.09.2018
+
+Währung:           EUR
+Liefer- und Leistungsdatum:   20.09.2018
+Referenz des Käufers:   05 158 004 - 11023 - 45
+Bestellung:   2018092011804
+
+Verkäufer
+Nummer:   549910
+Name:   Liselotte MüllerMann
+Anschrift:   DE 12345 Berlin
+Telefon:   +493012345678
+E-Mail:   tm@verkehrsbetriebe.de
+USt.-Id.-Nr.:   DE12345 Berlin
+
+Positionsdaten
+Pos   Art-Nr-Kunde   Beschreibung   Nettopreis   Menge   Steuersatz   Nettobetrag
+0   4-Fahrten-Karte Berlin AB   8,41   1 Stk   7 %   8,41
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+|------------------|----------|-------------|-------------|----------------|--------------|
+| Umsatzsteuer (S) |         |             |             |                 |              |
+
+Positionssumme
+Gesamtbetrag der Zuschläge
+Rechnungssumme ohne USt.
+Bruttosumme
+Zahlbetrag
+Kontoname : Verkehrsbetriebe GmbH
+IBAN : DE12 1234 5678 9012 3456 78
+Verkäufer-BIC:
+Fälligkeit : 03.10.2018
+Teilzahlung

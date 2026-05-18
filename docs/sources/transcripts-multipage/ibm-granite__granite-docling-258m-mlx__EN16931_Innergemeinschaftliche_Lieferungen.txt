@@ -1,0 +1,42 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  EN16931_Innergemeinschaftliche_Lieferungen
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  11.86s total
+
+===== PAGE 1 =====
+<doctag><page_header><loc_48><loc_10><loc_174><loc_14>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_54><loc_30><loc_448><loc_39>Gutschrift (Selbst ausgestellte Rechnung) (389) Nr. 47110818 vom 31.10.2018</section_header_level_1>
+<otsl><loc_55><loc_53><loc_453><loc_77><fcel>Währung:<fcel>EUR<nl><fcel>Abrechnungszeitraum:<fcel>01.10.2018 bis 31.10.2018<nl></otsl>
+<otsl><loc_55><loc_92><loc_453><loc_156><fcel>Verkäufer<ecel><nl><fcel>Nummer:<fcel>12345676<nl><fcel>Name:<fcel>Global Supplies Ltd.<nl><fcel>Anschrift:<fcel>153 Victoria Street<nl><ecel><fcel>GB SW1B 3BN London<nl><fcel>USt.-Id.-Nr.:<fcel>GB123456789<nl></otsl>
+<otsl><loc_55><loc_180><loc_453><loc_250><fcel>Käufer/Leistungsempfänger<ecel><nl><fcel>Nummer:<fcel>75969813<nl><fcel>Name:<fcel>Metallbau Leipzig GmbH & Co. KG<nl><fcel>Anschrift:<fcel>Pappelallee 15<nl><ecel><fcel>Hof 3<nl><ecel><fcel>DE 12345 Leipzig<nl><fcel>USt.-Id.-Nr.:<fcel>DE123456789<nl></otsl>
+<otsl><loc_55><loc_273><loc_453><loc_337><fcel>Abweichender Warenempfänger<ecel><nl><fcel>Nummer:<fcel>75969815<nl><fcel>Name:<fcel>Metallbau Leipzig GmbH & Co. KG<nl><fcel>Anschrift:<fcel>Eichenpromenade 37<nl><ecel><fcel>Tor 1<nl><ecel><fcel>DE 12347 Metallstadt<nl></otsl>
+<otsl><loc_55><loc_358><loc_453><loc_386><fcel>Abweichender Zahlungsempfänger<ecel><nl><fcel>Globale Nummer:<fcel>432156789 (DUN)<nl><fcel>Name:<fcel>Global Supplies Financial Services<nl></otsl>
+<otsl><loc_55><loc_400><loc_453><loc_461><fcel>Bemerkungen<ecel><nl><fcel>Betreff:<fcel>REG Regulatory information<nl><fcel>Inhalt<fcel>Mitglieder der Geschäftsleitung: Geschäftsführerin: Johanna Musterfrau Prokuristik: Isabell Herrlich HRB Berlin 13086<nl></otsl>
+<page_footer><loc_415><loc_491><loc_453><loc_495>Seite 1 von 3</page_footer>
+</doctag>
+===== PAGE 2 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_29><loc_117><loc_38>Positionsdaten</section_header_level_1>
+<otsl><loc_55><loc_41><loc_454><loc_170><fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl><fcel>1<fcel>Toolbox 0815CO-123 Stahlcoil /V2A<fcel>Basismenge: 1 Stk<ecel><fcel>10 Stk<fcel>0 %<fcel>1.000,00<nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis :<ecel><ecel><ecel><ecel><nl><ecel><ecel><fcel>Berechnungszeitraum: 01.10.2018 bis 31.10.2018<ecel><ecel><ecel><ecel><nl><fcel>2<fcel>BR-4529-ZFIM-712 Stoßfänger /A2A<fcel>Stoßfänger<ecel><fcel>10 Stk<fcel>0 %<fcel>1.000,00<nl><ecel><ecel><fcel>Basismenge: 1 Stk<ecel><ecel><ecel><ecel><nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis :<ecel><ecel><ecel><ecel><nl><ecel><ecel><fcel>Berechnungszeitraum: 01.10.2018 bis 31.10.2018<ecel><ecel><ecel><ecel><nl><ecel><ecel><fcel>Herkunftssland: DE<ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_55><loc_199><loc_179><loc_207>Umsatzsteueraufschlüsselung</section_header_level_1>
+<otsl><loc_55><loc_211><loc_452><loc_274><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (K)<ecel><ecel><ecel><ecel><ecel><nl><fcel>Mehrwertsteuerbefreiung für die innergemeinschaftliche Lieferung von Waren und Dienstleistungen in der EU<ecel><ecel><fcel>2.000,00<fcel>0<fcel>0,00<nl></otsl>
+<section_header_level_1><loc_55><loc_292><loc_114><loc_300>Belegsummen</section_header_level_1>
+<otsl><loc_176><loc_306><loc_457><loc_425><fcel>Positionssumme<fcel>2.000,00<nl><fcel>Gesamtbetrag der Zuschläge<ecel><nl><fcel>Gesamtbetrag der Abschläge<ecel><nl><fcel>Rechnungssumme ohne USt.<ecel><nl><fcel>Steuerbetrag<fcel>0,00<nl><fcel>Bruttosumme<fcel>2.000,00<nl><fcel>Erhaltene Anzahlungen<ecel><nl><fcel>Zahlbetrag<fcel>2000,00<nl></otsl>
+<page_footer><loc_415><loc_489><loc_452><loc_494>Seite 2 von 3</page_footer>
+</doctag>
+===== PAGE 3 =====
+<doctag><page_header><loc_48><loc_10><loc_174><loc_14>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_54><loc_42><loc_146><loc_50>Zahlungsbedingungen</section_header_level_1>
+<otsl><loc_54><loc_53><loc_452><loc_69><fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl><ecel><fcel>30.11.2018<ecel><nl></otsl>
+<section_header_level_1><loc_54><loc_88><loc_104><loc_96>Zahlungsart</section_header_level_1>
+<text><loc_59><loc_105><loc_118><loc_110>Zahlungstyp (codiert):</text>
+<text><loc_259><loc_105><loc_339><loc_110>58 - per SEPA ÜBERWEISUNG</text>
+<text><loc_59><loc_114><loc_96><loc_119>Kontoname :</text>
+<text><loc_259><loc_114><loc_350><loc_119>Global Supplies Financial Services</text>
+<text><loc_59><loc_123><loc_75><loc_128>IBAN :</text>
+<text><loc_259><loc_123><loc_327><loc_128>DF12 1234 4321 9876 00</text>
+<page_footer><loc_415><loc_490><loc_452><loc_495>Seite3 von 3</page_footer>
+</doctag>

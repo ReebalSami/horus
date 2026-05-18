@@ -1,0 +1,118 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  XRECHNUNG_Elektron
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  46.83s total
+
+===== PAGE 1 =====
+# Rechnung
+
+**Schlusssrechnung Bau (877) Nr. 181301674 vom 25.04.2018**
+
+---
+
+## Allgemeine Informationen
+
+* **Währung:** EUR
+* **Liefer- und Leistungsdatum:** 06.03.2018
+* **Zahlungsreferenz:** Rechnung 181301674
+* **Leitweige-ID:** 04011000-12345-34
+* **Buchungsreferenz:** 420
+* **Weitere Referenz:** Aufmass
+* **Weitere Referenz:** Art der Referenz:Referenzpapier (916)
+* **Weitere Referenz:** Art der Referenz:Referenzpapier (916)
+
+---
+
+## Verkäufer
+
+* **Globale Nummer:** 4000001123452 (GLN)
+* **Name:** ELEKTRON Industrieservice GmbH
+* **Ansprechpartner:** Max Mustermann
+* **Abteilung:** Muster-Einkauf
+* **Anschrift:** Erfurter Strasse 13
+* **Telefon:** DE 74465 Demoort
+* **E-Mail:** +49891234567
+* **Steuernummer:** Max@Mustermann.de
+* **Ust.-Id.-Nr.:** 201/113/40209
+* **Ust.-Id.-Nr.:** DE123456789
+
+---
+
+## Käufer/Leistungsempfänger
+
+* **Nummer:** 16259
+* **Name:** ConsultingService GmbH
+* **Anschrift:** Musterstr. 18
+* **Ort:** DE 76138 Karlsruhe
+
+---
+
+## Bemerkungen
+
+**Bemerkung:**
+Rapport-Nr.: 42389 vom 08.03.2018
+
+Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamer wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format.
+
+## Positonsdaten (Item Details)
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| 01 | | | TGA Obermonteur/Monteur | 43,20 | 3 Stk | 19 % | 129,60 |
+| 02 | | | Beamer-Deckenhalterung | 122,50 | 1 Stk | 19 % | 122,50 |
+
+## Umsatzsteueraufschlüsselung (VAT Breakdown)
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz (%) | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (5) | | | 252,10 | 19 | 47,90 |
+
+## Belegsummen (Invoice Totals)
+
+| Description | Amount |
+| :--- | :---: |
+| Positionssumme | 252,10 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 252,10 |
+| Steuerbetrag | 47,90 |
+| Bruttosumme | 300,00 |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **300,00** |
+
+## Zahlungsbedingungen (Payment Terms)
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+| :--- | :--- | :---: |
+| Zahlbar sofort rein netto | | |
+
+***
+
+**Document Context:**
+* **Document Type:** Rechnung (Invoice)
+* **Reference:** Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+* **Page:** Seite 2 von 3
+===== PAGE 3 =====
+# Invoice Extraction
+
+## Document Information
+* **Document Type:** Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+* **Page:** Seite 3 von 3
+
+## Payment Details (Zahlungsart)
+* **Payment Method (Zahlungstyp - codiert):** 58 - per SEPA ÜBERWEISUNG
+* **IBAN:** DE9110000000123456789
+
+## Attached Documents (Rechnungsbeigleitende Unterlagen)
+
+| Name | Dateiname | Art |
+| :--- | :--- | :--- |
+| Aufmass.png | Aufmass.png | image/png |
+| ElektronRapport | ElektronRapport.pdf | application/pdf |

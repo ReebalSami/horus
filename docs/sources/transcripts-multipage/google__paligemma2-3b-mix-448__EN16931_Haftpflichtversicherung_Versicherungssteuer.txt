@@ -1,0 +1,110 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Haftpflichtversicherung_Versicherungssteuer
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  311.93s total
+
+===== PAGE 1 =====
+Betrag: Rechnungen für ZUSCHND 2.2.01/Feb 2018
+Rechnung des Versicherers (575) Nr. 01.234.567.8-2018-1 vom 06.12.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+06.12.2018
+Verkäufer
+Nummer:
+549810
+MVM Musterhafter
+Versicherungsverein Musterstadt a.G.
+Name:
+Musterstr. 12
+Anschrift:
+DE 12345 Musterstadt
+USt-Id.-Nr.:
+DE24567897
+Käufer/Leistungsempfänger
+Name:
+Max Mustermann
+Musterstr. 11
+Anschrift:
+DE 12345 Rad Musterhausen
+Bemerkingen
+Allgemeine Haftspielversicherung VGNH: 01.234.567.8 (Bei Schriftwechsel und Zahlung bitte angeben)
+Bemerkung
+REG. Regulatory Information
+Betreff:
+MVM Musterhafter
+Versicherungsverein Musterstadt a.G.
+Musterstr. 12
+DE 12345 Musterstadt
+Inhaft
+Tel.: 01234567897
+Fax: 01234567897
+E-Mail: Muster@musterstadt.de
+Mo.-Fr. 8.00-20.00 Uhr, Sa 8.00-14.00 Uhr
+Seite 1 von 3<eos>
+===== PAGE 2 =====
+Beleg und Rechnungen für ZUSCHND 2.3 (1) Feb 2022
+Positiondaten
+Art Nr. Kunde
+Art Nr.
+Bescheinigung
+Nettopreis
+Menge
+Steuernatz
+Nettobetrag
+Pos
+Art Nr.
+1
+1
+50,000
+0%
+1
+50,000
+getlineTradeAgreement@att.topreis: 50,000
+2
+Liegenschafts/in zur Privathaftpflicht
+0,000
+0%
+0,000
+getlineTradeagreement@att.topreis: 0,000
+Umsatzsteueraufschließung
+Art (Kategorie)
+Warewert
+Bezabeltung
+Steuernatz (%)
+Steuerbetrag
+Zu/Abschlag
+Umsatzsteuer (€)
+Umsatzsteuer (€)
+50,00
+0
+0,00
+54 Nr. 10a USHG
+Belegsummen
+Positionsumme
+50,00
+Gesamtheit der Zuschläge
+5,00
+Gesamtheit der Zuschläge
+-0,00
+Rechnungsumme ohne USt.:
+50,00
+Steuerbetrag
+0,00
+Bruttosumme
+50,00
+Erhaltene Anschlüssen
+-0,00
+Zeitbetrag
+50,00
+Seite 2 von 3<eos>
+===== PAGE 3 =====
+Betragstrechnungen für ZUGEHND 2.3 (1) FHRD 2022
+Zahlungsbedingungen
+Fälligkeits
+Teilzahlung
+Beschreibung
+Einen zu zahlenden Betrag überweisen Sie bitte auf folgende Bankverbindung: IBAN: DE 44 363 0000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0
