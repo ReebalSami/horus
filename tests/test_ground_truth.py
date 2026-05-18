@@ -456,6 +456,115 @@ def test_fields_registry_consistency() -> None:
             f"element so the parser can read .text for tristate semantics"
         )
         assert callable(spec.normalize), f"FIELDS[{english_key!r}].normalize is not callable"
+        # field_type added per ADR-013 (PR(b) scorer dispatch). Every row must
+        # tag its comparator-dispatch type explicitly — no default; the
+        # `FieldType` Literal in ground_truth.py is the closed taxonomy.
+        assert spec.field_type in ("STRING", "MONEY", "DATE", "CODE"), (
+            f"FIELDS[{english_key!r}].field_type={spec.field_type!r} is not one of "
+            f"STRING/MONEY/DATE/CODE (the closed FieldType taxonomy)"
+        )
+
+
+def test_fields_registry_field_type_consistency() -> None:
+    """Every FIELDS row carries a valid `field_type` from the closed `FieldType` taxonomy.
+
+    Closed taxonomy per ADR-013: STRING / MONEY / DATE / CODE. No defaults
+    — the FieldSpec dataclass declares `field_type` without a default so a
+    forgotten tag is a construction-time TypeError, not a silent fallthrough.
+    """
+    for english_key, spec in FIELDS.items():
+        assert spec.field_type in ("STRING", "MONEY", "DATE", "CODE"), (
+            f"FIELDS[{english_key!r}].field_type={spec.field_type!r} is outside the closed taxonomy"
+        )
+
+
+def test_money_fields_are_exactly_the_five_totals() -> None:
+    """`field_type='MONEY'` ↔ exactly the 5 EN16931-mandatory totals (BT-106/109/110/112/115).
+
+    Locks the comparator dispatch table: PR(b)'s scorer applies
+    `_normalize_predicted_money` + exact-match (Decimal-cent strict, per
+    Vorsteuerabzug requirement) exactly to these five fields. Any drift
+    here is a load-bearing change to legal-correctness semantics.
+    """
+    money_keys = {k for k, spec in FIELDS.items() if spec.field_type == "MONEY"}
+    expected = {
+        "line_total_amount",  # BT-106
+        "tax_basis_total_amount",  # BT-109
+        "tax_total_amount",  # BT-110
+        "grand_total_amount",  # BT-112
+        "due_payable_amount",  # BT-115
+    }
+    assert money_keys == expected, (
+        f"MONEY fields drifted from expected 5 totals. Got {sorted(money_keys)}, "
+        f"expected {sorted(expected)}. Update this test AND ADR-013 §Decision if the "
+        f"comparator dispatch is intentionally changing."
+    )
+
+
+def test_date_fields_are_exactly_issue_and_delivery() -> None:
+    """`field_type='DATE'` ↔ exactly `issue_date` (BT-2) + `delivery_date` (BT-72).
+
+    Locks the comparator dispatch table for DATE: PR(b)'s scorer applies
+    `_normalize_predicted_date` (parses DD.MM.YYYY / German-month-name /
+    ISO / US-slash) then exact-compares ISO strings. Only these two fields
+    are date-typed in the 16-field scope; line-item dates land via BG-25
+    in a future amendment.
+    """
+    date_keys = {k for k, spec in FIELDS.items() if spec.field_type == "DATE"}
+    expected = {"issue_date", "delivery_date"}
+    assert date_keys == expected, (
+        f"DATE fields drifted from expected (issue_date, delivery_date). "
+        f"Got {sorted(date_keys)}, expected {sorted(expected)}."
+    )
+
+
+def test_string_fields_are_exactly_seller_and_buyer_names() -> None:
+    """`field_type='STRING'` ↔ exactly `seller_name` (BT-27) + `buyer_name` (BT-44).
+
+    These are the only fields where ANLS\\* tolerance applies — names tolerate
+    OCR character errors. Codes, dates, and money are strict. Locks the
+    cross-product invariant: STRING fields use ANLS\\* (Biten+ ICCV'19); all
+    others use exact-on-normalized.
+    """
+    string_keys = {k for k, spec in FIELDS.items() if spec.field_type == "STRING"}
+    expected = {"seller_name", "buyer_name"}
+    assert string_keys == expected, (
+        f"STRING fields drifted from expected (seller_name, buyer_name). "
+        f"Got {sorted(string_keys)}, expected {sorted(expected)}."
+    )
+
+
+def test_code_fields_cover_the_remaining_seven() -> None:
+    """`field_type='CODE'` covers the 7 strict-equality fields (IDs / currency / refs).
+
+    Closure assertion: STRING (2) + MONEY (5) + DATE (2) + CODE (7) = 16.
+    If new fields land via FIELDS amendment without a corresponding
+    field_type tag, this closure check fails before the comparator dispatch
+    silently mis-routes.
+    """
+    code_keys = {k for k, spec in FIELDS.items() if spec.field_type == "CODE"}
+    expected = {
+        "invoice_number",  # BT-1
+        "invoice_currency_code",  # BT-5
+        "seller_vat_id",  # BT-31
+        "seller_tax_id",  # BT-32
+        "seller_gln",  # BT-29
+        "buyer_reference",  # BT-46
+        "buyer_vat_id",  # BT-48
+    }
+    assert code_keys == expected, (
+        f"CODE fields drifted from expected 7. Got {sorted(code_keys)}, "
+        f"expected {sorted(expected)}."
+    )
+
+    # Closure: STRING(2) + MONEY(5) + DATE(2) + CODE(7) = 16
+    by_type: dict[str, int] = {"STRING": 0, "MONEY": 0, "DATE": 0, "CODE": 0}
+    for spec in FIELDS.values():
+        by_type[spec.field_type] += 1
+    assert by_type == {"STRING": 2, "MONEY": 5, "DATE": 2, "CODE": 7}, (
+        f"FieldType partition drift: {by_type}. Expected STRING=2, MONEY=5, "
+        f"DATE=2, CODE=7 (total 16)."
+    )
 
 
 def test_fields_registry_xpath_executable() -> None:

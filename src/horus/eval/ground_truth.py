@@ -43,7 +43,7 @@ import unicodedata
 from collections.abc import Callable
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
-from typing import Final
+from typing import Final, Literal
 
 from lxml import etree
 
@@ -148,6 +148,26 @@ def _passthrough(raw: str) -> str:
 # ---------------------------------------------------------------------------
 
 
+FieldType = Literal["STRING", "MONEY", "DATE", "CODE"]
+r"""Discriminator for the per-field-type comparator dispatch in PR(b)'s scorer.
+
+Additive ADR-012 amendment per ADR-013 — every `FieldSpec` row in `FIELDS`
+must tag its `field_type` explicitly (no default; forces conscious choice).
+The scorer (`src/horus/eval/scorer.py`) dispatches comparison strategy on
+this discriminator:
+
+  - ``STRING`` → ANLS\* with literature-default threshold 0.5 (Biten+ ICCV'19,
+    Peer+ 2024 arXiv 2402.03848) — tolerates OCR character errors on names.
+  - ``MONEY``  → exact match on canonical 2-decimal Decimal string
+    (post-`_normalize_predicted_money`); strict per Vorsteuerabzug.
+  - ``DATE``   → exact match on ISO 8601 (post-`_normalize_predicted_date`);
+    accepts German `DD.MM.YYYY` + month-name + ISO + US-slash on the pred side.
+  - ``CODE``   → exact match on whitespace-stripped NFC; invoice numbers,
+    VAT IDs, GLN, currency codes — typos invalidate the legal record so no
+    OCR tolerance is granted.
+"""
+
+
 @dataclass(frozen=True)
 class FieldSpec:
     """Static metadata for one EN16931 business term in scope for pilot #13.
@@ -164,7 +184,9 @@ class FieldSpec:
             mapping is never lost.
         german_label: German rendering of the field name (e.g., "Rechnungsnummer").
             Lives here (one row per field) so per-invoice records stay lean — NOT
-            duplicated 26×16 times on every extracted record.
+            duplicated 26×16 times on every extracted record. Also re-used by
+            PR(b)'s Layer 2 adapter as the search anchor when extracting the
+            predicted value from raw VLM text.
         xpath: lxml XPath expression returning element node(s). Resolved against
             `CII_NAMESPACES`. Convention: ends at the leaf element, NOT at
             `/text()` — the parser reads `.text` from the element so it can
@@ -173,6 +195,12 @@ class FieldSpec:
         normalize: pure callable applied to the raw element text. Must accept
             an empty string (and short-circuit to ""); may raise `ValueError`
             on malformed input (parser catches + downgrades).
+        field_type: comparator-dispatch discriminator for PR(b)'s scorer
+            (ADR-013). One of ``STRING`` / ``MONEY`` / ``DATE`` / ``CODE``.
+            Has no default — every `FieldSpec` row must tag its dispatch
+            choice explicitly. Open/closed at the registry boundary (mirrors
+            the `normalize` design): adding a new field is a 1-line FIELDS
+            entry, no edit to the scorer's dispatch cascade.
     """
 
     english_key: str
@@ -180,6 +208,7 @@ class FieldSpec:
     german_label: str
     xpath: str
     normalize: Callable[[str], str]
+    field_type: FieldType
 
 
 # ---------------------------------------------------------------------------
@@ -218,6 +247,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Rechnungsnummer",
         xpath="/rsm:CrossIndustryInvoice/rsm:ExchangedDocument/ram:ID",
         normalize=_normalize_string,
+        field_type="CODE",
     ),
     # 2. Issue date (BT-2) — exactly 1 per invoice (EN16931-mandatory).
     # Raw text is `CCYYMMDD` (UN/CEFACT format code "102"); normalized to ISO.
@@ -229,6 +259,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "/rsm:CrossIndustryInvoice/rsm:ExchangedDocument/ram:IssueDateTime/udt:DateTimeString"
         ),
         normalize=_normalize_date,
+        field_type="DATE",
     ),
     # 3. Invoice currency code (BT-5) — exactly 1 per invoice (EN16931-mandatory).
     # ISO 4217 3-letter code; passthrough normalizer.
@@ -238,6 +269,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Währung",
         xpath=f"{_HEADER_SETTLEMENT}/ram:InvoiceCurrencyCode",
         normalize=_passthrough,
+        field_type="CODE",
     ),
     # 4. Delivery date (BT-72) — 0..1 per invoice (mandatory iff differs from
     # issue date in some profiles; ZUGFeRD often populates it equal to issue
@@ -251,6 +283,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "/ram:OccurrenceDateTime/udt:DateTimeString"
         ),
         normalize=_normalize_date,
+        field_type="DATE",
     ),
     # 5. Seller name (BT-27) — exactly 1 per invoice (EN16931-mandatory).
     "seller_name": FieldSpec(
@@ -259,6 +292,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Verkäufer",
         xpath=f"{_HEADER_AGREEMENT}/ram:SellerTradeParty/ram:Name",
         normalize=_normalize_string,
+        field_type="STRING",
     ),
     # 6. Seller VAT identifier (BT-31), scheme VA. 0..1 in EN16931, near-always
     # present on German B2B invoices. The schemeID predicate filters to exactly
@@ -272,6 +306,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "/ram:SpecifiedTaxRegistration/ram:ID[@schemeID='VA']"
         ),
         normalize=_normalize_string,
+        field_type="CODE",
     ),
     # 7. Seller Steuernummer (BT-32), scheme FC. German-specific; not in
     # EN16931-mandatory core but common on German invoices alongside VAT ID.
@@ -284,6 +319,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "/ram:SpecifiedTaxRegistration/ram:ID[@schemeID='FC']"
         ),
         normalize=_normalize_string,
+        field_type="CODE",
     ),
     # 8. Seller GLN (BT-29), scheme 0088 (GS1 Global Location Number). 0..1;
     # in ADR-009 evidence base. Tracked for continuity with the cohort smoke.
@@ -293,6 +329,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="GLN (Verkäufer)",
         xpath=(f"{_HEADER_AGREEMENT}/ram:SellerTradeParty/ram:GlobalID[@schemeID='0088']"),
         normalize=_normalize_string,
+        field_type="CODE",
     ),
     # 9. Buyer name (BT-44) — exactly 1 per invoice (EN16931-mandatory).
     "buyer_name": FieldSpec(
@@ -301,6 +338,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Käufer",
         xpath=f"{_HEADER_AGREEMENT}/ram:BuyerTradeParty/ram:Name",
         normalize=_normalize_string,
+        field_type="STRING",
     ),
     # 10. Buyer identifier (BT-46) — 0..1; buyer's internal customer number.
     # Matched plain (no schemeID predicate) — some corpus invoices use a
@@ -311,6 +349,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Kundennummer",
         xpath=f"{_HEADER_AGREEMENT}/ram:BuyerTradeParty/ram:ID",
         normalize=_normalize_string,
+        field_type="CODE",
     ),
     # 11. Buyer VAT identifier (BT-48), scheme VA. 0..1; conditionally
     # mandatory in EN16931 (B2B cross-border EU). Deliberately included to
@@ -325,6 +364,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "/ram:SpecifiedTaxRegistration/ram:ID[@schemeID='VA']"
         ),
         normalize=_normalize_string,
+        field_type="CODE",
     ),
     # 12. Sum of line net amounts (BT-106) — EN16931-mandatory.
     "line_total_amount": FieldSpec(
@@ -333,6 +373,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Summe Nettobeträge",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:LineTotalAmount",
         normalize=_normalize_money,
+        field_type="MONEY",
     ),
     # 13. Invoice total without VAT / tax basis (BT-109) — EN16931-mandatory.
     "tax_basis_total_amount": FieldSpec(
@@ -341,6 +382,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Steuerlicher Bemessungsbetrag",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TaxBasisTotalAmount",
         normalize=_normalize_money,
+        field_type="MONEY",
     ),
     # 14. Invoice total VAT amount (BT-110) — EN16931-mandatory.
     "tax_total_amount": FieldSpec(
@@ -349,6 +391,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Umsatzsteuer gesamt",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TaxTotalAmount",
         normalize=_normalize_money,
+        field_type="MONEY",
     ),
     # 15. Invoice total amount with VAT / grand total (BT-112) — EN16931-mandatory.
     "grand_total_amount": FieldSpec(
@@ -357,6 +400,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Bruttobetrag",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:GrandTotalAmount",
         normalize=_normalize_money,
+        field_type="MONEY",
     ),
     # 16. Amount due for payment (BT-115) — EN16931-mandatory.
     "due_payable_amount": FieldSpec(
@@ -365,6 +409,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         german_label="Zahlbetrag",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:DuePayableAmount",
         normalize=_normalize_money,
+        field_type="MONEY",
     ),
 }
 
