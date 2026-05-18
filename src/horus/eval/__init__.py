@@ -32,6 +32,7 @@ from horus.eval.ground_truth import (
     GroundTruthField,
     parse_cii_xml,
 )
+from horus.eval.harness import HarnessRunResult, run_cohort
 from horus.eval.rasterize import rasterize_pdf
 from horus.eval.scorer import FieldResult, InvoiceFieldScores, score
 
@@ -43,6 +44,7 @@ __all__ = [
     "FieldType",
     "GroundTruth",
     "GroundTruthField",
+    "HarnessRunResult",
     "InvoiceFieldScores",
     "anls",
     "extract_transcript_body",
@@ -50,6 +52,7 @@ __all__ = [
     "parse_cii_xml",
     "preprocess",
     "rasterize_pdf",
+    "run_cohort",
     "score",
     "to_predicted_dict",
 ]
