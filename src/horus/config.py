@@ -59,6 +59,74 @@ class MLflowConfig(BaseModel):
     )
 
 
+class EvalConfig(BaseModel):
+    """Per-field F1 scoring knobs (sub-model of `ExperimentConfig`).
+
+    Tunes PR(b)'s scorer (`src/horus/eval/scorer.py`) per ADR-013. Every knob
+    has a literature-default — pilots that don't override these inherit the
+    Biten+ ICCV'19 + DocILE-aligned behavior. Override via YAML
+    (`configs/pilot-13-eval.yaml`) or `HORUS_EVAL__*` env vars.
+
+    Refs:
+      - `docs/decisions/ADR-013-vlm-prediction-scorer.md` (this sub-model's
+        ratifying ADR).
+      - `docs/sources/papers/biten-2019-anls-iccv.md` (ANLS threshold rationale).
+      - `docs/sources/tools/docile-rossumai.md` (tolerance-windows precedent).
+      - `.windsurf/rules/horus-config-discipline.md` (this is the architectural
+        forcing function — knobs live HERE, not in `.py` constants).
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    anls_threshold: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description=(
+            "ANLS* threshold (Biten+ ICCV'19): NLS scores below this collapse "
+            "to 0.0; scores at or above pass through unchanged. Applied by the "
+            "STRING-type comparator (seller_name, buyer_name). 0.5 is the "
+            "literature default; the pilot may tune this per `horus-config-discipline`."
+        ),
+    )
+    money_tolerance_cents: int = Field(
+        default=0,
+        ge=0,
+        description=(
+            "Allowed |predicted - gt| in integer cents for the MONEY comparator. "
+            "0 = strict (exact 2-decimal Decimal match). Reserved for a future "
+            "amendment if the pilot finds models systematically off-by-rounding; "
+            "default keeps Vorsteuerabzug strict."
+        ),
+    )
+    date_tolerance_days: int = Field(
+        default=0,
+        ge=0,
+        description=(
+            "Allowed |predicted - gt| in days for the DATE comparator. 0 = strict "
+            "(exact ISO-8601 match). Reserved for a future amendment if VLMs "
+            "systematically misread DD/MM."
+        ),
+    )
+    string_normalize_nfc: bool = Field(
+        default=True,
+        description=(
+            "If true, apply Unicode NFC to predicted strings before STRING/CODE "
+            "comparison (matches PR(a)'s GT-side normalizer; ensures 'München' "
+            "in composed vs decomposed form compares equal)."
+        ),
+    )
+    log_excluded_to_dict: bool = Field(
+        default=True,
+        description=(
+            "If true, include EXCLUDED (normalizer-rejected GT) FieldResult "
+            "entries in the per_field dict logged to MLflow. Useful for "
+            "diagnostics; doesn't affect F1 numerators or denominators "
+            "(EXCLUDED already drops from both per ADR-013 §Truth table)."
+        ),
+    )
+
+
 class ExperimentConfig(BaseSettings):
     """Single source of truth for an experiment's knobs.
 
@@ -86,6 +154,15 @@ class ExperimentConfig(BaseSettings):
         ),
     )
     mlflow: MLflowConfig
+    eval: EvalConfig | None = Field(
+        default=None,
+        description=(
+            "Optional per-field F1 scoring knobs (ADR-013). Required only for "
+            "experiments that invoke the PR(b) scorer "
+            "(e.g., `configs/pilot-13-eval.yaml`); existing experiments without "
+            "an `eval:` YAML section continue to work unchanged."
+        ),
+    )
 
     @classmethod
     def from_yaml(cls, cfg_path: str | Path) -> ExperimentConfig:

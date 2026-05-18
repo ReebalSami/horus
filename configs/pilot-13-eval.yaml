@@ -1,0 +1,59 @@
+# pilot-13-eval.yaml — ADR-013 PR(b) scorer evidence + MLflow integration
+#
+# Config for runs that invoke `src/horus/eval/scorer.score()` (the per-field
+# F1 scorer). When this CFG is loaded by an experiment (e.g., the future PR(c)
+# cohort harness, or ad-hoc smoke runs), it constructs an `EvalConfig` with
+# literature-default knobs + MLflow tracking metadata.
+#
+# Per `horus-config-discipline`: ALL knobs live in this YAML. Adding a new
+# knob requires extending `src/horus/config.py`'s `EvalConfig` Pydantic schema
+# first, then exposing it here. Pydantic fail-fast at boot catches drift
+# (missing field, type mismatch, extra unknown key — all raise BEFORE any
+# model loads).
+#
+# `tracking_uri: null` triggers MLflow's SQLite default backend (per ADR-011)
+# at `sqlite:///mlflow.db` + artifact root `./mlartifacts/`. Override via
+# `HORUS_MLFLOW__TRACKING_URI=<uri>` env var per pydantic-settings
+# nested-delimiter convention.
+#
+# Refs: ADR-013 §Decision (scorer architecture), ADR-012 (parent: GT parser),
+# ADR-011 (MLflow tracker integration), ADR-009 (cohort manifest substrate),
+# ADR-004 (config-library), horus-config-discipline.md (L2 rule).
+
+seed: 42
+
+mlflow:
+  experiment_name: pilot-13-eval
+  run_tags:
+    stage: pilot-13
+    cohort: adr-009-pilot-cohort
+    issue: "13"
+    adr: ADR-013
+    pr: prb-scorer
+  tracking_uri: null
+
+eval:
+  # ANLS* threshold (Biten+ ICCV'19): NLS scores below this collapse to 0.0.
+  # Default 0.5 = literature standard. Tune up to 0.7 for a stricter pilot,
+  # down to 0.3 to admit more partial matches as soft hits.
+  anls_threshold: 0.5
+
+  # MONEY comparator tolerance (integer cents). 0 = strict 2-decimal Decimal
+  # match. Reserved for a future amendment if the pilot finds systematic
+  # off-by-rounding errors in cohort predictions.
+  money_tolerance_cents: 0
+
+  # DATE comparator tolerance (days). 0 = strict ISO-8601 match. Reserved
+  # for the same reason.
+  date_tolerance_days: 0
+
+  # Unicode NFC normalization of predictions before STRING/CODE comparison.
+  # True matches PR(a)'s GT-side normalizer (München in composed vs
+  # decomposed Unicode compares equal). Should always be true; only flip
+  # for diagnostic experiments isolating the effect of normalization.
+  string_normalize_nfc: true
+
+  # Whether to include EXCLUDED (normalizer-rejected) field results in the
+  # per_field artifact dict logged to MLflow. True = visible for debugging;
+  # false = leaner artifacts. Doesn't affect F1 numerators / denominators.
+  log_excluded_to_dict: true
