@@ -17,20 +17,33 @@ Public surface (re-exported from `horus.eval.ground_truth`):
 
 from __future__ import annotations
 
+from horus.eval.adapters import extract_transcript_body, preprocess, to_predicted_dict
+from horus.eval.anls import anls, nls
 from horus.eval.ground_truth import (
     CII_NAMESPACES,
     FIELDS,
     FieldSpec,
+    FieldType,
     GroundTruth,
     GroundTruthField,
     parse_cii_xml,
 )
+from horus.eval.scorer import FieldResult, InvoiceFieldScores, score
 
 __all__ = [
     "CII_NAMESPACES",
     "FIELDS",
+    "FieldResult",
     "FieldSpec",
+    "FieldType",
     "GroundTruth",
     "GroundTruthField",
+    "InvoiceFieldScores",
+    "anls",
+    "extract_transcript_body",
+    "nls",
     "parse_cii_xml",
+    "preprocess",
+    "score",
+    "to_predicted_dict",
 ]
