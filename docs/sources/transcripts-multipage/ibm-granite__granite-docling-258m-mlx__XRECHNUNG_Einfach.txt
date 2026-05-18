@@ -1,0 +1,46 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  XRECHNUNG_Einfach
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  11.21s total
+
+===== PAGE 1 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_30><loc_321><loc_40>Handelsrechnung (380) Nr. 471102 vom 05.03.2018</section_header_level_1>
+<otsl><loc_54><loc_51><loc_454><loc_86><fcel>Währung:<fcel>EUR<nl><fcel>Liefer- und Leistungsdatum:<fcel>05.03.2018<nl><fcel>Leitwege-ID:<fcel>04011000-12345-34<nl></otsl>
+<otsl><loc_54><loc_106><loc_454><loc_223><fcel>Verkäufer<fcel>4000001123452 (GLN)<nl><fcel>Globale Nummer:<fcel>Lieferant GmbH<nl><fcel>Ansprechpartner:<fcel>Max Mustermann<nl><fcel>Abteilung:<fcel>Muster-Einkauf<nl><fcel>Anschrift:<fcel>Lieferantenstraße 20<nl><ecel><fcel>DE 80333 München<nl><fcel>Telefon:<fcel>+49891234567<nl><fcel>E-Mail:<fcel>Max@Mustermann.de<nl><fcel>Steuernummer:<fcel>201/113/40209<nl><fcel>USt.-Id.-Nr.:<fcel>DE123456789<nl></otsl>
+<otsl><loc_54><loc_244><loc_454><loc_299><fcel>Käufer/Leistungsempfänger<fcel>GE2020211<nl><fcel>Nummer:<fcel>Kunden AG Mitte<nl><fcel>Name:<fcel>Kundenstraße 15<nl><fcel>Anschrift:<fcel>DE 69876 Frankfurt<nl></otsl>
+<section_header_level_1><loc_59><loc_307><loc_108><loc_314>Bemerkungen</section_header_level_1>
+<otsl><loc_57><loc_320><loc_452><loc_350><fcel>Bemerkung<fcel>Rechnung gemäß Bestellung vom 01.03.2018.<nl><fcel>Betreff:<fcel>REG Regulatory information<nl></otsl>
+<text><loc_135><loc_360><loc_238><loc_393>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland Geschäftsführer: Hans Muster Handelsregisternummer: H A 123</text>
+<page_footer><loc_245><loc_456><loc_356><loc_465>Seite 1 von 3</page_footer>
+<page_footer><loc_415><loc_491><loc_452><loc_496>Seite 1 von 3</page_footer>
+</doctag>
+===== PAGE 2 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_55><loc_42><loc_117><loc_50>Positionsdaten</section_header_level_1>
+<otsl><loc_55><loc_52><loc_457><loc_148><fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl><fcel>1<fcel>TB100A4 4012345001235 (GTIN)<fcel>Trennblätter A4<fcel>9,9000<fcel>20 Stk<fcel>19 %<fcel>198,00<nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 9,9000<ecel><ecel><ecel><ecel><nl><fcel>2<fcel>ARNR2<fcel>Joghurt Banane<fcel>5,5000<fcel>50 Stk<fcel>7 %<fcel>275,00<nl><fcel>4000050986428 (GTIN)<ecel><fcel>getLineTradeAgreementBruttopreis : 5,5000<ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_55><loc_179><loc_179><loc_186>Umsatzsteueraufschlüsselung</section_header_level_1>
+<otsl><loc_55><loc_189><loc_452><loc_237><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<ecel><ecel><fcel>275,00<fcel>7<fcel>19,25<nl><fcel>Umsatzsteuer (S)<ecel><ecel><fcel>198,00<fcel>19<fcel>37,62<nl></otsl>
+<section_header_level_1><loc_55><loc_263><loc_114><loc_270>Belegsummen</section_header_level_1>
+<otsl><loc_177><loc_277><loc_457><loc_413><fcel>Positionssumme<fcel>473,00<nl><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><fcel>Rechnungssumme ohne USt.<fcel>473,00<nl><fcel>Steuerbetrag<fcel>56,87<nl><fcel>Bruttosumme<fcel>529,87<nl><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><fcel>Zahlbetrag<fcel>529,87<nl></otsl>
+<section_header_level_1><loc_55><loc_433><loc_146><loc_440>Zahlungsbedingungen</section_header_level_1>
+<otsl><loc_56><loc_443><loc_452><loc_454><fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl><fcel>Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018<ecel><ecel><nl></otsl>
+<page_footer><loc_415><loc_490><loc_452><loc_495>Seite 2 von 3</page_footer>
+</doctag>
+===== PAGE 3 =====
+<doctag><page_header><loc_47><loc_10><loc_174><loc_14>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
+<section_header_level_1><loc_54><loc_28><loc_104><loc_36>Zahlungsart</section_header_level_1>
+<text><loc_59><loc_42><loc_167><loc_48>Zahlung per SEPA Überweisung.</text>
+<text><loc_58><loc_52><loc_118><loc_57>Zahlungstyp (codiert):</text>
+<text><loc_259><loc_52><loc_339><loc_57>58 - per SEPA ÜBERWEISUNG</text>
+<text><loc_58><loc_61><loc_96><loc_66>Kontoname :</text>
+<text><loc_259><loc_61><loc_289><loc_66>Kunden AG</text>
+<text><loc_58><loc_70><loc_74><loc_75>IBAN :</text>
+<text><loc_259><loc_70><loc_334><loc_75>DE02120300000000202051</text>
+<text><loc_58><loc_79><loc_99><loc_84>Verkäufer-BIC:</text>
+<text><loc_259><loc_79><loc_299><loc_84>BYLADEM1001</text>
+<page_footer><loc_415><loc_489><loc_453><loc_494>Seite3 von 3</page_footer>
+</doctag>

@@ -1,10 +1,10 @@
 # Multi-page transcript (ADR-014 PR(c))
 # Model:    ibm-granite/granite-docling-258M-mlx
-# Invoice:  EN16931_Einfach
+# Invoice:  EN16931_Einfach_negativePaymentDue
 # Pages:    2
 # DPI:      300
 # Errors:   0/2
-# Extract:  8.18s total
+# Extract:  7.61s total
 
 ===== PAGE 1 =====
 <doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
@@ -21,12 +21,10 @@
 ===== PAGE 2 =====
 <doctag><page_header><loc_47><loc_10><loc_174><loc_15>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022</page_header>
 <section_header_level_1><loc_55><loc_42><loc_117><loc_50>Positionsdaten</section_header_level_1>
-<otsl><loc_55><loc_52><loc_457><loc_148><fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl><fcel>1<fcel>TB100A4 4012345001235 (GTIN)<fcel>Trennblätter A4<fcel>9,9000<fcel>20 Stk<fcel>19 %<fcel>198,00<nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 9,9000<ecel><ecel><ecel><ecel><nl><fcel>2<fcel>ARNR2<fcel>Joghurt Banane<fcel>5,5000<fcel>50 Stk<fcel>7 %<fcel>275,00<nl><ecel><fcel>4000050986428 (GTIN)<fcel>getLineTradeAgreementBruttopreis : 5,5000<ecel><ecel><ecel><ecel><nl></otsl>
-<section_header_level_1><loc_55><loc_179><loc_179><loc_186>Umsatzsteueraufschlüsselung</section_header_level_1>
+<otsl><loc_55><loc_52><loc_457><loc_147><fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl><fcel>1<fcel>TB100A4 4012345001235 (GTIN)<fcel>Trennblätter A4<fcel>9,9000<fcel>20 Stk<fcel>19 %<fcel>198,00<nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 9,9000<ecel><ecel><ecel><ecel><nl><fcel>2<fcel>ARNR2 4000050986428 (GTIN)<fcel>Joghurt Banane<fcel>5,5000<fcel>50 Stk<fcel>7 %<fcel>275,00<nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 5,5000<ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_55><loc_179><loc_179><loc_186>Umsatzsteueraufschläusselung</section_header_level_1>
 <otsl><loc_55><loc_189><loc_452><loc_237><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<ecel><ecel><fcel>275,00<fcel>7<fcel>19,25<nl><fcel>Umsatzsteuer (S)<ecel><ecel><fcel>198,00<fcel>19<fcel>37,62<nl></otsl>
 <section_header_level_1><loc_55><loc_263><loc_114><loc_270>Belegsummen</section_header_level_1>
-<otsl><loc_177><loc_276><loc_457><loc_413><fcel>Positionssumme<fcel>473,00<nl><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><fcel>Rechnungssumme ohne USt.<fcel>473,00<nl><fcel>Steuerbetrag<fcel>56,87<nl><fcel>Bruttosumme<fcel>529,87<nl><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><fcel>Zahlbetrag<fcel>529,87<nl></otsl>
-<section_header_level_1><loc_55><loc_433><loc_146><loc_440>Zahlungsbedingungen</section_header_level_1>
-<otsl><loc_56><loc_443><loc_452><loc_454><fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl><fcel>Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018<ecel><ecel><nl></otsl>
+<otsl><loc_177><loc_277><loc_457><loc_412><fcel>Positionssumme<fcel>473,00<nl><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><fcel>Rechnungssumme ohne USt.<fcel>473,00<nl><fcel>Steuerbetrag<fcel>56,87<nl><fcel>Bruttosumme<fcel>529,87<nl><fcel>Zahlbetrag<fcel>-529,87<nl></otsl>
 <page_footer><loc_415><loc_490><loc_452><loc_495>Seite 2 von 2</page_footer>
 </doctag>

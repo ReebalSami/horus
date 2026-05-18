@@ -1,0 +1,140 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  XRECHNUNG_Einfach
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  93.46s total
+
+===== PAGE 1 =====
+Berichtet: Rechnungen für ZUSCHRO 2.3, 11.Feb.2018
+Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+05.03.2018
+Liefer- und Leistungsdatum:
+0401.000-12345-34
+Verkäufer
+4000001123452 (GLN)
+Globale Nummer:
+Liefrand GmbH
+Name:
+Anschrift:
+Muster-Einlauf
+Anschrift:
+Liefrandstraße 20
+DE 60313 Mustermann
+Telefon:
++49901234567
+E-Mail:
+Max@Mustermann.de
+Stromnummer:
++01/115/42099
+US-Id-No.:
+DE 123456789
+Käufer/Leistungsempfänger
+Nummer:
+GE2020211
+Nummer:
+Kunden-Nr. 20000
+Anschrift:
+Kundestraße 15
+DE 60876 Frankfurt
+Bemerkungen
+Bemerkung gemäß Bestellung vom 05.03.2018.
+Berichtet:
+Berichtet:
+REG. Regulatory information
+Berichtet:
+Liefrand GmbH
+Anschrift:
+Liefrandstraße 20
+DE 60313 Mustermann
+Inhalt:
+Geschäftsführer: Hans Muster
+Handwerkskammer 14, 13
+Seite 1 von 3<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHND 2.3, 31.FEB.2018
+Positiondaten
+Art-Nr/Kunde
+Art-Nr/Kunde
+Pos
+Beschreibung
+Nettopreis
+Menge
+Steuernatz
+Nettobetrag
+1
+1
+TR100AA
+Trennsteiner Ad
+5,000
+20.514
+19,9%
+198,00
+000000001235
+(0,00%)
+getraue/frische/gemerkte/frischepreis: 5,000
+2
+AHR82
+digitale Beere
+5,500
+50.514
+7%
+275,00
+400000006428
+(0,00%)
+getraue/frische/gemerkte/frischepreis: 5,500
+Umsatzsteueraufschließung
+Art (Kategorie)
+Bezahtung
+Steuernatz (%)
+Steuerbetrag
+Warnswert
+Zu-Abschlag
+Umsatzsteuer (S)
+275,00
+7
+19,25
+Umsatzsteuer (S)
+198,00
+19
+37,62
+Belegsummen
+Postionsumme
+415,00
+Gesamtheit der Zuschläge
+0,00
+Gesamtheit der Zuschläge
+-0,00
+Rechnungsumme ohne USt.
+475,00
+Steuerbetrag
+56,87
+Bruttosumme
+529,87
+Erhaltene Anschläge
+-0,00
+Zeitbetrag
+529,87
+Zahlungsbedingungen
+Beschreibung
+Fälligkeits
+Teilzahlung
+Zahlbar innerhalb 30 Tage netto bis 04.04.2018, 3% Skonto innerhalb 10 Tage bis 15.03.2018
+Seite 2 von 3<eos>
+===== PAGE 3 =====
+Betragst-Rechnungen für ZUSCHND 2.3 (1) FeWo 2022
+Zahlungsart
+zahlung per SEPA Überweisung.
+Zahlungsnr (zzoldert):
+SE- per SEPA Überweisung
+Kunde-Nr:
+Kunde-Nr:
+IBAN:
+DE121301000000000202051
+Verkäufer-NrC:
+BYLADEM1001
+Seite 3 von 3<eos>

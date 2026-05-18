@@ -1,0 +1,66 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  XRECHNUNG_Einfach
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  285.48s total
+
+===== PAGE 1 =====
+<fcel>Handelsrechnung (380) Nr. 471102 vom 05.03.2018<lcel><nl>
+<fcel>Währung:<fcel>EUR<nl>
+<fcel>Liefer- und Leistungsdatum:<fcel>05.03.2018<nl>
+<fcel>Leitwege-ID:<fcel>04011000-12345-34<nl>
+<fcel>Verkäufer<lcel><nl>
+<fcel>Globale Nummer:<fcel>4000001123452 (GLN)<nl>
+<fcel>Name:<fcel>Lieferant GmbH<nl>
+<fcel>Ansprechpartner:<fcel>Max Mustermann<nl>
+<fcel>Abteilung:<fcel>Muster-Einkauf<nl>
+<fcel>Anschrift:<fcel>Lieferantenstraße 20<nl>
+<ecel><fcel>DE 80333 München<nl>
+<fcel>Telefon:<fcel>+49891234567<nl>
+<fcel>E-Mail:<fcel>Max@Mustermann.de<nl>
+<fcel>Steuernummer:<fcel>201/113/40209<nl>
+<fcel>USt.-Id.-Nr.:<fcel>DE123456789<nl>
+<fcel>Käufer/Leistungsempfänger<lcel><nl>
+<fcel>Nummer:<fcel>GE2020211<nl>
+<fcel>Name:<fcel>Kunden AG Mitte<nl>
+<fcel>Anschrift:<fcel>Kundenstraße 15<nl>
+<ecel><fcel>DE 69876 Frankfurt<nl>
+<fcel>Bemerkungen<lcel><nl>
+<fcel>Bemerkung<fcel>Rechnung gemäß Bestellung vom 01.03.2018.<nl>
+<fcel>Betreff:<fcel>REG Regulatory information<nl>
+<fcel>Inhalt<fcel>Lieferant GmbHLieferantenstraße 2080333 MünchenDeutschlandGeschäftsführer: Hans MusterHandelsregisternummer: H A 123<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<fcel>1<fcel>TB100A4 4012345001235 (GTIN)<fcel>Trennblätter A4<fcel>9,9000<fcel>20 Stk<fcel>19 %<fcel>198,00<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 9,9000<ecel><ecel><ecel><ecel><nl>
+<fcel>2<fcel>ARNR2 4000050986428 (GTIN)<fcel>Joghurt Banane<fcel>5,5000<fcel>50 Stk<fcel>7 %<fcel>275,00<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 5,5000<ecel><ecel><ecel><ecel><nl>
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<lcel><fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<lcel><ecel><ecel><fcel>275,00<fcel>7<fcel>19,25<nl>
+<fcel>Umsatzsteuer (S)<lcel><ecel><ecel><fcel>198,00<fcel>19<fcel>37,62<nl>
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><fcel>Positionssumme<ecel><ecel><ecel><fcel>473,00<nl>
+<ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><ecel><ecel><fcel>0,00<nl>
+<ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><ecel><ecel><fcel>-0,00<nl>
+<ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><ecel><ecel><fcel>473,00<nl>
+<ecel><ecel><fcel>Steuerbetrag<ecel><ecel><ecel><fcel>56,87<nl>
+<ecel><ecel><fcel>Bruttosumme<ecel><ecel><ecel><fcel>529,87<nl>
+<ecel><ecel><fcel>Erhaltene Anzahlungen<ecel><ecel><ecel><fcel>-0,00<nl>
+<ecel><ecel><fcel>Zahlbetrag<ecel><ecel><ecel><fcel>529,87<nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<lcel><nl>
+<fcel>Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022<lcel><nl>
+<fcel>Zahlungsart<lcel><nl>
+<fcel>Zahlung per SEPA Überweisung.<lcel><nl>
+<fcel>Zahlungstyp (codiert):<fcel>58 - per SEPA ÜBERWEISUNG<nl>
+<fcel>Kontoname :<fcel>Kunden AG<nl>
+<fcel>IBAN :<fcel>DE02120300000000202051<nl>
+<fcel>Verkäufer-BIC:<fcel>BYLADEM1001<nl>
+<|im_end|>
