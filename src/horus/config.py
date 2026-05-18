@@ -30,6 +30,7 @@ Example (the canonical experiment-boot pattern):
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
@@ -127,6 +128,134 @@ class EvalConfig(BaseModel):
     )
 
 
+class RasterizerConfig(BaseModel):
+    """Multi-page PDF rasterization knobs (sub-model of `ExperimentConfig`).
+
+    Tunes PR(c)'s rasterizer (`src/horus/eval/rasterize.py`) per ADR-014. Every
+    knob has a default chosen to match the legacy `sips --resampleWidth 2480`
+    page-1 baseline (`Makefile:89-91` pre-PR(c) `make cohort-smoke`) — meaning
+    per-cohort-model `longest_edge=2048` internal resize (ADR-007) is unchanged.
+
+    Refs:
+      - `docs/decisions/ADR-014-cohort-harness-multipage.md` (this sub-model's
+        ratifying ADR — forthcoming).
+      - `docs/sources/tools/pypdfium2.md` (rasterizer source archival).
+      - `.windsurf/rules/horus-config-discipline.md` (architectural forcing
+        function — knobs live HERE, not in `.py` constants).
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    dpi: int = Field(
+        default=300,
+        ge=72,
+        le=600,
+        description=(
+            "Rasterization DPI. Default 300 (A4 width 2480 px, matching the "
+            "legacy `sips --resampleWidth 2480` baseline + ADR-007's per-model "
+            "`longest_edge=2048` internal resize ceiling). Range [72, 600] is "
+            "sensible; below 72 loses body-text legibility, above 600 wastes "
+            "compute past the cohort internal resize."
+        ),
+    )
+    cache_dir: Path = Field(
+        default=Path("data/raw/smoke/multipage"),
+        description=(
+            "Directory under which per-PDF rasterized PNGs are cached. Outputs "
+            "land at `<cache_dir>/<pdf_stem>/page-<N>.<ext>`. mtime-based "
+            "invalidation (PDF newer than PNG → re-render) makes the cache "
+            "load-bearing for harness resume-safety. Gitignored at "
+            "`data/raw/smoke/multipage/`."
+        ),
+    )
+    image_format: Literal["png", "jpeg"] = Field(
+        default="png",
+        description=(
+            "Output image format. 'png' (default; lossless, matches existing "
+            "per-model smoke artifact convention) or 'jpeg' (lossy, smaller "
+            "files — useful only if disk pressure becomes a constraint on "
+            "the 26 × 7 cohort sweep)."
+        ),
+    )
+
+
+class CohortConfig(BaseModel):
+    """Pilot-13 cohort orchestration knobs (sub-model of `ExperimentConfig`).
+
+    Tunes PR(c)'s harness (`src/horus/eval/harness.py`) per ADR-014. Defines
+    which cohort models participate in the sweep, where the ZUGFeRD corpus
+    lives, where transcripts are archived, and whether to resume from
+    already-finished MLflow nested runs on re-invocation.
+
+    `working_models` is intentionally required (no default) so each pilot
+    config explicitly declares its cohort — preventing silent drift when
+    ADR-009 adds or removes members. The 3 ADR-009 errored models (DeepSeek-
+    OCR-2, Qwen3-VL-4B-Instruct, Molmo-7B-D) are simply absent from the
+    `working_models` list — they aren't hard-excluded by code.
+
+    Refs:
+      - `docs/decisions/ADR-014-cohort-harness-multipage.md` (this sub-model's
+        ratifying ADR — forthcoming).
+      - `docs/decisions/ADR-009-pilot-vlm-cohort.md` + Amendment 1 (cohort
+        manifest substrate — the 10-model 3-Cat foundation).
+      - `tests/test_scorer_integration.WORKING_TRANSCRIPTS` (7 working model
+        transcripts; this list is the canonical evidence base for the
+        `working_models` field's expected contents).
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    working_models: list[str] = Field(
+        description=(
+            "Cohort model IDs to run in the sweep (HuggingFace canonical IDs "
+            "matching `horus.vlm_extractor.COHORT_MANIFEST` keys). The 7 "
+            "working models from ADR-009 are the expected default at PR(c) "
+            "landing; the 3 errored models are not included here. Adding a "
+            "model that isn't in COHORT_MANIFEST raises at harness boot."
+        ),
+        min_length=1,
+    )
+    corpus_root: Path = Field(
+        default=Path("data/raw/german/zugferd-corpus"),
+        description=(
+            "Root of the ZUGFeRD test corpus. Paired-invoice discovery walks "
+            "`<corpus_root>/XML-Rechnung/FX/*.pdf` × "
+            "`<corpus_root>/XML-Rechnung/CII/*.cii.xml`. Currently the only "
+            "supported corpus; non-ZUGFeRD corpora are ADR-014 supersession "
+            "trigger (b)."
+        ),
+    )
+    parent_run_name: str = Field(
+        default="pilot-13-full",
+        description=(
+            "MLflow parent run name. Per-(model, invoice) nested runs hang "
+            "under this parent. Re-using the same name on a resume run "
+            "re-attaches to the existing parent via search_runs lookup. "
+            "Change for ablation runs (e.g., `pilot-13-tau-03` for the "
+            "τ=0.3 threshold-sensitivity branch)."
+        ),
+    )
+    transcript_archive_dir: Path = Field(
+        default=Path("docs/sources/transcripts-multipage"),
+        description=(
+            "Directory under which concatenated per-(model, invoice) "
+            "transcripts are saved as `.txt` artifacts. Paths land at "
+            "`<dir>/<model_slug>__<invoice_stem>.txt`. Committed to the repo "
+            "as ADR-014 §Decision smoke evidence."
+        ),
+    )
+    resume_on_existing_run: bool = Field(
+        default=True,
+        description=(
+            "If true (default), skip per-(model, invoice) nested runs whose "
+            "tags already match a FINISHED MLflow run under the parent. "
+            "Makes the cohort sweep interruptible: ctrl-c → re-invoke → "
+            "harness picks up where left off. Set false for fresh runs "
+            "(e.g., after deleting `mlflow.db` for a clean re-baseline)."
+        ),
+    )
+
+
 class ExperimentConfig(BaseSettings):
     """Single source of truth for an experiment's knobs.
 
@@ -161,6 +290,23 @@ class ExperimentConfig(BaseSettings):
             "experiments that invoke the PR(b) scorer "
             "(e.g., `configs/pilot-13-eval.yaml`); existing experiments without "
             "an `eval:` YAML section continue to work unchanged."
+        ),
+    )
+    rasterizer: RasterizerConfig | None = Field(
+        default=None,
+        description=(
+            "Optional multi-page rasterization knobs (ADR-014). Required only "
+            "for experiments that invoke the PR(c) harness "
+            "(e.g., `configs/pilot-13.yaml`); existing experiments without a "
+            "`rasterizer:` YAML section continue to work unchanged."
+        ),
+    )
+    cohort: CohortConfig | None = Field(
+        default=None,
+        description=(
+            "Optional cohort orchestration knobs (ADR-014). Required only for "
+            "experiments that invoke the PR(c) harness; existing experiments "
+            "without a `cohort:` YAML section continue to work unchanged."
         ),
     )
 
