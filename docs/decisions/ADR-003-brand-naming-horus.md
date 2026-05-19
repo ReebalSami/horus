@@ -84,7 +84,7 @@ In either case, a superseding ADR-NNN-brand-naming-v2.md is authored; this ADR i
 ## Consequences
 
 - **Positive**: memorable, short, defensible brand; backronym documents the methodology in the name itself; Egyptian symbolism anchors the VLM-first architectural commitment in a way that sticks.
-- **Negative**: requires explaining the backronym to non-technical audiences (supervisor Säring, thesis committee). Mitigated by the `## Why HORUS?` section in `README.md` and this ADR being linkable from the thesis text.
+- **Negative**: requires explaining the backronym to non-technical audiences (supervisor, thesis committee). Mitigated by the `## Why HORUS?` section in `README.md` and this ADR being linkable from the thesis text.
 - **Neutral**: no impact on Python package structure, GitHub hosting, or CI/CD tooling.
 
 ## Related ADRs

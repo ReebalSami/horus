@@ -20,14 +20,14 @@ Full directional detail in v2 §0–§14.
 - **Branches on results, not on plans** (v2 §4.2). Implementation-phase architectural choices decided AT EACH STEP on evidence, not pre-committed at brainstorm phase.
 - **ADR at every decision** (per `~/Projects/horus/.windsurf/rules/horus-decision-discipline.md` + `docs/decisions/ADR-001-tool-decision-discipline.md`). Every tool / model / library / dataset / framework / backend choice → 5-section ADR (current-state survey, options considered, decision + integration thoughts, source archival, supersession trigger). Authored at decision time, merged with the PR that introduces the dependency.
 - **Source archival at citation time** (per `horus-source-archival.md` + ADR-002). Every external paper / tool / dataset / legal source cited anywhere → archived under `docs/sources/{papers,tools,datasets,legal}/<slug>.md` at first citation.
-- **Scientific correctness over speed** (Säring's stated criterion, v2 §0 lock #9). Reproducibility, deterministic experiments, MLflow tracking, no p-hacking, no test-set contamination.
+- **Scientific correctness over speed** (supervisor's stated criterion, v2 §0 lock #9). Reproducibility, deterministic experiments, MLflow tracking, no p-hacking, no test-set contamination.
 
 ## 3 — Working assumptions (NOT locked — direction only)
 
 The 11 v2 §0 markers and 11 v2 §3 decisions (D1–D11) are imported as the WORKING DIRECTION. None hard-locked at brainstorm phase. Any may be revised on:
 
 - Pilot evidence (via `horus-decision-discipline` ADRs at implementation-phase)
-- Säring sign-off at first technical-progress meeting (the §4.1 a-priori commitments)
+- Supervisor sign-off at first technical-progress meeting (the §4.1 a-priori commitments)
 - Supersession triggers (per ADR-001 §5)
 
 Notable directional commitments (full list in v2 §0 + §3):
@@ -38,18 +38,20 @@ Notable directional commitments (full list in v2 §0 + §3):
 - End-to-end working prototype (FastAPI + Streamlit + Docker compose)
 - Fine-tuning central (LoRA / QLoRA on at least one VLM)
 
-## 4 — Open questions — Säring-blocked
+## 4 — Open questions — supervisor-input pending
 
-Decided at the first technical-progress meeting with Prof. Säring (currently un-booked; gated on pilot results to demonstrate). Per v2 §11:
+> **→ see §12 amendment 2026-05-19** — the lock-tier framing below is superseded. Supervisor-meetings are routine progress checks per FH-Wedel `Masterarbeit-Leitfaden.md` §9 (regelmäßiger Austausch), NOT single hypothesis-lock ceremonies. The items below remain valid as "discussion topics for the next progress check", not as Cascade-blocking gates.
 
-1. Sign-off on §14 UStG-derived field weights for compliance-aware F1 (v2 §5.2)
-2. Sign-off on held-out test set design + freeze date (v2 §9.3)
-3. Sign-off on falsifiable hypothesis set (v2 §6 H1–H6, possibly H7 transfer-learning)
+Discussed at the first supervisor progress-check meeting (booked at user discretion per the supervisor's standing open-channel availability). Per v2 §11:
+
+1. Discuss §14 UStG-derived field weights for compliance-aware F1 (v2 §5.2)
+2. Discuss held-out test set design + freeze date (v2 §9.3)
+3. Discuss falsifiable hypothesis set (v2 §6 H1–H6, possibly H7 transfer-learning) — already pre-registered in brainstorm v2 §6 (2026-05-08); discussion = refine, not first-lock
 4. Cloud API budget approval (cost estimate produced before meeting)
 5. GPU rental budget approval (cost estimate ditto)
 6. Supervision cadence (biweekly / monthly)
 
-**Säring email status**: Initial thesis-confirmation exchanged 2026-04. Säring response: cordial, requested no further info "for now". Next touchpoint = first technical-progress meeting, booked once pilot evidence is in hand. **Not a near-term implementation blocker.**
+**Supervisor email status**: Initial thesis-confirmation exchanged 2026-04. Supervisor response: cordial, requested no further info "for now". Next touchpoint = first supervisor progress-check meeting, booked at user discretion when pilot + extended-pilot evidence is in hand. **Not a near-term implementation blocker.**
 
 ## 5 — Open questions — implementation-phase (ADR-driven)
 
@@ -118,9 +120,9 @@ v2 §3 D1–D11 imported as the working approach choices. Each entry below: alte
 | D4 | §203 + §62a StBerG framing | "DSGVO blocks cloud" (2022 framing) | Stable; literature-grounded at M2D.3 Theme F |
 | D5 | LandingAI ADE as cloud baseline | Drop cloud entirely | Budget zero or cloud comparison adds no insight |
 | D6 | Layer-1 four-stage pipeline | Two-stage (parser + extractor) | Single-shot wins decisively → orchestrated dropped per ADR |
-| D7 | Working prototype required | Thesis-only, no demo | Säring permits |
+| D7 | Working prototype required | Thesis-only, no demo | Supervisor permits |
 | D8 | Fine-tuning central | Zero-shot only | Compute / timeline precludes |
-| D9 | §203 → Chapter-1 Motivation only | §203 as research contribution | Stable; v2 §13 + Säring's scientific-correctness criterion both anchor |
+| D9 | §203 → Chapter-1 Motivation only | §203 as research contribution | Stable; v2 §13 + supervisor's scientific-correctness criterion both anchor |
 | D10 | Branches on results | Waterfall planning | Stable; the entire `horus-decision-discipline` is built on this |
 | D11 | Agentic validator loop conditional | Always include | Error analysis shows zero-shot has no measurable correctable error |
 
@@ -135,8 +137,8 @@ Per `~/.windsurf/templates/python-ml-uv/phases.yaml`, the canonical next phase a
 Rationale:
 
 - v2 §0–§14 already substitutes for ~70% of a PRD's typical content (working frame + decisions + open questions + datasets + tech stack)
-- The §4.1 a-priori locks that a PRD typically formalises are Säring-blocked — cannot be locked until first technical-progress meeting, which is gated on pilot results
-- Authoring a pre-Säring PRD risks over-committing to predictions that aren't pilot-grounded → HARKing risk
+- The §4.1 a-priori locks that a PRD typically formalises are supervisor-input-pending — final refinement waits for the first progress-check, which is gated on pilot results
+- Authoring a pre-progress-check PRD risks over-committing to predictions that aren't pilot-grounded → HARKing risk
 
 **M2D.5 kickoff scope** (next milestone):
 
@@ -147,8 +149,8 @@ Rationale:
    - Generate ~10–50 synthetic ZUGFeRD invoices (Mustang)
    - Write XML-extraction-from-PDF script + first ADR on script architecture
    - Get ONE local VLM running on M1 Pro on 10 invoices (Granite-Docling via MLX strongly indicated, but cohort-selection ADR is what locks it)
-   - Compute initial F1 with full rigor: v2 §5.1 standard token F1 + v2 §5.5 field-level error heatmap (per-field precision/recall), MLflow-tracked, deterministic seed. Säring-blocked metrics (v2 §5.2 field-weighted F1, v2 §5.3 compliance pass rate, v2 §5.4 Vorsteuerabzug eligibility) deferred pending field weights + validator stage. Pilot scope is small for tractability, NOT for skipping rigor
-4. After pilot evidence in hand: schedule first Säring meeting + draft Säring agenda materials in parallel
+   - Compute initial F1 with full rigor: v2 §5.1 standard token F1 + v2 §5.5 field-level error heatmap (per-field precision/recall), MLflow-tracked, deterministic seed. Supervisor-input-pending metrics (v2 §5.2 field-weighted F1, v2 §5.3 compliance pass rate, v2 §5.4 Vorsteuerabzug eligibility) deferred pending field weights + validator stage. Pilot scope is small for tractability, NOT for skipping rigor
+4. After pilot evidence in hand: schedule first supervisor progress-check meeting + draft supervisor agenda materials in parallel
 
 If the phase-skip proves problematic (e.g., absence of explicit PRD becomes friction), revisit at `@sprint-review` and either author a retroactive lightweight PRD or refine the L3 phases.yaml.
 
@@ -193,7 +195,7 @@ If the phase-skip proves problematic (e.g., absence of explicit PRD becomes fric
 | Lock-timing tier | Items | Source |
 |---|---|---|
 | **Hard pre-commit** (before ANY model run, incl. pilot) | (1) Held-out test set freeze + hash; (2) Layer-1 eval protocol (v2 §5.1 token F1 + §5.5 field heatmap, MLflow-tracked, deterministic seed) | claude-chat refinement of v2 §4.1 |
-| **First-Säring-meeting lock** | RQ; field weights (v2 §5.2); H1–H6; statistical reporting; freeze-date approval | v2 §4.1 + §12 |
+| **Discussed at first supervisor progress-check** (superseded by §12 amendment 2026-05-19) | RQ; field weights (v2 §5.2); H1–H6 refinement (already pre-registered in v2 §6); statistical reporting; freeze-date discussion | v2 §4.1 + §12 |
 | **Post-Layer-1-evidence** | v2 §5.2 weighted F1, §5.3 compliance pass rate, §5.4 Vorsteuerabzug eligibility, §5.6 validator catch rate | claude-chat refinement |
 | **Layer-2/3-phase** | KG fidelity propagation; Layer 3 query-accuracy; GraphRAG-vs-vector metrics | branches per v2 §4.2 |
 
@@ -232,7 +234,7 @@ The new cascade has the Bundle 1 rule loaded at conversation-start (workspace ru
 
 **Status**: amendment to §8. Supplements + revises the `issues`-skip half of §8's phase-chain adaptation. `spec`-skip stays in force.
 
-**Trigger**: 2026-05-10 user-led clarification session. User identified that all three §8 rationales — (1) v2 §0–§14 already covers ~70% of typical PRD content, (2) the §4.1 a-priori commitments are Säring-blocked, (3) pre-Säring PRD risks HARKing — are **spec-only** rationales. None of them are about `issues`-phase semantics. The previous Cascade authoring §8 conflated the two phases when bundling them under one "skip" decision.
+**Trigger**: 2026-05-10 user-led clarification session. User identified that all three §8 rationales — (1) v2 §0–§14 already covers ~70% of typical PRD content, (2) the §4.1 a-priori commitments are supervisor-input-pending, (3) pre-progress-check PRD risks HARKing — are **spec-only** rationales. None of them are about `issues`-phase semantics. The previous Cascade authoring §8 conflated the two phases when bundling them under one "skip" decision.
 
 **Decision**: Only the `spec` phase is skipped. The `issues` phase is **restored**. Issues are authored from brainstorm §8 (M2D.5 sub-steps) + handoff `cascade-d-master-thesis.md` §3 (M2D.5 work-breakdown + M2D.6+ shape) as inputs — adapted consumption pattern for `@to-issues` (it nominally consumes a PRD §11 vertical-slices section; HORUS substitutes brainstorm + handoff per this amendment, with the L3-template friction captured to the cross-project queue for the next `@sprint-review` to triage).
 
@@ -248,6 +250,62 @@ The new cascade has the Bundle 1 rule loaded at conversation-start (workspace ru
 **Pattern A vs ADR**: amendment recorded inline matching §9 + §10 precedent (both methodological/discipline revisions, neither carries an ADR). `horus-decision-discipline` literal scope is tool/model/library/dataset/framework/hosting choices — phase-chain revision falls outside. ADR promotion is reversible at any future `@sprint-review` if the pattern proves novel enough.
 
 **Provenance**: parent clarify session plan `~/.windsurf/plans/horus-clarify-and-kickoff-fresh-m2d5-session-dd91c1.md` + execution kickoff plan `~/.windsurf/plans/kickoff-cascade-d-issues-restoration-f2c8e1.md` + execution wrapper `~/.windsurf/plans/kickoff-cascade-d-issues-restoration-execution-743f68.md` (this Cascade's plan summary).
+
+---
+
+## 12 — Amendment 2026-05-19: Supervisor-meeting framing correction + privacy redaction
+
+**Status**: amendment to §2, §3, §4, §9.3, §10–11 framing. Supersedes the "first-supervisor-meeting lock" tier and "supervisor-blocked" language. Does **not** supersede §6 H1–H6 pre-registration (that pre-registration stays; what's superseded is the meta-framing about WHEN/HOW it gets discussed with the supervisor).
+
+**Trigger**: 2026-05-19 user clarification session during the post-pilot-#13 re-evaluation (`~/.windsurf/plans/horus-post-pilot13-rethink-46eaaa.md` §3.5). Two surface concerns converged:
+
+1. **Framing concern** — the brainstorm's repeated "first-supervisor-meeting lock" tier (§4.1, §9.3 table, §8 rationale, scattered ADR-008/009/012/013/014 references) was self-imposed over-formalism. It modeled the supervisor as a binary methodology-lock gate, which does not match either (a) the actual relationship with the supervisor — confirmed cordial, low-touch, scheduling at student discretion, last email 2026-04 with response "*Ich benötige dann vorerst nichts weiter von ihnen*"; (b) FH-Wedel's documented expectations per `Masterarbeit-Leitfaden.md` §9 — "*Bearbeitung — 17–21 Wochen, regelmäßiger Austausch mit Betreuer*" (regular exchange) + kick-off = problem statement + outline; (c) modern ML methodology norms per NeurIPS Paper Checklist 2024/2025 + arxiv 2406.14325 (Reproducibility in ML-based Research, June 2024) + arxiv 2503.08124 (Confirmatory Methodological Research, March 2025) — rigor through transparent reporting + reproducibility infrastructure + pre-registered hypotheses, NOT through formal supervisor-meeting hypothesis-lock ceremonies.
+
+2. **Privacy concern** — the supervisor's surname appeared 31 times across 9 public-repo files (brainstorm + 8 ADRs) + 1 cascade-system handoff + issue #17. Both `ReebalSami/horus` and `ReebalSami/cascade-system` are PUBLIC. The user requested redaction of the surname to "supervisor" throughout, with the meeting-framing correction folded into the same edit.
+
+### Decision
+
+**Re-frame the supervisor-meeting role across the brainstorm + ADR-008/009/012/013/014 + issue #17**:
+
+- The supervisor-meeting is a **routine progress check** ("see if I'm on track, show what I did so far, findings, how to go further, alternatives") at student discretion, NOT a single hypothesis-lock ceremony.
+- H1–H6 are **already pre-registered** in v2 §6 (timestamped 2026-05-08). The pre-registration stays. What changes is the framing: **discussion at progress check = refine, not first-lock**.
+- The §9.3 "First-supervisor-meeting lock" row in the lock-timing tier table is **superseded** — items in that row remain valid as progress-check discussion topics, not as Cascade-blocking gates.
+- "Supervisor-input pending" replaces "supervisor-blocked" as the language for items that benefit from supervisor input but are NOT blockers for ongoing experimental work.
+- Per-experiment ADRs continue to cite which H_i they test (per the v2 §6 pre-registration); this is the operative no-HARKing discipline. Brainstorm §2's "No HARKing" commitment stays in force.
+
+**Redact the supervisor's surname** across all public-repo surfaces:
+
+- 9 horus repo files (this brainstorm + ADR-001/003/005/008/009/012/013/014) — replaced surname → "supervisor"; compound phrases ("first-X-meeting" → "first supervisor progress-check", "X-blocked" → "supervisor-meeting-blocked" or "supervisor-input pending" depending on semantics).
+- 1 cascade-system handoff (`docs/handoffs/cascade-d-master-thesis.md`) — separate PR in `ReebalSami/cascade-system`.
+- 1 GitHub issue (#17 in this repo) — title + body rewritten via `mcp3_issue_write` in the same PR.
+- Git history NOT rewritten — commit messages verified clean (`git log --grep` + `git log --pretty='%H %an %s'` for "Säring/Saring/saring" → 0 matches before this PR). Old commit blobs are reachable via specific historical-commit URLs but not via default browsing of `main`. Tradeoff: simplicity + no force-push + no broken SHAs. Solo-dev public repo; force-push history-rewrite operationally feasible but disproportionate to the visibility surface.
+
+**Scope limits** (per `horus-post-pilot13-rethink-46eaaa.md` Q2-C):
+
+- `~/.windsurf/plans/` and `~/Projects/FH-Wedel/SS26/Master-Thesis/` left intact — local-only surfaces, never published, not subject to this redaction.
+
+### What this does NOT change
+
+- **§6 H1–H6 pre-registration**: stays. The brainstorm-v2-locked-2026-05-08 timestamp is the pre-registration moment. This amendment does not retroactively change the hypothesis content; it only changes the meta-framing of WHEN/HOW the supervisor sees them.
+- **§2 No HARKing discipline**: stays. Hypotheses decided before data, reported as found.
+- **§3 D8 fine-tuning soft-lock**: stays. D8 reversal triggers ("compute/timeline precludes") remain available.
+- **§5 implementation-phase ADR slot table**: stays. ADRs walk at decision time per `horus-decision-discipline`.
+- **§4.1 hard pre-commits** ("before ANY model run") tier in the §9.3 table: stays. Held-out test set freeze + hash + Layer-1 eval protocol are still hard pre-commits.
+- **Per-experiment ADR cite-which-H_i discipline**: introduced as standing practice per `horus-post-pilot13-rethink-46eaaa.md` §3.5 conclusion. Each new experiment ADR cites which H_i it tests, or explicitly marks "exploratory under §4.2 branches-on-results".
+
+### Cross-links
+
+- §4 head, §9.3 row, §8 rationale paragraphs all carry forward-pointers to this §12 amendment.
+- ADR-008 §"Forward link to issue #17" + ADR-009/012/013/014 supervisor-meeting references are redacted in the same PR but their semantic content is unchanged — they all continue to point to issue #17 as the "progress-check agenda" coordination channel.
+- Issue #17 title rewritten to drop the surname and reframe purpose ("Supervisor progress-check agenda — routine"); body rewritten per `horus-post-pilot13-rethink-46eaaa.md` §8 Phase 1.3.
+
+### Methodology-rigor anchor for thesis writeup
+
+When the thesis writeup phase opens, Chapter 3 (Methodology) will report this framing honestly: pre-registration of H1–H6 timestamped at brainstorm v2 (2026-05-08); per-experiment ADRs as the no-HARKing audit trail; supervisor progress-check meetings as routine FH-Wedel-§9-compliant exchange; transparency about exploratory vs. confirmatory positioning per arxiv 2503.08124's continuum framing (not a binary).
+
+**Pattern A vs ADR**: amendment recorded inline matching §9 + §10 + §11 precedent (methodological/discipline revision, not a tool-decision per `horus-decision-discipline`). ADR promotion is reversible at any future `@sprint-review` if the pattern proves novel enough to warrant cross-project promotion (e.g., to L3 `python-ml-uv` template guidance on supervisor framing for thesis projects).
+
+**Provenance**: `~/.windsurf/plans/horus-post-pilot13-rethink-46eaaa.md` §3.5 (corrected scientific-correctness analysis) + §8 (4-phase execution sequence) + §6 Q2 / Q2-A / Q2-B / Q2-C resolutions. Sources cited in §3.5: FH-Wedel `Masterarbeit-Leitfaden.md` §9 + NeurIPS Paper Checklist 2024/2025 + arxiv 2406.14325 + arxiv 2503.08124 + NERVE-ML April 2025.
 
 ---
 

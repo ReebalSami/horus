@@ -127,7 +127,7 @@ The Layer 2 MONEY-field heuristics in `to_predicted_dict` (PR(b)'s adapter) were
 - **`delivery_date` (BT-72) systematic FN on XRECHNUNG_Einfach** — all 7 models output the visible date; GT mismatches. Could be a XRECHNUNG-specific BT-72 convention or a harness normalizer issue. Low priority, doesn't affect cohort ranking; future curiosity.
 - **Per-page scoring (vs per-invoice)** — current harness scores at invoice granularity. Per-page scoring would let us see WHICH page each field lifts from; deferred until needed.
 - **Cohort cloud-baseline comparison** (Brainstorm v2 §8.2) — post-pilot.
-- **Field-weighted F1** (Brainstorm v2 §5.2) — Säring-meeting-blocked.
+- **Field-weighted F1** (Brainstorm v2 §5.2) — supervisor-meeting-blocked.
 
 ## Source archival
 
