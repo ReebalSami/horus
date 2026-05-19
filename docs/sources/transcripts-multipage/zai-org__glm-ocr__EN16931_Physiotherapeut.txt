@@ -1,0 +1,164 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  80.28s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. R18-31  vom 03.10.2018
+
+Währung: EUR
+
+Verkäufer
+
+Name: Physiotherapeutin
+Ansprechpartner: Tanja Tinder
+Anschrift: Musterstraße 12
+DE 12345 Beispielstadt
+Telefon: 015119630027
+E-Mail: tanja.tinder@beispiel-provider.de
+USt.-Id.-Nr.: DE12345 Beispielstadt
+Behandlungen aufgrund der Verordnung von Frau Dr. Heilerin vom 05.09.2018 an folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018
+===== PAGE 2 =====
+## Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Umsatzsteuer (E) | | | 380,00 | 0 | 0,00 |
+| Steuerfreie Leistungen nach §4 Nr. 14 UStG | | | | | |
+
+## Belegsummen
+
+| | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 380,00 |
+| | Gesamtbetrag der Zuschläge | | | |
+| | Gesamtbetrag der Abschläge | | | |
+| | Rechnungssumme | | | |
+| | Positionssumme | | | 

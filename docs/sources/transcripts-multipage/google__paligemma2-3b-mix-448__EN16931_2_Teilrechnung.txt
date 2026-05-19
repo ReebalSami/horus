@@ -1,0 +1,113 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_2_Teilrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  73.48s total
+
+===== PAGE 1 =====
+Betragst-Rechnung für ZUSCHRO 2.2, 11.06.2018
+Handelsrechnung (380) Nr. 471113 vom 13.06.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+03.06.2018
+Bestellung:
+2018-471331
+Verkäufer
+Nummer:
+549910
+Global Nummer:
+400001123452 (GLN)
+Lieferant: GmbH
+Name:
+Lieferantenstraße 20
+Anschrift:
+DE 80133 München
+Steuernummer:
+20.11.113/40209
+USt-Id.-Nr.
+D1123456789
+Käufer/Leistungsmitglieder
+Nummer:
+GE2020311
+Nummer:
+Kunden 46 Mitte
+Anschrift:
+Kundestraße 15
+DE 69876 Frankfurt
+Bemerkingen
+Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+Bemerkung
+AKK - Price conditions
+Betreff:
+Es bestehen Rebrett- und Bonusvereinbarungen.
+schult
+REG - Regulatory information
+Betreff:
+Lieferant GmbH
+Lieferantstraße 20
+80133 München
+schult
+Generalpartner: Hans Muster
+Handelsrücknummer: N.A.123
+Seite 1 von 2<eos>
+===== PAGE 2 =====
+Vertrag: Rechnungen für ZUSCHND 2.2.1) FeWo 2018
+Positionsdaten
+Art Nr.Kunde
+Art Nr.1041
+Bestellung
+Menge
+Steuernatz
+Nettopreis
+Pos
+Nettobetrag
+Art Nr.
+Art Nr.
+Art Nr.
+1041
+1041
+7,5%
+5,500
+4 kg
+22,00
+SRA
+0100000064228
+(0,00)
+Bestellte wurden 4 kg Schweinestalk. Mit dieser Rechnung werden die
+1
+Gesamtheit der Schweinestalk-Gruppe
+getragene Schweinestalk-Gruppe
+Schweinestalk aus Deutschland
+Umsatzsteueraufschlüsselung
+Art (Kategorie)
+Wareneingang
+Bezabeltung
+Steuernatz [N]
+Steuerbetrag
+Zur Abschlag
+Umsatzsteuer [S]
+22,00
+7
+1,54
+Belegsummen
+22,00
+Positionssumme
+Gesamtheit der Zuschläge
+Gesamtheit der Abschläge
+Rechnungsumme ohne USt.
+22,00
+Steuerbetrag
+1,54
+Bruttosumme
+21,54
+Erhaltene Anzahlungen
+Zahlbetrag
+21,54
+Zahlungsbedingungen
+Bestellung innerhalb 30 Tage netto bis 04.07.2018, 3% Skonto innerhalb 10 Tage bis 15.08.2018
+Fälligkeits
+Teilzahlung
+Seite 2 von 2<eos>

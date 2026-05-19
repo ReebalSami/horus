@@ -1,0 +1,102 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  109.93s total
+
+===== PAGE 1 =====
+Betragseinschreibung für ZUSCHRO 2.2. (1) Feb 2018
+Handelrechnung (380) Nr. R18-31 vom 03.10.2018
+Währung:
+EUR
+Verkäufer
+Name:
+Physiotherapie
+Ansprechpartner:
+Filial: Trebst
+Anschrift:
+Mustestraße 12
+DE 12345 Beispieistadt
+Telefon:
+013119630027
+E-Mail:
+http://www.physio-provider.de
+USS-Id.-Nr.:
+DE136695976
+Käufer/Leistungsempfänger
+Name:
+Liselotte Müller
+Anschrift:
+Mustestraße 12
+DE 12345 Beispieistadt
+Bemerkungen
+Positiondaten
+Art. Nr. Kunde
+Art. Nr. Klient
+Beschreibung
+Nettopreis
+Menge
+Steuersatz
+Nettobetrag
+Pos
+01
+01
+Physiotherapie
+26,00
+10
+0%
+260,00
+Behandlungen aufgrund der Verrechnung von Frei-Dr. Helmuth vom 03.02.2018, 24.09.2018, 24.09.2018, 14.10.2018, 15.10.2018, 16.10.2018, 17.10.2018, 22.10.2018, 22.10.2018, 20.10.2018, 18.10.2018, 19.10.2018, 21.10.2018, 22.10.2018, 22.10.2018, 20.10.2018
+1
+Hausanschluss
+12,00
+0%
+120,00
+An folgenden Terminen: 11.02.2018, 14.02.2018, 16.02.2018, 18.02.2018, 20.02.2018, 22.02.2018, 22.02.2018, 22.02.2018, 24.02.2018, 24.02.2018, 26.02.2018, 27.02.2018, 27.02.2018, 29.02.2018, 29.02.2018, 30.02.2018, 30.02.2018, 31.02.2018, 31.02.2018, 32.02.2018, 32.02.2018, 32.02.2018
+Seite 1 von 2<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHND 2.3 (1) FeWo 2018
+Umsatzsteueraufschlüsselung
+Art (Artnummer)
+Warenwert
+Bezugsbetrag
+Steuernutz (%)
+Steuerbetrag
+Zul.Abschlag
+Umsatzsteuer (€)
+Steuerfreie Leistungen
+380,00
+0
+0,00
+Nach §4 Nr. 14 USG
+Belegsummen
+Positionsumme
+380,00
+Gesamtheit der Zuschläge
+Gesamtheit der Zuschläge
+380,00
+Rechnungsumme ohne USt.
+Steuerbetrag
+0,00
+Bruttosumme
+380,00
+Erhaltene Anschungen
+Zahlbetrag
+380,00
+Zahlungsbedingungen
+Fälligkeits
+Teilzahlung
+Beschreibung
+21.11.2018
+Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.
+21.11.2018
+Zahlungsart
+Zahlungstip (pokket):
+Nr. perweisung (DEPA)
+Kassiere
+Teller Order
+IBAN:
+DE0232101000000000202051
+Seite 2 von 2<eos>

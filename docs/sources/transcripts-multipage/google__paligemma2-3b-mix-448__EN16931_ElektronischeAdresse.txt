@@ -1,0 +1,167 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_ElektronischeAdresse
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  129.35s total
+
+===== PAGE 1 =====
+Berichtet Rechnungen für Z/GFHHD 2.3 (1) Feb 2018
+Mietrechnung (387) Nr. 9314110911/06/M/00/N vom 01.10.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+29.09.2018
+Bestellung:
+8122430999
+Lieferavis:
+L87654321012345
+Verkäufer
+Nummer:
+549910
+Gebäude Nummer:
+833411090005 (G14)
+Name:
+MUSTER-Autovermietung
+Anschrift:
+Musserstr. 99
+DE 89330 MUSTERHALSEN
+USt-Id.-Nr.:
+D136695976
+Käufer/Leistungsempfänger
+Nummer:
+9314110911
+Name:
+MUSTER-KUNDEN GMBH
+Anschrift:
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+Seite 1 von 4<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHND 2.3 (1) FHRD 2022
+Bemerkungen
+REG Regulatory information
+beruft:
+Mutterstadt: Frankfurt (Oder)
+Postleiterstempel: 60001
+Geschäftsführung:
+Postleiterstempel: 60001
+Telefon: +49 711 50885524
+Fax: +49 711 50885524
+Anlagen:2014 Mutterstadt
+Telefon: +49 711 50885524
+Fax: +49 711 50885524
+Anlagen:2014 Mutterstadt
+Bei Rückgabe:
+Telefon: +49 711 50885524
+Bemerkung
+E-Mail: 2014.mutterstadt@postnetzung.de
+Übergabe am 01.09.2019 10:35
+Bemerkung
+Telefon: +49 711 50885524
+Fax: +49 711 50885524
+Übergabe am 01.09.2019 10:35
+Bemerkung
+Telefon: +49 711 50885524
+Fax: +49 711 50885524
+Übernahme: Frankfurt
+Postleiterstempel: 60001
+Zeit: 10:35
+Telefon: +49 711 50885524
+Bemerkung
+Fax: +49 711 50885524
+Übernahme: 623
+Postleiterstempel: 60001
+Telefon: +49 711 50885524
+Übernahme: 623
+Postleiterstempel: 60001
+Bezahlungsbereich: 68500
+Seite 2 von 4<eos>
+===== PAGE 3 =====
+Betragst-Rechnungen für ZUSCHND 2.3, (c) FHRD 2022
+Positiondaten
+Art-Nr.Kunde
+Art-Nr.Kunde
+Pos
+Beschreibung
+Nettopreis
+Menge
+Steuernutz
+Nettobetrag
+Art-Nr.Kunde
+Art-Nr.Kunde
+1
+80,5500
+2 Tage(s)
+19%
+173,10
+Meritage
+Wohnen (Einzelanlagen,
+Wohnen ohne Nebengebäude, M MM 6000
+Neugartenssystem, Garanties
+5,0400
+2
+19%
+10,08
+2
+Inklusive Kilometer waren: K73
+21,5000
+2
+19%
+Vollbauko
+3
+44,20
+15,5000
+2
+19%
+minimale Selbstbeteiligung
+4
+31,10
+Personen-Unfallversicherung
+5
+7,8000
+2
+19%
+15,96
+6
+Choice Upgrade
+5,0400
+2
+19%
+10,08
+Umsatzsteueraufschlüsselung
+Art (Kategorie)
+Warenwert
+Zur/Abschlag
+Bezeichnung
+Steuernutz [%]
+Steuerbetrag
+Umsatzsteuer [$]
+286,52
+19
+54,44<eos>
+===== PAGE 4 =====
+Belegsummen
+Belegsummen
+286,52
+Gesamtheit der Zuschläge
+0,00
+Gesamtheit der Abschläge
+0,00
+Rechnungsumme ohne USt.
+286,52
+Steuerbetrag
+54,44
+Bruttosumme
+340,96
+Erhaltene Anzahlungen
+0,00
+Zahlbetrag
+340,96
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag und die im Rechnungsbetrag enthaltenen Angaben sind auf der Grundlage der Zahlung, Rechnung für Ihre Unterlagen.
+Seite 4 von 4<eos>

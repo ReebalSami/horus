@@ -1,0 +1,55 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  EN16931_Kraftfahrversicherung_Bruttopreise
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  868.46s total
+
+===== PAGE 1 =====
+<fcel>Rechnung des Versicherers (575) Nr. 00.123.456.7-2018-1 vom 11.03.2018<lcel><nl>
+<fcel>Währung:<fcel>EUR<nl>
+<fcel>Liefer- und Leistungsdatum:<fcel>30.06.2018<nl>
+<fcel>Verkäufer<ecel><nl>
+<fcel>Nummer:<fcel>549910<nl>
+<fcel>Name:<fcel>MVM MusterhafterVersicherungsverein Musterstadt a.G.<nl>
+<fcel>Anschrift:<fcel>Musterstr. 12<nl>
+<ecel><fcel>DE 12345 Musterstadt<nl>
+<fcel>USt.-Id.-Nr.:<fcel>DE234567891<nl>
+<fcel>Käufer/Leistungsempfänger<ecel><nl>
+<fcel>Name:<fcel>HerrnMax Mustermann<nl>
+<fcel>Anschrift:<fcel>Musterstr. 11<nl>
+<ecel><fcel>DE 12346 Bad Musterhausen<nl>
+<fcel>Bemerkungen<ecel><nl>
+<fcel>Bemerkung<fcel>Beitragsrechnung zur Kraftfahrtversicherung Nr. 00.123.456.7<nl>
+<fcel>Betreff:<fcel>REG Regulatory information<nl>
+<fcel>Inhalt<fcel>MVM MusterhafterVersicherungsverein Musterstadt a.G.VersicherungsbüroMusterMusterstr. 1212345 MusterstadtTel.: 0123/45678Fax.: 01231/99 45678Mo.-Fr. 08.30 - 12.30 UhrMo.-Fr. 14.00 - 17.00 UhrMo-Fr 8.00-20.00 Uhr, Sa 8.00-14.00 Uhr<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<fcel>1<ecel><fcel>Kfz-Haftpflicht SF25 (30 %) Typkl. 18 Regio R9<fcel>67,2244<fcel>1<fcel>0 %<fcel>80,00<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 80,0006<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Enthält 19% Versicherungssteuer = 12,7726 €<ecel><ecel><ecel><ecel><nl>
+<fcel>2<ecel><fcel>Vollkasko SF25 (30 %) Typkl. 21 Regio R4<fcel>117,6471<fcel>1<fcel>0 %<fcel>140,00<nl>
+<ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 140,0000<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Enthält 19% Versicherungssteuer = 22,3529 €<ecel><ecel><ecel><ecel><nl>
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<lcel><fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (E)<lcel><ecel><ecel><ecel><ecel><ecel><nl>
+<fcel>Umsatzsteuerbefreit nach $4 Nr. 10a UStG<lcel><ecel><ecel><fcel>220,00<fcel>0<fcel>0,00<nl>
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><fcel>Positionssumme<ecel><ecel><ecel><fcel>220,00<nl>
+<ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><ecel><ecel><fcel>0,00<nl>
+<ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><ecel><ecel><fcel>-0,00<nl>
+<ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><ecel><ecel><fcel>220,00<nl>
+<ecel><ecel><fcel>Steuerbetrag<ecel><ecel><ecel><fcel>0,00<nl>
+<ecel><ecel><fcel>Bruttosumme<ecel><ecel><ecel><fcel>220,00<nl>
+<ecel><ecel><fcel>Offene Zahlungen<ecel><ecel><ecel><fcel>220,00<nl>
+<ecel><ecel><fcel>Zahlbetrag<ecel><ecel><ecel><fcel>440,00<nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022<lcel><lcel><nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><nl>
+<fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Einen zu zahlenden Beitrag überweisen Sie bitte auf folgende Bankverbindung:DE75123456780000001234, BIC WELADED1MST, Sparkasse Musterstadt Ost. Einfacher für Sie ist es, wenn Sie uns ein SEPA-Lastschriftmandat erteilen. Wir würden dann zu den Fälligkeiten 01.07.2018, 01.10.2018 den jeweiligen Beitrag von dem uns bekannten Konto abbuchen. In diesem Fall würden Sie, sofern sich keine Beitragsänderung ergibt, zukünftig keine Zwischenrechnung erhalten. Beitragsgutschriften aus Ihrem Vertrag erstatten wir per Scheck.Rabattservice: Wenn Sie im laufenden Kalenderjahr nur einen Kfz-Haftpflichtschaden oder nur einen Vollkaskoschaden melden, gilt für Sie der Rabattretter.<lcel><lcel><nl>
+<|im_end|>

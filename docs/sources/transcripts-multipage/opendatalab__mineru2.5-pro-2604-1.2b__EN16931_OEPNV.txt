@@ -1,0 +1,57 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  326.79s total
+
+===== PAGE 1 =====
+<fcel>Handelsrechnung (380) Nr. E2018092011804 vom 20.09.2018<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Währung:<lcel><fcel>EUR<lcel><lcel><lcel><lcel><nl>
+<fcel>Liefer- und Leistungsdatum:<lcel><fcel>20.09.2018<lcel><lcel><lcel><lcel><nl>
+<fcel>Referenz des Käufers:<lcel><fcel>05 158 004 - 11023 - 45<lcel><lcel><lcel><lcel><nl>
+<fcel>Bestellung:<lcel><fcel>2018092011804<lcel><lcel><lcel><lcel><nl>
+<fcel>Verkäufer<lcel><ecel><lcel><lcel><lcel><lcel><nl>
+<fcel>Nummer:<lcel><fcel>549910<lcel><lcel><lcel><lcel><nl>
+<fcel>Name:<lcel><fcel>Verkehrsbetriebe GmbH<lcel><lcel><lcel><lcel><nl>
+<fcel>Ansprechpartner:<lcel><fcel>Torti Mayer<lcel><lcel><lcel><lcel><nl>
+<fcel>Anschrift:<lcel><fcel>Musterstraße 3<lcel><lcel><lcel><lcel><nl>
+<ecel><lcel><fcel>DE 12345 Berlin<lcel><lcel><lcel><lcel><nl>
+<fcel>Telefon:<lcel><fcel>+493012345678<lcel><lcel><lcel><lcel><nl>
+<fcel>E-Mail:<lcel><fcel>tm@verkehrsbetriebe.de<lcel><lcel><lcel><lcel><nl>
+<fcel>USt.-Id.-Nr.:<lcel><fcel>DE123456789<lcel><lcel><lcel><lcel><nl>
+<fcel>Käufer/Leistungsempfänger<lcel><ecel><lcel><lcel><lcel><lcel><nl>
+<fcel>Nummer:<lcel><fcel>Liselotte Müllermann<lcel><lcel><lcel><lcel><nl>
+<fcel>Name:<lcel><fcel>Liselotte Müllermann<lcel><lcel><lcel><lcel><nl>
+<fcel>Anschrift:<lcel><fcel>Beispielstraße 24<lcel><lcel><lcel><lcel><nl>
+<ecel><lcel><fcel>DE 12345 Berlin<lcel><lcel><lcel><lcel><nl>
+<fcel>Bemerkungen<lcel><ecel><lcel><lcel><lcel><lcel><nl>
+<fcel>Betreff:<lcel><fcel>ADU Note<lcel><lcel><lcel><lcel><nl>
+<fcel>Inhalt<lcel><fcel>Bei Schriftwechsel bitte Ihre Kundennummer 35040727 und Belegnummer 2018092011804 angeben<lcel><lcel><lcel><lcel><nl>
+<fcel>Positionsdaten<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<fcel>0<fcel>4-Fahrten-Karte Berlin AB<lcel><fcel>8,41<fcel>1 Stk<fcel>7%<fcel>8,41<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<ecel><ecel><fcel>8,41<fcel>7<fcel>0,59<nl>
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Positionssumme<lcel><lcel><lcel><fcel>8,41<nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<lcel><lcel><lcel><ecel><nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<lcel><lcel><lcel><ecel><nl>
+<ecel><fcel>Rechnungssumme ohne USt.<lcel><lcel><lcel><fcel>8,41<nl>
+<ecel><fcel>Steuerbetrag<lcel><lcel><lcel><fcel>0,59<nl>
+<ecel><fcel>Bruttosumme<lcel><lcel><lcel><fcel>9,00<nl>
+<ecel><fcel>Erhaltene Anzahlungen<lcel><lcel><lcel><ecel><nl>
+<ecel><fcel>Zahlbetrag<lcel><lcel><lcel><fcel>9,00<nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Zahlungsbedingungen: Der Rechnungsbetrag wurde bereits beglichen.<lcel><lcel><lcel><fcel>03.10.2018<ecel><nl>
+<fcel>Zahlungsart<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert):<lcel><lcel><fcel>30 - per Überweisung (SEPA)<lcel><lcel><nl>
+<fcel>Kontoname :<lcel><lcel><fcel>Verkehrsbetriebe GmbH<lcel><lcel><nl>
+<fcel>IBAN :<lcel><lcel><fcel>DE12 1234 5678 9012 3456 78<lcel><lcel><nl>
+<fcel>Verkäufer-BIC:<lcel><lcel><lcel><lcel><lcel><nl>
+<|im_end|>

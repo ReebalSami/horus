@@ -1,0 +1,110 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  39.14s total
+
+===== PAGE 1 =====
+# Handelsrechnung (Invoice)
+
+**Invoice Number:** 380
+**Invoice Date:** 05.03.2018
+**Invoice Number (Reference):** 471102
+
+---
+
+## Seller Information (Verkäufer)
+
+*   **Number:** 549910
+*   **Global Number:** 4000001123452 (GLN)
+*   **Name:** Lieferant GmbH
+*   **Address:** Lieferantenstraße 20
+*   **City/Postal Code:** DE 80333 München
+*   **Tax Number:** 201/113/40209
+*   **VAT ID:** DE123456789
+
+## Buyer Information (Käufer/Leistungsempfänger)
+
+*   **Number:** GE2020211
+*   **Name:** Kunden AG Mitte
+*   **Address:** Kundenstraße 15
+*   **City/Postal Code:** DE 69876 Frankfurt
+
+---
+
+## Invoice Details
+
+*   **Currency:** EUR
+*   **Delivery/Invoice Date:** 05.03.2018
+
+---
+
+## Remarks (Bemerkungen)
+
+*   **Remark:** Rechnung gemäß Bestellung vom 01.03.2018.
+*   **Subject (Betreff):** REG - Regulatory information
+
+### Included in this document (Inhalt)
+
+*   **Seller:** Lieferant GmbH
+*   **Address:** Lieferantenstraße 20, 80333 München, Deutschland
+*   **Contact Person:** Hans Muster
+*   **Trade Register Number:** H A 123
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format:
+
+## 🧾 Invoice Details
+
+*(Note: Specific invoice numbers, dates, and company names are not fully present in the provided image snippets, but the structure is maintained.)*
+
+---
+
+## 📋 Positiodaten (Item Details)
+
+| Pos | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | Brennblätter A4 | 9,9000 | 20 Stk | 19 % | 198,00 |
+| | *[Detail: BT100A4, 4012345001235 (GTIN)]* | | | | |
+| | *[Detail: getLineTradeAgreementBruttotpreis : 9,9000]* | | | | |
+| 2 | Joghurt Banane | 5,5000 | 50 Stk | 7 % | 275,00 |
+| | *[Detail: ARNR2, 40000505986428 (GTIN)]* | | | | |
+| | *[Detail: getLineTradeAgreementBruttotpreis : 5,5000]* | | | | |
+
+---
+
+## 📊 Umsatzsteueraufschlüsselung (VAT Breakdown)
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (S) | | | 275,00 | 7 | 19,25 |
+| Umsatzsteuer (S) | | | 198,00 | 19 | 37,62 |
+
+---
+
+## ➕ Belegsummen (Totals)
+
+| Description | Amount |
+| :--- | :---: |
+| Positionssumme | 473,00 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| **Rechnungssumme ohne USt.** | **473,00** |
+| Steuerbetrag | 56,87 |
+| **Bruttosumme** | **529,87** |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **529,87** |
+
+---
+
+## ⏳ Zahlungsbedingungen (Payment Terms)
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+| :--- | :--- | :--- |
+| Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018 | | |
+
+---
+*Page 2 of 2*

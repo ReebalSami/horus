@@ -1,0 +1,60 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  XRECHNUNG_Einfach
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  95.18s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom 05.03.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 05.03.2018
+Leitwege-ID: 04011000-12345-34
+
+Verkäufer
+Globale Nummer: 4000001123452 (GLN)
+Name: Lieferant GmbH
+Ansprechpartner: Max Mustermann
+Abteilung: Muster-Einkauf
+Anschrift: Lieferantenstraße 20
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+===== PAGE 2 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr (Art)
+
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+
+1 TB100A4
+4012345001235 (GTIN)
+Trennblätter A4 9,9000 20 Stk 19 % 198,00
+getLineTradeAgreementBruttopreis : 9,9000
+
+2 ARNR2
+4000050986428 (GTIN)
+Joghurt Banane 5,5000 50 Stk 7 % 275,00
+getLineTradeAgreementBruttopreis : 5,5000
+
+Zahlungsbedingungen
+
+Beschreibung Fälligkeit Teilzahlung
+
+Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018
+===== PAGE 3 =====
+Zahlungsart
+
+Zahlung per SEPA Überweisung.
+
+Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG
+
+Kontoname : Kunden AG
+
+IBAN : DE0212030000000202051
+
+Verkäufer-BIC: BYLADEM1001

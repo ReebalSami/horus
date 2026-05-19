@@ -1,0 +1,117 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    PaddlePaddle/PaddleOCR-VL
+# Invoice:  EN16931_Innergemeinschaftliche_Lieferungen
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  84.82s total
+
+===== PAGE 1 =====
+Gutschrift (Selbst ausgestellte Rechnung) (389)  Nr. 47110818  vom   31.10.2018
+Währung:
+EUR
+Abrechnungszeitraum:
+01.10.2018 bis 31.10.2018
+Verkäufer
+Nummer:
+12345676
+Name:
+Global Supplies Ltd.
+Anschrift:
+153 Victoria Street
+GB SW1B 3BN London
+USt.-Id.-Nr.:
+GB123456789
+Käufer/Leistungsempfänger
+Number:
+75969813
+Name:
+Metallbau Leipzig GmbH & Co. KG
+Anschrift:
+Pappelallee 15
+Hof 3
+DE 12345 Leipzig
+USt.-Id.-Nr.:
+DE123456789
+Abweichender Warenempfänger
+Number:
+75969815
+Name:
+Metallbau Leipzig GmbH & Co. KG
+Anschrift:
+Eichenpromenade 37
+Tor 1
+DE 12347 Metallstadt
+Abweichender Zahlungsempfänger
+Global Supplies Financial Services
+Name:
+Global Supplies Financial Services
+Bemerkungen
+Reg. Regulatory information
+Betreff:
+Mitglieder der Geschäftsleitung: Geschäftsführerin: Johanna Musterfrau Prokuristin: Isabell Herrlich HRB Berlin 13086
+Seite 1
+von 3
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Pos
+1
+2
+Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung
+Nettopreis
+Menge
+Steuersatz
+Nettobetrag
+1 Toolbox 0815CO-123 /V2A
+Stahlcoil
+Basismenge: 1 Stk
+10 Stk
+0 %
+1.000,00
+getLineTradeAgreementBruttopreis :
+· Berechnungszeitraum: 01.10.2018 bis 31.10.2018
+· Herkunftsland: DE
+· Berechnungszeitraum: 01.10.2018 bis 31.10.2018
+· Herkunftsland: DE
+Umsatzsteueraufschlüsselung
+Art (Kategorie)
+Warenwert
+Zu-/Abschlag
+Basisbetrag
+Steuersatz [%]
+Steuerbetrag
+Umsatzsteuer (K)
+Mehrwertsteuerbefreiung
+für die
+innergemeinschaftliche
+Lieferung von Waren und
+Dienstleistungen in der EU
+Belegsummen
+2.000,00
+0,00
+0,00
+Steuerbetrag
+Bruttosumme
+2.000,00
+0,00
+2000,00
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Seite 2
+von 3
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+30.11.2018
+Zahlungsart
+Zahlungstyp (codiert):
+58 - per SEPA ÜBERWEISUNG
+Kontoname :
+Global Supplies Financial Services
+IBAN :
+DE12 1234 4321 9876 00
+Seite 3
+von 3

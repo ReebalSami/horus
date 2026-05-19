@@ -1,0 +1,182 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  111.25s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom 05.06.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 03.06.2018
+Bestellung: 2013-471331
+
+Verkäufer
+Globale Nummer: 4000001123452 (GLN)
+Name: Lieferant GmbH
+Anschrift: Lieferantenstraße 20
+DE 80333 München
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.:
+
+Verkäufer
+Globale Nummer: 4000001123452 (GLN)
+Name: Lieferant GmbH
+Anschrift: Lieferantenstraße 20
+DE 80333 München
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.:
+===== PAGE 2 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Art-Nr-Kunde
+KR3M
+4012345001235 (GTIN)
+Beschreibung
+Kunstrasen grün 3m breit
+Nettopreis
+3,3333
+Menge
+3 m²
+Steuersatz
+19 %
+Nettobetrag
+10,00
+
+1 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+2 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+3 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+4 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+5 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+6 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+7 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+8 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+9 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+10 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+11 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+12 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+13 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+14 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+15 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+16 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+17 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+18 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+19 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+20 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+21 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+22 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+23 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+24 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+
+25 Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0
+===== PAGE 3 =====
+Belegsummen
+
+Positionssumme 202,70
+Gesamtbetrag der Zuschläge 5,80
+Gesamtbetrag der Abschläge -14,73
+Rechnungssumme ohne USt. 193,77
+Steuerbetrag 21,30
+Bruttosumme 215,07
+Erhaltene Anzahlungen -50,00
+
+Seite 3 von 3

@@ -1,0 +1,141 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  XRECHNUNG_Betriebskostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  99.10s total
+
+===== PAGE 1 =====
+Berichtet Rechnungen für ZUSCHND 2.3. (1) Feb 2018
+Handelrechnung (380) Nr. 471102 vom 05.03.2018
+Währung:
+EUR
+Abrechnungsstraßens:
+01.01.2010 bis 31.12.2010
+Lehtwert g:
+600.000/-12.000,54
+Abrechnung 2010
+Weitere Referenz:
+Art der Referenz: Referenzpapier (916)
+Verkäufer:
+6000011213152 (G14)
+Gesellschaftsnummer:
+Name:
+Grundbesitz GmbH & Co.
+Ansprechpartner:
+Max Mustermann
+Adresse:
+Muster-Straße 42
+Anschrift:
+Musterstraße 42
+DE 75445 Frankfurt
+Telefon:
++49912 25437
+E-Mail:
+Max@mustermann.de
+Steuernummer:
+201/113/40209
+USt-Id.-Nr.:
+DE136995976
+Käufer/Leistungsempfänger
+Name:
+Beispieleister GmbH
+Verwaltung Straße 40
+Anschrift:
+DE 12345 Musterstadt
+Abweichender Warenempfänger
+Verwaltung Straße 40 Einheit: 5.0G rechts
+Anschrift:
+DE 12345 Musterstadt
+Seite 1 von 3<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHRO 2.2.01/Feb 2022
+Bemerkingen
+Rechnung gemäß Betriebskostenrechnung vom 11.11.2011
+Bemerkung
+REG. Regulatory Information
+Betreff:
+Grundsätze GmbH & Co.
+Musterstraße 42
+75013 Hamburg
+Deutschland
+Inhaft
+Hauptstr. 20
+40203 Hamburg
+Handelsröger Hans Muster
+Umsatzsteuerer:
+Positiondaten
+Art der Quelle
+Art Nr.
+Menge
+Nettopreis
+Nettobetrag
+Pos
+Beschrift
+(Art)
+(Art)
+15.387,08
+1
+15.387,08
+1
+1
+Abrechnungskreis 1
+15.387,08
+1
+15.387,08
+401240001225
+(07760)
+Umsatzsteueraufschließung
+Art (Klageart)
+Bezahnung
+Steueramt (Z)
+Steuerbetrag
+Warnswert
+Zul./Abschlag
+Umsatzsteuer (S)
+15.387,08
+19
+2.923,55
+Belegsummen
+Positionsumme
+15.387,08
+Gesamtheit der Zuschläge
+8,00
+Gesamtheit der Zuschläge
+4,00
+Rechnungsumme ohne USt.
+15.387,08
+Steuerbetrag
+2.923,55
+Bruttosumme
+18.310,68
+Erhaltene Ansprüchen
+1780,00
+Zahlbetrag
+562,49
+Seite 2 von 3<eos>
+===== PAGE 3 =====
+Betragst-Rechnungen für ZUSCHRO 2.3 (1) FeWo 2018
+Zahlungsbedingungen
+Fälligkeit
+Teilzahlung
+Beschreibung
+04.04.2018
+Zahlungsart
+Zahlung per SEPA Überweisung:
+Zahlungsart (zollert):
+56_per_SEPA_ÜBERWEISUNG
+IBAN:
+DE6232000000000020051
+IBAN:
+WHU42001001
+Vertueller: BIC
+Rechnungsbegleitende Unterlagen
+Name
+Datumane
+Art
+Betreibsbußkostenabrechnung
+Betreibsbußkostenabrechnung.pdf
+application.pdf
+Seite 3 von 3<eos>

@@ -1,0 +1,72 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  XRECHNUNG_Betriebskostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  1549.88s total
+
+===== PAGE 1 =====
+<fcel>Handelsrechnung (380) Nr. 471102 vom 05.03.2018<lcel><nl>
+<fcel>Währung:<fcel>EUR<nl>
+<fcel>Abrechnungszeitraum:<fcel>01.01.2010 bis 31.12.2010<nl>
+<fcel>Leitwege-ID:<fcel>04011000-12345-34<nl>
+<fcel>Weitere Referenz:<fcel>Abrechnung 2010<nl>
+<ecel><fcel>Art der Referenz:Referenzpapier (916)<nl>
+<fcel>Verkäufer<ecel><nl>
+<fcel>Globale Nummer:<fcel>4000001123452 (GLN)<nl>
+<fcel>Name:<fcel>Grundbesitz GmbH & Co.<nl>
+<fcel>Ansprechpartner:<fcel>Max Mustermann<nl>
+<fcel>Abteilung:<fcel>Muster-Einkauf<nl>
+<fcel>Anschrift:<fcel>Musterstraße 42<nl>
+<ecel><fcel>DE 75645 Frankfurt<nl>
+<fcel>Telefon:<fcel>+49891234567<nl>
+<fcel>E-Mail:<fcel>Max@Mustermann.de<nl>
+<fcel>Steuernummer:<fcel>201/113/40209<nl>
+<fcel>USt.-Id.-Nr.:<fcel>DE136695976<nl>
+<fcel>Käufer/Leistungsempfänger<ecel><nl>
+<fcel>Name:<fcel>Beispielmieter GmbH<nl>
+<fcel>Anschrift:<fcel>Verwaltung Straße 40<nl>
+<ecel><fcel>DE 12345 Musterstadt<nl>
+<fcel>Abweichender Warenempfänger<ecel><nl>
+<fcel>Anschrift:<fcel>Verwaltung Straße 40<nl>
+<ecel><fcel>Einheit: 5.0G rechts<nl>
+<ecel><fcel>DE 12345 Musterstadt<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Bemerkungen<lcel><ecel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Bemerkung<lcel><fcel>Rechnung gemäß Betriebskostenrechnung vom 21.11.2011.<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Betreff:<lcel><fcel>REG Regulatory information<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Grundbesitz GmbH & Co.<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Inhalt<lcel><lcel><lcel><fcel>Musterstraße 4275645 FrankfurtDeutschlandGeschäftsführer: Hans MusterHandelsregisternummer: H A 123<lcel><lcel><lcel><nl>
+<fcel>Positionsdaten<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-KundeArt-Nr-Lief.Art-Nr(Art)<fcel>Beschreibung<lcel><fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<fcel>1<fcel>4012345001235(GTIN)<fcel>Abrechnungskreis 1<lcel><fcel>15.387,08<fcel>1<fcel>19 %<fcel>15.387,08<nl>
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<lcel><fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<lcel><fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<lcel><lcel><lcel><fcel>15.387,08<lcel><fcel>19<fcel>2.923,55<nl>
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><lcel><fcel>Positionssumme<lcel><lcel><lcel><lcel><fcel>15.387,08<nl>
+<ucel><xcel><fcel>Gesamtbetrag der Zuschläge<lcel><lcel><lcel><lcel><fcel>0,00<nl>
+<ucel><xcel><fcel>Gesamtbetrag der Abschläge<lcel><lcel><lcel><lcel><fcel>-0,00<nl>
+<ucel><xcel><fcel>Rechnungssumme ohne USt.<lcel><lcel><lcel><lcel><fcel>15.387,08<nl>
+<ucel><xcel><fcel>Steuerbetrag<lcel><lcel><lcel><lcel><fcel>2.923,55<nl>
+<ucel><xcel><fcel>Bruttosumme<lcel><lcel><lcel><lcel><fcel>18.310,63<nl>
+<ucel><xcel><fcel>Erhaltene Anzahlungen<lcel><lcel><lcel><lcel><fcel>-17808,00<nl>
+<ucel><xcel><fcel>Zahlbetrag<lcel><lcel><lcel><lcel><fcel>502,63<nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022<lcel><lcel><nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><nl>
+<fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<ecel><fcel>04.04.2018<ecel><nl>
+<fcel>Zahlungsart<lcel><lcel><nl>
+<fcel>Zahlung per SEPA Überweisung.<lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert):<fcel>58 - per SEPA ÜBERWEISUNG<lcel><nl>
+<fcel>Kontoname :<fcel>Kunden AG<lcel><nl>
+<fcel>IBAN :<fcel>DE02120300000000202051<lcel><nl>
+<fcel>Verkäufer-BIC:<fcel>BYLADEM1001<lcel><nl>
+<fcel>Rechnungsbegleitende Unterlagen<lcel><lcel><nl>
+<fcel>Name<fcel>Dateiname<fcel>Art<nl>
+<fcel>Betriebskostenabrechnung<fcel>Betriebskostenabrechnung.pdf<fcel>application/pdf<nl>
+<|im_end|>

@@ -1,0 +1,405 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  80.28s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. E2018092011804  vom 20.09.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 20.09.2018
+Referenz des Käufers: 05 158 004 - 11023 - 45
+Bestellung: 2018092011804
+
+Verkäufer
+Nummer: 549910
+Name: Verkehrsbetriebe GmbH
+Ansprechpartner: Torti Mayer
+Anschrift: Musterstraße 3
+Inhalt: Bei Schriftwechsel bitte Kundennummer 3504072 und Belegsatz 3
+Positionsdaten
+Art-Nr-Kunde
+Art-Nr-Lief.
+Beschreibung
+8,41
+1 Stk
+7 %
+8,41
+
+Gültig ab 20.09.2018 15:39 Uhr bis 20.09.2018 17:39 Uhr Abschnitt: 1/4
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Umsatzsteueraufschlüsselung
+
+Art (Kategorie) Warenwert Zu-/Abschlag Basisbetrag Steuersatz [%] Steuerbetrag
+
+Umsatzsteuer (S) 8,41 7 0,59
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+Rechnungssumme ohne USt. 8,41
+
+Belegsummen
+
+Positionssumme 8,41
+

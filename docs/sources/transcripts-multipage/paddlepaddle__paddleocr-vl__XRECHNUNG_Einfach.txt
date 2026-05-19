@@ -1,0 +1,125 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    PaddlePaddle/PaddleOCR-VL
+# Invoice:  XRECHNUNG_Einfach
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  78.48s total
+
+===== PAGE 1 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Handelsrechnung (380)  Nr. 471102  vom   05.03.2018
+Währung:
+EUR
+Liefer- und Leistungsbatum:
+05.03.2018
+Leitwege-ID:
+04011000-12345-34
+Verkäufer
+4000001123452  (GLN)
+Globale Nummer:
+Lieferant GmbH
+Name:
+Ansprechpartner:
+Max Mustermann
+Abteilung:
+Muster-Einkauf
+Anschrift:
+Lieferantenstraße 20
+DE 80333 München
+Telefon:
++49891234567
+E-Mail:
+Max@Mustermann.de
+Steuernummer:
+201/113/40209
+USt.-Id.-Nr.:
+DE123456789
+Käufer/Leistungsempfänger
+Number:
+GE2020211
+Name:
+Kunden AG Mitte
+Anschrift:
+Kundenstraße 15
+BEMerkungen
+Rechnung gemäß Bestellung vom 01.03.2018.
+Reg. Regulatory information
+Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland Geschäftsführer: Hans Muster Handelsregisternummer: H A 123
+Seite 1
+von 3
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Positionsdaten
+Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung
+Nettopreis
+Menge
+Steuersatz
+Nettobetrag
+1
+TB100A4 4012345001235 (GTIN)
+Trennblätter A4
+9,9000
+20 Stk
+19 %
+198,00
+2
+ARNR2 4000050986428 (GTIN)
+Joghurt Banane
+5,5000
+50 Stk
+7 %
+275,00
+Umsatzsteueraufschlüsselung
+Art (Kategorie)
+Warenwert
+Zu-/Abschlag
+Basisbetrag
+Steuersatz [%]
+Steuerbetrag
+Umsatzsteuer (S)
+275,00
+7
+19,25
+Umsatzsteuer (S)
+198,00
+19
+37,62
+Belegsummen
+Positionssumme
+473,00
+Gesamtbetrag der Zuschläge
+0,00
+Gesamtbetrag der Abschläge
+-0,00
+Rechnungssumme ohne USt.
+473,00
+Steuerbetrag
+56,87
+Bruttosumme
+529,87
+Erhaltene Anzahlungen
+-0,00
+Zahlbetrag
+529,87
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018
+Seite 2 von 3
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Zahlungsart
+Zahlung per SEPA Überweisung.
+Zahlungstyp (codiert):
+58 - per SEPA ÜBERWEISUNG
+Kontoname :
+Kunden AG
+IBAN :
+DE02120300000000202051
+Verkäufer-BIC:
+BYLADEM1001
+Seite 3
+von 3

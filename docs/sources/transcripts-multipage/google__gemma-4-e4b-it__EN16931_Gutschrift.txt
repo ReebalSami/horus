@@ -1,0 +1,108 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Gutschrift
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  36.30s total
+
+===== PAGE 1 =====
+# Gutschrift (Selbst ausgestellte Rechnung) (389) Nr. 471102 vom 05.03.2018
+
+**Währung:** EUR
+**Liefer- und Leistungsdatum:** 05.03.2018
+
+---
+
+## Verkäufer
+
+**Nummer:** 549910
+**Globale Nummer:** 4000001123452 (GLN)
+**Name:** Lieferant GmbH
+**Anschrift:** Lieferantenstraße 20
+DE 80333 München
+
+**Steuernummer:** 201/113/40209
+**Ust.-Id.-Nr.:** DE123456789
+
+---
+
+## Käufer/Leistungsempfänger
+
+**Nummer:** GE2020211
+**Name:** Kunden AG Mitte
+**Anschrift:** Kundenstraße 15
+DE 69876 Frankfurt
+
+**Ust.-Id.-Nr.:** DE136695976
+
+---
+
+## Bemerkungen
+
+**Bemerkung:** Rechnung gemäß Bestellung vom 01.03.2018.
+
+**Betreff:**
+**Inhalt:** Lieferant GmbH
+Lieferantenstraße 20
+80133 München
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+---
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, structured in Markdown format:
+
+## 🧾 Invoice Details
+
+*(Note: Specific invoice header details like Invoice Number, Date, etc., were not fully visible or present in the provided image snippets, but the transactional data is present.)*
+
+---
+
+## 📋 Positiodaten (Item Details)
+
+| Pos | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | Brennblätter A4 | 9,9000 | 20 Stk | 19 % | 198,00 |
+| | *[Detail: 30123450001235 (GTIN)]* | | | | |
+| | *[Detail: getLineTradeAgreementBruttopreis : 9,9000]* | | | | |
+| 2 | Joghurt Banane | 5,5000 | 50 Stk | 7 % | 275,00 |
+| | *[Detail: ARNR2 40000505986428 (GTIN)]* | | | | |
+| | *[Detail: getLineTradeAgreementBruttopreis : 5,5000]* | | | | |
+
+---
+
+## 📊 Umsatzsteueraufschlüsselung (VAT Breakdown)
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (S) | | | 275,00 | 7 | 19,25 |
+| Umsatzsteuer (S) | | | 198,00 | 19 | 37,62 |
+
+---
+
+## ➕ Belegsummen (Totals)
+
+| Description | Amount |
+| :--- | :---: |
+| Positionssumme | 473,00 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| **Rechnungssumme ohne USt.** | **473,00** |
+| Steuerbetrag | 56,87 |
+| **Bruttosumme** | **529,87** |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **529,87** |
+
+---
+
+## 📝 Zahlungsbedingungen (Payment Terms)
+
+**Beschreibung:** Der Betrag wird Ihrem Kundenkonto gutgeschrieben und mit der nächsten Rechnung verrechnet.
+
+**Fälligkeit:** *(Not specified)*
+
+**Teilzahlung:** *(Not specified)*

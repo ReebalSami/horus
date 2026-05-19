@@ -1,0 +1,61 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Betriebskostenabrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  64.89s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom  05.03.2018
+
+Währung: EUR
+Abrechnungszeitraum: 01.01.2010 bis 31.12.2010
+Weitere Referenz: Abrechnung 2010
+Art der Referenz: Referenzpapier (916)
+
+Verkäufer
+Name: Grundbesitz GmbH & Co.
+Anschrift: Musterstraße 42
+DE 75645 Frankfurt
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.: DE 75645 Frankfurt
+
+Bemerkung
+Name: Grundbesitz GmbH & Co.
+Anschrift: Musterstraße 42
+DE 75645 Frankfurt
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.: DE 75645 Frankfurt
+
+Seite 1 von 2
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Positionsdaten
+
+Pos Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr (Art)
+
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+
+1 Abrechnungskreis 1 15.387,08 1 19 % 15.387,08
+
+Umsatzsteueraufschlüsselung
+
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+
+Umsatzsteuer (S) 15.387,08 1 19 % 15.387,08
+
+Umsatzsteueraufschlüsselung
+
+Art (Kategorie) Warenwert Zu-/Abschlag Basisbetrag Steuersatz [%] Steuerbetrag
+
+Umsatzsteuer (S) 15.387,08 19 2.923,55
+
+Seite 2 von 2
+
+Name Dateiname Art
+
+Betriebskostenabrechnung PDF application/pdf

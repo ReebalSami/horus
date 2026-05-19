@@ -1,0 +1,123 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  XRECHNUNG_Einfach
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  46.05s total
+
+===== PAGE 1 =====
+# Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+
+## Angaben zur Rechnung
+
+* **Währung:** EUR
+* **Liefer- und Leistungsdatum:** 05.03.2018
+* **Leitwege-ID:** 04011000-12345-34
+
+## Verkäufer
+
+* **Globale Nummer:** 4000001123452 (GLN)
+* **Name:** Lieferant GmbH
+* **Ansprechpartner:** Max Mustermann
+* **Abteilung:** Muster-Einkauf
+* **Anschrift:** Lieferantenstraße 20
+* **Telefon:** +49891234567
+* **E-Mail:** Max@Mustermann.de
+* **Steuernummer:** 201/113/40209
+* **USt.-Id.-Nr.:** DE123456789
+
+## Käufer/Leistungsempfänger
+
+* **Nummer:** GE2020211
+* **Name:** Kunden AG Mitte
+* **Anschrift:** Kundenstraße 15
+* **DE 69876 Frankfurt
+
+## Bemerkungen
+
+* **Bemerkung:** Rechnung gemäß Bestellung vom 01.03.2018.
+* **Betreff:** REG - Regulatory Information
+
+### Inhalt
+
+* **Lieferant GmbH**
+* **Lieferantenstraße 20**
+* **80333 München**
+* **Deutschland**
+* **Geschäftsführer: Hans Muster**
+* **Handelsregisternummer: H A 123**
+
+---
+*Seite 1 von 3*
+===== PAGE 2 =====
+# Invoice Extraction
+
+Here is the extracted information from the invoice, presented in Markdown format:
+
+## Document Details
+
+* **Document Type:** Proforma Invoice / Quotation (Implied by the structure)
+* **Date:** (Not explicitly found, but context suggests it's related to the transaction)
+* **Invoice Number:** (Not explicitly found)
+
+---
+
+## Line Items / Products & Services
+
+### Section 1: Positionsdaten (Position Data)
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| 1 | TB100A4 4012345001235 (GTIN) | Trennbilletter A4 | 9,9000 | 20 Stk | 19 % | 198,00 |
+| | | getLineTradeAgreementBruttotpreis : 9,9000 | | | | |
+| 2 | ARNR2 40000505986428 (GTIN) | Joghurt Banane | 5,5000 | 50 Stk | 7 % | 275,00 |
+| | | getLineTradeAgreementBruttotpreis : 5,5000 | | | | |
+
+### Section 2: Umsatzsteueraufschlüsselung (VAT Breakdown)
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Umsatzsteuer (S) | | | 275,00 | 7 | 19,25 |
+| Umsatzsteuer (S) | | | 198,00 | 19 | 37,62 |
+
+### Section 3: Belegsummen (Document Totals)
+
+| Description | Amount |
+| :--- | :---: |
+| Positionssumme | 473,00 |
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| **Rechnungssumme ohne USt.** | **473,00** |
+| Steuerbetrag | 56,87 |
+| Bruttosumme | 529,87 |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **529,87** |
+
+---
+
+## Payment Terms & Notes
+
+**Zahlungsbedingungen (Payment Terms):**
+* **Beschreibung:** Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018
+* **Fälligkeit (Due Date):** (Implied by the terms)
+* **Teilzahlung (Installment):** (Not specified)
+
+---
+*Page navigation indicates this is Page 2 of 3.*
+===== PAGE 3 =====
+# Zahlungsart
+
+**Zahlung per SEPA Überweisung.**
+
+**Zahlungstyp (codiert):**
+58 - per SEPA ÜBERWEISUNG
+
+**Kontoname:**
+Kunden AG
+
+**IBAN:**
+DE021203000000202051
+
+**Verkäufer-BIC:**
+BYLADEM1001

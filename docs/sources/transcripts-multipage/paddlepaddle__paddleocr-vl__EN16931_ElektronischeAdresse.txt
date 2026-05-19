@@ -1,0 +1,164 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    PaddlePaddle/PaddleOCR-VL
+# Invoice:  EN16931_ElektronischeAdresse
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  108.71s total
+
+===== PAGE 1 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Mietrechnung (387)  Nr. 9314110911/00/M/00/N  vom   01.10.2018
+Währung:
+EUR
+Liefer- und Leistungsbatum:
+29.09.2018
+Bestellung:
+B123456789
+Lieferavis:
+L87654321012345
+Verkäufer
+Nummer:
+549910
+Globale Nummer:
+4333741000005  (GLN)
+Name:
+MUSTER-Autovermietung
+Anschrift:
+Musterstr. 99
+DE 99199 MUSTERHAUSEN
+USt.-Id.-Nr.:
+DE136695976
+Käufer/Leistungsempfänger
+Nummer:
+9314110911
+Name:
+MUSTER-KUNDE GMBH
+Anschrift:
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+Seite 1
+von 4
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Bemerkungen
+Betreff:
+Reg. Regulatory information
+Inhalt
+MUSTER-Autovermietung GMBH
+Musterstr. 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Maxima Musterfrau
+USt-IdNr: DE136695976
+Telefon: +49 711-50885524
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+Bemerkung
+Bei Rückfragen:
+Telefon: +49 711-50885524
+E-Mail : info@muster-autovermietung.de
+Bemerkung
+Übergabe am 29.09.2018/ 10:35
+Ort: Frankfurt a. M.
+km: 17791
+Bemerkung
+Rückgabe am 01.10.2018/ 10:19
+Ort: Frankfurt a. M.
+km: 18664
+Bemerkung
+Übernahme: Frankfurt
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+Seite 2
+von 4
+===== PAGE 3 =====
+Positionsdaten
+Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung
+Nettopreis
+Menge
+Steuersatz
+Nettobetrag
+1
+Miettage
+86,5500
+2 Tag(e)
+19 %
+173,10
+Weitere Eigenschaften: Fahrzeug-Kennzeichen: M-MM 0000
+2
+Navigationsystem - Garantie
+5,0400
+2
+19 %
+10,08
+Inklusiv-Kilometer waren: 873
+3
+Vollkasko
+23,1000
+2
+19 %
+46,20
+4
+minimale Selbstbeteiligung
+15,5500
+2
+19 %
+31,10
+5
+Personen-Unfallversicherung
+7,9800
+2
+19 %
+15,96
+6
+Choice Upgrade
+5,0400
+2
+19 %
+10,08
+Umsatzsteueraufschlüsselung
+Warsenwert
+Zu-/Abschlag
+Basisbetrag
+Steuersatz [%]
+Steuerbetrag
+Umsatzsteuer (S)
+286,52
+19
+54,44
+===== PAGE 4 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Belegsummen
+Positionssumme
+286,52
+Gesamtbetrag der Zuschläge
+0,00
+Gesamtbetrag der Abschläge
+-0,00
+Rechnungssumme ohne USt.
+286,52
+Steuerbetrag
+54,44
+Bruttosumme
+340,96
+Erhaltene Anzahlungen
+-0,00
+Zahlbetrag
+340,96
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.
+Seite 4
+von 4

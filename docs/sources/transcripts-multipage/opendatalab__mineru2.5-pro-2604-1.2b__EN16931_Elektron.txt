@@ -1,0 +1,41 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  EN16931_Elektron
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  207.81s total
+
+===== PAGE 1 =====
+<fcel>Berekungen<fcel>Rapport-Nr.: 42389 vom 08.03.2018<nl>
+<fcel>Bemerkung<fcel>Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<ecel><ecel><fcel>TGA Obermonteur/Monteur<fcel>43,20<fcel>3 Std<fcel>19 %<fcel>129,60<nl>
+<fcel>01<ecel><fcel>01 BeamermontageFür die doppelte Verlegung, falls erforderlich.getLineTradeAgreementBruttopreis : 43,20<ecel><ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Beamer-Deckenhalterung<fcel>122,50<fcel>1 Stk<fcel>19 %<fcel>122,50<nl>
+<fcel>02<ecel><fcel>02 Außerhalb AngebotgetLineTradeAgreementBruttopreis : 122,50<ecel><ecel><ecel><ecel><nl>
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<lcel><fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<lcel><ecel><ecel><fcel>252,10<fcel>19<fcel>47,90<nl>
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><fcel>Positionssumme<ecel><ecel><ecel><fcel>252,10<nl>
+<ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><ecel><ecel><fcel>0,00<nl>
+<ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><ecel><ecel><fcel>-0,00<nl>
+<ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><ecel><ecel><fcel>252,10<nl>
+<ecel><ecel><fcel>Steuerbetrag<ecel><ecel><ecel><fcel>47,90<nl>
+<ecel><ecel><fcel>Bruttosumme<ecel><ecel><ecel><fcel>300,00<nl>
+<ecel><ecel><fcel>Erhaltene Anzahlungen<ecel><ecel><ecel><fcel>-0,00<nl>
+<ecel><ecel><fcel>Zahlbetrag<ecel><ecel><ecel><fcel>300,00<nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<lcel><nl>
+<fcel>Zahlbar sofort rein netto<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Zahlungsart<lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert):<fcel>58 - per SEPA ÜBERWEISUNG<lcel><nl>
+<fcel>IBAN :<fcel>DE91100000000123456789<lcel><nl>
+<fcel>Rechnungsbegleitende Unterlagen<lcel><lcel><nl>
+<fcel>Name<fcel>Dateiname<fcel>Art<nl>
+<|im_end|>

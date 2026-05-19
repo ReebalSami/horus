@@ -1,0 +1,46 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  63.99s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom  05.03.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 05.03.2018
+
+Verkäufer
+Nummer: 549910
+Globale Nummer: 4000001123452 (GLN)
+Name: Lieferant GmbH
+Anschrift: Lieferantenstraße 20
+DE 80333 München
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.:
+===== PAGE 2 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr (Art)
+
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+
+1 TB100A4
+4012345001235 (GTIN)
+Trennblätter A4 9,9000 20 Stk 19 % 198,00
+getLineTradeAgreementBruttopreis : 9,9000
+
+2 ARNR2
+4000050986428 (GTIN)
+Joghurt Banane 5,5000 50 Stk 7 % 275,00
+getLineTradeAgreementBruttopreis : 5,5000
+
+Zahlungsbedingungen
+
+Beschreibung Fälligkeit Teilzahlung
+
+Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018

@@ -1,0 +1,56 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  EN16931_Sachversicherung_berechneter_Steuersatz
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  709.60s total
+
+===== PAGE 1 =====
+<fcel>Rechnung des Versicherers (575) Nr. 00.123.456.7-2018-1 vom 18.04.2018<lcel><nl>
+<fcel>Währung:<fcel>EUR<nl>
+<fcel>Liefer- und Leistungsdatum:<fcel>21.05.2018<nl>
+<fcel>Verkäufer<ecel><nl>
+<fcel>Nummer:<fcel>549910<nl>
+<fcel>Globale Nummer:<fcel>1234567890128 (GLN)<nl>
+<fcel>Name:<fcel>MVM MusterhafterVersicherungsverein Musterstadt a.G.<nl>
+<fcel>Anschrift:<fcel>Musterstr. 12DE 12345 Musterstadt<nl>
+<fcel>USt.-Id.-Nr.:<fcel>DE234567891<nl>
+<fcel>Käufer/Leistungsempfänger<ecel><nl>
+<fcel>Name:<fcel>HerrnMax Mustermann<nl>
+<fcel>Anschrift:<fcel>Musterstr. 11DE 12346 Bad Musterhausen<nl>
+<fcel>Bemerkungen<ecel><nl>
+<fcel>Bemerkung<fcel>Sachversicherungsvertrag Nr: 00.123.456.7(Bei Schriftwechsel und Zahlung bitte angeben.)<nl>
+<fcel>Betreff:<fcel>REG Regulatory information<nl>
+<fcel>Inhalt<fcel>MVM MusterhafterVersicherungsverein Musterstadt a.G.VersicherungsbüroMusterMusterstr. 1212345 MusterstadtTel.: 0123/45678Fax.: 01231/99 45678Mo.-Fr. 08.30 - 12.30 UhrMo.-Fr. 14.00 - 17.00 UhrMo-Fr 8.00-20.00 Uhr, Sa 8.00-14.00 Uhr<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl>
+<fcel>1<ecel><fcel>Verbundene Wohngebäudeversicherung<fcel>1.000,0000<fcel>1<fcel>0 %<fcel>1.163,40<nl>
+<fcel>getLineTradeAgreementBruttopreis : 1.163,4000<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>- Feuerversicherung - Teil A § 2 62.000 MK1914<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>- Leitungswasserversicherung - Teil A § 3 62.000 MK1914<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>- Sturm- und Hagelversicherung - Teil A § 4 Ziff. 2 62.000 MK1914<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>- WohngebäudePlus und zusätzliche Einschlüsse gemäß Antrag<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>- Weitere Elementargefahren - Teil A § 4 Ziff. 3 62.000 MK1914<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Enthält 16,34 % Versicherungssteuer = 163,40 €<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<ecel><nl>
+<fcel>Umsatzsteuer (E)<ecel><ecel><ecel><ecel><ecel><ecel><nl>
+<fcel>Umsatzsteuerbefreit nach §4 Nr. 10a UStG<ecel><ecel><fcel>1.163,40<fcel>0<fcel>0,00<ecel><nl>
+<fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Positionsumme<lcel><lcel><lcel><fcel>1.163,40<ecel><nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<lcel><lcel><lcel><fcel>0,00<ecel><nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<lcel><lcel><lcel><fcel>-0,00<ecel><nl>
+<ecel><fcel>Rechnungssumme ohne USt.<lcel><lcel><lcel><fcel>1.163,40<ecel><nl>
+<ecel><fcel>Steuerbetrag<lcel><lcel><lcel><fcel>0,00<ecel><nl>
+<ecel><fcel>Bruttosumme<lcel><lcel><lcel><fcel>1.163,40<ecel><nl>
+<ecel><fcel>Erhaltene Anzahlungen<lcel><lcel><lcel><fcel>-0,00<ecel><nl>
+<ecel><fcel>Zahlbetrag<lcel><lcel><lcel><fcel>1163,40<ecel><nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022<lcel><lcel><nl>
+<fcel>Zahlungsbedingungen<lcel><lcel><nl>
+<fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Einen zu zahlenden Beitrag überweisen Sie bitte auf folgende Bankverbindung: IBAN DE75123456780000001234, BIC WELADED1MST, Sparkasse Musterstadt Ost. Einfacher für Sie ist es, wenn Sie uns ein SEPA-Lastschriftmandat erteilen. Wir würden dann zu der Fälligkeit 21.05.2018 den Beitrag von dem uns bekannten Konto abbuchen. In diesem Fall würden Sie, sofern sich keine Beitragsänderung ergibt, zukünftig keine Zwischenrechnung erhalten. Beitragsgutschriften aus Ihrem Vertrag erstatten wir per Scheck.<lcel><lcel><nl>
+<|im_end|>

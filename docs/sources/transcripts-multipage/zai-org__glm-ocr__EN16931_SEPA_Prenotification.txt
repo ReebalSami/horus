@@ -1,0 +1,53 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_SEPA_Prenotification
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  94.91s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom  05.03.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 05.03.2018
+Gläubiger ID bei Lastschrift : DE98ZZZ0999999999
+Mandatsreferenz d. Lastschrift: REF A-123
+
+Verkäufer
+Nummer: 549910
+Globale Nummer: 4000001123452 (GLN)
+Name: Lieferant GmbH
+Anschrift: Lieferantenstraße 20
+Deutschland
+Geschäftsführer: Hans Muster
+Deutschland
+Handelsregisternummer: H A 123
+===== PAGE 2 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr (Art)
+
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+
+1 TB100A4
+4012345001235 (GTIN)
+Trennblätter A4 9,9000 20 Stk 19 % 198,00
+getLineTradeAgreementBruttopreis : 9,9000
+
+2 ARNR2
+4000050986428 (GTIN)
+Joghurt Banane 5,5000 50 Stk 7 % 275,00
+getLineTradeAgreementBruttopreis : 5,5000
+
+Zahlungsbedingungen
+
+Der Betrag in Höhe von EUR 529,87 wird am 20.03.2018 von Ihrem Konto per SEPA-Lastschrift eingezogen.
+===== PAGE 3 =====
+Zahlungsart
+
+Zahlungstyp (codiert): 59
+
+Käufer-IBAN : DE2186000000086001055

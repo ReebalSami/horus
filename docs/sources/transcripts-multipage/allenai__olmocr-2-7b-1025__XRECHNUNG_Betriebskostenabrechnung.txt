@@ -1,0 +1,89 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  XRECHNUNG_Betriebskostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  364.43s total
+
+===== PAGE 1 =====
+Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+
+Währung: EUR
+Abrechnungszeitraum: 01.01.2010 bis 31.12.2010
+Leitwege-ID: 04011000-12345-34
+Weitere Referenz: Abrechnung 2010
+
+Verkäufer/Leistungsempfänger
+Name: Beispielmieter GmbH
+Anschrift: Verwaltungung Straße 40
+USt.-Id.-Nr.: DE 12345 Musterstadt
+Anschrift: DE 12345 Musterstadt
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Bemerkungen
+
+Bemerkung
+Rechnung gemäß Betriebskostenrechnung vom 21.11.2011.
+
+Betreff:
+REG Regulatory information
+
+Grundbesitz GmbH & Co.
+Musterstraße 42
+75645 Frankfurt
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+Positionsdaten
+
+Art (Kategorie)
+Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr
+Art (GTIN)
+Beschreibung
+Nettopreis
+Menge
+Steuersatz [%]
+Nettobetrag
+
+Positionssumme
+Rechnungssumme ohne USt.
+Bruttosumme
+Erhaltene Anzahlungen
+Zahlbetrag
+
+Belegsummen
+
+Rechnungssumme ohne USt.
+Bruttosumme
+Erhaltene Anzahlungen
+Zahlbetrag
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Zahlungsbedingungen
+
+Zahlungsart
+
+Rechnungsbegleitende Unterlagen
+
+Beschreibung
+Fälligkeit
+Teilzahlung
+04.04.2018
+
+Kontoname:
+Kunden AG
+DE02120300000000202051
+BYLADEM1001
+
+Name
+Dateiname
+Art
+Betriebskostenabrechnung
+Betriebskostenabrechnung.pdf
+application/pdf

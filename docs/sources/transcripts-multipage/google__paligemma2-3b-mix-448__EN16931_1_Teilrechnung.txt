@@ -1,0 +1,594 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_1_Teilrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  353.91s total
+
+===== PAGE 1 =====
+Betragst-Rechnungen für ZUSCHRO 2.2, 11.Feb.2018
+Handelsrechnung (380) Nr. 471102 vom 05.06.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+03.06.2018
+Bestellung:
+2018-471331
+Verkäufer
+Nummer:
+549910
+Global Nummer:
+400001123452 (GLN)
+Lieferant:
+Lieferantestraße 20
+Anschrift:
+DE 80133 München
+Sieuvrumnummer:
+20111111040209
+USt-Id-Nr.
+D123456789
+Käufer/Leistungsnehmer
+Nummer:
+GE2020311
+Nummer:
+Kunden-Nr. 8800
+Anschrift:
+Kundenstelle 15
+DE 69878 Frankfurt
+Bemerkingen
+Bemerkung
+Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+Berechnung
+AKZ - Price conditions
+Bereith
+Es bestehen Rabatt- und Bonusvereinbarungen.
+Inhut
+REG - Regulatory information
+Bereith
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant:
+Lieferant
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHRO 2.3, 31.Feb.2022
+Positiondaten
+Art-Nr.Kunde
+Art-Nr.
+Bestellung
+Nettopreis
+Menge
+Steuernatz
+Nettobetrag
+Pos
+K03A
+Kunstrasen grün 3m breit
+3 m²
+1,333
+10,00
+10123456789
+10789
+Wir ermitteln uns diese folgende Positionen aus der Leistung Nr. 2018-51122 in
+1
+getrue/Trade Agreement/Brettspreis: 4,000
+Stück/kg: 0,0007
+300cm x 100 cm
+1 kg
+7%
+5,500
+SPAS
+Schweißstärke
+5,50
+10123456789
+300cm x 100 cm
+2
+Bewegt werden 5 kg Schweißstärke. Mit dieser Rechnung werden nur die bereits gelieferten Stecke berechnet. Die noch offenen 4 kg Schweißstärke werden separat berechnet.
+getrue/Trade Agreement/Brettspreis: 5,500
+Schweißstärke des Gesamtland
+STRAWEL
+3
+5,450
+20 514
+3
+Mehrfamilienhaus Medium
+1,2 + 1,00 FT
+109,80
+4
+PFAS
+2,750
+20
+19%
+55,46
+400001234561
+getrue/Trade Agreement/Brettspreis: 5,450
+4
+Pfand
+2,750
+20
+19%
+500001234578
+getrue/Trade Agreement/Brettspreis: 2,750
+Umsatzsteueraufschließung
+Art (Kategorie)
+Warnswert
+Bezdeling
+Steuernatz [N]
+Steuernutz [N]
+Umsatzsteuer [S]
+113,03
+7,91
+7
+Umsatzsteuer [S]
+19
+12,25
+64,46<eos>
+===== PAGE 3 =====
+Betragst-Rechnungen für ZUSCHÄGE 2.3. (1) FeWo 2018
+Belegsummen
+Endsumme
+180,29
+Gesamtheit der Zuschläge
+5,80
+Gesamtheit der Abschläge
+4,07
+Rechnungsumme ohne USt.
+177,49
+Sturzbetrag
+25,16
+Bruttosumme
+187,49
+Erhaltene Anzahlungen
+50,00
+Zahlbetrag
+147,65
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlbar innerhalb 30 Tage netto bis 06.07.2018, 9% Skonto innerhalb 10 Tage bis 15.05.2018
+Zu- und Abschläge
+Bezeichnung
+Begrenzung
+Anteil
+Percent
+Beitrags
+Steuer
+Anschlag Sonderzuschläge
+19 % (27,75)
+19,90
+Anschlag Sonderzuschläge
+113,30
+7 % (107,85)
+8,07
+Zuschlag Verbundbetten
+113,30
+7 % (107,85)
+8,07
+Seite 3 von 3<eos>

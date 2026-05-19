@@ -1,0 +1,149 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Reisekostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  102.01s total
+
+===== PAGE 1 =====
+Vertrag Bestellungen für ZUSCHND 2.2. (1) Feb 2018
+Handelsrechnung (380) Nr. 280081 vom 13.07.2018
+Währung:
+EUR
+Abrechnungsstraßens:
+09.07.2018 bis 11.07.2018
+42309
+Weitere Referenz:
+Art der Referenz/Referenzpapier (916)
+42390
+Weitere Referenz:
+Art der Referenz/Referenzpapier (916)
+Verkäufer:
+Nummer:
+549910
+Globaler Nummer:
+400000123452 (GLN)
+Lieferant:
+Lieferantenstraße 20
+Anschrift:
+DE 80333 München
+Steuernummer:
+20/7113/40209
+USt.-Id.-Nr.
+DE 63840789
+Käufer/Leistungsempfänger
+Nummer:
+GE2020211
+Kunden-Nr. 80856
+Name:
+Anschrift:
+Lindenstraße 15
+DE 69876 Frankfurt
+Abweichender Warenempfänger
+Masterfirma Nürnberg
+Anschrift:
+Im Bahnhof 42
+DE 75313 Nürnberg
+Seite 1 von 3<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHND 2.3, 3.1/Feb 2022
+Bemerkungen
+REG: Regulatory information
+beruft:
+Untertag: Mittagszeit 14.00-17.30
+Untertag: Mittagszeit 14.00-17.30
+Inhalt
+Beruft:
+AAA: General information
+Flug wurde vom Auftragsteller gebucht.
+Inhalt
+Beruft:
+AAA: General information
+Reiser: Moderationsstandardeinstellung
+Zurich: Workshop in Nürnberg
+Untertag: Mittagszeit 14.00-17.30
+Inhalt
+Beruft:
+AAA: General information
+Reiser: Moderationsstandardeinstellung
+Zurich: Workshop in Nürnberg
+Untertag: Mittagszeit 14.00-17.30
+Inhalt
+Positionsdaten
+Art der Quelle: Art Nr. Leaf:
+Menge
+Steuerart
+Nettobetrag
+Pos
+Beschreibung
+Inhalt
+Übernachtung: 2 Nächte Hotel
+118,88
+1
+7%
+118,88
+getLine:Trade Agreement/Infrastructure: 118,88
+Verflechtung/Frühstück
+11,76
+2
+1
+11,76
+getLine:Trade Agreement/Infrastructure: 14,00
+Fahrtaxis, Taxi Berlin
+23,36
+1
+7%
+3
+11,36
+getLine:Trade Agreement/Infrastructure: 21,00
+Fahrtaxis, Taxi Nürnberg
+4
+20,09
+7%
+20,09
+getLine:Trade Agreement/Infrastructure: 21,50
+Seite 2 von 3<eos>
+===== PAGE 3 =====
+Betragst-Rechnungen für ZUSCHND 2.2, 11.03.2018
+Umsatzsteueraufschlüsselung
+Art (Artnummer)
+Warenwert
+Bezugsbetrag
+Steuernatz [%]
+Steuerbetrag
+Umsatzsteuer [S]
+202,33
+7
+14,16
+Umsatzsteuer [S]
+11,76
+19
+2,23
+Belegsummen
+Positionsumme
+214,09
+Gesamtheit der Zuschläge
+0,00
+Gesamtheit der Zuschläge
+-0,00
+Rechnungsumme ohne USt.
+214,09
+Steuerbetrag
+14,16
+Rechnungsumme
+230,68
+Erhaltene Anzahlungen
+0,00
+Zahlbetrag
+230,68
+Zahlungsbedingungen
+Bezeichnung
+Fälligkeits
+Teilzahlung
+Zahlbar innerhalb 10 Tagen netto bis 12.08.2018, 9% Skonto innerhalb 10 Tagen bis 15.03.2018
+Rechnungsbegleitende Unterlagen
+Name
+Datum/Name
+Art
+Seite 3 von 3<eos>

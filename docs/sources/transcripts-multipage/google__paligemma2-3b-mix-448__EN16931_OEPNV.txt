@@ -1,0 +1,100 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  69.13s total
+
+===== PAGE 1 =====
+Berichtet: Berichten für ZUSCHRO 2.3, 31.Feb.2018
+Handelsrechnung (380) Nr. EZ018092011804 vom 20.09.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+20.09.2018
+Nummer:
+549510
+Verkehrsbetriebe GmbH
+Name:
+Tori Mayer
+Ansprechpartner:
+Musestraße 3
+Anschrift:
+DE 12345 Berlin
+Telefon:
++49(0)123456789
+E-Mail:
+info@verkehrsbetriebe.de
+USt.-Id.-Nr.:
+DE 123456789
+Käufer/Leistungsempfänger
+Nummer:
+Liselotte Müllermann
+Liselotte Müllermann
+Name:
+Anschrift:
+Beigelerstraße 24
+DE 12345 Berlin
+Bemerkungen
+Bereft:
+ADU - Note
+schult Bei Schriftwechsel bitte Ihre Kundennummer 302607727 und Belegnummer 2018092011804 angeben.
+Positiondaten
+Art-Nr.Kunde
+Vertrag
+Bestellung
+Nettopreis
+Menge
+Steuerung
+Nettobetrag
+Datum
+Kunde
+4-Fakten-Karte Berlin AB
+8,41
+1,50
+7,90
+8,41
+Gültig ab 20.09.2018 15.39 Uhr bis 20.09.2018 17.39 Uhr Abschnitt 1/4<eos>
+===== PAGE 2 =====
+Beleg der Rechnungs für ZUSCHÄNG 2.2, (c) FHRD 2022
+Umsatzsteueraufschlüsselung
+Art (Artgruppe)
+Warenwert
+Bezugsbetrag
+Steuerrate (%)
+Steuerbetrag
+Zul.Abschlag
+Umsatzsteuer (S)
+8,41
+7
+0,59
+Belegsummen
+Posteinsumme
+8,41
+Gesamtheit der Abschläge
+Gesamtheit der Abschläge
+Rechnungsumme ohne UStA.
+8,41
+Streschbetrag
+8,59
+Rechnungsumme
+8,00
+Erhaltene Ausgleichs
+Zahlbetrag
+3,00
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlungsbedingungen: Der Rechnungsbetrag wurde bereits beglichen.
+01.10.2018
+Zahlungsart
+Zahlungsart (zzdert)
+30. per Überweisung (DEPA)
+Kantonname:
+Verkehrsbetreiber GmbH
+Stadt:
+0933 1234 5678 9012 3456 78
+Verkäufer: BFC
+Seite 2 von 2<eos>

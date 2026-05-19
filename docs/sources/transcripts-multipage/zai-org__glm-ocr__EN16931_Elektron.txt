@@ -1,0 +1,57 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Elektron
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  95.91s total
+
+===== PAGE 1 =====
+Baurechnung (204)  Nr. 181301674  vom 25.04.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 06.03.2018
+Zahlungsreferenz: Rechnung 181301674
+Referenz des Käufers: Liselotte Müller-Lüdenscheidt
+Buchungsreferenz: 420
+Weitere Referenz: 13130162
+Art der Referenz:Referenzpapier (916)
+Weitere Referenz: 13130162
+Art der Referenz:Referenzpapier (916)
+
+Verkäufer
+Rapport-Nr.: 42389 vom 08.03.2018
+
+Bemerkung
+Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesagt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Decke geschlossen.
+===== PAGE 2 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+TGA Obermonteur/Monteur 43,20 3 Std 19 % 129,60
+01
+01 Beamermontage
+Für die doppelte Verlegung, falls erforderlich.
+getLineTradeAgreementBruttopreis : 43,20
+Beamer-Deckenhalterung 122,50 1 Stk 19 % 122,50
+02
+02 Außerhalb Angebot
+getLineTradeAgreementBruttopreis : 43,20
+02 Außerhalb Angebot
+getLineTradeAgreementBruttopreis : 122,50
+
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlbar sofort rein netto
+===== PAGE 3 =====
+Zahlungsart
+
+Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG
+IBAN : DE9110000000123456789
+
+Rechnungsbegleitende Unterlagen
+
+Name Dateiname Art

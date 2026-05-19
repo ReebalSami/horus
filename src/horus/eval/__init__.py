@@ -9,8 +9,12 @@ incrementally as the 3-PR split progresses:
             Ships `parse_cii_xml`, `GroundTruth`, `GroundTruthField`,
             `FieldSpec`, `FIELDS`, `CII_NAMESPACES`.
   - PR(b) — ADR-013 — scorer: VLM output → predicted dict → per-field F1
-            against `GroundTruth`. (Not yet shipped.)
-  - PR(c) — ADR-014 — harness: end-to-end pilot-loop orchestration. (Not yet shipped.)
+            against `GroundTruth`. Ships `score`, `InvoiceFieldScores`,
+            `FieldResult`, `preprocess`, `to_predicted_dict`,
+            `extract_transcript_body`, `anls`, `nls`.
+  - PR(c) — ADR-014 — harness: multi-page rasterizer + (model × invoice) MLflow
+            cohort orchestrator. Ships `rasterize_pdf` (this re-export) +
+            `run_cohort` + `HarnessRunResult` (re-exported when harness lands).
 
 Public surface (re-exported from `horus.eval.ground_truth`):
 """
@@ -28,6 +32,8 @@ from horus.eval.ground_truth import (
     GroundTruthField,
     parse_cii_xml,
 )
+from horus.eval.harness import HarnessRunResult, run_cohort
+from horus.eval.rasterize import rasterize_pdf
 from horus.eval.scorer import FieldResult, InvoiceFieldScores, score
 
 __all__ = [
@@ -38,12 +44,15 @@ __all__ = [
     "FieldType",
     "GroundTruth",
     "GroundTruthField",
+    "HarnessRunResult",
     "InvoiceFieldScores",
     "anls",
     "extract_transcript_body",
     "nls",
     "parse_cii_xml",
     "preprocess",
+    "rasterize_pdf",
+    "run_cohort",
     "score",
     "to_predicted_dict",
 ]

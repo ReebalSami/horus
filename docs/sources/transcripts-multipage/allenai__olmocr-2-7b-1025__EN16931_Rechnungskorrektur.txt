@@ -1,0 +1,82 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Rechnungskorrektur
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  494.02s total
+
+===== PAGE 1 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Rechnungskorrektur (384) Nr. RK21012345 vom 16.09.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 05.08.2018
+Bestellung: B123456789
+Lieferavis: L87654321012345
+
+Käufer/Leistungsempfänger
+Nummer: 009420
+Name: MUSTER-KUNDE GMBH
+Anschrift: KUNDENWEG 88
+DE 40235 DUESSELDORF
+===== PAGE 2 =====
+Bemerkungen
+
+Betreff: AAK   Price conditions
+Inhalt: Es bestehen Rabatt- oder Bonusvereinbarungen.
+
+Betreff: REG   Regulatory information
+Inhalt: Bei Rückfragen:
+Ursprungsbeleg-Nr : R87654321012345
+Reklamationsnummernummer : REKLA-2018-235
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Positionsdaten
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | ZS997 4123456000014 (GLN) | Zitronensäure 100ml | 1,0000 | -5 Stk | 19 % | -5,00 |
+| 2 | GZ250 4123456000021 (GLN) | Gelierzucker Extra 250g | 1,4500 | -2 Stk | 7 % | -2,90 |
+
+Umsatzsteueraufschlüsselung
+
+Positionssumme
+-7,90
+-0,00
+-8,79
+-1,12
+-8,79
+
+Belegsummen
+-8,79
+
+Rechnungssumme ohne USt.
+-8,79
+
+Steuereintrag
+-8,79
+
+Bruttosumme
+-8,79
+
+Erhaltene Anzahlungen
+-0,00
+
+Zahlbetrag
+-8,79
+===== PAGE 4 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Zu- und Abschläge
+
+| Art | Prozent | Basisbetrag | Basismenge | Steuer | Betrag |
+| --- | --- | --- | --- | --- | --- |
+| Abschlag Rechnungsrabatt 1<br>-2,00% Basisbetrag: -5,00, MwSt.<br>% 19,0 |  |  |  | 19 % UST (S) | 0,10 |
+| Abschlag Rechnungsrabatt 1<br>-2,00% Basisbetrag: -2,90, MwSt.<br>% 7,0 |  |  |  | 7 % UST (S) | 0,06 |
+| Abschlag Rechnungsrabatt 2<br>-2,00% Basisbetrag: -2,90, MwSt.<br>% 7,0 |  |  |  | 19 % UST (S) | 0,10 |
+| Abschlag Rechnungsrabatt 2<br>-2,00% Basisbetrag: -2,90, MwSt.<br>% 7,0 |  |  |  | 7 % UST (S) | 0,06 |
+
+Seite 4 von 4

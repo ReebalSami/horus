@@ -1,0 +1,212 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_1_Teilrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  111.79s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom 05.06.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 03.06.2018
+Bestellung: 2018-471331
+
+Verkäufer
+Nummer: 549910
+Globale Nummer: 4000001123452 (GLN)
+Name: Lieferant GmbH
+Anschrift: Lieferantenstraße 20
+DE 80333 München
+Steuernummer: 2018-471331
+
+Käufer
+Nummer: 549910
+Globale Nummer: 4000001123452 (GLN)
+Name: Lieferant GmbH
+Anschrift: Lieferantenstraße 20
+DE 80333 München
+Steuernummer: 2018-471331
+
+Inhalt
+Lieferant GmbH
+Lieferantenstraße 20
+DE 80333 München
+Steuernummer: 2018-471331
+
+Seite 1 von 3
+===== PAGE 2 =====
+Positionsdaten
+
+Pos Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung Nettopreis Menge Steuersatz Nettobetrag
+KR3M 4012345001235 (GTIN)
+Kunstrasen grün 3m breit 3,3333 3 m² 19 % 10,00
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLineTradeAgreementBruttopreis : 4,0000
+Abschlag: 0,6667
+300cm x 100 cm
+Umsatzsteueraufschlüsselung
+
+1
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+getLine
+===== PAGE 3 =====
+Belegsummen
+
+Positionssumme 180,76
+
+Gesamtbetrag der Zuschläge 5,80
+
+Gesamtbetrag der Abschläge -9,07
+
+Rechnungssumme ohne USt. 177,49
+
+Steuerbetrag 20,16
+
+Bruttosumme 197,65
+
+Erhaltene Anzahlungen -50,00
+
+Seite 3 von 3

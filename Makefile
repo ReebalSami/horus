@@ -168,6 +168,41 @@ data-manifest:
 		$(if $(COMMIT_SHA),--commit-sha "$(COMMIT_SHA)") \
 		$(if $(COMMIT_DATE),--commit-date "$(COMMIT_DATE)")
 
+# Pilot #13 runner (ADR-014 PR(c)). Full (cohort × ZUGFeRD-corpus) sweep
+# under one parent MLflow run, with (model, invoice) nested runs, multi-page
+# rasterization via pypdfium2, per-page extract + concat (Strategy α), and
+# factur-x-extracted GT (NOT sidecar — per ADR-012 Probe 5).
+#
+# Replaces the page-1-only sips loop of `make cohort-smoke` for full-corpus
+# evaluation. (`make cohort-smoke` is preserved as ADR-009 §Decision evidence.)
+#
+# Required:
+#   CFG=configs/pilot-13.yaml
+# Optional subsets:
+#   INVOICES=EN16931_Einfach,XRECHNUNG_Einfach
+#   MODELS=ibm-granite/granite-docling-258M-mlx
+# Optional flags:
+#   NO_RESUME=1  (re-run every nested run, even FINISHED ones)
+#
+# Example smallest-possible smoke:
+#   make pilot-13 CFG=configs/pilot-13.yaml \
+#     INVOICES=EN16931_Einfach \
+#     MODELS=ibm-granite/granite-docling-258M-mlx
+#
+# Example full sweep (~3-5h on M1 Pro):
+#   make pilot-13 CFG=configs/pilot-13.yaml
+#
+# Resume-safe: ctrl-c → re-run picks up where it left off via mlflow.search_runs.
+pilot-13:
+	@if [ -z "$(CFG)" ]; then \
+		echo "Usage: make pilot-13 CFG=configs/pilot-13.yaml [INVOICES=<csv>] [MODELS=<csv>] [NO_RESUME=1]"; \
+		exit 1; \
+	fi
+	uv run python scripts/run_pilot_13.py --cfg "$(CFG)" \
+		$(if $(INVOICES),--invoices "$(INVOICES)") \
+		$(if $(MODELS),--models "$(MODELS)") \
+		$(if $(NO_RESUME),--no-resume)
+
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist
 	find . -type d -name __pycache__ -prune -exec rm -rf {} +

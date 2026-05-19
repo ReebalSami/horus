@@ -1,0 +1,100 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    PaddlePaddle/PaddleOCR-VL
+# Invoice:  EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  56.98s total
+
+===== PAGE 1 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+Handelsrechnung (380)  Nr. E2018092011804  vom   20.09.2018
+Währung:
+EUR
+Liefer- und Leistungsbatum:
+20.09.2018
+Referenz des Käufers:
+05 158 004 - 11023 - 45
+Bestellung:
+2018092011804
+Verkäufer
+Number:
+549910
+Name:
+Verkehrsbetriebe GmbH
+Ansprechpartner:
+Torti Mayer
+Anschrift:
+Musterstraße 3
+Telefon:
+DE 12345 Berlin
+E-Mail:
+tm@verkehrsbetriebe.de
+USt.-Id.-Nr.:
+DE123456789
+Käufer/Leistungsempfänger
+Number:
+Liselotte Müllermann
+Name:
+Liselotte Müllermann
+Anschrift:
+Beispielstraße 24
+DE 12345 Berlin
+Bemerkungen
+Betreff:
+ADU Note
+Bei Schriftwechsel bitte Ihre Kundennummer 35040727 und Belegnummer 2018092011804 angeben
+0
+Pos
+Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung
+Nettopreis
+Menge
+Steuersatz
+Nettobetrag
+4-Fahrten-Karte Berlin AB
+8,41
+1 Stk
+7 %
+Gültig ab 20.09.2018 15:39 Uhr bis 20.09.2018 17:39 Uhr Abschnitt: 1/4
+Seite 1
+von 2
+===== PAGE 2 =====
+Art (Kategorie)
+Warsenwert
+Zu-/Abschlag
+Basisbetrag
+Steuersatz [%]
+Steuerbetrag
+Umsatzsteuer (S)
+8,41
+7
+0,59
+Belegsummen
+Positionssumme
+8,41
+Gesamtbetrag der Zuschläge
+Gesamtbetrag der Abschläge
+Rechnungssumme ohne USt.
+Steuerbetrag
+0,59
+Bruttosumme
+9,00
+Erhaltene Anzahlungen
+Zahlbetrag
+9,00
+Zahlungsbedingungen
+Beschreibung
+Fälligkeit
+Teilzahlung
+Zahlungsbedingungen: Der Rechnungsbetrag wurde bereits beglichen.
+03.10.2018
+Zahlungsart
+30 - per Überweisung (SEPA)
+Verkehrsbetriebe GmbH
+DE12 1234 5678 9012 3456 78
+Kontoname :
+IBAN :
+Verkäufer-BIC:
+Seite 2
+von 2

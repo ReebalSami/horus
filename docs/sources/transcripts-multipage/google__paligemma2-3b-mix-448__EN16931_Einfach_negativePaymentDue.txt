@@ -1,0 +1,118 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Einfach_negativePaymentDue
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  77.60s total
+
+===== PAGE 1 =====
+Berichtet Änderungen für ZUSCHND 2.3. (1) FeWo 2018
+Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+Währung:
+EUR
+Liefer- und Leistungsdatum:
+05.03.2018
+Verkäufer
+Nummer:
+549910
+Globales Nummer:
+4000001123452 (GLN)
+Name:
+Liefrand GmbH
+Anschrift:
+Leberstrasse 20
+DE 80333 München
+Steuernummer:
+201711360209
+USt-Id.-Nr.:
+DE123456789
+Käufer/Leistungsempfänger
+Nummer:
+GI2020211
+Name:
+Kunden AG Mitte
+Anschrift:
+Kundeenstraße 15
+DE 69876 Frankfurt
+Bemerkungen
+Bemerkung
+Rechnung gemäß Bestätigung vom 02.03.2018.
+Bereit
+REG - Regulatory Information
+Berichtet
+Liefrand GmbH
+Nummer:
+Leberstrasse 20
+DE 80333 München
+Anschrift:
+Inhaft
+Berichtet von: Hans Muster
+Handelsnummer: N A 123
+Seite 1 von 2<eos>
+===== PAGE 2 =====
+Betragst-Rechnungen für ZUSCHND. 2.3. (1) FeWo 2022
+Positiondaten
+Art-Nr.Kunde
+Art-Nr.Kunde
+Pos
+Beschreibung
+Nettopreis
+Menge
+Steuernatz
+Nettobetrag
+1
+1
+1
+1
+1812000
+Trenswächter Ad
+5,000
+20.514
+19%
+198,00
+000000001225
+(0,00%)
+getraue/frische/gemerkte/frischepreis: 5,000
+2
+AHR82
+digitale Beere
+5,500
+50.514
+7%
+275,00
+400000006428
+(0,00%)
+getraue/frische/gemerkte/frischepreis: 5,500
+Umsatzsteueraufschließung
+Art (Kategorie)
+Bezbetrag
+Steuernatz (%)
+Steuerbetrag
+Warnswert
+Zu/Abschlag
+Umsatzsteuer (S)
+275,00
+19,25
+19
+Umsatzsteuer (S)
+198,00
+37,62
+Belegsummen
+Positionsumme
+413,00
+Gesamtheit der Zuschläge
+0,00
+Gesamtheit der Zuschläge
+-0,00
+Rechnungsumme ohne USt.
+473,00
+Steuernatz
+56,87
+Bruttosumme
+529,87
+Erhaltene Anschluungen
+1091,74
+Zeitbetrag
+429,87
+Seite 2 von 2<eos>

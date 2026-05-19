@@ -1,0 +1,69 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  XRECHNUNG_Reisekostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  95.80s total
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 280081  vom  13.07.2018
+
+Währung: EUR
+Abrechnungszeitraum: 09.07.2018 bis 11.07.2018
+Leitwege-ID: 04011000-12345-34
+Weitere Referenz: Hotelrechung
+Art der Referenz:Referenzpapier (916)
+Weitere Referenz: Taxi-Nue-und-Berlin
+Art der Referenz:Referenzpapier (916)
+
+Verkäufer
+Globale Nummer: 4000001123452 (GLN)
+Name: Musterfirma Nürnberg
+Anschrift: Taxi-Nue-und-Berlin
+Art der Referenz:Referenzpapier (916)
+
+Verkäufer
+Globale Nummer: 4000001123452 (GLN)
+Name: Musterfirma Nürnberg
+Anschrift: Taxi-Nue-und-Berlin
+Art der Referenz:Referenzpapier (916)
+===== PAGE 2 =====
+Bemerkungen
+
+Betreff: REG  Regulatory information
+
+Inhalt: Listelotte Müllermann, Kumpelstr. 54, 12345 Berlin
+Handelsregisternummer: H A 713
+
+Betreff: AAI  General information
+
+Inhalt: Flug wurde vom Auftraggeber gebucht.
+
+Betreff: AAI  General information
+
+Inhalt: Reise: Musterreisekostenabrechnung
+Zweck: Workshop in Nürnberg
+Land: Deutschland
+Strecke: Berlin - Berlin
+===== PAGE 3 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Umsatzsteueraufschlüsselung
+
+Art (Kategorie) Warenwert Zu-/Abschlag Basisbetrag Steuersatz [%] Steuerbetrag
+
+Umsatzsteuer (S) 202,33 7 14,16
+
+Umsatzsteuer (S) 11,76 19 2,23
+
+Belegsummen
+
+Zahlung per SEPA Überweisung.
+
+Kontoname : Hotelrechnung-Immo.pdf
+Taxi-Nue-und-Berlin.pdf
+Taxi-Nue-und-Berlin.pdf
+Application/pdf
+Application/pdf
+Application/pdf

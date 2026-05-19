@@ -1,0 +1,55 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Einfach_DueDate
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  254.02s total
+
+===== PAGE 1 =====
+Handelsrechnung (380) Nr. 471102 vom 05.03.2018
+
+Währung: EUR
+Liefer- und Leistungsdatum: 05.03.2018
+
+Käufer/Leistungsempfänger
+Nummer: 549910
+Name: Lieferantant GmbH
+Anschrift: Lieferantenenstraße 20
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.: DE123456789
+
+Bemerkungen
+Betreff: Inhalt
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Positionsdaten
+
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | Steuersatz | Nettobetrag |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | TB100A4 4012345001235 (GTIN) | Trennblätter A4 | 9,9000 | 20 Stk | 19 % | 198,00 |
+
+Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+| --- | --- | --- | --- | --- | --- |
+|  |  |  | 275,00 | 7 | 19,25 |
+|  |  |  | 198,00 | 19 | 37,62 |
+
+Belegsummen
+
+| Zahlbetrag | Fälligkeit | Teilzahlung |
+| --- | --- | --- |
+|  |  | 529,87 |
+
+Beschreibungen
+
+| Beschreibungen | Fälligkeit | Teilzahlung |
+| --- | --- | --- |
+|  |  | 529,87 |
+
+05.03.2019
