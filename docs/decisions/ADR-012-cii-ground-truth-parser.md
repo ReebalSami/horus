@@ -319,7 +319,7 @@ Per `horus-source-archival` rule + ADR-002:
 
 - **Positive**:
   - Pilot #13 has its **ground-truth parser substrate**: PR(b)'s scorer + PR(c)'s harness can be built directly against the `GroundTruth` / `GroundTruthField` / `FIELDS` API without further parser work.
-  - **EN16931 standards anchor preserved at the type level**: every `GroundTruthField` carries the BT code; the `FIELDS` registry catalogs BT → English-key → German-label in one place. Thesis writeup renders German-labelled tables via `FIELDS["<key>"].german_label`; future Säring-meeting compliance discussions reference BT-* directly.
+  - **EN16931 standards anchor preserved at the type level**: every `GroundTruthField` carries the BT code; the `FIELDS` registry catalogs BT → English-key → German-label in one place. Thesis writeup renders German-labelled tables via `FIELDS["<key>"].german_label`; future supervisor progress-check compliance discussions reference BT-* directly.
   - **Three-route dict-equivalence proven empirically** (Probe 2). Stronger than ADR-010's byte-level claim; this ADR proves the parser is route-invariant at the semantic level.
   - **Tristate value semantics + per-field normalizer dispatch + centralized namespace map** — three coding-debt-mitigation patterns called out during the Socratic walk; all three implemented + tested.
   - **Forward-compat for line items reserved**: future amendments adding BG-25 evaluation don't break existing pilot-#13 call sites.

@@ -10,7 +10,7 @@
 
 ## Context
 
-The global cascade-system rule `document-as-you-go` requires an ADR at the time of "significant decisions." Its default bar — cross-cutting architectural choices — is too coarse for a thesis. A master's thesis is a scientific artefact; every tool/model/library/dataset/framework choice carries methodological weight. Future reviewers (supervisor Säring, thesis committee, peer researchers) need a traceable rationale chain, not just working code.
+The global cascade-system rule `document-as-you-go` requires an ADR at the time of "significant decisions." Its default bar — cross-cutting architectural choices — is too coarse for a thesis. A master's thesis is a scientific artefact; every tool/model/library/dataset/framework choice carries methodological weight. Future reviewers (supervisor, thesis committee, peer researchers) need a traceable rationale chain, not just working code.
 
 Additionally, the thesis context introduces two failure modes the global rule doesn't address:
 1. **Integration-fit blind spot** — choosing a tool that solves the immediate next step but is incompatible with the downstream pipeline (e.g., picking a VLM that doesn't support structured output needed for knowledge-graph extraction).
@@ -77,7 +77,7 @@ Encoded in `.windsurf/rules/horus-decision-discipline.md` (workspace scope; auto
 | `literature` | Each model/tool/dataset surveyed → stub ADR if it becomes a candidate; full ADR when adopted |
 | `experiment` | Every model / tool tried → full ADR with `Current-state survey` + `Integration thoughts` **before** `make test` validates the choice |
 | `implement` | Every stack choice (inference server, API layer, graph DB, embedding model, …) → full ADR |
-| `writeup` | Thesis chapters cite ADRs by path; supersession chain = the thesis's own audit trail (Säring criterion) |
+| `writeup` | Thesis chapters cite ADRs by path; supersession chain = the thesis's own audit trail (supervisor criterion) |
 
 ## Consequences
 

@@ -148,9 +148,9 @@ PR(b)'s `InvoiceFieldScores.per_field` is the per-row content of the F1 heatmap 
 ### Decision branch points NOT taken (forward-compat)
 
 - **Line items (BG-25)** — `to_predicted_dict` returns flat `dict[str, str | None]`; the FIELDS registry has no BG-25 rows. When BG-25 lands, predicted values for line-item arrays would benefit from ANLS\* dict-mode (Peer+ 2024). Pre-noted in `anls.py` docstring.
-- **Compliance pass rate / Vorsteuerabzug eligibility** — Brainstorm v2 §5.3 / §5.4; Säring-meeting-blocked. PR(b) ships the substrate; the compliance scorer is a future ADR.
+- **Compliance pass rate / Vorsteuerabzug eligibility** — Brainstorm v2 §5.3 / §5.4; supervisor-meeting-blocked. PR(b) ships the substrate; the compliance scorer is a future ADR.
 - **Per-VAT-rate breakdown (BG-23)** — multi-row set-matching; deferred per ADR-012.
-- **Field-weighted F1** — Brainstorm v2 §5.2; Säring-meeting-blocked.
+- **Field-weighted F1** — Brainstorm v2 §5.2; supervisor-meeting-blocked.
 - **Cloud-baseline comparison** — Brainstorm v2 §8.2; post-pilot.
 
 ## Source archival
@@ -175,7 +175,7 @@ Already-archived sources referenced (no new stub needed):
 - **Cross-corpus F1 numbers** — PR(b) integration tests score against `EN16931_Einfach.cii.xml` only (the canonical smoke fixture). The full 26-paired-invoice corpus sweep is PR(c)'s scope.
 - **Threshold tuning** — `eval.anls_threshold=0.5` is the literature default; tuning per cohort findings is a YAML change, not a code change (per `horus-config-discipline`). If empirical tuning lands a different default, this ADR is amended (not superseded).
 - **Line-item adapter (BG-25)** — `to_predicted_dict` returns flat `dict[str, str | None]`; line-item arrays are deferred per ADR-012 + this ADR's "Decision branch points NOT taken" note.
-- **Compliance-weighted F1, Vorsteuerabzug eligibility** — Brainstorm v2 §5.2–5.4; Säring-meeting-blocked.
+- **Compliance-weighted F1, Vorsteuerabzug eligibility** — Brainstorm v2 §5.2–5.4; supervisor-meeting-blocked.
 
 ## Refs
 
