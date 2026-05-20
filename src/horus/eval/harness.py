@@ -560,6 +560,50 @@ def _filter_invoices(
     return matched
 
 
+def _snapshot_mps_driver_alloc_mb_or_none(extractor: Any) -> float | None:
+    """Return `torch.mps.driver_allocated_memory()` in MB, or None when not applicable.
+
+    Backend-aware: only fires for `transformers-mps` extractors. MLX-path
+    extractors get their peak via `GenerationResult.peak_memory` and do NOT
+    need this snapshot. Per ADR-017 §"Decision 2 (D2.A)": this is the
+    snapshot-based approach to the PyTorch MPS peak-memory gap
+    (`torch.mps` has no `max_memory_allocated`-equivalent, see
+    pytorch/pytorch#104188). Documented limitation: snapshot misses
+    transient peak during `model.generate()` itself; captures steady-state
+    post-load weights + activation residue.
+
+    Returns None when:
+
+    - Extractor's `backend_name` is not `"transformers-mps"` (no-op for MLX
+      / PaddleOCR / GLM-OCR backends).
+    - `torch` cannot be imported (defensive — torch is a runtime dep, but
+      future deployments may exclude it for MLX-only setups).
+    - `torch.backends.mps.is_available()` is False (CI, non-Apple-Silicon
+      dev hosts).
+    - The snapshot call itself raises (transient PyTorch issue; non-fatal).
+
+    Callers MUST treat None as "skip MPS-specific metrics for this tuple".
+
+    Refs:
+      - PyTorch MPS API docs: `torch.mps.driver_allocated_memory()` returns
+        the driver-managed memory total (includes cache). The closest
+        approximation to "actual GPU usage" available on MPS.
+      - ADR-017 §"Decision 2": rationale for snapshot-over-sampler.
+    """
+    if getattr(extractor, "backend_name", None) != "transformers-mps":
+        return None
+    try:
+        import torch  # noqa: PLC0415 — defer heavy import
+
+        if not torch.backends.mps.is_available():
+            return None
+        # driver_allocated_memory returns bytes; convert to MB (matches the
+        # MLflow metric naming `perf.mps_*_alloc_mb`).
+        return torch.mps.driver_allocated_memory() / (1024.0 * 1024.0)
+    except Exception:  # noqa: BLE001 — non-fatal; let harness log without MPS metrics
+        return None
+
+
 # ===========================================================================
 # Public orchestrator
 # ===========================================================================
@@ -814,6 +858,11 @@ def run_cohort(
                         n_failed += 1
                         continue
 
+                    # ADR-017 §D2.A — MPS driver-allocated memory snapshot
+                    # (pre). Returns None for non-MPS backends (MLX path
+                    # uses GenerationResult.peak_memory instead).
+                    mps_pre_alloc_mb = _snapshot_mps_driver_alloc_mb_or_none(extractor)
+
                     t_start = time.perf_counter()
                     scores, _transcript, per_page = _score_single_invoice(
                         model_id=model_id,
@@ -829,6 +878,13 @@ def run_cohort(
                         eval_cfg=eval_cfg,
                     )
                     elapsed = time.perf_counter() - t_start
+
+                    # ADR-017 §D2.A — MPS driver-allocated memory snapshot
+                    # (post). The pre+post pair lets the inspector report
+                    # both the steady-state (post-load weights + activation
+                    # residue) and the delta (activation footprint during
+                    # the extract call).
+                    mps_post_alloc_mb = _snapshot_mps_driver_alloc_mb_or_none(extractor)
 
                     # Nested run logging
                     with mlflow.start_run(
@@ -895,12 +951,34 @@ def run_cohort(
                             (r.peak_memory_gb for r in per_page if r.peak_memory_gb > 0.0),
                             default=0.0,
                         )
+                        # ADR-017 §D2.A — Transformers-MPS path: per-page
+                        # peak_memory_gb is 0.0 by design (no
+                        # `torch.mps.max_memory_allocated` equivalent per
+                        # pytorch/pytorch#104188). The post-snapshot of
+                        # `torch.mps.driver_allocated_memory()` is the
+                        # snapshot-based stand-in: captures steady-state
+                        # weights + activation residue. Misses transient
+                        # peak during model.generate(); documented limitation
+                        # surfaced in the inspector + README + thesis writeup.
+                        if mps_post_alloc_mb is not None:
+                            peak_mem_gb_max = mps_post_alloc_mb / 1024.0
                         mlflow.log_metric("perf.generation_tokens_total", float(total_gen_tokens))
                         mlflow.log_metric("perf.generation_tps_mean", mean_tps)
                         mlflow.log_metric("perf.output_len_chars_total", float(total_chars))
                         mlflow.log_metric("perf.chars_per_sec", chars_per_sec)
                         mlflow.log_metric("perf.peak_memory_gb", peak_mem_gb_max)
                         mlflow.log_metric("perf.pages_extracted_ok", float(len(ok_pages_results)))
+                        # ADR-017 §D2.A — MPS-only metrics: pre + post + delta.
+                        # Only logged when the backend is `transformers-mps`
+                        # AND MPS is available (else `_snapshot_mps_driver_alloc_mb_or_none`
+                        # returned None and we skip per ADR-017 §D2.A).
+                        if mps_pre_alloc_mb is not None and mps_post_alloc_mb is not None:
+                            mlflow.log_metric("perf.mps_pre_alloc_mb", mps_pre_alloc_mb)
+                            mlflow.log_metric("perf.mps_post_alloc_mb", mps_post_alloc_mb)
+                            mlflow.log_metric(
+                                "perf.mps_delta_mb",
+                                mps_post_alloc_mb - mps_pre_alloc_mb,
+                            )
 
                         # Per-field score metrics + JSON artifact
                         for fk, fr in scores.per_field.items():
