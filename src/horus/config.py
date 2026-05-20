@@ -30,11 +30,48 @@ Example (the canonical experiment-boot pattern):
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
+    """Deep-merge two dicts; later (override) wins on conflict; nested dicts merge recursively.
+
+    Implements the YAML composition pattern documented in pydantic-settings 2.x
+    (`YamlConfigSettingsSource` with `deep_merge=True`). Used by
+    `ExperimentConfig.from_yaml` to compose a small dev / ablation overlay
+    (`configs/pilot-13-dev.yaml`) on top of a stable base (`configs/pilot-13.yaml`)
+    without duplication. Per ADR-016 §"Decision + integration thoughts".
+
+    Semantics (matching pydantic-settings):
+
+      - Both values are dicts → recurse (nested merge).
+      - Override value is a scalar / list / None → override replaces base entirely
+        (lists are NOT element-wise merged — e.g.,
+        base.cohort.working_models=[A, B] + override.cohort.working_models=[C]
+        → [C], not [A, B, C]).
+      - Keys present only in `override` are added; keys present only in `base`
+        are preserved.
+
+    The list-replacement semantics is the canonical pydantic-settings behaviour;
+    it matches user intent for the HORUS dev-overlay use case (dev YAML wants to
+    REPLACE the cohort.working_models list with `[MinerU]`, not append to the
+    full 7-model list from the base).
+    """
+    result: dict[str, Any] = dict(base)
+    for key, value in override.items():
+        if (
+            key in result
+            and isinstance(result[key], dict)
+            and isinstance(value, dict)
+        ):
+            result[key] = _deep_merge(result[key], value)
+        else:
+            result[key] = value
+    return result
 
 
 class MLflowConfig(BaseModel):
@@ -254,6 +291,33 @@ class CohortConfig(BaseModel):
             "(e.g., after deleting `mlflow.db` for a clean re-baseline)."
         ),
     )
+    invoice_subset: list[str] | None = Field(
+        default=None,
+        description=(
+            "Optional list of invoice PDF stems (without `.pdf` extension) to "
+            "restrict the sweep to. None (default) = score the full corpus "
+            "discovered under `corpus_root`. Per ADR-016: dev configs declare "
+            "their subset here (e.g., `[EN16931_Einfach, XRECHNUNG_Einfach, "
+            "EN16931_Reisekostenabrechnung]`); ad-hoc CLI subsetting via the "
+            "`INVOICES=...` env var on `make pilot-13` overrides this field. "
+            "Each entry must match a PDF stem in the paired-invoice discovery; "
+            "unmatched entries raise at harness boot (no silent skips)."
+        ),
+    )
+    dev_only: bool = Field(
+        default=False,
+        description=(
+            "HARKing-prevention forcing function (per ADR-016 + NeurIPS Paper "
+            "Checklist + brainstorm v2 §2 No-HARKing). When true, the config "
+            "is a dev fixture set used for iterative tuning ONLY — NOT for "
+            "final thesis-reported F1 numbers. The harness tags every nested "
+            "run with `dev_only=true` and refuses to log to the canonical "
+            "`pilot-13-full` MLflow experiment (the dev YAML must declare a "
+            "distinct `mlflow.experiment_name` like `pilot-13-dev`). Final "
+            "reported F1 numbers must come from a `dev_only: false` config "
+            "scored against the held-out test split (issue #46 substrate)."
+        ),
+    )
 
 
 class ExperimentConfig(BaseSettings):
@@ -311,24 +375,65 @@ class ExperimentConfig(BaseSettings):
     )
 
     @classmethod
-    def from_yaml(cls, cfg_path: str | Path) -> ExperimentConfig:
-        """Load + validate an experiment config from a YAML file.
+    def from_yaml(
+        cls,
+        cfg_paths: str | Path | list[str | Path],
+    ) -> ExperimentConfig:
+        """Load + validate an experiment config from one or more YAML files.
 
-        Reads `cfg_path` via `yaml.safe_load`, validates the result against the
-        Pydantic schema, layers `HORUS_*` env vars on top, and returns the
-        instantiated config. Raises:
+        Accepts a single path (back-compat) or a list of paths. When a list is
+        given, files are loaded in order and deep-merged with later-wins
+        semantics — the canonical YAML composition pattern documented in
+        pydantic-settings 2.x (`YamlConfigSettingsSource` with
+        `deep_merge=True`). HORUS uses this for dev / ablation variants:
+        `["configs/pilot-13.yaml", "configs/pilot-13-dev.yaml"]` composes a
+        small ~15-line delta over the stable base without duplication. Per
+        ADR-016.
 
-        - `FileNotFoundError` if `cfg_path` does not exist.
-        - `pydantic.ValidationError` if the YAML data fails schema validation
+        Reads each path via `yaml.safe_load`, deep-merges them in order,
+        validates the merged dict against the Pydantic schema, layers `HORUS_*`
+        env vars on top, and returns the instantiated config. Raises:
+
+        - `FileNotFoundError` if any path does not exist.
+        - `ValueError` if `cfg_paths` is an empty list.
+        - `pydantic.ValidationError` if the merged data fails schema validation
           (missing required field, type mismatch, extra field, …).
 
-        Both classes of failure happen BEFORE any model loads, dataset
-        downloads, or compute is spent — the fail-fast contract from
-        `horus-config-discipline`.
+        All failures happen BEFORE any model loads, dataset downloads, or
+        compute is spent — the fail-fast contract from `horus-config-discipline`.
+
+        Args:
+            cfg_paths: A single path (str or Path) for back-compat, OR a list
+                of paths to be deep-merged in order. Later files win on conflict.
+
+        Examples:
+            >>> # Back-compat single-path usage (still works).
+            >>> cfg = ExperimentConfig.from_yaml("configs/pilot-13.yaml")
+
+            >>> # Multi-file composition (the dev-overlay pattern per ADR-016).
+            >>> cfg = ExperimentConfig.from_yaml([
+            ...     "configs/pilot-13.yaml",        # base
+            ...     "configs/pilot-13-dev.yaml",    # dev overlay (wins on conflict)
+            ... ])
         """
-        path = Path(cfg_path)
-        if not path.is_file():
-            raise FileNotFoundError(f"Config file not found: {path}")
-        with path.open(encoding="utf-8") as f:
-            data = yaml.safe_load(f) or {}
-        return cls(**data)
+        paths: list[Path]
+        if isinstance(cfg_paths, (str, Path)):
+            paths = [Path(cfg_paths)]
+        else:
+            paths = [Path(p) for p in cfg_paths]
+        if not paths:
+            raise ValueError(
+                "from_yaml requires at least one config path; got empty list"
+            )
+        merged: dict[str, Any] = {}
+        for p in paths:
+            if not p.is_file():
+                raise FileNotFoundError(f"Config file not found: {p}")
+            with p.open(encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            if not isinstance(data, dict):
+                raise ValueError(
+                    f"Config file {p} did not parse to a mapping (got {type(data).__name__})"
+                )
+            merged = _deep_merge(merged, data)
+        return cls(**merged)

@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 mlflow-ui clean
+.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui clean
 
 # Default target — list available commands.
 help:
@@ -15,8 +15,9 @@ help:
 	@echo "  orchestrated-smoke  Docling StandardPdfPipeline smoke on the ZUGFeRD invoice (ADR-008)"
 	@echo "  cohort-smoke    cohort-VLM smoke runner (ADR-009; MODEL=ID or MODELS=A,B for subset; OUT=path for transcript file; CFG=configs/<slug>.yaml for ADR-011 MLflow tracking)"
 	@echo "  data-manifest   generate MANIFEST.md + sha256.txt for a downloaded dataset corpus"
-	@echo "  pilot-13        full (cohort × ZUGFeRD-corpus) sweep with parent/nested MLflow runs (ADR-014; CFG=configs/pilot-13.yaml required)"
-	@echo "  mlflow-ui       browse pilot-13 + cohort-smoke runs in MLflow's local UI (ADR-015; MLFLOW_UI_PORT=<n> to override default 8080)"
+	@echo "  pilot-13        full (cohort × ZUGFeRD-corpus) sweep with parent/nested MLflow runs (ADR-014; CFG=configs/pilot-13.yaml[,overlay.yaml] required)"
+	@echo "  adapter-iterate fast (~5-15s) adapter A/B re-scoring on cached transcripts (ADR-016; CFG=...,pilot-13-dev.yaml required; THRESHOLDS / ADAPTER / LOG_MLFLOW optional)"
+	@echo "  mlflow-ui       browse pilot-13 + adapter-iterate + cohort-smoke runs in MLflow's local UI (ADR-015; MLFLOW_UI_PORT=<n> to override default 8080)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -205,7 +206,50 @@ pilot-13:
 		$(if $(MODELS),--models "$(MODELS)") \
 		$(if $(NO_RESUME),--no-resume)
 
-# MLflow UI for browsing pilot-13 + cohort-smoke runs (ADR-015).
+# Fast dev-loop adapter A/B re-scoring (ADR-016 PR(c), issue #51).
+#
+# Re-runs the adapter (Layer 1 preprocess + Layer 2 to_predicted_dict) + scorer
+# pipeline against saved transcripts WITHOUT invoking any VLM — the ~5-15 second
+# iteration loop on adapter heuristics. Compares the canonical baseline
+# `src/horus/eval/adapters.py` against the developer's in-progress
+# `src/horus/eval/adapters_candidate.py` (gitignored).
+#
+# When the candidate file is missing OR byte-identical to baseline, runs in
+# stability-self-check mode (Google "Rules of Machine Learning" §24 —
+# baseline-vs-baseline Δ must be 0; non-zero signals a non-determinism bug).
+#
+# Required:
+#   CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+#     (Comma-separated list. The canonical pattern is base + dev overlay.
+#      A single path also works; rescore.py accepts both.)
+#
+# Optional:
+#   THRESHOLDS=0.3,0.5,0.7   (default 0.5; pass multiple to enable τ-sweep)
+#   ADAPTER=path/to/candidate.py  (default src/horus/eval/adapters_candidate.py;
+#                                  override for A/B against a different candidate)
+#   LOG_MLFLOW=1   (opt-in: log 2 nested MLflow runs for promotion audit trail)
+#
+# Example fast dev loop (~5-15s):
+#   make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+#
+# Example A/B with MLflow audit trail (when promoting a candidate):
+#   make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml LOG_MLFLOW=1
+#
+# Pairs with `pilot-13` (the slow path that PRODUCES the transcripts this
+# target consumes). Honors `long-running-foreground` — every progress line
+# is `flush=True`; no buffering or suppression.
+adapter-iterate:
+	@if [ -z "$(CFG)" ]; then \
+		echo "Usage: make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml [THRESHOLDS=0.5] [ADAPTER=path] [LOG_MLFLOW=1]"; \
+		exit 1; \
+	fi
+	uv run python scripts/rescore.py \
+		--cfg "$(CFG)" \
+		$(if $(THRESHOLDS),--thresholds "$(THRESHOLDS)") \
+		$(if $(ADAPTER),--adapter-candidate-path "$(ADAPTER)") \
+		$(if $(LOG_MLFLOW),--log-mlflow)
+
+# MLflow UI for browsing pilot-13 + adapter-iterate + cohort-smoke runs (ADR-015).
 # Wraps `mlflow server --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1
 # --port 8080` — the modern canonical MLflow CLI invocation (`mlflow ui` and
 # `mlflow server` are byte-identical commands in MLflow 3.12.0; verified at

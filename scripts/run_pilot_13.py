@@ -8,6 +8,10 @@ Usage:
     # Full sweep (7 working models × 26 invoices)
     uv run python scripts/run_pilot_13.py --cfg configs/pilot-13.yaml
 
+    # Multi-file YAML composition (ADR-016): base + dev overlay
+    uv run python scripts/run_pilot_13.py \
+        --cfg configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+
     # Subset on invoices (3 fixtures) — Step 5 validation per ADR-014 plan
     uv run python scripts/run_pilot_13.py --cfg configs/pilot-13.yaml \
         --invoices EN16931_Einfach,EN16931_Einfach_negativePaymentDue,XRECHNUNG_Einfach
@@ -48,8 +52,14 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--cfg",
         required=True,
-        metavar="PATH",
-        help="Path to the pilot-13 experiment config YAML (e.g., configs/pilot-13.yaml)",
+        type=_csv,
+        metavar="PATH[,OVERLAY,...]",
+        help=(
+            "Comma-separated YAML config path(s) to deep-merge (ADR-016 multi-file "
+            "composition). Single path or `base.yaml,overlay.yaml` (later wins). "
+            "Examples: `configs/pilot-13.yaml` (full sweep); "
+            "`configs/pilot-13.yaml,configs/pilot-13-dev.yaml` (dev overlay)."
+        ),
     )
     parser.add_argument(
         "--invoices",
@@ -85,20 +95,22 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str]) -> int:
     args = _build_parser().parse_args(argv[1:])
 
+    # args.cfg is list[str] (per _csv type converter). from_yaml accepts list.
     cfg = ExperimentConfig.from_yaml(args.cfg)
+    cfg_display = ",".join(args.cfg)
 
     # Pydantic-validate at boot: cohort + rasterizer MUST be present for pilot-13.
     # run_cohort raises ValueError if either is None; surface that nicely here.
     if cfg.cohort is None:
         print(
-            f"ERROR: {args.cfg!r} is missing the cohort: section. "
+            f"ERROR: {cfg_display!r} is missing the cohort: section. "
             "See configs/pilot-13.yaml for the canonical pilot-13 schema.",
             file=sys.stderr,
         )
         return 2
     if cfg.rasterizer is None:
         print(
-            f"ERROR: {args.cfg!r} is missing the rasterizer: section. "
+            f"ERROR: {cfg_display!r} is missing the rasterizer: section. "
             "See configs/pilot-13.yaml for the canonical pilot-13 schema.",
             file=sys.stderr,
         )
@@ -111,7 +123,7 @@ def main(argv: list[str]) -> int:
     set_global_seed(cfg.seed)
 
     print(
-        f"[pilot-13] cfg={args.cfg} "
+        f"[pilot-13] cfg={cfg_display} "
         f"experiment={cfg.mlflow.experiment_name!r} "
         f"parent_run_name={cfg.cohort.parent_run_name!r}",
         flush=True,

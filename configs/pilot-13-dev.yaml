@@ -1,0 +1,75 @@
+# pilot-13-dev.yaml — ADR-016 fast dev-loop overlay for pilot-13.yaml
+#
+# Small ~15-line delta over `configs/pilot-13.yaml` for the ~5-15 second adapter
+# iteration loop (issue #51). Composed via pydantic-settings multi-file YAML
+# composition (`ExperimentConfig.from_yaml([base, overlay])`); later files win
+# on conflict; nested dicts deep-merge; lists REPLACE (so `working_models` here
+# fully replaces the 7-model cohort with a single model).
+#
+# Invocation patterns:
+#
+#   # 1. Slow path — produce canonical transcripts for the dev cohort
+#   #    (~3-5 min: 1 model × 3 invoices × per-page extraction):
+#   make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+#
+#   # 2. Fast path — re-score saved transcripts after editing adapters
+#   #    (~5-15 s: baseline vs candidate per-field Δ; no VLM invocation):
+#   make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+#
+# What changes from the base config:
+#
+#   - mlflow.experiment_name → `pilot-13-dev` (distinct from canonical
+#     `pilot-13-full`; HARKing-guard refuses to log to canonical when
+#     dev_only=true per `_CANONICAL_PRODUCTION_EXPERIMENTS` check).
+#   - cohort.working_models → 1 model (MinerU-2.5-Pro 1.2B; pilot-13 best at
+#     mean F1=0.710 across 26 invoices). Single-model keeps the dev loop
+#     under 15 s wall-clock.
+#   - cohort.invoice_subset → 3 fixtures exercising the multi-page +
+#     multi-format + complex-real-world paths:
+#       * EN16931_Einfach        — 1-page baseline (simplest)
+#       * XRECHNUNG_Einfach      — multi-page XRECHNUNG (multi-format path)
+#       * EN16931_Reisekostenabrechnung — many line items + multi-category
+#         VAT (representative complex; the failure mode that drove the
+#         MONEY-field FN pattern in pilot-13 — per docs/retros/m2d.5-
+#         pilot-13-cohort-harness.md).
+#   - cohort.parent_run_name + transcript_archive_dir → distinct from
+#     canonical so dev transcripts NEVER contaminate the 182-tuple
+#     `docs/sources/transcripts-multipage/` archive.
+#   - cohort.dev_only: true → HARKing-prevention forcing function (per
+#     brainstorm v2 §2 No-HARKing + NeurIPS Paper Checklist). Final
+#     thesis-reported F1 numbers MUST come from a `dev_only: false`
+#     config scored against the held-out test split (issue #46 substrate).
+#
+# What is INHERITED unchanged from `pilot-13.yaml`:
+#
+#   - seed, eval.* (anls_threshold + tolerances + normalisation), rasterizer.*
+#     (dpi + cache_dir + image_format), cohort.corpus_root,
+#     cohort.resume_on_existing_run, mlflow.run_tags (most keys), mlflow.tracking_uri.
+#
+# Per `horus-config-discipline`: every knob here lives in YAML; the schema is
+# in `src/horus/config.py::CohortConfig` (the `invoice_subset` + `dev_only`
+# fields landed in ADR-016 chunk 1).
+#
+# Refs: ADR-016 (this config's ratifying ADR — forthcoming, row reserved in
+# docs/decisions/INDEX.md), ADR-014 (parent: harness + multi-page rasterizer),
+# issue #51 (fast dev config + adapter-iterate), `make adapter-iterate` target
+# (chunk 5 of the ADR-016 bundle).
+
+mlflow:
+  experiment_name: pilot-13-dev
+  run_tags:
+    stage: pilot-13-dev
+    issue: "51"
+    adr: ADR-016
+    pr: iss-51-fast-dev-config
+
+cohort:
+  working_models:
+    - opendatalab/MinerU2.5-Pro-2604-1.2B
+  invoice_subset:
+    - EN16931_Einfach
+    - XRECHNUNG_Einfach
+    - EN16931_Reisekostenabrechnung
+  parent_run_name: pilot-13-dev
+  transcript_archive_dir: docs/sources/transcripts-multipage-dev
+  dev_only: true

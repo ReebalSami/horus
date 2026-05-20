@@ -51,6 +51,27 @@ make experiment NB=experiments/<slug>.py CFG=configs/<slug>.yaml
 
 The `CFG=` value is injected into the experiment notebook as the papermill parameter `cfg_path`, which the `.py` file passes to `ExperimentConfig.from_yaml(cfg_path)` at boot.
 
+## Multi-file composition (ADR-016)
+
+`ExperimentConfig.from_yaml()` accepts a single path (the original API) OR a list of paths. When a list is given, files are deep-merged in order with later-wins semantics — the canonical pydantic-settings 2.x composition pattern. Use this to compose a small dev / ablation overlay on top of a stable base config without duplication:
+
+```bash
+make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+```
+
+`pilot-13-dev.yaml` is a ~15-line overlay declaring only what differs from the base (1 model instead of 7, 3 invoices instead of 26, distinct MLflow experiment name + transcript archive dir, `dev_only: true` HARKing-prevention guard). The shared knobs (seed, eval thresholds, rasterizer DPI, corpus root, resume policy, most MLflow tags) inherit unchanged from `pilot-13.yaml`.
+
+**Merge semantics**:
+
+- **Scalars** (str, int, bool, None) — later file wins.
+- **Nested dicts** (e.g., `mlflow.run_tags`) — merged recursively; per-key later-wins.
+- **Lists** (e.g., `cohort.working_models`) — REPLACED, not concatenated. The dev overlay's 1-model list fully replaces the base's 7-model list.
+
+**Drift prevention**: when `pilot-13.yaml` changes (e.g., DPI bumped 300 → 400), the dev overlay picks it up automatically. No silent staleness.
+
+**Fail-fast**: missing files raise `FileNotFoundError`; non-mapping top-level YAML raises `ValueError`; the merged result is Pydantic-validated (`extra='forbid'` still enforced post-merge). All failures happen before any model loads or compute is spent.
+
 ## Cross-references
 
 - **Schema**: `src/horus/config.py`
