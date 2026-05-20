@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest clean
+.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 mlflow-ui clean
 
 # Default target — list available commands.
 help:
@@ -15,6 +15,8 @@ help:
 	@echo "  orchestrated-smoke  Docling StandardPdfPipeline smoke on the ZUGFeRD invoice (ADR-008)"
 	@echo "  cohort-smoke    cohort-VLM smoke runner (ADR-009; MODEL=ID or MODELS=A,B for subset; OUT=path for transcript file; CFG=configs/<slug>.yaml for ADR-011 MLflow tracking)"
 	@echo "  data-manifest   generate MANIFEST.md + sha256.txt for a downloaded dataset corpus"
+	@echo "  pilot-13        full (cohort × ZUGFeRD-corpus) sweep with parent/nested MLflow runs (ADR-014; CFG=configs/pilot-13.yaml required)"
+	@echo "  mlflow-ui       browse pilot-13 + cohort-smoke runs in MLflow's local UI (ADR-015; MLFLOW_UI_PORT=<n> to override default 8080)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -202,6 +204,38 @@ pilot-13:
 		$(if $(INVOICES),--invoices "$(INVOICES)") \
 		$(if $(MODELS),--models "$(MODELS)") \
 		$(if $(NO_RESUME),--no-resume)
+
+# MLflow UI for browsing pilot-13 + cohort-smoke runs (ADR-015).
+# Wraps `mlflow server --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1
+# --port 8080` — the modern canonical MLflow CLI invocation (`mlflow ui` and
+# `mlflow server` are byte-identical commands in MLflow 3.12.0; verified at
+# ADR-015 authoring time via `--help` byte-comparison).
+#
+# Bound to 127.0.0.1 by default for local-only access (matches MLflow's
+# default; explicit here to make the privacy posture VISIBLE per AGENTS.md
+# §1: "documents stay inside the firm"). Port 8080 avoids the documented
+# macOS AirPlay Receiver conflict at MLflow's port-5000 default (cited in
+# MLflow's CONTRIBUTING.md). Override via MLFLOW_UI_PORT=<n>.
+#
+# Reads SQLite metadata from `mlflow.db` + filesystem artifacts from
+# `mlruns/<experiment_id>/<run_id>/artifacts/` — both gitignored. Pre-flight
+# guard refuses to launch against an empty repo (no mlflow.db AND no mlruns/).
+#
+# Per ADR-015 §"Decision + integration thoughts" — supersedes ADR-011's
+# original deferral ("not Makefile-wired"; line 306 of ADR-011).
+MLFLOW_UI_PORT ?= 8080
+
+mlflow-ui:
+	@if [ ! -f mlflow.db ] && [ ! -d mlruns ]; then \
+		echo "ERROR: No MLflow data found at mlflow.db / mlruns/."; \
+		echo "Run 'make pilot-13 CFG=configs/pilot-13.yaml' or 'make cohort-smoke ... CFG=configs/cohort-smoke.yaml' first."; \
+		exit 1; \
+	fi
+	@echo "MLflow UI: http://127.0.0.1:$(MLFLOW_UI_PORT) (local-only; press Ctrl+C to stop)"
+	uv run mlflow server \
+		--backend-store-uri sqlite:///mlflow.db \
+		--host 127.0.0.1 \
+		--port $(MLFLOW_UI_PORT)
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist

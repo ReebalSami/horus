@@ -7,9 +7,9 @@
 #   make pilot-13 CFG=configs/pilot-13.yaml INVOICES=EN16931_Einfach,XRECHNUNG_Einfach
 #   make pilot-13 CFG=configs/pilot-13.yaml MODELS=opendatalab/MinerU2.5-Pro-2604-1.2B
 #
-# `tracking_uri: null` triggers MLflow's SQLite default backend (per ADR-011)
-# at `sqlite:///mlflow.db` + artifact root `./mlartifacts/`. Override via
-# `HORUS_MLFLOW__TRACKING_URI=<uri>` env var per pydantic-settings
+# `tracking_uri: null` triggers MLflow's SQLite metadata default (per ADR-011)
+# at `sqlite:///mlflow.db` + filesystem artifacts at `mlruns/<exp>/<run>/artifacts/`.
+# Override via `HORUS_MLFLOW__TRACKING_URI=<uri>` env var per pydantic-settings
 # nested-delimiter convention.
 #
 # Per `horus-config-discipline`: ALL knobs live in this YAML. Adding a new

@@ -211,9 +211,11 @@ class MLflowTracker:
     Construction sets the tracking URI (when provided in cfg) + experiment
     name; run lifecycle is per `start_run` / `end_run` pair (or `with` form).
 
-    Per ADR-011 §Decision: MLflow 3.7+ defaults to `sqlite:///mlflow.db` +
-    `./mlartifacts/` artifact root when `tracking_uri=None`. Both paths are
-    gitignored in HORUS (`.gitignore`).
+    Per ADR-011 §Decision: MLflow 3.7+ defaults to `sqlite:///mlflow.db` for
+    metadata + `mlruns/<exp>/<run>/artifacts/` for filesystem artifacts when
+    `tracking_uri=None` (the Python-client write path; see ADR-015 for the
+    server-side `./mlartifacts/` proxy distinction). Both `mlruns/` and
+    `mlflow.db` are gitignored in HORUS (`.gitignore`).
 
     `cfg.run_tags` are applied as default tags on every run started via this
     tracker; per-call `tags` passed to `start_run` override on key collision.

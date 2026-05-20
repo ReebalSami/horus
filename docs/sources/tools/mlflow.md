@@ -42,11 +42,30 @@ HORUS picks the full package because the brainstorm v2 §10 "Already wired in PO
 
 - Self-hosting overview: `https://mlflow.org/docs/latest/self-hosting/`
 - Backend stores (SQLite vs file vs Postgres vs MySQL): `https://mlflow.org/docs/latest/self-hosting/architecture/backend-store/`
+- CLI reference (`mlflow server` / `mlflow ui` / `mlflow gc` / …): `https://mlflow.org/docs/latest/api_reference/cli.html`
 - Python tracking API: `https://mlflow.org/docs/latest/python_api/mlflow.html`
 - Releases changelog: `https://mlflow.org/releases/`
 - Filesystem backend deprecation notice: `https://github.com/mlflow/mlflow/issues/18534`
 - SQLite-as-default PR: `https://github.com/mlflow/mlflow/pull/18497`
 - Python 3.14 support: `https://github.com/mlflow/mlflow/actions/runs/18339096943`
+- macOS port-5000 AirPlay-Receiver caveat: `https://github.com/mlflow/mlflow/blob/master/CONTRIBUTING.md`
+
+**`mlflow ui` ≡ `mlflow server` empirical equivalence (MLflow 3.12.0, verified 2026-05-20)** — `uv run mlflow ui --help` and `uv run mlflow server --help` produce **byte-identical option surfaces** in MLflow 3.12.0. Both run "the MLflow tracking server with built-in security middleware" with the same defaults: `--host 127.0.0.1` (local-only access, security-by-default), `--port 5000` (note macOS caveat below), `--workers 4` (gunicorn / uvicorn process count), `--serve-artifacts True` (auto-creates an `./mlartifacts/` proxy directory if NEW experiments are created VIA the running server — separate from Python-client-written artifacts which land at `mlruns/<experiment_id>/<run_id>/artifacts/`). `mlflow ui` is a non-deprecated alias of `mlflow server`; the modern preferred name in MLflow 3.x official tutorials is `mlflow server`. ADR-015 picks `mlflow server` for the `make mlflow-ui` Makefile target on this basis.
+
+**macOS port-5000 AirPlay caveat** — MLflow's own CONTRIBUTING.md documents this verbatim: *"On some versions of MacOS, the 'Airplay Receiver' process runs on port 5000 by default, which can cause network request failures. If you are encountering such issues, disable the process via system settings, or specify another port (e.g. `mlflow server --port 8000`)."* HORUS hardware = M1 Pro per `know-your-hardware`; the conflict surfaces on the actual target environment. ADR-015 picks port `8080` (matches MLflow's own tutorial convention) as the no-conflict default; overrideable via the `MLFLOW_UI_PORT` Makefile variable.
+
+**Local-launch invocation (per ADR-015)**:
+
+```bash
+make mlflow-ui                            # http://127.0.0.1:8080 (local-only)
+make mlflow-ui MLFLOW_UI_PORT=5001        # override port
+
+# Equivalent direct invocation (what the Makefile target wraps):
+uv run mlflow server \
+    --backend-store-uri sqlite:///mlflow.db \
+    --host 127.0.0.1 \
+    --port 8080
+```
 
 **What HORUS does NOT use from MLflow**:
 

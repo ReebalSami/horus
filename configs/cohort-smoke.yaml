@@ -5,10 +5,10 @@
 # `MLflowTracker` via `horus.tracking.get_tracker(cfg)` and logs each cohort
 # model run as a nested MLflow run under a parent "cohort-sweep" run.
 #
-# `tracking_uri: null` triggers MLflow 3.7+'s SQLite default backend at
-# `sqlite:///mlflow.db` + artifact root `./mlartifacts/` (both gitignored).
-# Override via `HORUS_MLFLOW__TRACKING_URI=<uri>` env var per pydantic-settings
-# nested-delimiter convention.
+# `tracking_uri: null` triggers MLflow 3.7+'s SQLite metadata default at
+# `sqlite:///mlflow.db` + filesystem artifacts at `mlruns/<exp>/<run>/artifacts/`
+# (both gitignored). Override via `HORUS_MLFLOW__TRACKING_URI=<uri>` env var per
+# pydantic-settings nested-delimiter convention.
 #
 # Per horus-config-discipline + ADR-004: every knob lives in this YAML, never
 # in `scripts/cohort_smoke.py`. Adding new knobs requires extending
