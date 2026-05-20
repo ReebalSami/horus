@@ -372,6 +372,73 @@ def test_default_max_tokens_is_positive_int() -> None:
     assert DEFAULT_MAX_TOKENS > 0
 
 
+# ===========================================================================
+# Issue #52 / ADR-017 — perf fields on ExtractionResult
+# ===========================================================================
+
+
+def test_extraction_result_perf_field_defaults() -> None:
+    """The 3 new perf fields (#52) default to 0 / 0.0 — backward compat preserved.
+
+    Pre-#52 callers (cohort_smoke, smoke runners, tests) construct ExtractionResult
+    without these kwargs; defaults must keep them out of harm's way.
+    """
+    from horus.vlm_extractor import ExtractionResult
+
+    r = ExtractionResult(model_id="x", backend_name="mlx-vlm", text="hello")
+    assert r.generation_tokens == 0
+    assert r.generation_tps == 0.0
+    assert r.peak_memory_gb == 0.0
+
+
+def test_extraction_result_perf_fields_round_trip() -> None:
+    """Perf fields accept positive values, are frozen, and stay readable."""
+    from horus.vlm_extractor import ExtractionResult
+
+    r = ExtractionResult(
+        model_id="x",
+        backend_name="mlx-vlm",
+        text="hello",
+        generation_tokens=128,
+        generation_tps=42.5,
+        peak_memory_gb=3.7,
+    )
+    assert r.generation_tokens == 128
+    assert r.generation_tps == 42.5
+    assert r.peak_memory_gb == 3.7
+    # Frozen — assignment raises (matches ExtractionResult dataclass contract).
+    with pytest.raises(Exception):  # noqa: B017 — FrozenInstanceError
+        r.generation_tokens = 999  # type: ignore[misc]
+
+
+def test_extraction_result_perf_fields_do_not_affect_is_ok() -> None:
+    """`is_ok` is determined ONLY by `error` (not by perf-field values).
+
+    A failed extraction (error set) with non-zero perf fields stays `is_ok=False`;
+    a successful extraction (error=None) with zero perf fields stays `is_ok=True`.
+    Perf fields are orthogonal to success — captured for both paths.
+    """
+    from horus.vlm_extractor import ExtractionResult
+
+    err_with_perf = ExtractionResult(
+        model_id="x",
+        backend_name="transformers-mps",
+        error="OOM",
+        traceback_str="...",
+        generation_tokens=10,  # partial generation before failure
+        generation_tps=5.0,
+    )
+    assert err_with_perf.is_ok is False
+
+    ok_no_perf = ExtractionResult(
+        model_id="x",
+        backend_name="transformers-mps",
+        text="hello",
+        # all perf fields default to 0 — extractor didn't populate them
+    )
+    assert ok_no_perf.is_ok is True
+
+
 def test_pr_a_alt_model_ids_point_to_quantised_ports() -> None:
     """PR(a) DeepSeek-OCR-2 + Gemma-4-E4B-it have MLX 4-bit alt_model_id ports."""
     from horus.vlm_extractor import COHORT_MANIFEST

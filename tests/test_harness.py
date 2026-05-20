@@ -513,9 +513,7 @@ def test_run_cohort_cli_invoice_subset_overrides_yaml(tmp_path: Path) -> None:
     import mlflow  # noqa: PLC0415
 
     runs = mlflow.search_runs(
-        experiment_ids=[
-            mlflow.get_experiment_by_name(cfg.mlflow.experiment_name).experiment_id
-        ],
+        experiment_ids=[mlflow.get_experiment_by_name(cfg.mlflow.experiment_name).experiment_id],
         filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
         output_format="list",
     )
@@ -566,9 +564,7 @@ def test_run_cohort_dev_only_tags_parent_and_nested_runs(tmp_path: Path) -> None
         f"parent run missing dev_only tag; got tags={parent.data.tags}"
     )
     # All nested runs tagged dev_only=true.
-    experiment_id = mlflow.get_experiment_by_name(
-        cfg.mlflow.experiment_name
-    ).experiment_id
+    experiment_id = mlflow.get_experiment_by_name(cfg.mlflow.experiment_name).experiment_id
     nested = mlflow.search_runs(
         experiment_ids=[experiment_id],
         filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
@@ -579,6 +575,157 @@ def test_run_cohort_dev_only_tags_parent_and_nested_runs(tmp_path: Path) -> None
         assert r.data.tags.get("dev_only") == "true", (
             f"nested run {r.info.run_id} missing dev_only tag; tags={r.data.tags}"
         )
+
+
+# ===========================================================================
+# Issue #52 / ADR-017 — perf instrumentation
+# ===========================================================================
+
+
+def test_snapshot_mps_driver_alloc_returns_none_for_non_mps_backend() -> None:
+    """`_snapshot_mps_driver_alloc_mb_or_none` no-ops for non-MPS extractors.
+
+    MLX-path extractors get peak memory via `GenerationResult.peak_memory`
+    (handled in `vlm_extractor.MLXVLMExtractor.extract`); the harness MUST NOT
+    invoke MPS APIs for them. This function gates that branch.
+    """
+    from horus.eval.harness import _snapshot_mps_driver_alloc_mb_or_none
+
+    @dataclass
+    class _Mock:
+        backend_name: str = "mlx-vlm"
+
+    assert _snapshot_mps_driver_alloc_mb_or_none(_Mock()) is None
+    # Skeleton extractors (paddleocr, glm-ocr) also don't get MPS treatment.
+    assert _snapshot_mps_driver_alloc_mb_or_none(_Mock(backend_name="paddleocr")) is None
+    assert _snapshot_mps_driver_alloc_mb_or_none(_Mock(backend_name="glm-ocr")) is None
+    # No `backend_name` attribute → also None (defensive — not a VLMExtractor).
+    assert _snapshot_mps_driver_alloc_mb_or_none(object()) is None
+
+
+def test_snapshot_mps_driver_alloc_returns_none_when_mps_unavailable() -> None:
+    """When `torch.backends.mps.is_available()` is False, returns None gracefully.
+
+    Covers CI hosts (no Apple Silicon) and non-MPS dev machines. The harness
+    must continue to log accuracy metrics on these hosts; MPS metrics
+    silently skip.
+    """
+    from horus.eval.harness import _snapshot_mps_driver_alloc_mb_or_none
+
+    @dataclass
+    class _Mock:
+        backend_name: str = "transformers-mps"
+
+    with patch("torch.backends.mps.is_available", return_value=False):
+        assert _snapshot_mps_driver_alloc_mb_or_none(_Mock()) is None
+
+
+@dataclass
+class _MockExtractorWithPerf:
+    """Mock VLM extractor that populates perf fields — for issue #52 tests.
+
+    Same German-label synthetic transcript as `_MockExtractorForHarness`
+    (so the PR(b) adapter Layer 2 finds ≥1 field), but with non-zero
+    `generation_tokens` / `generation_tps` / `peak_memory_gb` to exercise
+    the `perf.*` MLflow logging path in `run_cohort`.
+    """
+
+    model_id: str
+    backend_name: str = "mlx-vlm"  # MLX path → peak_memory_gb populated by extractor
+    _loaded: bool = False
+    _calls: int = 0
+
+    def load(self) -> None:
+        self._loaded = True
+
+    def extract(self, image_path: Path, prompt: str, max_tokens: int) -> ExtractionResult:
+        self._calls += 1
+        text = (
+            f"Rechnungsnummer: 471102\n"
+            f"Rechnungsdatum: 2018-03-05\n"
+            f"Verkäufer\nName: Lieferant GmbH\n"
+            f"Käufer\nName: Kunden AG\n"
+            f"(synthetic page {self._calls} for {image_path.stem})\n"
+        )
+        return ExtractionResult(
+            model_id=self.model_id,
+            backend_name=self.backend_name,
+            text=text,
+            extract_seconds=0.01,
+            output_len_chars=len(text),
+            generation_tokens=64,
+            generation_tps=12.5,
+            peak_memory_gb=2.5,
+        )
+
+    def unload(self) -> None:
+        self._loaded = False
+
+
+def test_run_cohort_logs_perf_metrics_in_nested_run(tmp_path: Path) -> None:
+    """`run_cohort` logs `perf.*` metrics on each nested run when the extractor populates them.
+
+    The harness aggregates per-page perf fields into per-tuple metrics:
+      * `perf.generation_tokens_total`  — sum of per-page tokens
+      * `perf.generation_tps_mean`      — mean across pages
+      * `perf.chars_per_sec`            — derived from total chars / extract_seconds_total
+      * `perf.peak_memory_gb`           — max of per-page peak (MLX path)
+      * `perf.output_len_chars_total`   — sum
+      * `perf.pages_extracted_ok`       — count
+
+    All 6 must appear; values must be positive when the extractor populates them.
+    Pins the Chunk 2 logging behaviour against silent regression.
+    """
+    cfg = _make_test_cfg(tmp_path)
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockExtractorWithPerf(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+
+    assert result.n_completed == 1
+
+    import mlflow  # noqa: PLC0415
+
+    experiment = mlflow.get_experiment_by_name(cfg.mlflow.experiment_name)
+    assert experiment is not None
+    nested = mlflow.search_runs(
+        experiment_ids=[experiment.experiment_id],
+        filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
+        output_format="list",
+    )
+    assert len(nested) == 1, f"expected 1 nested run, got {len(nested)}"
+    metrics = nested[0].data.metrics
+
+    # All 6 perf metrics present.
+    for key in (
+        "perf.generation_tokens_total",
+        "perf.generation_tps_mean",
+        "perf.chars_per_sec",
+        "perf.peak_memory_gb",
+        "perf.output_len_chars_total",
+        "perf.pages_extracted_ok",
+    ):
+        assert key in metrics, (
+            f"perf metric {key!r} missing from nested run; got keys={sorted(metrics)}"
+        )
+
+    # Values reflect the mock's outputs (EN16931_Einfach is 2-page):
+    #   - 64 gen_tokens × 2 pages = 128
+    #   - peak_memory_gb = 2.5 (max across pages — same per-page value)
+    #   - mean_tps = total_tokens / total_seconds = 128 / 0.02 = 6400.0
+    #     (canonical throughput per Artificial Analysis methodology, NOT the
+    #     arithmetic mean of per-page tps — see harness.py §"perf metrics")
+    #   - chars_per_sec = total_chars / total_seconds (positive, formula)
+    assert metrics["perf.generation_tokens_total"] == 128.0
+    assert metrics["perf.peak_memory_gb"] == 2.5
+    assert metrics["perf.generation_tps_mean"] == pytest.approx(128.0 / 0.02, rel=0.01), (
+        "perf.generation_tps_mean = total_tokens / total_seconds (throughput); "
+        "see harness.py mean_tps formula"
+    )
+    assert metrics["perf.pages_extracted_ok"] == 2.0
+    assert metrics["perf.chars_per_sec"] > 0.0
 
 
 def test_run_cohort_dev_only_false_tags_runs_as_false(tmp_path: Path) -> None:
