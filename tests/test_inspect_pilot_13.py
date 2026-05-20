@@ -233,6 +233,22 @@ def test_print_perf_table_shows_dash_when_no_mps_ceiling(
     )
 
 
+def test_csv_type_converter_splits_multifile_cfg() -> None:
+    """`_csv` accepts comma-separated config paths (ADR-016 multi-file composition).
+
+    Regression guard: the inspector previously treated `--cfg` as a single
+    path, breaking the documented `make inspect-pilot-13
+    CFG=base.yaml,overlay.yaml` invocation. Mirrors the
+    `run_pilot_13.py::_csv` precedent.
+    """
+    assert inspect_pilot_13._csv("a.yaml") == ["a.yaml"]
+    assert inspect_pilot_13._csv("a.yaml,b.yaml") == ["a.yaml", "b.yaml"]
+    assert inspect_pilot_13._csv(" a.yaml , b.yaml ") == ["a.yaml", "b.yaml"]
+    # Empty entries from trailing commas are stripped.
+    assert inspect_pilot_13._csv("a.yaml,,b.yaml,") == ["a.yaml", "b.yaml"]
+    assert inspect_pilot_13._csv("") == []
+
+
 def test_print_perf_table_sorts_by_wall_s_ascending(
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],

@@ -384,12 +384,29 @@ def _print_probe_2_xrechnung_dates(nested: list) -> None:
         )
 
 
+def _csv(value: str) -> list[str]:
+    """Argparse type converter for comma-separated config paths.
+
+    Mirrors `scripts/run_pilot_13.py::_csv` so the inspector supports
+    ADR-016 multi-file YAML composition (`--cfg base.yaml,overlay.yaml`).
+    Without this, the dev-cohort smoke (which composes `pilot-13.yaml,
+    pilot-13-dev.yaml`) cannot resolve to the `pilot-13-dev` experiment.
+    """
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(prog="inspect_pilot_13")
     parser.add_argument(
         "--cfg",
-        default=str(DEFAULT_CFG),
-        help=f"Config YAML (default: {DEFAULT_CFG})",
+        default=[str(DEFAULT_CFG)],
+        type=_csv,
+        metavar="PATH[,OVERLAY,...]",
+        help=(
+            "Comma-separated YAML config path(s) to deep-merge (ADR-016 "
+            f"multi-file composition; default: {DEFAULT_CFG}). Later files win "
+            "on conflict. Pass `base.yaml,dev-overlay.yaml` to inspect a dev-cohort run."
+        ),
     )
     parser.add_argument(
         "--parent-run-id",
