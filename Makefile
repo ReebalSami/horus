@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui clean
+.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui inspect-pilot-13 clean
 
 # Default target — list available commands.
 help:
@@ -18,6 +18,7 @@ help:
 	@echo "  pilot-13        full (cohort × ZUGFeRD-corpus) sweep with parent/nested MLflow runs (ADR-014; CFG=configs/pilot-13.yaml[,overlay.yaml] required)"
 	@echo "  adapter-iterate fast (~5-15s) adapter A/B re-scoring on cached transcripts (ADR-016; CFG=...,pilot-13-dev.yaml required; THRESHOLDS / ADAPTER / LOG_MLFLOW optional)"
 	@echo "  mlflow-ui       browse pilot-13 + adapter-iterate + cohort-smoke runs in MLflow's local UI (ADR-015; MLFLOW_UI_PORT=<n> to override default 8080)"
+	@echo "  inspect-pilot-13  print per-model accuracy + perf summary table for the latest pilot-13 parent run (ADR-017, #52; CFG=configs/...yaml; PARENT_RUN_ID=<id> optional)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -280,6 +281,28 @@ mlflow-ui:
 		--backend-store-uri sqlite:///mlflow.db \
 		--host 127.0.0.1 \
 		--port $(MLFLOW_UI_PORT)
+
+# Inspect the most-recent (or explicit) pilot-13 parent run — ADR-017 (#52).
+# Surfaces both accuracy and performance views in one call:
+#   1. per-run grid (existing — model × invoice F1 + raw timing)
+#   2. per-model accuracy aggregate (existing — mean micro_F1, sorted)
+#   3. per-model perf summary (NEW: wall_s / tps / chars/s / gen_tok /
+#      peak_GB / %_max — from the `perf.*` MLflow metrics logged by the
+#      cohort harness post-#52)
+#   4. probe outputs (existing — MONEY-field TPs, XRECHNUNG date fixes)
+#
+# Usage:
+#   make inspect-pilot-13                                  (defaults to configs/pilot-13.yaml + latest parent)
+#   make inspect-pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+#   make inspect-pilot-13 PARENT_RUN_ID=abc123def
+#
+# Pre-#52 parent runs (no `perf.*` metrics) get a graceful fallback note
+# from the perf table; accuracy + probe sections still render fully.
+# Honors `long-running-foreground` — output streams unbuffered.
+inspect-pilot-13:
+	uv run python scripts/inspect_pilot_13.py \
+		$(if $(CFG),--cfg "$(CFG)") \
+		$(if $(PARENT_RUN_ID),--parent-run-id "$(PARENT_RUN_ID)")
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist

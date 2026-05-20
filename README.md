@@ -119,10 +119,19 @@ See `configs/pilot-13.yaml` for the canonical tag set.
 For programmatic post-mortem (no browser):
 
 ```sh
-uv run python scripts/inspect_pilot_13.py
+make inspect-pilot-13                                          # latest parent run, default config
+make inspect-pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+make inspect-pilot-13 PARENT_RUN_ID=<run-id>                   # explicit parent
 ```
 
-Outputs the per-(model, invoice) F1 grid, per-model aggregate, Probe 1 (MONEY-field TPs on `EN16931_Einfach`), and Probe 2 (XRECHNUNG factur-x route DATE outcomes). See `scripts/inspect_pilot_13.py`.
+Outputs four sections in order:
+
+1. **Per-(model, invoice) F1 grid** — raw scores + wall-clock seconds per tuple.
+2. **Per-model accuracy aggregate** — mean micro-F1, sorted descending (best models top).
+3. **Per-model perf summary** ([ADR-017](docs/decisions/ADR-017-timing-tokens-memory-instrumentation.md), [issue #52](https://github.com/ReebalSami/horus/issues/52)) — wall-clock seconds, native tokens/sec, chars/sec, total generation tokens, peak memory (GB), and `%_max` of the host's MPS memory ceiling. Sorted by mean wall-clock ascending (fastest models top). Pre-#52 parent runs degrade gracefully — the section prints a single-line note instead of a blank table. **Substrate** for the H4 latency-efficiency comparison; the H4 hypothesis test itself is filed separately.
+4. **Probes** — Probe 1 (MONEY-field TPs on `EN16931_Einfach`), Probe 2 (XRECHNUNG factur-x route DATE outcomes).
+
+Wraps `scripts/inspect_pilot_13.py`; the script is also runnable directly via `uv run python scripts/inspect_pilot_13.py [--cfg <path>] [--parent-run-id <id>]`.
 
 ## Deferred decisions (consumer-customizable)
 
