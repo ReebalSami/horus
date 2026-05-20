@@ -501,3 +501,61 @@ def test_from_yaml_extra_keys_still_rejected_after_merge(tmp_path: Path) -> None
     )
     with pytest.raises(ValidationError, match="(extra|forbidden)"):
         ExperimentConfig.from_yaml([base, overlay])
+
+
+def test_loads_real_pilot_13_dev_composition() -> None:
+    """`configs/pilot-13.yaml` + `configs/pilot-13-dev.yaml` compose cleanly (ADR-016).
+
+    The realistic dev-overlay regression test: the actual files shipped in
+    `configs/` produce a valid `ExperimentConfig` when composed. If `pilot-13.yaml`
+    changes in a way the overlay doesn't anticipate (e.g., a new required field
+    added to a sub-model), this test fails first — protecting the dev loop.
+    """
+    base = REPO_ROOT / "configs" / "pilot-13.yaml"
+    overlay = REPO_ROOT / "configs" / "pilot-13-dev.yaml"
+    assert base.is_file(), f"missing base config: {base}"
+    assert overlay.is_file(), f"missing dev overlay: {overlay}"
+
+    cfg = ExperimentConfig.from_yaml([base, overlay])
+
+    # ----- mlflow: overlay wins on experiment_name + most tags; base tags merged -----
+    assert cfg.mlflow.experiment_name == "pilot-13-dev", "overlay experiment_name wins"
+    assert cfg.mlflow.run_tags["stage"] == "pilot-13-dev", "overlay tag overrides base"
+    assert cfg.mlflow.run_tags["issue"] == "51", "overlay tag overrides base"
+    assert cfg.mlflow.run_tags["adr"] == "ADR-016", "overlay tag overrides base"
+    # Inherited tags from base (not in overlay) survive.
+    assert cfg.mlflow.run_tags["corpus"] == "zugferd-full"
+    assert cfg.mlflow.run_tags["rasterizer"] == "pypdfium2"
+    assert cfg.mlflow.run_tags["dpi"] == "300"
+    assert cfg.mlflow.run_tags["xml_route"] == "facturx"
+
+    # ----- eval: untouched by overlay; base values pass through -----
+    assert cfg.eval is not None
+    assert cfg.eval.anls_threshold == 0.5
+    assert cfg.eval.string_normalize_nfc is True
+
+    # ----- rasterizer: untouched by overlay; base values pass through -----
+    assert cfg.rasterizer is not None
+    assert cfg.rasterizer.dpi == 300
+
+    # ----- cohort: overlay REPLACES working_models + adds invoice_subset + dev_only -----
+    assert cfg.cohort is not None
+    assert cfg.cohort.working_models == ["opendatalab/MinerU2.5-Pro-2604-1.2B"], (
+        "1-model dev cohort fully replaces base's 7-model list (list-replacement semantics)"
+    )
+    assert cfg.cohort.invoice_subset == [
+        "EN16931_Einfach",
+        "XRECHNUNG_Einfach",
+        "EN16931_Reisekostenabrechnung",
+    ]
+    assert cfg.cohort.dev_only is True, "HARKing-prevention forcing function active"
+    assert cfg.cohort.parent_run_name == "pilot-13-dev"
+    assert str(cfg.cohort.transcript_archive_dir) == "docs/sources/transcripts-multipage-dev", (
+        "separate transcript dir so dev runs never pollute the 182-tuple canonical archive"
+    )
+    # Inherited from base.
+    assert str(cfg.cohort.corpus_root) == "data/raw/german/zugferd-corpus"
+    assert cfg.cohort.resume_on_existing_run is True
+
+    # ----- seed: inherited from base; no override -----
+    assert cfg.seed == 42
