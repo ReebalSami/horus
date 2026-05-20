@@ -79,6 +79,30 @@ Pilot-13 runs use a **parent + nested** hierarchy:
 
 `make pilot-13` is resume-safe via `mlflow.search_runs` filtering on `tags.mlflow.parentRunId`.
 
+### Fast adapter dev loop (per ADR-016)
+
+When iterating on adapter heuristics (`src/horus/eval/adapters.py`'s Layer 1 preprocess + Layer 2 to_predicted_dict), the full `make pilot-13` is overkill — it re-runs the VLM for every (model, invoice) tuple. The fast path re-scores cached transcripts against a candidate adapter:
+
+```sh
+# Slow path (~3-5 min for the dev cohort): produce canonical transcripts.
+make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+
+# Fast path (~5-15 s): re-score saved transcripts with candidate adapter.
+make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
+```
+
+The `adapter-iterate` target compares `src/horus/eval/adapters.py` (canonical baseline) against `src/horus/eval/adapters_candidate.py` (gitignored working file). Output: per-(model, field) Δ TP table + cohort pooled Δ headline.
+
+**Stability self-check** (Google "Rules of Machine Learning" §24): when the candidate file is missing OR byte-identical to baseline, the tool runs baseline-vs-baseline and asserts Δ = 0. Catches non-determinism bugs before they cause silent F1 drift.
+
+**Opt-in MLflow audit trail** (`LOG_MLFLOW=1`): when promoting a candidate to canonical, log 2 nested MLflow runs (`adapter=baseline` / `adapter=candidate`) under an `adapter-iterate` experiment for permanent record:
+
+```sh
+make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml LOG_MLFLOW=1
+```
+
+**HARKing guard** (per `brainstorm v2 §2` No-HARKing + NeurIPS Paper Checklist): `configs/pilot-13-dev.yaml` sets `cohort.dev_only: true`, which makes the harness refuse to log to the canonical `pilot-13-full` MLflow experiment. The dev cohort (1 model × 3 invoices) is for iterative tuning ONLY; final thesis-reported F1 numbers come from a `dev_only: false` config scored against the held-out test split (issue #46 substrate).
+
 ### Filter by experiment / config
 
 Each run carries originating-config metadata as MLflow tags:

@@ -77,6 +77,16 @@ DEFAULT_CORPUS_ROOT = Path("data/raw/german/zugferd-corpus")
 DEFAULT_CANDIDATE_PATH = Path("src/horus/eval/adapters_candidate.py")
 
 
+def _csv_paths(value: str) -> list[str]:
+    """Argparse type converter for comma-separated YAML path lists.
+
+    Supports the multi-file YAML composition pattern (ADR-016): a single path
+    OR `base.yaml,overlay.yaml` (deep-merged left-to-right; later wins). Used
+    by `--cfg` to mirror the pattern documented in `configs/README.md`.
+    """
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
 @dataclasses.dataclass(frozen=True)
 class AdapterPair:
     """A loaded baseline + candidate adapter pair for A/B re-scoring.
@@ -574,14 +584,34 @@ def _log_to_mlflow_runs(
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(prog="rescore")
     parser.add_argument(
+        "--cfg",
+        type=_csv_paths,
+        default=None,
+        metavar="PATH[,OVERLAY,...]",
+        help=(
+            "Comma-separated YAML config path(s) to deep-merge (ADR-016 multi-file "
+            "composition). When set, `transcripts-dir` defaults to "
+            "`cohort.transcript_archive_dir` and `corpus-root` defaults to "
+            "`cohort.corpus_root` from the merged config. The canonical "
+            "adapter-iterate invocation: --cfg configs/pilot-13.yaml,configs/pilot-13-dev.yaml"
+        ),
+    )
+    parser.add_argument(
         "--transcripts-dir",
-        default=str(DEFAULT_TRANSCRIPTS_DIR),
-        help=f"Directory of saved transcripts (default: {DEFAULT_TRANSCRIPTS_DIR})",
+        default=None,
+        help=(
+            f"Directory of saved transcripts. Defaults: (a) `cohort.transcript_archive_dir` "
+            f"from --cfg if set; (b) {DEFAULT_TRANSCRIPTS_DIR} otherwise. "
+            f"Explicit --transcripts-dir overrides the YAML."
+        ),
     )
     parser.add_argument(
         "--corpus-root",
-        default=str(DEFAULT_CORPUS_ROOT),
-        help=f"ZUGFeRD corpus root (default: {DEFAULT_CORPUS_ROOT})",
+        default=None,
+        help=(
+            f"ZUGFeRD corpus root. Defaults: (a) `cohort.corpus_root` from --cfg if set; "
+            f"(b) {DEFAULT_CORPUS_ROOT} otherwise. Explicit --corpus-root overrides the YAML."
+        ),
     )
     parser.add_argument(
         "--thresholds",
@@ -619,11 +649,33 @@ def main(argv: list[str]) -> int:
             print(f"ERROR: threshold {tau} not in [0.0, 1.0]", file=sys.stderr)
             return 2
 
+    # Derive transcripts_dir + corpus_root from --cfg when provided; explicit
+    # CLI flags override. Per ADR-016: the canonical adapter-iterate flow is
+    # `--cfg configs/pilot-13.yaml,configs/pilot-13-dev.yaml` (transcripts +
+    # corpus paths come from the dev config's `cohort.transcript_archive_dir`
+    # + `cohort.corpus_root` automatically).
+    transcripts_dir_str = args.transcripts_dir
+    corpus_root_str = args.corpus_root
+    if args.cfg:
+        # Defer the import so the unit tests (which don't load configs) stay fast.
+        from horus.config import ExperimentConfig  # noqa: PLC0415
+
+        cfg = ExperimentConfig.from_yaml(args.cfg)
+        if cfg.cohort is not None:
+            if transcripts_dir_str is None:
+                transcripts_dir_str = str(cfg.cohort.transcript_archive_dir)
+            if corpus_root_str is None:
+                corpus_root_str = str(cfg.cohort.corpus_root)
+    if transcripts_dir_str is None:
+        transcripts_dir_str = str(DEFAULT_TRANSCRIPTS_DIR)
+    if corpus_root_str is None:
+        corpus_root_str = str(DEFAULT_CORPUS_ROOT)
+
     pair = load_adapter_pair(candidate_path=Path(args.adapter_candidate_path))
 
     results = rescore_transcripts(
-        transcripts_dir=Path(args.transcripts_dir),
-        corpus_root=Path(args.corpus_root),
+        transcripts_dir=Path(transcripts_dir_str),
+        corpus_root=Path(corpus_root_str),
         thresholds=thresholds,
         adapters_pair=pair,
     )
