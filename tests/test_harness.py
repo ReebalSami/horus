@@ -119,8 +119,26 @@ def test_filter_invoices_matches_by_stem(tmp_path: Path) -> None:
     assert len(_filter_invoices(pairs, subset=None)) == 3
     assert len(_filter_invoices(pairs, subset=["EN16931_A"])) == 1
     assert len(_filter_invoices(pairs, subset=["EN16931_A", "XRECHNUNG_X"])) == 2
-    with pytest.raises(ValueError, match="matched 0 fixtures"):
+    # Strengthened semantics per ADR-016: any unknown entry raises immediately.
+    with pytest.raises(ValueError, match="not found in the corpus"):
         _filter_invoices(pairs, subset=["nonexistent"])
+
+
+def test_filter_invoices_strict_raises_on_partial_unknown(tmp_path: Path) -> None:
+    """Mix of known + unknown subset entries → raises (NEW strict behavior, ADR-016).
+
+    Pre-ADR-016 behavior would silently drop the unknown entries and return the
+    matched subset. That silent-skip is the failure mode this strengthening
+    prevents (typos in dev-overlay YAML caught at boot, not at result-inspection).
+    """
+    pairs = [
+        (tmp_path / "EN16931_A.pdf", tmp_path / "EN16931_A.cii.xml"),
+        (tmp_path / "EN16931_B.pdf", tmp_path / "EN16931_B.cii.xml"),
+    ]
+    with pytest.raises(ValueError, match="not found in the corpus") as exc_info:
+        _filter_invoices(pairs, subset=["EN16931_A", "EN16931_TYPO"])
+    # Error message mentions the unmatched entry specifically (debuggability).
+    assert "EN16931_TYPO" in str(exc_info.value)
 
 
 def test_strip_page_separators_idempotent() -> None:
@@ -271,15 +289,25 @@ def _make_test_cfg(
     parent_run_name: str = "test-pilot-13",
     working_models: list[str] | None = None,
     resume: bool = True,
+    experiment_name: str | None = None,
+    invoice_subset: list[str] | None = None,
+    dev_only: bool = False,
 ) -> ExperimentConfig:
-    """Build an ExperimentConfig for harness tests with isolated MLflow + cache paths."""
+    """Build an ExperimentConfig for harness tests with isolated MLflow + cache paths.
+
+    Extended for ADR-016 tests: `experiment_name`, `invoice_subset`, `dev_only`
+    kwargs allow constructing dev-tier configs (HARKing-prevention guard) and
+    YAML-subset-vs-CLI-precedence configs.
+    """
     if working_models is None:
         working_models = ["ibm-granite/granite-docling-258M-mlx"]
+    if experiment_name is None:
+        experiment_name = f"harness-test-{parent_run_name}"
     # Pydantic-validate ExperimentConfig with all required sub-models.
     return ExperimentConfig(
         seed=42,
         mlflow=MLflowConfig(
-            experiment_name=f"harness-test-{parent_run_name}",
+            experiment_name=experiment_name,
             tracking_uri=f"sqlite:///{tmp_path}/mlflow.db",
             run_tags={"test": "harness"},
         ),
@@ -294,6 +322,8 @@ def _make_test_cfg(
             parent_run_name=parent_run_name,
             transcript_archive_dir=tmp_path / "transcripts",
             resume_on_existing_run=resume,
+            invoice_subset=invoice_subset,
+            dev_only=dev_only,
         ),
     )
 
@@ -436,3 +466,137 @@ def test_run_cohort_raises_on_missing_rasterizer_or_cohort_cfg(tmp_path: Path) -
     )
     with pytest.raises(ValueError, match="rasterizer"):
         run_cohort(cfg_no_rasterizer)
+
+
+# ===========================================================================
+# Integration: ADR-016 (invoice_subset from YAML + dev_only forcing function)
+# ===========================================================================
+
+
+def test_run_cohort_invoice_subset_from_yaml_applied(tmp_path: Path) -> None:
+    """`cohort.invoice_subset` from YAML is honored when CLI subset is None (ADR-016)."""
+    cfg = _make_test_cfg(
+        tmp_path,
+        invoice_subset=["EN16931_Einfach"],  # YAML-declared subset of 1 invoice
+    )
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockExtractorForHarness(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        # CLI subset is None → YAML subset wins → 1 invoice scored.
+        result = run_cohort(cfg)
+
+    assert result.n_invoices_total == 1, (
+        "YAML invoice_subset should restrict to 1 invoice even with CLI=None"
+    )
+    assert result.n_completed == 1
+
+
+def test_run_cohort_cli_invoice_subset_overrides_yaml(tmp_path: Path) -> None:
+    """CLI `invoice_subset` overrides `cohort.invoice_subset` from YAML (ADR-016)."""
+    cfg = _make_test_cfg(
+        tmp_path,
+        invoice_subset=["XRECHNUNG_Einfach"],  # YAML declares 1 invoice
+    )
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockExtractorForHarness(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        # CLI subset = ["EN16931_Einfach"] WINS over YAML's ["XRECHNUNG_Einfach"].
+        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+
+    assert result.n_invoices_total == 1
+    assert result.n_completed == 1
+    # Spot-check: search_runs for invoice_id=EN16931_Einfach exists; XRECHNUNG_Einfach does NOT.
+    import mlflow  # noqa: PLC0415
+
+    runs = mlflow.search_runs(
+        experiment_ids=[
+            mlflow.get_experiment_by_name(cfg.mlflow.experiment_name).experiment_id
+        ],
+        filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
+        output_format="list",
+    )
+    invoice_ids = {r.data.tags.get("invoice_id") for r in runs}
+    assert "EN16931_Einfach" in invoice_ids, "CLI override was not applied"
+    assert "XRECHNUNG_Einfach" not in invoice_ids, "YAML subset leaked through CLI override"
+
+
+def test_run_cohort_dev_only_blocks_canonical_experiment(tmp_path: Path) -> None:
+    """`dev_only=true` + `experiment_name='pilot-13-full'` → raises (ADR-016 HARKing guard).
+
+    Forcing function: a dev config trying to log to the canonical thesis-reporting
+    experiment is blocked at boot before any MLflow / model interaction.
+    """
+    cfg = _make_test_cfg(
+        tmp_path,
+        experiment_name="pilot-13-full",  # CANONICAL — forbidden for dev_only=true
+        dev_only=True,
+        invoice_subset=["EN16931_Einfach"],
+    )
+    with pytest.raises(ValueError, match="dev_only=true.*pilot-13-full"):
+        run_cohort(cfg)
+
+
+def test_run_cohort_dev_only_tags_parent_and_nested_runs(tmp_path: Path) -> None:
+    """`dev_only=true` tags parent + every nested run with `dev_only=true` (ADR-016)."""
+    cfg = _make_test_cfg(
+        tmp_path,
+        experiment_name="harness-test-dev-only-tag",  # NON-canonical name; not blocked
+        dev_only=True,
+        invoice_subset=["EN16931_Einfach", "XRECHNUNG_Einfach"],
+    )
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockExtractorForHarness(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        result = run_cohort(cfg)
+
+    assert result.n_completed == 2
+
+    import mlflow  # noqa: PLC0415
+
+    client = mlflow.MlflowClient()
+    # Parent tagged dev_only=true.
+    parent = client.get_run(result.parent_run_id)
+    assert parent.data.tags.get("dev_only") == "true", (
+        f"parent run missing dev_only tag; got tags={parent.data.tags}"
+    )
+    # All nested runs tagged dev_only=true.
+    experiment_id = mlflow.get_experiment_by_name(
+        cfg.mlflow.experiment_name
+    ).experiment_id
+    nested = mlflow.search_runs(
+        experiment_ids=[experiment_id],
+        filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
+        output_format="list",
+    )
+    assert len(nested) == 2, f"expected 2 nested runs, got {len(nested)}"
+    for r in nested:
+        assert r.data.tags.get("dev_only") == "true", (
+            f"nested run {r.info.run_id} missing dev_only tag; tags={r.data.tags}"
+        )
+
+
+def test_run_cohort_dev_only_false_tags_runs_as_false(tmp_path: Path) -> None:
+    """Default `dev_only=False` still tags parent + nested with `dev_only=false` (audit-trail)."""
+    cfg = _make_test_cfg(
+        tmp_path,
+        invoice_subset=["EN16931_Einfach"],
+    )
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockExtractorForHarness(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        result = run_cohort(cfg)
+
+    import mlflow  # noqa: PLC0415
+
+    parent = mlflow.MlflowClient().get_run(result.parent_run_id)
+    assert parent.data.tags.get("dev_only") == "false", (
+        "even dev_only=false runs get the tag (every run audit-trail-tagged per ADR-016)"
+    )

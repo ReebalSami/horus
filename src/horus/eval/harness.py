@@ -528,15 +528,34 @@ def _filter_invoices(
     *,
     subset: list[str] | None,
 ) -> list[tuple[Path, Path]]:
-    """Filter paired invoices by an optional list of PDF stems."""
+    """Filter paired invoices by an optional list of PDF stems.
+
+    Strict matching: every stem in `subset` MUST match a pair in the corpus. Per
+    ADR-016 + `CohortConfig.invoice_subset` field docstring — unmatched entries
+    raise at harness boot (no silent skips). This catches typos in dev-overlay
+    YAML before any model loads or compute is spent (fail-fast discipline).
+    """
     if subset is None:
         return pairs
     subset_set = set(subset)
+    available_stems = {pdf.stem for pdf, _ in pairs}
+    unmatched = subset_set - available_stems
+    if unmatched:
+        raise ValueError(
+            f"invoice_subset contains {len(unmatched)} entries not found in the "
+            f"corpus: {sorted(unmatched)}. "
+            f"Available stems: {sorted(available_stems)[:10]}… "
+            f"(of {len(available_stems)} total). "
+            f"Check the CLI INVOICES= or cohort.invoice_subset YAML field."
+        )
     matched = [(pdf, cii) for pdf, cii in pairs if pdf.stem in subset_set]
     if not matched:
+        # Defense in depth — if all entries matched the unmatched check above but
+        # filtering still produced 0, the corpus discovery is broken. Should be
+        # unreachable, but raise rather than return [].
         raise ValueError(
-            f"--invoices matched 0 fixtures. "
-            f"Available: {sorted(pdf.stem for pdf, _ in pairs)[:10]}…"
+            f"invoice_subset matched 0 fixtures despite all entries present in "
+            f"the corpus. This indicates a discovery bug. subset={sorted(subset_set)}"
         )
     return matched
 
@@ -544,6 +563,15 @@ def _filter_invoices(
 # ===========================================================================
 # Public orchestrator
 # ===========================================================================
+
+
+# Per ADR-016: canonical "production" MLflow experiment names that MUST NEVER
+# receive a `dev_only=true` run. The dev_only forcing function (per
+# brainstorm v2 §2 No-HARKing + NeurIPS Paper Checklist) blocks any dev-tier
+# config from polluting the canonical thesis-reporting experiment.
+#
+# Expand when new canonical experiments land (e.g., post-fine-tuning).
+_CANONICAL_PRODUCTION_EXPERIMENTS: frozenset[str] = frozenset({"pilot-13-full"})
 
 
 def run_cohort(
@@ -603,9 +631,28 @@ def run_cohort(
     raster_cfg = cfg.rasterizer
     eval_cfg = cfg.eval  # may be None — score() handles defaults
 
+    # Per ADR-016: dev_only=true configs MUST NOT target a canonical production
+    # experiment. Forcing function against accidentally HARKing on the thesis-
+    # reported numbers. Fail fast — before any model loads.
+    if cohort_cfg.dev_only and cfg.mlflow.experiment_name in _CANONICAL_PRODUCTION_EXPERIMENTS:
+        raise ValueError(
+            f"dev_only=true config refuses to log to canonical production "
+            f"experiment {cfg.mlflow.experiment_name!r}. Use a distinct "
+            f"experiment_name (e.g., 'pilot-13-dev') in mlflow.experiment_name. "
+            f"Per ADR-016 HARKing-prevention forcing function. "
+            f"Canonical production experiments: {sorted(_CANONICAL_PRODUCTION_EXPERIMENTS)}"
+        )
+
     # ----- 2. Resolve cohort + corpus -----
+    # CLI > YAML > full-corpus precedence per ADR-016. The CLI `invoice_subset`
+    # kwarg (e.g., `INVOICES=...` on `make pilot-13`) wins; falls through to
+    # the declarative `cohort.invoice_subset` YAML field; falls through to None
+    # (= all paired invoices in the corpus).
+    effective_invoice_subset = (
+        invoice_subset if invoice_subset is not None else cohort_cfg.invoice_subset
+    )
     pairs = _list_paired_invoices(cohort_cfg.corpus_root)
-    pairs = _filter_invoices(pairs, subset=invoice_subset)
+    pairs = _filter_invoices(pairs, subset=effective_invoice_subset)
     models = _filter_models(cohort_cfg.working_models, subset=model_subset)
 
     if not pairs:
@@ -644,6 +691,11 @@ def run_cohort(
     n_failed = 0
     parent_run_id: str = ""
 
+    # Cached for tagging across all nested runs (parent + per-(model, invoice)).
+    # Stringified to match MLflow's tag-value-is-str contract; lowercase for
+    # cross-tool consistency with how Python bool repr (`True`/`False`) renders.
+    dev_only_tag_value = str(cohort_cfg.dev_only).lower()
+
     # ----- 5. Parent run + nested loop -----
     with mlflow.start_run(run_name=cohort_cfg.parent_run_name) as parent_run:
         parent_run_id = parent_run.info.run_id
@@ -654,6 +706,7 @@ def run_cohort(
         mlflow.set_tag("n_models", str(len(models)))
         mlflow.set_tag("n_invoices", str(len(pairs)))
         mlflow.set_tag("resume_enabled", str(cohort_cfg.resume_on_existing_run))
+        mlflow.set_tag("dev_only", dev_only_tag_value)
         mlflow.log_param("seed", cfg.seed)
         mlflow.log_param("dpi", raster_cfg.dpi)
         if eval_cfg is not None:
@@ -720,6 +773,7 @@ def run_cohort(
                         mlflow.set_tag("invoice_id", invoice_stem)
                         mlflow.set_tag("profile", profile)
                         mlflow.set_tag("xml_route", "facturx")
+                        mlflow.set_tag("dev_only", dev_only_tag_value)
                         mlflow.set_tag("skip_reason", "load_failed")
                         mlflow.end_run(status="FAILED")
                     n_failed += 1
@@ -737,6 +791,7 @@ def run_cohort(
                             mlflow.set_tag("invoice_id", invoice_stem)
                             mlflow.set_tag("profile", profile)
                             mlflow.set_tag("xml_route", "facturx")
+                            mlflow.set_tag("dev_only", dev_only_tag_value)
                             mlflow.set_tag("error_type", "no_facturx_attachment")
                             mlflow.end_run(status="FAILED")
                         n_failed += 1
@@ -767,6 +822,7 @@ def run_cohort(
                         mlflow.set_tag("invoice_id", invoice_stem)
                         mlflow.set_tag("profile", profile)
                         mlflow.set_tag("xml_route", "facturx")
+                        mlflow.set_tag("dev_only", dev_only_tag_value)
                         mlflow.set_tag("pages", str(len(per_page)))
                         mlflow.set_tag("page_errors", str(sum(1 for r in per_page if not r.is_ok)))
 
@@ -819,6 +875,7 @@ def run_cohort(
                         mlflow.set_tag("invoice_id", invoice_stem)
                         mlflow.set_tag("profile", profile)
                         mlflow.set_tag("xml_route", "facturx")
+                        mlflow.set_tag("dev_only", dev_only_tag_value)
                         mlflow.set_tag("error_type", type(exc).__name__)
                         mlflow.log_param("error_message", str(exc)[:500])
                         mlflow.end_run(status="FAILED")
