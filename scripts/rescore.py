@@ -104,6 +104,7 @@ class AdapterPair:
     candidate_path: Path
     diff_sha256: str  # SHA-256 of the candidate file's content; "" if identical
 
+
 # Per-transcript header lines:
 #   # Multi-page transcript (ADR-014 PR(c))
 #   # Model:    <model_id>
@@ -242,9 +243,7 @@ def load_adapter_pair(
         )
 
     # Candidate differs — load it as a separate module via importlib.
-    spec = importlib.util.spec_from_file_location(
-        "horus.eval.adapters_candidate", candidate_abs
-    )
+    spec = importlib.util.spec_from_file_location("horus.eval.adapters_candidate", candidate_abs)
     if spec is None or spec.loader is None:
         raise RuntimeError(
             f"importlib could not build a spec for {candidate_abs}; "
@@ -294,9 +293,7 @@ def _per_field_outcome_counts(
                 outcome = per_field_outcome.outcome
                 counts[model_id][field_key][outcome] += 1
     # Convert defaultdicts to plain dicts for cleaner JSON serialization.
-    return {
-        m: {f: dict(o) for f, o in field_dict.items()} for m, field_dict in counts.items()
-    }
+    return {m: {f: dict(o) for f, o in field_dict.items()} for m, field_dict in counts.items()}
 
 
 def rescore_transcripts(
@@ -446,11 +443,7 @@ def _print_ab_delta_table(
     print("=" * 110)
     print(f"Adapter A/B Δ at τ={primary_tau:.2f}")
     if pair.is_identical:
-        reason = (
-            "missing"
-            if not pair.candidate_path.exists()
-            else "byte-identical to baseline"
-        )
+        reason = "missing" if not pair.candidate_path.exists() else "byte-identical to baseline"
         print(
             f"  STABILITY MODE: candidate {reason}; "
             f"running baseline-vs-baseline (Google §24 sanity check)"
@@ -466,8 +459,7 @@ def _print_ab_delta_table(
 
     all_models = sorted(set(baseline_counts.keys()) | set(candidate_counts.keys()))
     header = (
-        f"{'model':<55} {'field':<28} "
-        f"{'baseline TP/FP/FN':>20}   {'candidate TP/FP/FN':>20}   Δ TP"
+        f"{'model':<55} {'field':<28} {'baseline TP/FP/FN':>20}   {'candidate TP/FP/FN':>20}   Δ TP"
     )
     print(header)
     print("-" * 130)
@@ -513,10 +505,7 @@ def _print_ab_delta_table(
     elif delta_cohort > 0.0:
         print("  → candidate improves cohort F1; review per-field Δ before promoting.")
     elif delta_cohort < 0.0:
-        print(
-            "  → candidate regresses cohort F1; "
-            "do NOT promote without further investigation."
-        )
+        print("  → candidate regresses cohort F1; do NOT promote without further investigation.")
     else:
         print(
             "  → cohort F1 unchanged; per-field Δ may still show shifts "
@@ -558,9 +547,7 @@ def _log_to_mlflow_runs(
             ("baseline", baseline_results),
             ("candidate", candidate_results),
         ):
-            with mlflow.start_run(
-                run_name=f"{parent_name}__{adapter_label}", nested=True
-            ):
+            with mlflow.start_run(run_name=f"{parent_name}__{adapter_label}", nested=True):
                 mlflow.set_tag("adapter", adapter_label)
                 mlflow.set_tag("parent_run_id", parent_run.info.run_id)
                 mlflow.set_tag("candidate_diff_sha256", pair.diff_sha256)
@@ -693,9 +680,7 @@ def main(argv: list[str]) -> int:
             title="Per-model micro_F1 by threshold τ (CANDIDATE adapter):",
         )
 
-    _print_ab_delta_table(
-        results["baseline"], results["candidate"], thresholds, pair=pair
-    )
+    _print_ab_delta_table(results["baseline"], results["candidate"], thresholds, pair=pair)
 
     if args.log_mlflow:
         _log_to_mlflow_runs(
