@@ -11,9 +11,9 @@
 # (missing field, type mismatch, extra unknown key — all raise BEFORE any
 # model loads).
 #
-# `tracking_uri: null` triggers MLflow's SQLite default backend (per ADR-011)
-# at `sqlite:///mlflow.db` + artifact root `./mlartifacts/`. Override via
-# `HORUS_MLFLOW__TRACKING_URI=<uri>` env var per pydantic-settings
+# `tracking_uri: null` triggers MLflow's SQLite metadata default (per ADR-011)
+# at `sqlite:///mlflow.db` + filesystem artifacts at `mlruns/<exp>/<run>/artifacts/`.
+# Override via `HORUS_MLFLOW__TRACKING_URI=<uri>` env var per pydantic-settings
 # nested-delimiter convention.
 #
 # Refs: ADR-013 §Decision (scorer architecture), ADR-012 (parent: GT parser),

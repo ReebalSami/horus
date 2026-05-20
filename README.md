@@ -57,6 +57,49 @@ make experiment NB=experiments/baseline.py    # jupytext + papermill flow
 └── docs/                   # universal layout from _shared/scaffold/ (see docs/structure.md)
 ```
 
+## Experiment tracking
+
+HORUS uses MLflow (locked in [ADR-011](docs/decisions/ADR-011-experiment-tracker-integration.md)) for all experiment runs, with **SQLite metadata** (`sqlite:///mlflow.db`) and **filesystem artifacts** (`mlruns/<experiment_id>/<run_id>/artifacts/`). Both paths are gitignored — every run stays on the analyst's laptop, matching the privacy frame in [`AGENTS.md`](AGENTS.md) §1.
+
+### Browse runs in the MLflow UI
+
+```sh
+make mlflow-ui                            # http://127.0.0.1:8080 (local-only)
+make mlflow-ui MLFLOW_UI_PORT=5001        # override port
+```
+
+The target binds to `127.0.0.1` by default (no external network exposure) and uses port `8080` to avoid the documented macOS AirPlay Receiver conflict at MLflow's port-5000 default. Wraps `mlflow server --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1 --port 8080`. Per [ADR-015](docs/decisions/ADR-015-mlflow-ui-makefile-wire.md).
+
+### Run organization (per ADR-014)
+
+Pilot-13 runs use a **parent + nested** hierarchy:
+
+- **Parent run** (`pilot-13-full`) — cohort-pooled metrics, hardware fingerprint, deterministic seed, per-(model, field) heatmap (`cohort_heatmap.png`).
+- **Nested runs** (one per `(model, invoice)` tuple) — per-tuple `micro_f1`, per-field outcomes, full-text transcript artifact.
+
+`make pilot-13` is resume-safe via `mlflow.search_runs` filtering on `tags.mlflow.parentRunId`.
+
+### Filter by experiment / config
+
+Each run carries originating-config metadata as MLflow tags:
+
+- `tags.adr` — `ADR-011` (cohort-smoke validation), `ADR-013` (page-1 scorer), `ADR-014` (multi-page cohort harness)
+- `tags.stage` — `smoke` (pre-pilot validation) vs `pilot-13` (full evidence sweep)
+- `tags.cohort` — `adr-009-pilot-cohort` (the 7-working-model substrate)
+- `tags.profile` — `EN16931` vs `XRECHNUNG` (per ADR-012 Probe 5 split)
+
+See `configs/pilot-13.yaml` for the canonical tag set.
+
+### Headless inspection
+
+For programmatic post-mortem (no browser):
+
+```sh
+uv run python scripts/inspect_pilot_13.py
+```
+
+Outputs the per-(model, invoice) F1 grid, per-model aggregate, Probe 1 (MONEY-field TPs on `EN16931_Einfach`), and Probe 2 (XRECHNUNG factur-x route DATE outcomes). See `scripts/inspect_pilot_13.py`.
+
 ## Deferred decisions (consumer-customizable)
 
 The python-ml-uv template is deliberately under-opinionated on contested tooling. Choose your project's flavor for each:
@@ -89,6 +132,8 @@ explicit = true
 See `https://docs.astral.sh/uv/guides/integration/pytorch/` for the full pattern.
 
 ### Experiment tracker (B4=C)
+
+> **Superseded for HORUS by ADR-011 (MLflow with extended `Tracker` Protocol). See `## Experiment tracking` above for the active configuration.** This subsection documents the `python-ml-uv` L3 template's substrate; the project-specific override is one section up.
 
 Default: `StdoutTracker` in `src/horus/tracking.py` prints metrics to stdout. Swap for MLflow / W&B / TensorBoard / Aim / DVC / Neptune by implementing the `Tracker` Protocol — see `tracking.py` docstring for the swap pattern.
 
