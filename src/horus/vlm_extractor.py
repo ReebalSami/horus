@@ -101,6 +101,21 @@ class ExtractionResult:
     load_seconds: float = 0.0
     extract_seconds: float = 0.0
     output_len_chars: int = 0
+    # ADR-017 (issue #52) — per-page perf fields. Defaults are 0/0.0 so existing
+    # callers (tests, smoke runners pre-#52) continue to work unchanged.
+    #
+    # MLX-VLM backends populate these from the GenerationResult dataclass
+    # returned by `mlx_vlm.generate(...)` (see `mlx_vlm/generate.py:375-385` —
+    # `generation_tokens` / `generation_tps` / `peak_memory` fields).
+    #
+    # Transformers-MPS backends populate `generation_tokens` + `generation_tps`
+    # from the post-generation token count; `peak_memory_gb` stays 0.0 here
+    # (no `torch.mps.max_memory_allocated` equivalent — see ADR-017 §"Decision"
+    # + pytorch/pytorch#104188). The harness fills MPS memory via pre/post
+    # `torch.mps.driver_allocated_memory()` snapshots (D2.A per ADR-017).
+    generation_tokens: int = 0
+    generation_tps: float = 0.0
+    peak_memory_gb: float = 0.0
     error: str | None = None
     traceback_str: str | None = None
 
@@ -264,8 +279,22 @@ class MLXVLMExtractor:
             extract_seconds = time.perf_counter() - gen_start
 
             # mlx-vlm's `generate` may return str OR a GenerationResult
-            # object depending on version. Normalize to string.
-            text = output if isinstance(output, str) else getattr(output, "text", str(output))
+            # object depending on version. The current pinned mlx-vlm
+            # (>= 0.5.0 per pyproject.toml) returns GenerationResult with
+            # `.text` + `.generation_tokens` + `.generation_tps` +
+            # `.peak_memory` (verified at `mlx_vlm/generate.py:375-385`).
+            # Older versions (or future API drift) returning bare str fall
+            # back to perf fields = 0 (back-compat).
+            if isinstance(output, str):
+                text = output
+                gen_tokens = 0
+                gen_tps = 0.0
+                peak_mem_gb = 0.0
+            else:
+                text = getattr(output, "text", str(output))
+                gen_tokens = int(getattr(output, "generation_tokens", 0) or 0)
+                gen_tps = float(getattr(output, "generation_tps", 0.0) or 0.0)
+                peak_mem_gb = float(getattr(output, "peak_memory", 0.0) or 0.0)
 
             return ExtractionResult(
                 model_id=self.model_id,
@@ -274,6 +303,9 @@ class MLXVLMExtractor:
                 load_seconds=self._load_seconds,
                 extract_seconds=extract_seconds,
                 output_len_chars=len(text),
+                generation_tokens=gen_tokens,
+                generation_tps=gen_tps,
+                peak_memory_gb=peak_mem_gb,
             )
         except Exception as exc:  # noqa: BLE001 — capture all backend failures
             return ExtractionResult(
@@ -308,6 +340,16 @@ class MLXVLMExtractor:
                 mx.clear_cache()
             elif hasattr(mx, "metal") and hasattr(mx.metal, "clear_cache"):
                 mx.metal.clear_cache()
+            # ADR-017 (issue #52): reset the peak-memory counter so the NEXT
+            # model's MLX peak measurement starts at 0. Without this reset,
+            # `mx.get_peak_memory()` reports the cohort-wide historical max
+            # rather than the per-model peak. Same dual-lookup pattern as
+            # `clear_cache` above: top-level `mx.reset_peak_memory` preferred
+            # (mlx >= 0.30); legacy `mx.metal.reset_peak_memory` fallback.
+            if hasattr(mx, "reset_peak_memory"):
+                mx.reset_peak_memory()
+            elif hasattr(mx, "metal") and hasattr(mx.metal, "reset_peak_memory"):
+                mx.metal.reset_peak_memory()
         except Exception:  # noqa: BLE001 — cleanup is best-effort
             pass
         gc.collect()
@@ -470,6 +512,17 @@ class TransformersMPSExtractor:
             generated_only = generated_ids[:, prompt_len:]
             text = self._processor.batch_decode(generated_only, skip_special_tokens=False)[0]
 
+            # ADR-017 (issue #52): native per-model generation_tokens + tps.
+            # `generated_only.shape[-1]` is the number of tokens this model
+            # emitted (model's own tokenizer; NOT cross-model comparable —
+            # see ADR-017 §"Decision" + brainstorm v2 §6 H4 framing).
+            # peak_memory_gb stays 0.0 — torch.mps lacks a peak tracker
+            # (pytorch/pytorch#104188); the harness fills MPS memory via
+            # pre/post `torch.mps.driver_allocated_memory()` snapshots
+            # (D2.A per ADR-017).
+            generation_tokens = int(generated_only.shape[-1])
+            generation_tps = generation_tokens / extract_seconds if extract_seconds > 0.0 else 0.0
+
             return ExtractionResult(
                 model_id=self.model_id,
                 backend_name=self.backend_name,
@@ -477,6 +530,9 @@ class TransformersMPSExtractor:
                 load_seconds=self._load_seconds,
                 extract_seconds=extract_seconds,
                 output_len_chars=len(text),
+                generation_tokens=generation_tokens,
+                generation_tps=generation_tps,
+                peak_memory_gb=0.0,
             )
         except Exception as exc:  # noqa: BLE001
             return ExtractionResult(
