@@ -90,3 +90,10 @@ data/raw/multilingual/*/*
 # Never committed. Anchored with leading slash so it doesn't shadow nested
 # tools/ paths (e.g., docs/sources/tools/).
 /tools/
+
+# ADR-016: adapters_candidate.py is the developer's in-progress candidate
+# adapter for the adapter-iterate dev loop (issue #51). Never committed —
+# when satisfied, copy candidate over `adapters.py` via PR + delete the
+# candidate file. The canonical adapter lives at src/horus/eval/adapters.py;
+# the candidate is a working file, not a source-of-truth artifact.
+src/horus/eval/adapters_candidate.py
