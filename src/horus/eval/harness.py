@@ -712,6 +712,23 @@ def run_cohort(
         if eval_cfg is not None:
             mlflow.log_param("anls_threshold", eval_cfg.anls_threshold)
 
+        # ADR-017 (issue #52) — parent-level MPS ceiling. Constant per host;
+        # logged once so the inspector can compute `pct_of_ceiling = peak /
+        # ceiling` without per-tuple duplication. Silent NOOP on hosts
+        # without MPS (CI, non-Apple-Silicon dev machines). The `try/except`
+        # also swallows the case where torch is importable but MPS-init
+        # fails (e.g., headless macOS env). Per `know-your-hardware`: M1 Pro
+        # 16 GB returns ~10-12 GB ceiling — the OS reserves the rest for
+        # system processes.
+        try:
+            import torch  # noqa: PLC0415 — defer heavy import
+
+            if torch.backends.mps.is_available():
+                mps_ceiling_gb = torch.mps.recommended_max_memory() / 1e9
+                mlflow.log_metric("perf.mps_recommended_max_gb", mps_ceiling_gb)
+        except Exception:  # noqa: BLE001 — non-fatal; harness continues
+            pass
+
         print(
             f"[harness] parent_run_id={parent_run_id} models={len(models)} invoices={len(pairs)}",
             flush=True,
@@ -831,10 +848,59 @@ def run_cohort(
                         mlflow.log_metric("micro_precision", scores.micro_precision)
                         mlflow.log_metric("micro_recall", scores.micro_recall)
                         mlflow.log_metric("extract_seconds_total", elapsed)
+                        extract_seconds_pages_total = sum(r.extract_seconds for r in per_page)
                         mlflow.log_metric(
                             "extract_seconds_pages",
-                            sum(r.extract_seconds for r in per_page),
+                            extract_seconds_pages_total,
                         )
+
+                        # ADR-017 (issue #52) — per-tuple perf metrics.
+                        # All values are aggregates of per-page ExtractionResult
+                        # fields (populated by the extractors in Chunk 1).
+                        # `perf.generation_tps_mean` uses the time-weighted
+                        # throughput formula `total_tokens / total_seconds` —
+                        # the canonical "throughput" interpretation per
+                        # Artificial Analysis methodology and matches MLX-VLM's
+                        # own GenerationResult.generation_tps semantics
+                        # (see `mlx_vlm/generate.py:1791`). Errored pages
+                        # contribute 0 tokens + their failed extract time —
+                        # the metric reflects the user's wall-clock reality.
+                        # `perf.peak_memory_gb` is max across pages (MLX path
+                        # only at this chunk; Transformers-MPS pages have
+                        # peak_memory_gb=0.0 by design — Chunk 3 fills it
+                        # via parent-side `torch.mps.driver_allocated_memory`
+                        # snapshots per ADR-017 D2.A).
+                        ok_pages_results = [r for r in per_page if r.is_ok]
+                        total_gen_tokens = sum(r.generation_tokens for r in per_page)
+                        total_chars = sum(r.output_len_chars for r in per_page)
+                        if total_gen_tokens > 0 and extract_seconds_pages_total > 0.0:
+                            mean_tps = total_gen_tokens / extract_seconds_pages_total
+                        elif ok_pages_results:
+                            # Fallback: arithmetic mean of per-page tps (handles
+                            # the edge case where every page reports
+                            # generation_tokens=0 but generation_tps != 0 — e.g.,
+                            # a future extractor that estimates tps without an
+                            # exposed token count).
+                            mean_tps = sum(r.generation_tps for r in ok_pages_results) / len(
+                                ok_pages_results
+                            )
+                        else:
+                            mean_tps = 0.0
+                        chars_per_sec = (
+                            total_chars / extract_seconds_pages_total
+                            if extract_seconds_pages_total > 0.0
+                            else 0.0
+                        )
+                        peak_mem_gb_max = max(
+                            (r.peak_memory_gb for r in per_page if r.peak_memory_gb > 0.0),
+                            default=0.0,
+                        )
+                        mlflow.log_metric("perf.generation_tokens_total", float(total_gen_tokens))
+                        mlflow.log_metric("perf.generation_tps_mean", mean_tps)
+                        mlflow.log_metric("perf.output_len_chars_total", float(total_chars))
+                        mlflow.log_metric("perf.chars_per_sec", chars_per_sec)
+                        mlflow.log_metric("perf.peak_memory_gb", peak_mem_gb_max)
+                        mlflow.log_metric("perf.pages_extracted_ok", float(len(ok_pages_results)))
 
                         # Per-field score metrics + JSON artifact
                         for fk, fr in scores.per_field.items():
