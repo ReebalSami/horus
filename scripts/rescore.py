@@ -632,7 +632,7 @@ def _log_to_mlflow_runs(
                     mlflow.log_metric(metric_name, cohort_f1)
 
     print(
-        f"[mlflow] logged 1 parent + 2 nested runs under experiment 'adapter-iterate' "
+        f"[mlflow] logged 1 parent + 2 nested runs under experiment {experiment_name!r} "
         f"(parent_run_id={parent_run.info.run_id})",
         flush=True,
     )
