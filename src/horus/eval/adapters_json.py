@@ -171,6 +171,73 @@ def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:  #
     return result
 
 
+def to_predicted_dict_multipage(
+    per_page_texts: list[str],
+    model_id: str,
+) -> dict[str, str | None]:
+    """Parse per-page VLM outputs independently and merge with first-non-None-wins.
+
+    Per ADR-019 §"Wave 3.1 architecture" — the harness's
+    ``_score_single_invoice`` already has ``per_page_results: list[ExtractionResult]``
+    (one per page). The single-input ``to_predicted_dict`` was silently dropping
+    valid model output when models emitted per-page-valid JSON concatenated with
+    ``\\n`` (Gemma-4 unfenced) or with mixed fence styles (olmOCR Arm A). Rather
+    than couple the adapter to the harness's separator format (and the strip-
+    before-adapter ordering at line 408 of harness.py), this multipage API
+    accepts the per-page list directly.
+
+    Pipeline:
+
+        1. For each page text: ``preprocess(page_text, model_id)`` →
+           ``to_predicted_dict(preprocessed, model_id)`` (the existing single-
+           input contract; backward-compat preserved).
+        2. Merge the per-page dicts with **first-non-None-wins** semantics
+           (page 1 dominates).
+
+    Merge policy — first-non-None-wins (NOT first-non-empty-wins):
+
+        - ``None`` (key absent in the page's JSON, OR present-but-``null``)
+          counts as "not extracted" → later pages may fill the slot.
+        - Empty string ``""`` (key present, value is the empty string) counts
+          as a present value → later pages do NOT overwrite. Per ADR-012
+          §"Tristate value semantics": empty-string ≠ None; the scorer's
+          comparator handles the empty-vs-missing distinction.
+        - Any non-None, non-empty value from page N "locks" that field
+          against pages N+1, N+2, ...
+
+    This policy defends against:
+
+        - **Page-2 hallucinations** (e.g., olmOCR Arm B page 2 emits
+          ``"seller_name": "Joghurt Banane"`` because page 2's line-item
+          table content leaked into the canonical-key namespace; page 1's
+          correct ``"Lieferant GmbH"`` is preserved).
+        - **Decoder-loop placeholder echo** (e.g., Granite Arm A: 8+
+          identical ``<BT-N>``-shape dicts; the first parse surfaces
+          placeholder values; the threshold gate in
+          ``src/horus/eval/probe_verdict.py`` (Wave 3.2) catches the F1=0
+          schema-mimicry case at the verdict layer).
+
+    Args:
+        per_page_texts: list of raw per-page VLM outputs. Empty list yields
+            an all-None result; single-element list generalizes the
+            single-page case.
+        model_id: cohort model identifier; UNUSED in this module (cohort-
+            uniform; ``# noqa: ARG001`` suppresses the lint warning).
+
+    Returns:
+        dict keyed by all 16 canonical FIELDS keys, each mapped to
+        ``str | None``. Same shape as ``to_predicted_dict``.
+    """
+    merged: dict[str, str | None] = {key: None for key in FIELDS}
+    for page_text in per_page_texts:
+        preprocessed = preprocess(page_text, model_id)
+        page_dict = to_predicted_dict(preprocessed, model_id)
+        for key, value in page_dict.items():
+            if merged[key] is None and value is not None:
+                merged[key] = value
+    return merged
+
+
 _JSON_PARSE_SENTINEL = object()
 
 
@@ -178,16 +245,24 @@ def _try_parse_json(text: str) -> dict[str, Any] | None:
     """Permissive JSON-to-dict ladder.
 
     Returns the first successfully parsed dict; None if all attempts fail.
-    See module docstring §"Permissive JSON recovery" for the 5-step ladder.
+
+    Recovery ladder (first match wins):
+
+      1. Direct ``json.loads(text)`` — handles cleanly emitted JSON.
+      2. Balanced-bracket scan ``_find_first_balanced_dict`` — handles
+         concatenated-dicts shapes (Granite Arm A's 8+ identical placeholder
+         dicts per page; per ADR-019 B3) AND prose-around-JSON
+         (``Here is the JSON: {...}. Hope this helps!``).
+      3. Greedy substring ``text[first_lbrace:last_rbrace+1]`` — fallback for
+         unusual mismatched-bracket cases not handled by the balanced scan.
+      4. Trailing-comma sanitization applied to the greedy substring —
+         handles ``{"a": "b",}`` (Python / JS-style trailing comma).
 
     Top-level shape gate: if the WHOLE input parses as JSON but yields a non-dict
-    (list / scalar / null), return None immediately -- DO NOT fall through to
+    (list / scalar / null), return None immediately — DO NOT fall through to
     substring extraction. This preserves the empirical signal "model failed
     top-level-object schema" rather than silently unwrapping the first dict
-    found inside e.g. an array-of-pages structure ``[{...}, {...}]``. The
-    substring-extraction branch is reserved for the prose-around-JSON case
-    (``Here is the JSON: {...}. Hope this helps!``) where the whole input
-    isn't valid JSON at all.
+    found inside e.g. an array-of-pages structure ``[{...}, {...}]``.
     """
     parsed = _safe_json_loads(text, default=_JSON_PARSE_SENTINEL)
     if isinstance(parsed, dict):
@@ -196,6 +271,21 @@ def _try_parse_json(text: str) -> dict[str, Any] | None:
         # Whole input parsed but yielded a non-dict (list / scalar / null).
         # Per the top-level-shape gate, do NOT try substring recovery.
         return None
+
+    # ADR-019 Wave 3.1 recovery step: balanced-bracket scan handles the
+    # case where the text contains multiple concatenated JSON dicts (e.g.,
+    # Granite Arm A's 8+ identical placeholder dicts per page joined with
+    # `\n\n`). The greedy substring path below would grab ALL of them and
+    # fail the parse; balanced-bracket finds the FIRST complete `{...}` span.
+    first_balanced = _find_first_balanced_dict(text)
+    if first_balanced is not None:
+        parsed = _safe_json_loads(first_balanced)
+        if isinstance(parsed, dict):
+            return parsed
+        sanitized = _TRAILING_COMMA_RE.sub(r"\1", first_balanced)
+        parsed = _safe_json_loads(sanitized)
+        if isinstance(parsed, dict):
+            return parsed
 
     first_lbrace = text.find("{")
     last_rbrace = text.rfind("}")
@@ -212,6 +302,52 @@ def _try_parse_json(text: str) -> dict[str, Any] | None:
     if isinstance(parsed, dict):
         return parsed
 
+    return None
+
+
+def _find_first_balanced_dict(text: str) -> str | None:
+    """Find the first balanced ``{...}`` substring in text.
+
+    Tracks brace depth from the first ``{`` and returns the span from that
+    brace to the matching closing ``}`` (inclusive). Handles JSON string
+    literals correctly: braces inside strings (e.g., ``"value with } in it"``)
+    do NOT affect depth. Backslash-escapes inside strings are honored.
+
+    Returns None if no balanced ``{...}`` is found OR if the input has an
+    unclosed string / unbalanced braces.
+
+    Used by ``_try_parse_json`` to extract the first valid JSON object from
+    inputs containing multiple concatenated dicts (e.g., Granite Arm A's
+    decoder-loop placeholder echo per ADR-019 B3) OR prose-wrapped JSON.
+
+    Time complexity: O(n) single-pass scan.
+    """
+    first_lbrace = text.find("{")
+    if first_lbrace == -1:
+        return None
+
+    depth = 0
+    in_string = False
+    escape_next = False
+    for i in range(first_lbrace, len(text)):
+        ch = text[i]
+        if escape_next:
+            escape_next = False
+            continue
+        if in_string:
+            if ch == "\\":
+                escape_next = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[first_lbrace : i + 1]
     return None
 
 

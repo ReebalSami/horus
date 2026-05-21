@@ -400,14 +400,22 @@ def _score_single_invoice(
     )
     transcript_path.write_text(transcript_header + concatenated, encoding="utf-8")
 
-    # 4. Strip separators + preprocess + to_predicted_dict.
-    #    ADR-018: adapter_module is the dispatched module (regex default; json
-    #    when cohort.adapter_mode == "json"). Both modules expose the same
-    #    public surface (preprocess, to_predicted_dict) per the contract test
-    #    in tests/test_adapters_json.py::test_public_surface_signature_parity_with_adapters.
-    scorer_input = _strip_page_separators(concatenated)
-    preprocessed = adapter_module.preprocess(scorer_input, model_id)
-    predicted_dict = adapter_module.to_predicted_dict(preprocessed, model_id)
+    # 4. Per-page parse + merge via the multipage adapter API.
+    #    ADR-019 Wave 3.1: replaces the `_strip_page_separators(concatenated) →
+    #    preprocess → to_predicted_dict` chain that silently dropped per-page-valid
+    #    JSON shapes (Gemma-4 unfenced 2-dict concat per B1; GLM-OCR fence-bias
+    #    asymmetry per B2; Granite decoder-loop dict-repetition per B3). The
+    #    multipage API parses each page independently and merges with
+    #    first-non-None-wins (page 1 dominant per ADR-012 tristate semantics);
+    #    defends against page-2 hallucinations (e.g., olmOCR Arm B page 2's
+    #    "Joghurt Banane" leaking into seller_name).
+    #
+    #    Both adapters (regex `adapters` + json `adapters_json`) expose the same
+    #    `to_predicted_dict_multipage(per_page_texts, model_id)` signature per
+    #    the parity test in tests/test_adapters_json.py
+    #    ::test_public_surface_signature_parity_with_adapters.
+    per_page_texts = [r.text for r in per_page_results]
+    predicted_dict = adapter_module.to_predicted_dict_multipage(per_page_texts, model_id)
 
     # 5. Score.
     scores = score(

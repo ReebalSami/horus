@@ -20,7 +20,7 @@ Refs:
 
 from __future__ import annotations
 
-from horus.eval.adapters_json import preprocess, to_predicted_dict
+from horus.eval.adapters_json import preprocess, to_predicted_dict, to_predicted_dict_multipage
 from horus.eval.ground_truth import FIELDS
 
 # ---------------------------------------------------------------------------
@@ -212,7 +212,10 @@ def test_to_predicted_dict_recovers_from_trailing_comma() -> None:
 
 def test_to_predicted_dict_non_json_text_yields_all_none() -> None:
     """Plain prose / OCR-style output -> all 16 canonical keys map to None."""
-    raw = "Rechnung Nr. INV-001 vom 15.01.2024. Verk\u00e4ufer: Test GmbH. Gesamtbetrag: 119,00 EUR."
+    raw = (
+        "Rechnung Nr. INV-001 vom 15.01.2024. Verk\u00e4ufer: Test GmbH. "
+        "Gesamtbetrag: 119,00 EUR."
+    )
     result = to_predicted_dict(raw, model_id="m")
     assert all(v is None for v in result.values()), (
         "non-JSON text must yield all-None (signals 'model ignored JSON instruction')"
@@ -275,3 +278,246 @@ def test_public_surface_signature_parity_with_adapters() -> None:
     assert list(pred_sig_a.parameters) == list(pred_sig_b.parameters), (
         "to_predicted_dict() argument names must match across regex and json adapters"
     )
+
+    # ADR-019 Wave 3.1: multipage API parity. Both adapters expose the same
+    # `to_predicted_dict_multipage(per_page_texts, model_id)` signature so the
+    # harness can swap modules via cohort.adapter_mode without per-call branching.
+    multi_sig_a = inspect.signature(adapters_regex.to_predicted_dict_multipage)
+    multi_sig_b = inspect.signature(adapters_module.to_predicted_dict_multipage)
+    assert list(multi_sig_a.parameters) == list(multi_sig_b.parameters), (
+        "to_predicted_dict_multipage() argument names must match across regex and json adapters"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 5. to_predicted_dict_multipage() -- per-page parse + first-non-null-wins merge
+# ---------------------------------------------------------------------------
+#
+# Per ADR-019 §"Wave 3.1 architecture": the harness has `per_page_results` already
+# (one ExtractionResult per page). The single-input `to_predicted_dict` was
+# silently dropping valid model output when models emitted per-page-valid JSON
+# concatenated with `\n` (Gemma-4 unfenced) or with mixed fence styles
+# (olmOCR Arm A). The multipage API parses each page independently and merges
+# with first-non-null-wins (page 1 dominates; defends against page-2
+# hallucinations like olmOCR Arm B "Joghurt Banane" overwriting Lieferant GmbH).
+#
+# These tests are derived from empirical evidence in
+# `docs/sources/transcripts-structured-probe-{uniform,native-json}/*.txt`,
+# audited and locked in ADR-019.
+
+
+def test_multipage_unfenced_real_values_gemma_shape() -> None:
+    """Gemma-4 shape: 2 unfenced dicts with real values per page → all real values recovered.
+
+    Empirical: ``docs/sources/transcripts-structured-probe-uniform/
+    google__gemma-4-e4b-it__EN16931_Einfach.txt``.
+    Per ADR-019 B1 (load-bearing): single-input adapter returned all-None on the
+    `{p1}\\n{p2}` concat. Multipage API recovers it.
+    """
+    p1 = (
+        '{"invoice_number": "471102", "issue_date": "2018-03-05", '
+        '"invoice_currency_code": "EUR", "delivery_date": "2018-03-05", '
+        '"seller_name": "Lieferant GmbH", "seller_gln": "40000001123452", '
+        '"buyer_name": "Kunden AG Mitte"}'
+    )
+    p2 = '{"grand_total_amount": "529,87", "due_payable_amount": "529,87"}'
+    result = to_predicted_dict_multipage([p1, p2], model_id="google/gemma-4-E4B-it")
+    assert result["invoice_number"] == "471102"
+    assert result["issue_date"] == "2018-03-05"
+    assert result["invoice_currency_code"] == "EUR"
+    assert result["seller_name"] == "Lieferant GmbH"
+    assert result["seller_gln"] == "40000001123452"
+    assert result["buyer_name"] == "Kunden AG Mitte"
+    assert result["grand_total_amount"] == "529,87"
+    assert result["due_payable_amount"] == "529,87"
+
+
+def test_multipage_fenced_real_values_glm_arm_b_shape() -> None:
+    """GLM-OCR Arm B shape: 2 fenced dicts with real values per page → page 1 dominates.
+
+    Empirical: docs/sources/transcripts-structured-probe-native-json/
+    zai-org__glm-ocr__EN16931_Einfach.txt.
+    Per ADR-019 B2: GLM-OCR Arm B's _FENCE_RE non-greedy match captured
+    only page 1 under the single-input API. Multipage API parses BOTH per-page;
+    page 1 real values are preserved.
+    """
+    p1 = (
+        '```json\n'
+        '{"invoice_number": "471102", "issue_date": "2018-03-05", '
+        '"seller_name": "Lieferant GmbH", "seller_gln": "4000001123452"}\n'
+        '```'
+    )
+    # Page 2 of GLM-OCR Arm B: line-item content leaked into JSON keys
+    # ("seller_name": "Art-Nr-Kunde", "buyer_name": "TB100A4"). Page 1 must win.
+    p2 = (
+        '```json\n'
+        '{"seller_name": "Art-Nr-Kunde", "buyer_name": "TB100A4", '
+        '"line_total_amount": "9,900.00"}\n'
+        '```'
+    )
+    result = to_predicted_dict_multipage([p1, p2], model_id="zai-org/GLM-OCR")
+    assert result["invoice_number"] == "471102"
+    assert result["seller_name"] == "Lieferant GmbH", (
+        "page 1 must NOT be overwritten by page 2 line-item leak"
+    )
+    assert result["seller_gln"] == "4000001123452"
+    # buyer_name absent from page 1 → page 2's leaked value is the only signal.
+    # First-non-null-wins surfaces it (the threshold gate B4 in Wave 3.2 catches the F1 cost).
+    assert result["buyer_name"] == "TB100A4"
+    assert result["line_total_amount"] == "9,900.00"
+
+
+def test_multipage_repeated_placeholder_dicts_granite_arm_a_shape() -> None:
+    """Granite Arm A shape: 8 identical placeholder dicts per page → 16 placeholder keys recovered.
+
+    Empirical: docs/sources/transcripts-structured-probe-uniform/
+    ibm-granite__granite-docling-258m-mlx__EN16931_Einfach.txt.
+    Per ADR-019 B3: Granite Arm A's decoder-loop emits 8+ identical <BT-N>-shape
+    placeholder dicts. Multipage API parses the FIRST valid JSON dict on each page;
+    placeholder values surface in the result. Wave 3.2 threshold gate (B4) catches
+    the F1=0 schema-mimicry case at the verdict layer, NOT here.
+    """
+    placeholder = (
+        '{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", '
+        '"invoice_currency_code": "<BT-5>", "seller_name": "<BT-27>"}'
+    )
+    p1 = "\n\n".join([placeholder] * 8)  # 8 repeats per page (Granite Arm A shape)
+    p2 = "\n\n".join([placeholder] * 8)
+    result = to_predicted_dict_multipage(
+        [p1, p2], model_id="ibm-granite/granite-docling-258M-mlx"
+    )
+    assert result["invoice_number"] == "<BT-1>"  # placeholder surfaces (F1=0 by design)
+    assert result["issue_date"] == "<BT-2 ISO 8601>"
+    assert result["invoice_currency_code"] == "<BT-5>"
+    assert result["seller_name"] == "<BT-27>"
+
+
+def test_multipage_mixed_fenced_unfenced_olmocr_arm_a_shape() -> None:
+    """olmOCR Arm A shape: page 1 unfenced + page 2 fenced — both recovered independently.
+
+    Empirical: docs/sources/transcripts-structured-probe-uniform/
+    allenai__olmocr-2-7b-1025__EN16931_Einfach.txt.
+    The single-input adapter's _FENCE_RE searches the WHOLE text and captures
+    only the page-2 fence (losing page 1 entirely). Multipage API parses each
+    page independently → page 1 real values are preserved.
+    """
+    p1 = (
+        '{"invoice_number": "471102", "issue_date": "2018-03-05", '
+        '"seller_name": "Lieferantant GmbH", "buyer_name": "Kunden AG Mitte"}'
+    )
+    p2 = (
+        '```json\n'
+        '{"line_total_amount": "198,00", "tax_total_amount": "198,00", '
+        '"grand_total_amount": "529,87", "due_payable_amount": "529,87"}\n'
+        '```'
+    )
+    result = to_predicted_dict_multipage([p1, p2], model_id="allenai/olmOCR-2-7B-1025")
+    assert result["invoice_number"] == "471102"
+    assert result["seller_name"] == "Lieferantant GmbH"
+    assert result["buyer_name"] == "Kunden AG Mitte"
+    assert result["line_total_amount"] == "198,00"
+    assert result["due_payable_amount"] == "529,87"
+
+
+def test_multipage_first_non_null_wins_policy() -> None:
+    """Page 1 fills field A, page 2 fills field B → both present; no overwrite."""
+    p1 = '{"invoice_number": "INV-001", "issue_date": "2024-01-15"}'
+    p2 = '{"grand_total_amount": "100.00", "due_payable_amount": "100.00"}'
+    result = to_predicted_dict_multipage([p1, p2], model_id="m")
+    assert result["invoice_number"] == "INV-001"
+    assert result["issue_date"] == "2024-01-15"
+    assert result["grand_total_amount"] == "100.00"
+    assert result["due_payable_amount"] == "100.00"
+
+
+def test_multipage_page_2_hallucination_does_not_overwrite_page_1() -> None:
+    """Page 1 has correct value, page 2 has hallucinated value → page 1 wins.
+
+    Defends against the olmOCR Arm B page-2 hallucination class:
+    `"seller_name": "Joghurt Banane"` (the line-item product name leaks into
+    canonical keys because page 2's table content reuses the schema's key names).
+    Page 1 had the correct "Lieferant GmbH". First-non-null-wins keeps page 1.
+    """
+    p1 = '{"seller_name": "Lieferant GmbH", "buyer_name": "Kunden AG Mitte"}'
+    p2 = '{"seller_name": "Joghurt Banane", "buyer_name": "Trennblätter A4"}'
+    result = to_predicted_dict_multipage([p1, p2], model_id="m")
+    assert result["seller_name"] == "Lieferant GmbH"
+    assert result["buyer_name"] == "Kunden AG Mitte"
+
+
+def test_multipage_null_in_page_1_filled_by_page_2() -> None:
+    """Page 1 has explicit null, page 2 has real value → page 2 fills it.
+
+    JSON `null` parses to Python `None` → treated as "not extracted" → page 2 wins.
+    Empirical: Gemma-4 Arm A page 1 has `grand_total_amount: null` and page 2
+    has `grand_total_amount: "529,87"` (page-1 footer line item missing,
+    page-2 totals block present).
+    """
+    p1 = '{"invoice_number": "471102", "grand_total_amount": null, "due_payable_amount": null}'
+    p2 = '{"grand_total_amount": "529,87", "due_payable_amount": "529,87"}'
+    result = to_predicted_dict_multipage([p1, p2], model_id="m")
+    assert result["invoice_number"] == "471102"
+    assert result["grand_total_amount"] == "529,87"  # page 2 fills page-1 null
+    assert result["due_payable_amount"] == "529,87"
+
+
+def test_multipage_empty_string_in_page_1_preserved_per_adr_012_tristate() -> None:
+    """Page 1 empty string is a present value (ADR-012 tristate); page 2 does NOT overwrite.
+
+    Per ADR-012 §"Tristate value semantics": empty string ≠ None. The multipage
+    merge policy is strictly "first-non-None-wins", so empty-string from page 1
+    counts as a present value and dominates over page 2's content.
+
+    The scorer's comparator handles the empty-vs-missing distinction downstream;
+    the adapter must not silently collapse empty to null.
+    """
+    p1 = '{"buyer_reference": ""}'
+    p2 = '{"buyer_reference": "REF-42"}'
+    result = to_predicted_dict_multipage([p1, p2], model_id="m")
+    assert result["buyer_reference"] == "", (
+        "ADR-012 tristate: empty string is a present value; page 1 dominates"
+    )
+
+
+def test_multipage_singlepage_input_works() -> None:
+    """Single-element list: multipage API generalizes the single-page case."""
+    p1 = '{"invoice_number": "INV-001", "seller_name": "Test GmbH"}'
+    result = to_predicted_dict_multipage([p1], model_id="m")
+    assert result["invoice_number"] == "INV-001"
+    assert result["seller_name"] == "Test GmbH"
+
+
+def test_multipage_empty_list_yields_all_none() -> None:
+    """Empty list (no pages) → all 16 canonical keys map to None."""
+    result = to_predicted_dict_multipage([], model_id="m")
+    assert set(result.keys()) == set(FIELDS.keys())
+    assert all(v is None for v in result.values())
+
+
+def test_multipage_all_pages_unparseable_yields_all_none() -> None:
+    """Every page fails parse → all-None (preserves the empirical signal).
+
+    PaliGemma2 shape: both pages emit refusal text, no JSON anywhere.
+    """
+    p1 = "Sorry, as a base VLM I am not trained to answer this question."
+    p2 = "OK"
+    result = to_predicted_dict_multipage(
+        [p1, p2], model_id="google/paligemma2-3b-mix-448"
+    )
+    assert all(v is None for v in result.values())
+
+
+def test_multipage_returns_all_16_canonical_keys() -> None:
+    """Result dict always contains exactly the 16 canonical FIELDS keys."""
+    result = to_predicted_dict_multipage(['{"invoice_number": "X"}'], model_id="m")
+    assert set(result.keys()) == set(FIELDS.keys())
+    assert len(result) == 16
+
+
+def test_multipage_german_diacritics_preserved_across_pages() -> None:
+    """German diacritics (NFC-normalized) survive per-page parse + merge."""
+    p1 = '{"seller_name": "M\u00fcnchen GmbH"}'
+    p2 = '{"buyer_name": "Sch\u00f6ne Werke AG"}'
+    result = to_predicted_dict_multipage([p1, p2], model_id="m")
+    assert result["seller_name"] == "M\u00fcnchen GmbH"
+    assert result["buyer_name"] == "Sch\u00f6ne Werke AG"
