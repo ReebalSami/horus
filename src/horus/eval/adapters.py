@@ -697,9 +697,17 @@ def to_predicted_dict_multipage(
     demonstrates this on the MinerU multi-page transcripts (Step 7 evidence,
     micro_F1 ≈ 0.75 on EN16931_Einfach via page-2 totals block lift).
 
-    Implementation: join the per-page texts with ``\\n`` and delegate to the
-    existing ``to_predicted_dict``. The single-input function already calls
-    ``preprocess`` internally (line 611), so we don't double-preprocess here.
+    Implementation: join per-page texts with ``\\n\\n`` (preserves the
+    inter-page blank line that the LEGACY harness path produced via
+    ``_strip_page_separators(concatenated)``; that path stripped the
+    ``===== PAGE N =====`` separator lines but left the surrounding newlines
+    intact, yielding ``\\n<p1>\\n\\n<p2>`` shape). Joining with ``\\n\\n``
+    here keeps the multipage rewire byte-equivalent to the legacy shape for
+    the regex adapter, preserving the pinned ADR-014 Step 7 F1 baseline at
+    ``tests/test_rescore.py::test_rescore_baseline_only_matches_legacy_ablation_at_tau_0_5``.
+
+    The single-input ``to_predicted_dict`` (delegated to) calls ``preprocess``
+    internally (line 611), so we don't double-preprocess here.
 
     Args:
         per_page_texts: list of raw per-page VLM outputs.
@@ -710,5 +718,5 @@ def to_predicted_dict_multipage(
         ``dict[english_key, str | None]`` with all 16 canonical FIELDS keys.
         Same shape as ``to_predicted_dict``.
     """
-    joined = "\n".join(per_page_texts)
+    joined = "\n\n".join(per_page_texts)
     return to_predicted_dict(joined, model_id)

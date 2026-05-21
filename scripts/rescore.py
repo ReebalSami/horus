@@ -66,15 +66,16 @@ from types import ModuleType
 from horus.config import EvalConfig
 from horus.eval import adapters as baseline_adapters
 from horus.eval.harness import (
+    _PAGE_SEPARATOR_RE,
     _extract_groundtruth_via_facturx,
     _list_paired_invoices,
-    _strip_page_separators,
 )
 from horus.eval.scorer import score
 
 DEFAULT_TRANSCRIPTS_DIR = Path("docs/sources/transcripts-multipage")
 DEFAULT_CORPUS_ROOT = Path("data/raw/german/zugferd-corpus")
 DEFAULT_CANDIDATE_PATH = Path("src/horus/eval/adapters_candidate.py")
+DEFAULT_BASELINE_ADAPTER_MODULE = "horus.eval.adapters"
 
 
 def _csv_paths(value: str) -> list[str]:
@@ -122,8 +123,9 @@ def _parse_transcript(path: Path) -> tuple[str, str, str]:
 
     Returns:
         ``(model_id, invoice_stem, body)`` where ``body`` is the multi-page
-        concat text *with* `===== PAGE N =====` separators (caller strips
-        before passing to the adapter).
+        concat text *with* `===== PAGE N =====` separators (caller splits
+        per-page via :func:`_split_per_page_texts` before passing to the
+        multipage adapter API per ADR-019 W3.1).
     """
     text = path.read_text(encoding="utf-8")
     lines = text.splitlines(keepends=False)
@@ -146,6 +148,32 @@ def _parse_transcript(path: Path) -> tuple[str, str, str]:
         raise ValueError(f"Transcript {path} missing Model:/Invoice: header or body")
     body = "\n".join(lines[body_start:])
     return model_id, invoice_stem, body
+
+
+def _split_per_page_texts(body: str) -> list[str]:
+    """Split a saved transcript body into per-page texts.
+
+    Inverse of :func:`harness._extract_and_concat`'s concatenation step.
+    Splits on the canonical ``===== PAGE N =====`` separator line (matched
+    via :data:`harness._PAGE_SEPARATOR_RE`), strips leading/trailing
+    whitespace from each chunk, and drops empty leading/trailing chunks
+    (the body typically starts with a separator line, producing an empty
+    leading split element).
+
+    Used by :func:`rescore_transcripts` to feed the multipage adapter API
+    (``adapter.to_predicted_dict_multipage(per_page_texts, model_id)``) per
+    ADR-019 W3.1.
+
+    Args:
+        body: the saved transcript body (the multi-page concat as returned
+            by :func:`_parse_transcript`'s third tuple element).
+
+    Returns:
+        list of per-page text strings (preserved in source order; stripped
+        of leading/trailing whitespace; empty pages excluded).
+    """
+    chunks = _PAGE_SEPARATOR_RE.split(body)
+    return [c.strip() for c in chunks if c.strip()]
 
 
 def _aggregate_micro_f1(per_invoice_scores: list) -> float:
@@ -195,12 +223,15 @@ def _build_gt_cache(corpus_root: Path) -> dict:
 def load_adapter_pair(
     *,
     candidate_path: Path = DEFAULT_CANDIDATE_PATH,
+    baseline_module: ModuleType = baseline_adapters,
 ) -> AdapterPair:
     """Load the baseline + candidate adapter modules into an `AdapterPair`.
 
-    The baseline is always `horus.eval.adapters` (the canonical version on
-    `main`). The candidate is loaded from `candidate_path` via
-    `importlib.util.spec_from_file_location` (the canonical
+    The baseline defaults to `horus.eval.adapters` (the canonical regex
+    adapter on `main`); pass `baseline_module=horus.eval.adapters_json` to
+    rescore against the JSON adapter (the ADR-019 W3.1 path used by the
+    probe rescore in `Phase 4`). The candidate is loaded from `candidate_path`
+    via `importlib.util.spec_from_file_location` (the canonical
     load-by-string-path pattern per Python stdlib docs).
 
     Stability semantics (Google Rules of ML §24 self-test):
@@ -217,13 +248,18 @@ def load_adapter_pair(
     `to_predicted_dict` callables matching the baseline API. Raises ValueError
     if either is missing or not callable.
     """
-    baseline_path = Path(baseline_adapters.__file__).resolve()
+    if baseline_module.__file__ is None:
+        raise ValueError(
+            f"baseline_module {baseline_module.__name__!r} has no __file__ attribute; "
+            "cannot resolve baseline path. Pass a real module (e.g. horus.eval.adapters)."
+        )
+    baseline_path = Path(baseline_module.__file__).resolve()
     candidate_abs = candidate_path.resolve() if candidate_path.exists() else candidate_path
 
     if not candidate_abs.exists():
         return AdapterPair(
-            baseline=baseline_adapters,
-            candidate=baseline_adapters,
+            baseline=baseline_module,
+            candidate=baseline_module,
             is_identical=True,
             baseline_path=baseline_path,
             candidate_path=candidate_path,
@@ -234,8 +270,8 @@ def load_adapter_pair(
     candidate_bytes = candidate_abs.read_bytes()
     if baseline_bytes == candidate_bytes:
         return AdapterPair(
-            baseline=baseline_adapters,
-            candidate=baseline_adapters,
+            baseline=baseline_module,
+            candidate=baseline_module,
             is_identical=True,
             baseline_path=baseline_path,
             candidate_path=candidate_abs,
@@ -253,20 +289,25 @@ def load_adapter_pair(
     spec.loader.exec_module(candidate_mod)
 
     # Contract check: candidate must expose the public adapter API.
-    for fn_name in ("preprocess", "to_predicted_dict"):
+    # Per ADR-019 W3.1: the multipage API (`to_predicted_dict_multipage`) is
+    # the load-bearing rescore entry point; the single-input `preprocess` and
+    # `to_predicted_dict` are kept for legacy callers but not used by the
+    # rescore pipeline since this commit.
+    required_callables = ("preprocess", "to_predicted_dict", "to_predicted_dict_multipage")
+    for fn_name in required_callables:
         fn = getattr(candidate_mod, fn_name, None)
         if not callable(fn):
             raise ValueError(
                 f"Candidate adapter at {candidate_abs} is missing required "
                 f"public callable {fn_name!r}. Candidate adapters must mirror "
-                f"the `horus.eval.adapters` public API: "
-                f"preprocess(raw: str, model_id: str) -> str + "
-                f"to_predicted_dict(raw: str, model_id: str) -> dict."
+                f"the baseline adapter public API: preprocess(raw, model_id) -> str + "
+                f"to_predicted_dict(raw, model_id) -> dict + "
+                f"to_predicted_dict_multipage(per_page_texts, model_id) -> dict."
             )
 
     diff_sha256 = hashlib.sha256(candidate_bytes).hexdigest()
     return AdapterPair(
-        baseline=baseline_adapters,
+        baseline=baseline_module,
         candidate=candidate_mod,
         is_identical=False,
         baseline_path=baseline_path,
@@ -335,15 +376,13 @@ def rescore_transcripts(
         "candidate": {tau: defaultdict(list) for tau in thresholds},
     }
 
-    adapter_funcs: dict[str, tuple[Callable[[str, str], str], Callable[[str, str], dict]]] = {
-        "baseline": (
-            adapters_pair.baseline.preprocess,
-            adapters_pair.baseline.to_predicted_dict,
-        ),
-        "candidate": (
-            adapters_pair.candidate.preprocess,
-            adapters_pair.candidate.to_predicted_dict,
-        ),
+    # ADR-019 W3.1 rewire: the multipage adapter API replaces the brittle
+    # `_strip_page_separators(body) -> preprocess -> to_predicted_dict` chain.
+    # The harness already moved to this API; rescore.py now matches so the
+    # rescore output uses the same path as the canonical pipeline.
+    adapter_funcs: dict[str, Callable[[list[str], str], dict]] = {
+        "baseline": adapters_pair.baseline.to_predicted_dict_multipage,
+        "candidate": adapters_pair.candidate.to_predicted_dict_multipage,
     }
 
     for tp_idx, tp in enumerate(transcript_paths, 1):
@@ -361,11 +400,10 @@ def rescore_transcripts(
             )
             continue
 
-        scorer_input = _strip_page_separators(body)
+        per_page_texts = _split_per_page_texts(body)
 
-        for adapter_label, (preprocess_fn, to_predicted_dict_fn) in adapter_funcs.items():
-            preprocessed = preprocess_fn(scorer_input, model_id)
-            predicted_dict = to_predicted_dict_fn(preprocessed, model_id)
+        for adapter_label, multipage_fn in adapter_funcs.items():
+            predicted_dict = multipage_fn(per_page_texts, model_id)
 
             for tau in thresholds:
                 eval_cfg = EvalConfig(anls_threshold=tau)
@@ -519,28 +557,58 @@ def _log_to_mlflow_runs(
     candidate_results: dict[float, dict[str, list]],
     thresholds: list[float],
     pair: AdapterPair,
+    experiment_name: str = "adapter-iterate",
+    rescore_of_run_id: str | None = None,
 ) -> None:
     """Log a parent + 2 nested MLflow runs (baseline + candidate) per ADR-016.
 
     The opt-in audit trail when promoting a candidate adapter to canonical.
-    Parent run name: `adapter-iterate-<UTC-timestamp>`. Nested runs tagged
-    `adapter=baseline` / `adapter=candidate` with per-field metrics +
-    `candidate_diff_sha256` tag for cross-referencing the candidate file
+    Default parent run name: ``adapter-iterate-<UTC-timestamp>`` under the
+    ``adapter-iterate`` experiment (ADR-016 dev loop). Nested runs tagged
+    ``adapter=baseline`` / ``adapter=candidate`` with per-field metrics +
+    ``candidate_diff_sha256`` tag for cross-referencing the candidate file
     even if it gets deleted post-promotion.
+
+    ADR-019 Phase 4 extension: pass ``experiment_name`` to log into a
+    different experiment (e.g. ``structured-output-probe-uniform``) and
+    ``rescore_of_run_id`` to tag the parent + nested runs with a pointer to
+    the original buggy parent run (the ADR-019 rescore-from-saved-transcripts
+    audit trail). When ``rescore_of_run_id`` is set, the parent run name
+    becomes ``rescore-of-<short_id>-<timestamp>`` so MLflow UI sorting groups
+    the rescore runs together.
+
+    Args:
+        baseline_results / candidate_results / thresholds / pair: per the
+            ADR-016 contract (unchanged from the original signature).
+        experiment_name: MLflow experiment to log into. Defaults to
+            ``"adapter-iterate"`` for backward compat.
+        rescore_of_run_id: optional MLflow run_id of the ORIGINAL parent run
+            that this rescore supersedes. When set: (a) the parent run name
+            prefix becomes ``rescore-of-<id[:8]>``; (b) parent + both nested
+            runs are tagged ``rescore_of=<run_id>``. None for the legacy
+            ADR-016 dev-loop usage.
     """
     import mlflow  # noqa: PLC0415 — defer heavy import
 
     timestamp = datetime.datetime.now(datetime.UTC).strftime("%Y%m%dT%H%M%SZ")
-    parent_name = f"adapter-iterate-{timestamp}"
+    if rescore_of_run_id is not None:
+        parent_name = f"rescore-of-{rescore_of_run_id[:8]}-{timestamp}"
+    else:
+        parent_name = f"adapter-iterate-{timestamp}"
 
-    mlflow.set_experiment("adapter-iterate")
-    print(f"\n[mlflow] logging adapter-iterate run as {parent_name!r}", flush=True)
+    mlflow.set_experiment(experiment_name)
+    print(
+        f"\n[mlflow] logging {parent_name!r} into experiment {experiment_name!r}",
+        flush=True,
+    )
 
     with mlflow.start_run(run_name=parent_name) as parent_run:
-        mlflow.set_tag("adr", "ADR-016")
+        mlflow.set_tag("adr", "ADR-019" if rescore_of_run_id else "ADR-016")
         mlflow.set_tag("script", "scripts/rescore.py")
         mlflow.set_tag("candidate_diff_sha256", pair.diff_sha256)
         mlflow.set_tag("is_identical", str(pair.is_identical).lower())
+        if rescore_of_run_id is not None:
+            mlflow.set_tag("rescore_of", rescore_of_run_id)
         mlflow.log_param("thresholds", ",".join(f"{t:.2f}" for t in thresholds))
 
         for adapter_label, results_per_tau in (
@@ -551,6 +619,8 @@ def _log_to_mlflow_runs(
                 mlflow.set_tag("adapter", adapter_label)
                 mlflow.set_tag("parent_run_id", parent_run.info.run_id)
                 mlflow.set_tag("candidate_diff_sha256", pair.diff_sha256)
+                if rescore_of_run_id is not None:
+                    mlflow.set_tag("rescore_of", rescore_of_run_id)
                 for tau in thresholds:
                     all_inv_scores: list = []
                     for inv_list in results_per_tau[tau].values():
@@ -619,13 +689,44 @@ def main(argv: list[str]) -> int:
         ),
     )
     parser.add_argument(
+        "--baseline-adapter-module",
+        default=DEFAULT_BASELINE_ADAPTER_MODULE,
+        help=(
+            "Dotted module path for the baseline adapter (default: "
+            f"{DEFAULT_BASELINE_ADAPTER_MODULE}). For the ADR-019 W3.1 probe "
+            "rescore, use 'horus.eval.adapters_json' to rescore the structured-"
+            "output probe transcripts against the fixed JSON adapter."
+        ),
+    )
+    parser.add_argument(
+        "--mlflow-experiment-name",
+        default="adapter-iterate",
+        help=(
+            "MLflow experiment to log into (default: 'adapter-iterate'). For the "
+            "ADR-019 W3.1 probe rescore, use 'structured-output-probe-uniform' "
+            "or 'structured-output-probe-native-json' to keep rescore runs in "
+            "the same experiment as the original buggy parent runs (so MLflow UI "
+            "search by experiment surfaces both)."
+        ),
+    )
+    parser.add_argument(
+        "--rescore-of-run-id",
+        default=None,
+        help=(
+            "Optional MLflow run_id of the ORIGINAL parent run that this rescore "
+            "supersedes (ADR-019 audit-trail tag). When set, parent + nested runs "
+            "are tagged 'rescore_of=<run_id>' and the parent run name becomes "
+            "'rescore-of-<id[:8]>-<timestamp>'."
+        ),
+    )
+    parser.add_argument(
         "--log-mlflow",
         action="store_true",
         help=(
-            "Opt-in: log 2 nested MLflow runs (baseline + candidate) under an "
-            "'adapter-iterate' experiment for audit trail. Off by default (dev "
-            "loop stays fast); turn on when promoting a candidate adapter to "
-            "the canonical baseline."
+            "Opt-in: log 2 nested MLflow runs (baseline + candidate) under the "
+            "experiment named by --mlflow-experiment-name for audit trail. Off "
+            "by default (dev loop stays fast); turn on when promoting a candidate "
+            "adapter to the canonical baseline OR for the ADR-019 probe rescore."
         ),
     )
     args = parser.parse_args(argv[1:])
@@ -658,7 +759,26 @@ def main(argv: list[str]) -> int:
     if corpus_root_str is None:
         corpus_root_str = str(DEFAULT_CORPUS_ROOT)
 
-    pair = load_adapter_pair(candidate_path=Path(args.adapter_candidate_path))
+    # Resolve the baseline adapter module (default = horus.eval.adapters).
+    # Per ADR-019 W3.1 Phase 4: --baseline-adapter-module 'horus.eval.adapters_json'
+    # rescores the structured-output probe transcripts against the fixed JSON
+    # adapter without touching the legacy regex-adapter default.
+    import importlib  # noqa: PLC0415 — defer until we need it
+
+    try:
+        baseline_module = importlib.import_module(args.baseline_adapter_module)
+    except ImportError as exc:
+        print(
+            f"ERROR: cannot import baseline adapter module "
+            f"{args.baseline_adapter_module!r}: {exc}",
+            file=sys.stderr,
+        )
+        return 2
+
+    pair = load_adapter_pair(
+        candidate_path=Path(args.adapter_candidate_path),
+        baseline_module=baseline_module,
+    )
 
     results = rescore_transcripts(
         transcripts_dir=Path(transcripts_dir_str),
@@ -688,6 +808,8 @@ def main(argv: list[str]) -> int:
             candidate_results=results["candidate"],
             thresholds=thresholds,
             pair=pair,
+            experiment_name=args.mlflow_experiment_name,
+            rescore_of_run_id=args.rescore_of_run_id,
         )
 
     return 0

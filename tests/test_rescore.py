@@ -92,14 +92,18 @@ def test_load_adapter_pair_loads_distinct_candidate(tmp_path: Path) -> None:
     """A real candidate file (differs from baseline) is loaded as separate module."""
     candidate_path = tmp_path / "adapters_candidate.py"
     candidate_path.write_text(
-        # Minimal candidate that defines preprocess + to_predicted_dict.
+        # Minimal candidate that defines preprocess + to_predicted_dict +
+        # to_predicted_dict_multipage (the full public API per ADR-019 W3.1).
         # Body is intentionally different from baseline so byte-equality fails.
-        "# Test candidate (ADR-016)\n"
+        "# Test candidate (ADR-016 + ADR-019 W3.1)\n"
         "def preprocess(raw, model_id):\n"
         "    return raw.upper()  # candidate: uppercase everything\n"
         "\n"
         "def to_predicted_dict(raw, model_id):\n"
-        "    return {'invoice_number': None}\n",
+        "    return {'invoice_number': None}\n"
+        "\n"
+        "def to_predicted_dict_multipage(per_page_texts, model_id):\n"
+        "    return to_predicted_dict('\\n'.join(per_page_texts), model_id)\n",
         encoding="utf-8",
     )
     pair = rescore.load_adapter_pair(candidate_path=candidate_path)
@@ -269,12 +273,20 @@ def test_rescore_broken_candidate_produces_worse_or_equal_f1(tmp_path: Path) -> 
     """
     candidate_path = tmp_path / "adapters_broken_candidate.py"
     candidate_path.write_text(
+        # Per ADR-019 W3.1: candidates must expose the full public API
+        # (preprocess + to_predicted_dict + to_predicted_dict_multipage). This
+        # candidate is broken on all three entry points so every GT-present
+        # field becomes FN regardless of which API the rescore uses.
         "# Deliberately broken candidate — returns empty extraction for every field.\n"
         "def preprocess(raw, model_id):\n"
         "    return raw\n"
         "\n"
         "def to_predicted_dict(raw, model_id):\n"
         "    # Returns all-None: every GT-present field becomes a FN.\n"
+        "    return {}\n"
+        "\n"
+        "def to_predicted_dict_multipage(per_page_texts, model_id):\n"
+        "    # Broken multipage path: returns empty too.\n"
         "    return {}\n",
         encoding="utf-8",
     )
