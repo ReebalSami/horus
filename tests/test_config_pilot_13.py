@@ -235,9 +235,7 @@ def test_cohort_config_invoice_subset_accepts_list_of_stems() -> None:
 def test_cohort_config_invoice_subset_rejects_non_string_entries() -> None:
     """`invoice_subset` entries must be strings (Pydantic type-validated)."""
     with pytest.raises(ValidationError, match="invoice_subset"):
-        CohortConfig.model_validate(
-            {"working_models": ["m"], "invoice_subset": [1, 2, 3]}
-        )
+        CohortConfig.model_validate({"working_models": ["m"], "invoice_subset": [1, 2, 3]})
 
 
 def test_cohort_config_dev_only_defaults_to_false() -> None:
@@ -347,11 +345,7 @@ def test_from_yaml_composes_base_plus_overlay(tmp_path: Path) -> None:
     """Two YAML files deep-merge with later-wins semantics."""
     base = _write_yaml(
         tmp_path / "base.yaml",
-        "seed: 42\n"
-        "mlflow:\n"
-        "  experiment_name: base-exp\n"
-        "  run_tags:\n"
-        "    stage: pilot\n",
+        "seed: 42\nmlflow:\n  experiment_name: base-exp\n  run_tags:\n    stage: pilot\n",
     )
     overlay = _write_yaml(
         tmp_path / "overlay.yaml",
@@ -371,9 +365,7 @@ def test_from_yaml_composes_base_plus_overlay(tmp_path: Path) -> None:
 
 def test_from_yaml_three_file_composition_last_wins(tmp_path: Path) -> None:
     """N-file composition: the last file's values win on conflict."""
-    a = _write_yaml(
-        tmp_path / "a.yaml", "seed: 1\nmlflow:\n  experiment_name: a\n"
-    )
+    a = _write_yaml(tmp_path / "a.yaml", "seed: 1\nmlflow:\n  experiment_name: a\n")
     b = _write_yaml(tmp_path / "b.yaml", "seed: 2\n")
     c = _write_yaml(tmp_path / "c.yaml", "seed: 3\n")
     cfg = ExperimentConfig.from_yaml([a, b, c])
@@ -396,9 +388,7 @@ def test_from_yaml_overlay_replaces_list_not_concatenates(tmp_path: Path) -> Non
     )
     overlay = _write_yaml(
         tmp_path / "overlay.yaml",
-        "cohort:\n"
-        "  working_models:\n"
-        "    - X\n",  # full replacement, not concatenation
+        "cohort:\n  working_models:\n    - X\n",  # full replacement, not concatenation
     )
     cfg = ExperimentConfig.from_yaml([base, overlay])
     assert cfg.cohort is not None
@@ -496,9 +486,7 @@ def test_from_yaml_extra_keys_still_rejected_after_merge(tmp_path: Path) -> None
         tmp_path / "base.yaml",
         "seed: 42\nmlflow:\n  experiment_name: x\n",
     )
-    overlay = _write_yaml(
-        tmp_path / "overlay.yaml", "unknown_top_level_key: surprise\n"
-    )
+    overlay = _write_yaml(tmp_path / "overlay.yaml", "unknown_top_level_key: surprise\n")
     with pytest.raises(ValidationError, match="(extra|forbidden)"):
         ExperimentConfig.from_yaml([base, overlay])
 

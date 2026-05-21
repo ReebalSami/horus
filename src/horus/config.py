@@ -63,11 +63,7 @@ def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any
     """
     result: dict[str, Any] = dict(base)
     for key, value in override.items():
-        if (
-            key in result
-            and isinstance(result[key], dict)
-            and isinstance(value, dict)
-        ):
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
             result[key] = _deep_merge(result[key], value)
         else:
             result[key] = value
@@ -422,9 +418,7 @@ class ExperimentConfig(BaseSettings):
         else:
             paths = [Path(p) for p in cfg_paths]
         if not paths:
-            raise ValueError(
-                "from_yaml requires at least one config path; got empty list"
-            )
+            raise ValueError("from_yaml requires at least one config path; got empty list")
         merged: dict[str, Any] = {}
         for p in paths:
             if not p.is_file():

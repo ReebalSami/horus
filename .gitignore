@@ -97,3 +97,11 @@ data/raw/multilingual/*/*
 # candidate file. The canonical adapter lives at src/horus/eval/adapters.py;
 # the candidate is a working file, not a source-of-truth artifact.
 src/horus/eval/adapters_candidate.py
+
+# ADR-016 + ADR-017: dev-cohort transcript archives produced by
+# `pilot-13-dev*.yaml` overlays (`dev_only: true` configs). Per the
+# HARKing-prevention contract, dev transcripts MUST NEVER contaminate
+# the canonical 182-tuple `docs/sources/transcripts-multipage/` archive.
+# The canonical archive (no `-dev*` suffix) IS tracked.
+docs/sources/transcripts-multipage-dev/
+docs/sources/transcripts-multipage-dev-mlx/

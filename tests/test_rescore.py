@@ -120,9 +120,7 @@ def test_load_adapter_pair_raises_on_candidate_missing_required_callable(
     """Candidate without `preprocess` or `to_predicted_dict` → ValueError."""
     candidate_path = tmp_path / "adapters_candidate.py"
     candidate_path.write_text(
-        "# Broken candidate — missing the public API.\n"
-        "def some_other_fn():\n"
-        "    return 'nope'\n",
+        "# Broken candidate — missing the public API.\ndef some_other_fn():\n    return 'nope'\n",
         encoding="utf-8",
     )
     with pytest.raises(ValueError, match="missing required public callable"):

@@ -560,6 +560,50 @@ def _filter_invoices(
     return matched
 
 
+def _snapshot_mps_driver_alloc_mb_or_none(extractor: Any) -> float | None:
+    """Return `torch.mps.driver_allocated_memory()` in MB, or None when not applicable.
+
+    Backend-aware: only fires for `transformers-mps` extractors. MLX-path
+    extractors get their peak via `GenerationResult.peak_memory` and do NOT
+    need this snapshot. Per ADR-017 §"Decision 2 (D2.A)": this is the
+    snapshot-based approach to the PyTorch MPS peak-memory gap
+    (`torch.mps` has no `max_memory_allocated`-equivalent, see
+    pytorch/pytorch#104188). Documented limitation: snapshot misses
+    transient peak during `model.generate()` itself; captures steady-state
+    post-load weights + activation residue.
+
+    Returns None when:
+
+    - Extractor's `backend_name` is not `"transformers-mps"` (no-op for MLX
+      / PaddleOCR / GLM-OCR backends).
+    - `torch` cannot be imported (defensive — torch is a runtime dep, but
+      future deployments may exclude it for MLX-only setups).
+    - `torch.backends.mps.is_available()` is False (CI, non-Apple-Silicon
+      dev hosts).
+    - The snapshot call itself raises (transient PyTorch issue; non-fatal).
+
+    Callers MUST treat None as "skip MPS-specific metrics for this tuple".
+
+    Refs:
+      - PyTorch MPS API docs: `torch.mps.driver_allocated_memory()` returns
+        the driver-managed memory total (includes cache). The closest
+        approximation to "actual GPU usage" available on MPS.
+      - ADR-017 §"Decision 2": rationale for snapshot-over-sampler.
+    """
+    if getattr(extractor, "backend_name", None) != "transformers-mps":
+        return None
+    try:
+        import torch  # noqa: PLC0415 — defer heavy import
+
+        if not torch.backends.mps.is_available():
+            return None
+        # driver_allocated_memory returns bytes; convert to MB (matches the
+        # MLflow metric naming `perf.mps_*_alloc_mb`).
+        return torch.mps.driver_allocated_memory() / (1024.0 * 1024.0)
+    except Exception:  # noqa: BLE001 — non-fatal; let harness log without MPS metrics
+        return None
+
+
 # ===========================================================================
 # Public orchestrator
 # ===========================================================================
@@ -712,6 +756,23 @@ def run_cohort(
         if eval_cfg is not None:
             mlflow.log_param("anls_threshold", eval_cfg.anls_threshold)
 
+        # ADR-017 (issue #52) — parent-level MPS ceiling. Constant per host;
+        # logged once so the inspector can compute `pct_of_ceiling = peak /
+        # ceiling` without per-tuple duplication. Silent NOOP on hosts
+        # without MPS (CI, non-Apple-Silicon dev machines). The `try/except`
+        # also swallows the case where torch is importable but MPS-init
+        # fails (e.g., headless macOS env). Per `know-your-hardware`: M1 Pro
+        # 16 GB returns ~10-12 GB ceiling — the OS reserves the rest for
+        # system processes.
+        try:
+            import torch  # noqa: PLC0415 — defer heavy import
+
+            if torch.backends.mps.is_available():
+                mps_ceiling_gb = torch.mps.recommended_max_memory() / 1e9
+                mlflow.log_metric("perf.mps_recommended_max_gb", mps_ceiling_gb)
+        except Exception:  # noqa: BLE001 — non-fatal; harness continues
+            pass
+
         print(
             f"[harness] parent_run_id={parent_run_id} models={len(models)} invoices={len(pairs)}",
             flush=True,
@@ -797,6 +858,11 @@ def run_cohort(
                         n_failed += 1
                         continue
 
+                    # ADR-017 §D2.A — MPS driver-allocated memory snapshot
+                    # (pre). Returns None for non-MPS backends (MLX path
+                    # uses GenerationResult.peak_memory instead).
+                    mps_pre_alloc_mb = _snapshot_mps_driver_alloc_mb_or_none(extractor)
+
                     t_start = time.perf_counter()
                     scores, _transcript, per_page = _score_single_invoice(
                         model_id=model_id,
@@ -812,6 +878,13 @@ def run_cohort(
                         eval_cfg=eval_cfg,
                     )
                     elapsed = time.perf_counter() - t_start
+
+                    # ADR-017 §D2.A — MPS driver-allocated memory snapshot
+                    # (post). The pre+post pair lets the inspector report
+                    # both the steady-state (post-load weights + activation
+                    # residue) and the delta (activation footprint during
+                    # the extract call).
+                    mps_post_alloc_mb = _snapshot_mps_driver_alloc_mb_or_none(extractor)
 
                     # Nested run logging
                     with mlflow.start_run(
@@ -831,10 +904,145 @@ def run_cohort(
                         mlflow.log_metric("micro_precision", scores.micro_precision)
                         mlflow.log_metric("micro_recall", scores.micro_recall)
                         mlflow.log_metric("extract_seconds_total", elapsed)
+                        extract_seconds_pages_total = sum(r.extract_seconds for r in per_page)
                         mlflow.log_metric(
                             "extract_seconds_pages",
-                            sum(r.extract_seconds for r in per_page),
+                            extract_seconds_pages_total,
                         )
+
+                        # ADR-017 (issue #52, Amendment 1) — per-tuple perf metrics.
+                        # All values are aggregates of per-page ExtractionResult
+                        # fields (populated by the extractors in Chunk 1).
+                        #
+                        # Amendment 1 (post-merge research): the original
+                        # design logged a single `perf.generation_tps_mean`
+                        # computed as `total_gen_tokens / extract_seconds`,
+                        # claimed to match Artificial Analysis methodology.
+                        # Web-verified AA methodology
+                        # (`docs/sources/tools/artificial-analysis-methodology.md`):
+                        # AA "Output Speed" is DECODE-ONLY tokens-per-second,
+                        # measured AFTER the first token arrives (excludes
+                        # prompt encoding). The original formula computed
+                        # END-TO-END TPS, not decode-only — a scientific
+                        # correctness bug under the AA-claimed name. Amendment
+                        # 1 splits the metric into two with explicit semantics:
+                        #
+                        #   * `perf.decode_tps_mean` — decode-only (matches AA
+                        #     "Output Speed"). Computed as
+                        #     `total_gen_tokens / total_decode_seconds`, where
+                        #     `decode_seconds_per_page = gen_tokens / generation_tps`.
+                        #     Only available when extractors expose decode-only
+                        #     tps in `ExtractionResult.generation_tps` (MLX-VLM
+                        #     path via `GenerationResult.generation_tps`).
+                        #     For Transformers-MPS path, `generation_tps = 0.0`
+                        #     per vlm_extractor.py — decode-only is unmeasurable
+                        #     via public `transformers.generate(...)` API.
+                        #     When no page exposes decode tps, this metric is
+                        #     0.0 and `tags.decode_tps_available` is "false".
+                        #
+                        #   * `perf.inference_tps_mean` — end-to-end (system
+                        #     throughput including prompt encoding). Computed
+                        #     as `total_gen_tokens / extract_seconds_pages_total`.
+                        #     Always computable for any backend that reports
+                        #     `extract_seconds` + `generation_tokens`.
+                        #
+                        # Both metrics answer DIFFERENT questions
+                        # ("how fast does the model decode?" vs "what
+                        # end-to-end throughput does the user see?") and
+                        # both are scientifically meaningful. The thesis
+                        # H4 latency-efficiency comparison cites the AA-
+                        # canonical `decode_tps` for cross-backend model-
+                        # speed claims and `inference_tps` for user-facing
+                        # latency claims.
+                        #
+                        # `perf.peak_memory_gb`: max across pages. For
+                        # MLX-VLM path, populated from per-page
+                        # `peak_memory_gb` (`mx.get_peak_memory()` — true
+                        # peak). For Transformers-MPS path, per-page is
+                        # 0.0 by design and the post-snapshot of
+                        # `torch.mps.driver_allocated_memory()` overrides
+                        # below (snapshot-based stand-in per ADR-017 §D2.A
+                        # + pytorch/pytorch#104188 workaround).
+                        ok_pages_results = [r for r in per_page if r.is_ok]
+                        total_gen_tokens = sum(r.generation_tokens for r in per_page)
+                        total_chars = sum(r.output_len_chars for r in per_page)
+
+                        # Decode-only TPS: only includes pages where the
+                        # extractor exposed `generation_tps > 0` (MLX-VLM
+                        # path). Per-page decode_seconds = gen_tokens /
+                        # gen_tps. Time-weighted aggregation per AA
+                        # methodology.
+                        decode_eligible = [
+                            r
+                            for r in per_page
+                            if r.generation_tokens > 0 and r.generation_tps > 0.0
+                        ]
+                        if decode_eligible:
+                            total_decode_seconds = sum(
+                                r.generation_tokens / r.generation_tps for r in decode_eligible
+                            )
+                            total_decode_tokens = sum(r.generation_tokens for r in decode_eligible)
+                            decode_tps_mean = (
+                                total_decode_tokens / total_decode_seconds
+                                if total_decode_seconds > 0.0
+                                else 0.0
+                            )
+                            decode_tps_available = True
+                        else:
+                            decode_tps_mean = 0.0
+                            decode_tps_available = False
+
+                        # End-to-end TPS: total tokens / total extract wall-
+                        # clock. Includes prompt encoding + decode + post-
+                        # processing. Always computable when extract_seconds
+                        # > 0 and tokens > 0.
+                        if total_gen_tokens > 0 and extract_seconds_pages_total > 0.0:
+                            inference_tps_mean = total_gen_tokens / extract_seconds_pages_total
+                        else:
+                            inference_tps_mean = 0.0
+
+                        chars_per_sec = (
+                            total_chars / extract_seconds_pages_total
+                            if extract_seconds_pages_total > 0.0
+                            else 0.0
+                        )
+                        peak_mem_gb_max = max(
+                            (r.peak_memory_gb for r in per_page if r.peak_memory_gb > 0.0),
+                            default=0.0,
+                        )
+                        # ADR-017 §D2.A — Transformers-MPS path: per-page
+                        # peak_memory_gb is 0.0 by design (no
+                        # `torch.mps.max_memory_allocated` equivalent per
+                        # pytorch/pytorch#104188). The post-snapshot of
+                        # `torch.mps.driver_allocated_memory()` is the
+                        # snapshot-based stand-in: captures steady-state
+                        # weights + activation residue. Misses transient
+                        # peak during model.generate(); documented limitation
+                        # surfaced in the inspector + README + thesis writeup.
+                        if mps_post_alloc_mb is not None:
+                            peak_mem_gb_max = mps_post_alloc_mb / 1024.0
+                        mlflow.log_metric("perf.generation_tokens_total", float(total_gen_tokens))
+                        mlflow.log_metric("perf.decode_tps_mean", decode_tps_mean)
+                        mlflow.log_metric("perf.inference_tps_mean", inference_tps_mean)
+                        mlflow.set_tag(
+                            "perf.decode_tps_available",
+                            "true" if decode_tps_available else "false",
+                        )
+                        mlflow.log_metric("perf.output_len_chars_total", float(total_chars))
+                        mlflow.log_metric("perf.chars_per_sec", chars_per_sec)
+                        mlflow.log_metric("perf.peak_memory_gb", peak_mem_gb_max)
+                        mlflow.log_metric("perf.pages_extracted_ok", float(len(ok_pages_results)))
+                        # ADR-017 §D2.A — MPS-only metrics: pre + post + delta.
+                        # Only logged when the backend is `transformers-mps`
+                        # AND MPS is available (else `_snapshot_mps_driver_alloc_mb_or_none`
+                        # returned None and we skip per ADR-017 §D2.A).
+                        if mps_pre_alloc_mb is not None and mps_post_alloc_mb is not None:
+                            mlflow.log_metric("perf.mps_pre_alloc_mb", mps_pre_alloc_mb)
+                            mlflow.log_metric("perf.mps_post_alloc_mb", mps_post_alloc_mb)
+                            mlflow.log_metric(
+                                "perf.mps_delta_mb",
+                                mps_post_alloc_mb - mps_pre_alloc_mb,
+                            )
 
                         # Per-field score metrics + JSON artifact
                         for fk, fr in scores.per_field.items():
