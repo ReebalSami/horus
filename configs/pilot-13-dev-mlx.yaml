@@ -1,0 +1,80 @@
+# pilot-13-dev-mlx.yaml — ADR-017 (issue #52) MLX-path dev-cohort overlay
+#
+# Sister to `configs/pilot-13-dev.yaml` (which uses MinerU-2.5-Pro on the
+# Transformers-MPS backend). This overlay swaps in a single MLX-routed model
+# (Granite-Docling-258M-mlx) so the same `make pilot-13` invocation
+# exercises the MLX-VLM backend's Amendment-1 perf instrumentation:
+#
+#   - `ExtractionResult.generation_tps` populated from MLX-VLM's
+#     `GenerationResult.generation_tps` (decode-only, AA-canonical).
+#   - `ExtractionResult.peak_memory_gb` populated from
+#     `mx.get_peak_memory()` (true peak, not pre/post snapshot).
+#   - `perf.decode_tps_mean` > 0 in MLflow.
+#   - `perf.decode_tps_available = "true"` tag set.
+#   - `perf.inference_tps_mean` > 0 (always computable).
+#
+# Why this overlay exists separately from `pilot-13-dev.yaml`:
+#   - `pilot-13-dev.yaml` exercises the MPS pre/post-snapshot path
+#     (Chunk 3) but cannot exercise the MLX-VLM `GenerationResult`
+#     consumption path (Chunk 1).
+#   - For full ADR-017 dual-backend coverage we need BOTH overlays.
+#   - Keeping them separate (rather than merging into a 2-model dev
+#     cohort) lets each smoke run focus narrowly on its backend's
+#     contract — easier to isolate failures.
+#
+# Composition with the base config follows ADR-016 multi-file YAML rules
+# (`ExperimentConfig.from_yaml([base, this_overlay])`); later files win
+# on conflict; nested dicts deep-merge; lists REPLACE — so
+# `working_models` here fully replaces the base 7-model cohort.
+#
+# Invocation:
+#
+#   # Slow path — produce MLX-path transcripts for #52 verification:
+#   make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev-mlx.yaml
+#
+#   # Inspector — verify perf table renders MLX-row decode_tps numerically:
+#   make inspect-pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev-mlx.yaml
+#
+# What changes from the base config:
+#
+#   - mlflow.experiment_name → `pilot-13-dev-mlx` (distinct from canonical
+#     `pilot-13-full` AND from `pilot-13-dev`; HARKing-guard refuses to log
+#     to canonical when dev_only=true per `_CANONICAL_PRODUCTION_EXPERIMENTS`).
+#   - cohort.working_models → 1 model: Granite-Docling-258M-mlx
+#     (Category 1 end-to-end doc-VLM; ~258M params, ~500 MB weights;
+#     fastest MLX model in the cohort — keeps the smoke ≤60 s wall-clock).
+#   - cohort.invoice_subset → 1 fixture (EN16931_Einfach) so the smoke is
+#     atomic. Larger subsets are out of scope for #52 verification.
+#   - cohort.transcript_archive_dir → distinct from canonical AND from
+#     pilot-13-dev so dev-mlx transcripts NEVER contaminate the
+#     pilot-13-full or pilot-13-dev archives.
+#   - cohort.dev_only: true → HARKing-prevention forcing function
+#     (per brainstorm v2 §2 No-HARKing + NeurIPS Paper Checklist).
+#
+# What is INHERITED unchanged from `pilot-13.yaml`:
+#
+#   - seed, eval.*, rasterizer.* (dpi + cache_dir + image_format),
+#     cohort.corpus_root, cohort.resume_on_existing_run,
+#     mlflow.run_tags (most keys), mlflow.tracking_uri.
+#
+# Refs: ADR-017 (this config's ratifying ADR — Amendment 1), ADR-014
+# (parent: harness + multi-page rasterizer), ADR-016 (multi-file YAML
+# composition substrate), issue #52 (timing + tokens/sec + GPU memory
+# instrumentation), `make pilot-13` Makefile target.
+
+mlflow:
+  experiment_name: pilot-13-dev-mlx
+  run_tags:
+    stage: pilot-13-dev-mlx
+    issue: "52"
+    adr: ADR-017
+    pr: iss-52-timing-inspector
+
+cohort:
+  working_models:
+    - ibm-granite/granite-docling-258M-mlx
+  invoice_subset:
+    - EN16931_Einfach
+  parent_run_name: pilot-13-dev-mlx
+  transcript_archive_dir: docs/sources/transcripts-multipage-dev-mlx
+  dev_only: true

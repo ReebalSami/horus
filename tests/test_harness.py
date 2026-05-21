@@ -758,8 +758,7 @@ def test_run_cohort_logs_perf_metrics_in_nested_run_mlx_backend(tmp_path: Path) 
 
     # Backend reported decode-only TPS → tag is "true".
     assert tags.get("perf.decode_tps_available") == "true", (
-        f"MLX-VLM backend exposes decode-only TPS; expected tag 'true', "
-        f"got tags={sorted(tags)}"
+        f"MLX-VLM backend exposes decode-only TPS; expected tag 'true', got tags={sorted(tags)}"
     )
 
 

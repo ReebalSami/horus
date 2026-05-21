@@ -306,13 +306,11 @@ def test_print_perf_table_reads_legacy_generation_tps_mean_as_e2e_tps(
     # e2e_tps shows the legacy value (5.00) — the pre-Amendment-1 metric was
     # actually end-to-end despite the misleading `generation_tps_mean` name.
     assert "5.00" in row, (
-        f"legacy perf.generation_tps_mean=5.0 should render as e2e_tps=5.00; "
-        f"row was: {row!r}"
+        f"legacy perf.generation_tps_mean=5.0 should render as e2e_tps=5.00; row was: {row!r}"
     )
     # decode_tps shows — (no decode-only metric in legacy logging).
     assert "—" in row, (
-        f"legacy run has no perf.decode_tps_mean → decode_tps column must be —; "
-        f"row was: {row!r}"
+        f"legacy run has no perf.decode_tps_mean → decode_tps column must be —; row was: {row!r}"
     )
 
 
