@@ -1,0 +1,94 @@
+# pilot-13-structured-probe-native-json.yaml — ADR-018 Arm B overlay (issue #53)
+#
+# Structured-output probe Arm B: per-model native task prefix + JSON suffix.
+# Respects ADR-009 §"Per-model native prompt strategy" empirical finding that
+# Cat 2/3 models (PaliGemma + PaddleOCR-VL) refuse HORUS-canonical free-form
+# prompts and require canonical task-prefix overrides (`ocr` / `OCR:`); a
+# uniform-JSON arm alone (Arm A) would conflate "instruction-misfollowing"
+# with "task-prefix-locked" failure modes. This Arm B isolates the latter.
+#
+# Sibling overlay `pilot-13-structured-probe-uniform.yaml` carries Arm A.
+#
+# Composed on top of `configs/pilot-13.yaml` (NOT on pilot-13-dev.yaml -- the
+# probe needs the FULL 7-model cohort, not the 1-model dev subset).
+#
+# Invocation:
+#
+#   make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-structured-probe-native-json.yaml
+#
+# What this overlay does (everything in Arm A's overlay, PLUS):
+#
+#   - mlflow.experiment_name -> `structured-output-probe-native-json` (distinct
+#     from Arm A's `structured-output-probe-uniform` so MLflow keeps them
+#     separately searchable by experiment).
+#   - cohort.parent_run_name -> `structured-probe-native-json` (distinct).
+#   - cohort.transcript_archive_dir -> separate directory.
+#   - cohort.prompt_template_override: per-model prompts -- the model's
+#     canonical task prefix from COHORT_MANIFEST + a JSON-schema suffix.
+#     Pre-registered per ADR-018 §"Pre-registered prompts" §"Arm B (per-model
+#     native + JSON suffix)"; locked PRE-PROBE.
+#
+# Per-model prompt rationale (in pilot-13.yaml working_models order):
+#
+#   - opendatalab/MinerU2.5-Pro-2604-1.2B (Cat 1): native `OCR this document`
+#     + JSON suffix. DocTags model; expected to fail JSON adherence.
+#   - google/paligemma2-3b-mix-448 (Cat 3): native `ocr` task prefix (HF model
+#     card vocab); JSON suffix predicted to trigger out-of-distribution refusal
+#     (model is fine-tuned on `mix-448` instruction set which doesn't include
+#     JSON extraction; documented FN is a methodologically informative result).
+#   - ibm-granite/granite-docling-258M-mlx (Cat 1): native `Convert this page
+#     to docling` + JSON suffix. DocTags model; expected to fail JSON.
+#   - allenai/olmOCR-2-7B-1025 (Cat 1): native `Recognize all the text in the
+#     image` + JSON suffix. RLVR-fine-tuned for OCR fidelity per Poznanski+
+#     2025 (NOT JSON); HF discussion #16 shows users HACKED JSON via custom
+#     prompt replacement. Listed as MAYBE in ADR-018 §"Predicted outcomes".
+#   - PaddlePaddle/PaddleOCR-VL (Cat 2): canonical `OCR:` prefix per official
+#     vLLM recipe; JSON suffix predicted to trigger task-prefix lock failure.
+#   - zai-org/GLM-OCR (Cat 2): native `Recognize all text in the image and
+#     output in markdown format` + JSON suffix. Instruction-following weak
+#     per ADR-009 §smoke evidence.
+#   - google/gemma-4-E4B-it (Cat 3): general-instruction-tuned; native prompt
+#     IS effectively the uniform JSON prompt (no task-prefix needed). For
+#     this model, Arm B prompt == Arm A prompt by design.
+#
+# Refs: ADR-018 §"Pre-registered prompts" §"Arm B (per-model native + JSON
+# suffix)" (this overlay's ratifying section), ADR-009 §"Per-model native
+# prompt strategy" + Amendment 1 (task-prefix lock evidence), ADR-016
+# (dev_only + multi-file YAML), ADR-012 (canonical 16-field schema), issue #53.
+
+mlflow:
+  experiment_name: structured-output-probe-native-json
+  run_tags:
+    stage: structured-output-probe
+    arm: native-json
+    issue: "53"
+    adr: ADR-018
+    pr: iss-53-structured-output-probe
+    probe_invoice: EN16931_Einfach
+
+cohort:
+  invoice_subset:
+    - EN16931_Einfach
+  parent_run_name: structured-probe-native-json
+  transcript_archive_dir: docs/sources/transcripts-structured-probe-native-json
+  dev_only: true
+  adapter_mode: json
+  prompt_template_override:
+    opendatalab/MinerU2.5-Pro-2604-1.2B: |-
+      OCR this document. Then extract the 16 invoice fields and return ONLY a single-line JSON object with these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount. Use null for missing fields.
+    google/paligemma2-3b-mix-448: |-
+      ocr Then extract the 16 invoice fields and return ONLY a single-line JSON object with these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount. Use null for missing fields.
+    ibm-granite/granite-docling-258M-mlx: |-
+      Convert this page to docling. Then extract the 16 invoice fields and return ONLY a single-line JSON object with these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount. Use null for missing fields.
+    allenai/olmOCR-2-7B-1025: |-
+      Extract the 16 invoice fields and return ONLY single-line JSON with keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount. Use null for missing fields. Do not hallucinate.
+    PaddlePaddle/PaddleOCR-VL: |-
+      OCR: extract invoice fields as JSON {invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount}, null for missing.
+    zai-org/GLM-OCR: |-
+      Recognize all text in the image and extract the 16 invoice fields as a single-line JSON object with keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount. Use null for missing fields.
+    google/gemma-4-E4B-it: |-
+      You are reading a German B2B invoice. Extract these fields and return ONLY a single JSON object on one line, no commentary, no markdown fences:
+
+      {"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+      Use null for any field not present.

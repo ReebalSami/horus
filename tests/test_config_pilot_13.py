@@ -565,6 +565,100 @@ def test_cohort_config_adapter_mode_rejects_unknown_value() -> None:
         )
 
 
+def test_loads_real_pilot_13_structured_probe_uniform_composition() -> None:
+    """`configs/pilot-13.yaml` + `configs/pilot-13-structured-probe-uniform.yaml`
+    compose cleanly (ADR-018 Arm A regression test).
+
+    Locks (a) the 7-model prompt_template_override covers all working_models
+    (no key-rejection from the validator), (b) adapter_mode propagates to
+    'json', (c) dev_only is true, (d) experiment_name is the probe's distinct
+    one, (e) invoice_subset is the 1-invoice probe scope.
+    """
+    base = REPO_ROOT / "configs" / "pilot-13.yaml"
+    overlay = REPO_ROOT / "configs" / "pilot-13-structured-probe-uniform.yaml"
+    assert base.is_file(), f"missing base config: {base}"
+    assert overlay.is_file(), f"missing Arm A overlay: {overlay}"
+
+    cfg = ExperimentConfig.from_yaml([base, overlay])
+
+    # ----- mlflow: overlay-distinct experiment name + probe-arm run tags -----
+    assert cfg.mlflow.experiment_name == "structured-output-probe-uniform"
+    assert cfg.mlflow.run_tags.get("arm") == "uniform"
+    assert cfg.mlflow.run_tags.get("issue") == "53"
+    assert cfg.mlflow.run_tags.get("adr") == "ADR-018"
+    assert cfg.mlflow.run_tags.get("probe_invoice") == "EN16931_Einfach"
+
+    # ----- cohort: full 7-model list INHERITED from base; probe substrate set -----
+    assert cfg.cohort is not None
+    assert len(cfg.cohort.working_models) == 7, "Arm A inherits full 7-model cohort from base"
+    assert cfg.cohort.invoice_subset == ["EN16931_Einfach"]
+    assert cfg.cohort.parent_run_name == "structured-probe-uniform"
+    assert str(cfg.cohort.transcript_archive_dir) == (
+        "docs/sources/transcripts-structured-probe-uniform"
+    )
+    assert cfg.cohort.dev_only is True, "HARKing-prevention guard active"
+    assert cfg.cohort.adapter_mode == "json", "Arm A routes through adapters_json"
+    assert cfg.cohort.prompt_template_override is not None
+    assert set(cfg.cohort.prompt_template_override.keys()) == set(cfg.cohort.working_models), (
+        "Arm A's override map MUST cover all 7 working_models (uniform arm — every model "
+        "gets the SAME prompt; validator rejects unknown keys at boot)"
+    )
+
+    # All 7 prompts must be identical (the "uniform" property of Arm A).
+    distinct_prompts = set(cfg.cohort.prompt_template_override.values())
+    assert len(distinct_prompts) == 1, (
+        f"Arm A is the uniform arm; all 7 prompts must be identical (found "
+        f"{len(distinct_prompts)} distinct prompts via YAML anchor + alias)"
+    )
+
+    # ----- inherited from base (untouched by overlay) -----
+    assert cfg.seed == 42
+    assert cfg.eval is not None and cfg.eval.anls_threshold == 0.5
+    assert cfg.rasterizer is not None and cfg.rasterizer.dpi == 300
+
+
+def test_loads_real_pilot_13_structured_probe_native_json_composition() -> None:
+    """`configs/pilot-13.yaml` + `configs/pilot-13-structured-probe-native-json.yaml`
+    compose cleanly (ADR-018 Arm B regression test).
+
+    Same shape as the Arm A test, with one structural difference: per-model
+    prompts MUST be distinct (Arm B respects ADR-009 §"Per-model native prompt
+    strategy" — different task prefixes per model).
+    """
+    base = REPO_ROOT / "configs" / "pilot-13.yaml"
+    overlay = REPO_ROOT / "configs" / "pilot-13-structured-probe-native-json.yaml"
+    assert base.is_file(), f"missing base config: {base}"
+    assert overlay.is_file(), f"missing Arm B overlay: {overlay}"
+
+    cfg = ExperimentConfig.from_yaml([base, overlay])
+
+    assert cfg.mlflow.experiment_name == "structured-output-probe-native-json"
+    assert cfg.mlflow.run_tags.get("arm") == "native-json"
+
+    assert cfg.cohort is not None
+    assert len(cfg.cohort.working_models) == 7
+    assert cfg.cohort.invoice_subset == ["EN16931_Einfach"]
+    assert cfg.cohort.parent_run_name == "structured-probe-native-json"
+    assert str(cfg.cohort.transcript_archive_dir) == (
+        "docs/sources/transcripts-structured-probe-native-json"
+    )
+    assert cfg.cohort.dev_only is True
+    assert cfg.cohort.adapter_mode == "json"
+    assert cfg.cohort.prompt_template_override is not None
+    assert set(cfg.cohort.prompt_template_override.keys()) == set(cfg.cohort.working_models)
+
+    # Arm B distinguishing property: ≥3 distinct prompts across the 7 models
+    # (Gemma re-uses the Arm A uniform prompt by design per ADR-018 §"Per-model
+    # prompt rationale"; the other 6 models each have their own native-prefix
+    # variant -- at minimum the 6 Cat-1/Cat-2 task-prefix-locked models differ
+    # from each other).
+    distinct_prompts = set(cfg.cohort.prompt_template_override.values())
+    assert len(distinct_prompts) >= 5, (
+        f"Arm B should have at least 5 distinct prompts across 7 models "
+        f"(per-model native task prefix); got {len(distinct_prompts)} distinct"
+    )
+
+
 def test_loads_real_pilot_13_dev_composition() -> None:
     """`configs/pilot-13.yaml` + `configs/pilot-13-dev.yaml` compose cleanly (ADR-016).
 
