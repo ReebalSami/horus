@@ -1,0 +1,42 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  EN16931_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  18.61s total
+# Adapter:  json
+# Prompt:   You are reading a German B2B invoice. Extract these fields and return ONLY a sin
+
+===== PAGE 1 =====
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount":
+===== PAGE 2 =====
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+{"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount":

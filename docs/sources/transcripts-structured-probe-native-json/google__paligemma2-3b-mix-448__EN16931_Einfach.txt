@@ -1,0 +1,14 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  16.46s total
+# Adapter:  json
+# Prompt:   ocr Then extract the 16 invoice fields and return ONLY a single-line JSON object
+
+===== PAGE 1 =====
+OK<eos>
+===== PAGE 2 =====
+invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_ payable_amount.<eos>

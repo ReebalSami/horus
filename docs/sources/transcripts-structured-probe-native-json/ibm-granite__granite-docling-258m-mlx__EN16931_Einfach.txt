@@ -1,0 +1,25 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  EN16931_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  7.83s total
+# Adapter:  json
+# Prompt:   Convert this page to docling. Then extract the 16 invoice fields and return ONLY
+
+===== PAGE 1 =====
+<doctag><otsl><loc_54><loc_50><loc_457><loc_75><fcel>Währung:<fcel>EUR<nl><fcel>Liefer- und Leistungsdatum:<fcel>05.03.2018<nl></otsl>
+<otsl><loc_55><loc_94><loc_453><loc_177><fcel>Verkäufer<ecel><nl><fcel>Nummer:<fcel>549910<nl><fcel>Globale Nummer:<fcel>4000001123452 (GLN)<nl><fcel>Name:<fcel>Lieferant GmbH<nl><fcel>Anschrift:<fcel>Lieferantenstraße 20<nl><ecel><fcel>DE 80333 München<nl><fcel>Steuernummer:<fcel>201/113/40209<nl><fcel>USt.-Id.-Nr.:<fcel>DE123456789<nl></otsl>
+<otsl><loc_55><loc_198><loc_457><loc_251><fcel>Käufer/Leistungsempfänger<ecel><nl><fcel>Nummer:<fcel>GE2020211<nl><fcel>Name:<fcel>Kunden AG Mitte<nl><fcel>Anschrift:<fcel>Kundenstraße 15<nl><ecel><fcel>DE 69876 Frankfurt<nl></otsl>
+<otsl><loc_55><loc_263><loc_457><loc_313><fcel>Bemerkungen<fcel>Rechnung gemäß Bestellung vom 01.03.2018.<nl><fcel>Bemerkung<fcel>Regn<nl><fcel>Betreff:<fcel>REG Regulatory information<nl></otsl>
+<text><loc_120><loc_332><loc_137><loc_337>Inhalt</text>
+<text><loc_147><loc_317><loc_221><loc_347>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland Geschäftsführer: Hans Muster Handelsregisternummer: H A 123</text>
+<page_footer><loc_245><loc_456><loc_355><loc_472>Seite1 von 2</page_footer>
+<page_footer><loc_415><loc_490><loc_452><loc_495>Seite1 von 2</page_footer>
+</doctag>
+===== PAGE 2 =====
+<doctag><otsl><loc_54><loc_52><loc_457><loc_455><fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuersatz<fcel>Nettobetrag<nl><fcel>1<fcel>TB100A4 4012345001235 (GTIN)<fcel>Trennblätter A4<fcel>9,9000<fcel>20 Stk<fcel>19 %<fcel>198,00<nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 9,9000<ecel><ecel><ecel><ecel><nl><fcel>2<fcel>ARNR2 4000050986428 (GTIN)<fcel>Joghurt Banane<fcel>5,5000<fcel>50 Stk<fcel>7 %<fcel>275,00<nl><ecel><ecel><fcel>getLineTradeAgreementBruttopreis : 5,5000<ecel><ecel><ecel><ecel><nl><fcel>Umsatzsteueraufschlüsselung<lcel><lcel><lcel><lcel><lcel><lcel><nl><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>Steuersatz [%]<fcel>Steuerbetrag<ecel><nl><fcel>Umsatzsteuer (S)<lcel><lcel><fcel>275,00<fcel>7<fcel>19,25<ecel><nl><fcel>Umsatzsteuer (S)<lcel><lcel><fcel>198,00<fcel>19<fcel>37,62<ecel><nl><fcel>Belegsummen<lcel><lcel><lcel><lcel><lcel><lcel><nl><fcel>Positionssumme<lcel><lcel><lcel><lcel><lcel><lcel><nl><fcel>Gesamtbetrag der Zuschläge<lcel><lcel><lcel><fcel>0,00<ecel><ecel><nl><fcel>Gesamtbetrag der Abschläge<lcel><lcel><lcel><fcel>-0,00<ecel><ecel><nl><fcel>Rechnungssumme ohne USt.<lcel><lcel><lcel><fcel>473,00<ecel><ecel><nl><fcel>Steuerbetrag<lcel><lcel><lcel><fcel>56,87<ecel><ecel><nl><fcel>Bruttosumme<lcel><lcel><lcel><fcel>529,87<ecel><ecel><nl><fcel>Erhaltene Anzahlungen<lcel><lcel><lcel><fcel>-0,00<ecel><ecel><nl><fcel>Zahlbetrag<lcel><lcel><lcel><fcel>529,87<ecel><ecel><nl></otsl>
+<page_footer><loc_59><loc_449><loc_320><loc_455>Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018</page_footer>
+<page_footer><loc_415><loc_489><loc_452><loc_494>Seite 2 von 2</page_footer>
+</doctag>

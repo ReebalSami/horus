@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | Proposed (5-section discipline ratified at decision time per `horus-decision-discipline`; empirical evidence subsections TBD post-probe execution Steps 7+8 of the plan) |
+| **Status** | **Accepted** (post-probe; verdict: DEFER #54 per `~/Projects/horus/docs/retros/m2d.5-structured-output-probe.md` — combined max-per-model 2/7 below ≥3 threshold) |
 | **Date** | 2026-05-21 |
 | **Milestone** | `experiments-validated` (post-pilot-13 follow-ups; Seq 5 per `~/.windsurf/plans/horus-post-pilot13-rethink-46eaaa.md` §5) |
 | **Authored by** | Cascade D (issue #53 implementation session; plan `~/.windsurf/plans/horus-issue-53-structured-output-probe-4f44ea.md`) |
@@ -212,33 +212,51 @@ The canonical `pilot-13-full` experiment is untouched by both probe arms (per AD
 
 Total: **+22 tests**. Existing 334 → expected 356+.
 
-### Empirical evidence (TBD — populated post-Steps 7+8)
+### Empirical evidence (post-Steps 7+8 — verdict ratified)
 
-> **Status note**: this subsection is TBD at ADR authoring time. Populated post-probe execution from MLflow experiment runs `structured-output-probe-uniform` + `structured-output-probe-native-json`.
+Full retrospective: `docs/retros/m2d.5-structured-output-probe.md` (status: closed). MLflow parent runs: `f9273a9d196742cdaa0831d7dcaa8608` (Arm A) + `fced15055ae244e095cf5347760daf25` (Arm B). Wall-clock per arm: ~12-15 min on M1 Pro / 16 GB (rasterization cached for `EN16931_Einfach`).
 
-#### Arm A (uniform JSON) — TBD
+#### Arm A (uniform JSON) — observed
 
-| Model | Cat | json_validity | canonical_keys | micro_F1 | Predicted | Observed verdict |
-|---|---|:---:|:---:|---:|---|---|
-| ibm-granite/granite-docling-258M-mlx | 1 | TBD | TBD | TBD | NO | TBD |
-| opendatalab/MinerU2.5-Pro-2604-1.2B | 1 | TBD | TBD | TBD | NO | TBD |
-| allenai/olmOCR-2-7B-1025 | 1 | TBD | TBD | TBD | MAYBE | TBD |
-| PaddlePaddle/PaddleOCR-VL | 2 | TBD | TBD | TBD | NO | TBD |
-| zai-org/GLM-OCR | 2 | TBD | TBD | TBD | NO | TBD |
-| google/gemma-4-E4B-it | 3 | TBD | TBD | TBD | YES | TBD |
-| google/paligemma2-3b-mix-448 | 3 | TBD | TBD | TBD | NO | TBD |
+Cohort pooled `micro_F1=0.0367`. 2 of 7 reach `(json_validity=1, canonical_keys≥12)`.
 
-#### Arm B (per-model native + JSON suffix) — TBD
+| Model | Cat | json_valid | keys/16 | micro_F1 | Predicted | Observed |
+|---|:---:|:---:|:---:|---:|---|---|
+| ibm-granite/granite-docling-258M-mlx | 1 | no | 0/16 | 0.000 | NO | NO ✓ |
+| opendatalab/MinerU2.5-Pro-2604-1.2B | 1 | no | 0/16 | 0.000 | NO | NO ✓ |
+| allenai/olmOCR-2-7B-1025 | 1 | YES | 16/16 | **0.222** | MAYBE | **YES** ✓ |
+| PaddlePaddle/PaddleOCR-VL | 2 | no | 0/16 | 0.000 | NO | NO ✓ |
+| zai-org/GLM-OCR | 2 | YES | 16/16 | 0.000 | NO | YES (shape only) ✗ |
+| google/gemma-4-E4B-it | 3 | no | 0/16 | 0.000 | YES | NO ✗ |
+| google/paligemma2-3b-mix-448 | 3 | no | 0/16 | 0.000 | NO | NO ✓ |
 
-(Same 7-row × 4-column table; populated post-Step 8.)
+**Notable Arm A finding**: GLM-OCR exhibited **schema-shape mimicry without value extraction** — copied prompt's `<BT-N>` placeholders verbatim into JSON output. Cosmetically perfect 16/16 keys, zero information content (`micro_F1=0.000`). NEW failure mode not in §"Predicted outcomes"; surfaces a methodological caveat for the threshold criterion (passes shape gate but produces no information).
 
-#### Pre-registered ≥3-of-7 threshold check — TBD
+#### Arm B (per-model native + JSON suffix) — observed
+
+Cohort pooled `micro_F1=0.2034` (5.5× Arm A). 1 of 7 reach `(json_validity=1, canonical_keys≥12)`.
+
+| Model | Cat | json_valid | keys/16 | micro_F1 | Δ vs Arm A |
+|---|:---:|:---:|:---:|---:|---:|
+| ibm-granite/granite-docling-258M-mlx | 1 | no | 0/16 | 0.000 | 0.000 |
+| opendatalab/MinerU2.5-Pro-2604-1.2B | 1 | no | 0/16 | 0.000 | 0.000 |
+| **allenai/olmOCR-2-7B-1025** | 1 | YES | 11/16 | **0.546** | **+0.324** |
+| PaddlePaddle/PaddleOCR-VL | 2 | no | 0/16 | 0.000 | 0.000 |
+| **zai-org/GLM-OCR** | 2 | YES | 15/16 | **0.571** | **+0.571** |
+| google/gemma-4-E4B-it | 3 | no | 0/16 | 0.000 | 0.000 |
+| google/paligemma2-3b-mix-448 | 3 | no | 0/16 | 0.000 | 0.000 |
+
+**Notable Arm B finding**: GLM-OCR with native task prefix `Recognize all text in the image and output in markdown format` + JSON-key-list suffix unlocked **genuine extraction** (`micro_F1=0.571`, BEST result of probe on this single invoice). Shape-mimicry from Arm A disappeared. Pattern: native-task-prefix + extraction-suffix beats schema-example-with-placeholders.
+
+#### Pre-registered ≥3-of-7 threshold check — observed
 
 | Arm | Models reaching (validity=1, canonical_keys ≥ 12) | Verdict |
-|---|---|---|
-| A | TBD | TBD |
-| B | TBD | TBD |
-| Combined (max per model) | TBD | TBD |
+|---|:---:|---|
+| A | 2 / 7 (olmOCR-2-7B, GLM-OCR) | below |
+| B | 1 / 7 (GLM-OCR; olmOCR fell to 11/16) | below |
+| **Combined (max per model)** | **2 / 7** (olmOCR-2-7B, GLM-OCR) | **below ≥3 threshold** |
+
+→ **VERDICT: DEFER #54** (Experiment 2 full-corpus run with `adapter_mode="json"`). Route follow-up to #41 (Layer 2 MONEY-field adapter) + #55 (LoRA fine-tuning ADR). The substrate (schema fields + JSON adapter + harness dispatch + YAML overlays) remains landed-and-available for re-activation when (a) a future fine-tuned model lifts adherence above the threshold, OR (b) the threshold criterion is amended to weight value accuracy alongside shape adherence (capturing the GLM-OCR Arm A shape-mimicry failure mode).
 
 ## Source archival
 
