@@ -242,15 +242,15 @@ Total: **+22 tests**. Existing 334 → expected 356+.
 
 ## Source archival
 
-Per `horus-source-archival`, every cited source archived under `docs/sources/<type>/<slug>.md` at decision time.
+Per `horus-source-archival`, every cited source archived under `docs/sources/<type>/<slug>.md` at decision time. Filenames omit first-author prefix where author confirmation is deferred to the Step 7 deep-read pass (stub-then-clip pattern matches Obsidian web-clipper output shape).
 
-- **arXiv:2509.04469** — `docs/sources/papers/clemencon-2025-multimodal-vision-text-invoice-benchmark.md` (TBD — to be created at Step 6 alongside ADR finalize).
+- **arXiv:2509.04469** — `docs/sources/papers/2025-multimodal-vision-text-invoice-benchmark.md` (stub authored at Step 6; first-author TBD at deep-read).
 - **arXiv:2510.19817** — already archived as `docs/sources/papers/poznanski-2025-olmocr2.md` (per ADR-009 §"Smoke evidence — Cat 1 olmOCR-2-7B").
-- **HF olmOCR-7B discussion #16** — `docs/sources/tools/olmocr-2-7b.md` (already archived per ADR-009; HF discussion #16 reference appended at Step 6).
-- **Medium 2025 — JSON Prompting failure rate** — `docs/sources/articles/rentier-2025-json-prompting-failure-rate.md` (TBD at Step 6).
-- **Medium 2026 — Llama.cpp vs MLX** — `docs/sources/articles/hannecke-2026-llamacpp-vs-mlx-apple-silicon.md` (TBD at Step 6).
+- **HF olmOCR-7B discussion #16** — referenced via the existing `docs/sources/tools/olmocr-2-7b.md` archival (per ADR-009); HF discussion is a live conversation thread, not separately stub-archived.
+- **Medium 2025 — JSON Prompting failure rate** — `docs/sources/articles/2025-json-prompting-failure-rate.md` (stub authored at Step 6; provenance caveat noted in the stub — Medium articles are NOT authoritative-source-class for thesis citations).
+- **Medium 2026 — Llama.cpp vs MLX** — `docs/sources/articles/2026-llamacpp-vs-mlx-apple-silicon.md` (stub authored at Step 6; provenance caveat noted in the stub).
 
-`docs/sources/articles/` directory is created at Step 6 alongside the new article-type stubs (per `horus-source-archival` `<type>` extensibility — `articles/` joins existing `papers/`, `tools/`, `datasets/`, `legal/`).
+`docs/sources/articles/` directory was created at Step 6 alongside the new article-type stubs (per `horus-source-archival` `<type>` extensibility — `articles/` joins existing `papers/`, `tools/`, `datasets/`, `legal/`).
 
 ## Supersession trigger
 
