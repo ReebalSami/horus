@@ -33,7 +33,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -314,6 +314,81 @@ class CohortConfig(BaseModel):
             "scored against the held-out test split (issue #46 substrate)."
         ),
     )
+    prompt_template_override: dict[str, str] | None = Field(
+        default=None,
+        description=(
+            "Optional per-model prompt override map (ADR-018). When set, the "
+            "harness uses `prompt_template_override[model_id]` as the prompt "
+            "for that model instead of the per-model default in "
+            "`horus.vlm_extractor.COHORT_MANIFEST[model_id]['prompt_template']`. "
+            "Partial-coverage dicts are supported: models NOT present in the "
+            "override fall through to their COHORT_MANIFEST default (so a "
+            "single-model probe can override only that model). Keys MUST be a "
+            "subset of `working_models` — typos raise `ValueError` at boot "
+            "(per the cross-field validator below). Used by the structured-"
+            "output probe's two arms (uniform JSON vs per-model native+JSON; "
+            "see `configs/pilot-13-structured-probe-*.yaml`) AND by any future "
+            "prompt-ablation experiment (#54 if probe ratifies). Defaults to "
+            "None, so all existing pilot-13 configs continue to use the "
+            "COHORT_MANIFEST defaults unchanged (back-compat preserved)."
+        ),
+    )
+    adapter_mode: Literal["regex", "json"] = Field(
+        default="regex",
+        description=(
+            "Layer-2 adapter dispatch mode (ADR-018). 'regex' (default) uses "
+            "`src/horus/eval/adapters.py` — the canonical German-label-anchored "
+            "regex extractor that consumes raw OCR / DocTags / markdown VLM "
+            "output and produces the 16-field predicted dict (per ADR-013). "
+            "'json' uses `src/horus/eval/adapters_json.py` — the sibling "
+            "JSON parser that expects single-line JSON output from a model "
+            "prompted via `prompt_template_override`. Binary dispatch (NOT a "
+            "pluggable framework) — at exactly 2 variants this stays under "
+            "ADR-016 supersession trigger #3 (which fires past 2 variants). "
+            "Setting `adapter_mode='json'` requires `prompt_template_override` "
+            "to be set (validated at boot — fail-fast per `horus-config-discipline`)."
+        ),
+    )
+
+    @model_validator(mode="after")
+    def _validate_prompt_override_invariants(self) -> CohortConfig:
+        """Two cross-field invariants for ADR-018 (catches typos + misuse at boot).
+
+        Invariant 1: if `adapter_mode == "json"`, `prompt_template_override` MUST
+        be set. The JSON adapter expects JSON-formatted output; relying on
+        per-model COHORT_MANIFEST defaults (which produce regular OCR / DocTags /
+        markdown) would yield F1=0 across the board.
+
+        Invariant 2: keys in `prompt_template_override` MUST be a subset of
+        `working_models`. Catches YAML typos at boot (e.g.,
+        `opendatalab/mineru2.5-pro-2604-1.2b` vs the canonical PascalCase
+        `opendatalab/MinerU2.5-Pro-2604-1.2B`) BEFORE any model loads.
+
+        Mirrors the strict-matching discipline from `_filter_invoices` (ADR-016)
+        and the cohort.working_models cross-check pattern from
+        `tests/test_config_pilot_13.py::test_pilot_13_working_models_match_canonical_evidence_base`.
+        """
+        if self.adapter_mode == "json" and self.prompt_template_override is None:
+            raise ValueError(
+                "cohort.adapter_mode='json' requires cohort.prompt_template_override "
+                "to be set (per ADR-018 §Decision + integration thoughts). The JSON "
+                "adapter expects single-line JSON output from the model; relying on "
+                "the per-model COHORT_MANIFEST defaults (regular OCR / DocTags / "
+                "markdown) would yield F1=0 across the board. Either set "
+                "prompt_template_override or use adapter_mode='regex' (default)."
+            )
+        if self.prompt_template_override is not None:
+            unknown = set(self.prompt_template_override) - set(self.working_models)
+            if unknown:
+                raise ValueError(
+                    f"cohort.prompt_template_override contains "
+                    f"{len(unknown)} model_id keys not in cohort.working_models: "
+                    f"{sorted(unknown)}. Available working_models: "
+                    f"{sorted(self.working_models)}. Per ADR-018: typos in YAML "
+                    f"override dicts are caught at boot (no silent fall-through "
+                    f"to COHORT_MANIFEST defaults that the user didn't intend)."
+                )
+        return self
 
 
 class ExperimentConfig(BaseSettings):
