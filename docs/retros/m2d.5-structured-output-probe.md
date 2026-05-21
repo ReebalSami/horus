@@ -135,3 +135,79 @@ For `@sprint-review` consideration:
 - **Pre-registration discipline**: this is the second probe (after pilot-13) where pre-registered thresholds + combined-max-per-model rules prevented HARKing. Pattern is generalizable to ANY ML evaluation in HORUS (and downstream projects). Candidate for L3 promotion to `python-ml-uv` template as a thin "preregistration.md" prompt-template under `scaffold/docs/decisions/`.
 - **Prompt-anchoring pattern** (native-task-prefix + extraction-suffix) is potentially generalizable beyond invoice extraction to any VLM-on-document task. Capture as an L2 HORUS rule first (`horus-prompt-anchoring`); if the pattern repeats in 2+ HORUS projects, promote to L3.
 - **Inspector hardcoded experiment name**: file as a HORUS bug; generalizing it is in-scope for issue #56 or similar.
+
+---
+
+## Post-audit amendment (2026-05-21)
+
+> **Status of the original §"Empirical results" + §"Pre-registered threshold check" sections above**: SUPERSEDED. The 2/7 combined-max-per-model count was computed by a metric harness that silently discarded valid model output. The original sections STAY in this retro as the historical record of what was committed at `d01afd1`. The corrected verdict surface is below.
+
+Within hours of committing the DEFER verdict, a per-transcript end-to-end audit (every saved transcript read in full per `no-half-knowledge`) uncovered that the multi-page JSON adapter was structurally broken: Gemma-4-E4B-it had emitted a perfect 16-key JSON object per page on BOTH arms with REAL values, but the adapter returned all-None. The verdict was structurally invalid.
+
+### What the audit found — 9 bugs catalogued in ADR-019
+
+| # | Description | Disposition |
+|---|---|---|
+| **B1** | Multi-page JSON adapter discards real Gemma-4 prediction (load-bearing) | Closed by Wave 3.1 — multipage adapter API + balanced-bracket recovery |
+| **B2** | `_FENCE_RE` non-greedy fence-bias asymmetry (GLM-OCR fenced gets credit; Gemma unfenced doesn't) | Closed by Wave 3.1 |
+| **B3** | Granite-shape 8+ identical placeholder dicts per page | Closed by Wave 3.1 (`_find_first_balanced_dict`) |
+| **B4** | Pre-registered threshold passes schema-mimicry (the GLM-OCR Arm A "Anti-pattern" learning above was a LIVE BUG, not just a methodological caveat) | Closed by Wave 3.2 amended threshold `(... ∧ micro_F1 ≥ 0.1)` |
+| **B5** | `tests/test_adapters_json.py` zero multipage coverage | Closed by Wave 3.1 (13 new TDD tests) |
+| **B6/B7/B11** | Granite / PaddleOCR / MinerU Arm A decoder-loops on JSON OOD prompts | DIAGNOSTIC only — model-behavior, not extractor bugs. No code change per ADR-020. |
+| **B8** | PaliGemma2 base-VLM in 7-of-7 denominator was a pre-registration error (HF model card knowable at ADR-009 §smoke) | Closed by Wave 3.2 N-of-6 denominator (ADR-021) |
+| **B9** | `scripts/inspect_pilot_13.py` hardcoded experiment name | Out-of-scope — cascade-system queue already captured |
+
+### Corrected verdict surface (2 × 2 matrix per ADR-021)
+
+Computed by `scripts/compute_probe_verdict.py` from the rescore artefacts (`eval/probe-rescore-arm-{a,b}.txt`) using the FIXED JSON adapter:
+
+| Denominator | Pre-registered `(json_validity ∧ canonical_keys ≥ 12)` | Amended `(... ∧ micro_F1 ≥ 0.1)` |
+|---|---|---|
+| **N of 7** (PaliGemma counted) | **FILE (3 of 7)** | **DEFER (2 of 7)** |
+| **N of 6** (PaliGemma flagged) | **FILE (3 of 6)** | **DEFER (2 of 6)** |
+
+- **Pre-registered passers** (cells A + C): olmOCR-2-7B (F1=0.6667), Granite Arm A (F1=0 — schema-mimicry), GLM-OCR Arm B (F1=0.5714).
+- **Amended passers** (cells B + D): olmOCR-2-7B + GLM-OCR (the 2 models simultaneously satisfying schema-conformance AND F1≥0.1).
+
+Cohort pooled micro_F1 (under fixed adapter):
+- **Arm A**: 0.2581 (vs. ~0.04 originally reported — the adapter discarded most real values)
+- **Arm B**: 0.3438
+
+**Most striking corrected result**: Gemma-4-E4B-it now scores **F1=0.6957 on BOTH arms** — the highest in the cohort. The original retro reported "predicted YES, observed NO" for Gemma; the corrected answer is "predicted YES, observed YES (highest in cohort)". The "observed NO" was the adapter bug, not the model.
+
+### MLflow audit trail
+
+Per ADR-020 `rescore_of` tag convention. Original buggy parent runs preserved untouched on disk + in MLflow:
+
+| Arm | Original (buggy, preserved) | Rescore (corrected, new) |
+|---|---|---|
+| A | `f9273a9d196742cdaa0831d7dcaa8608` | `0968311cb471414ead9c321b5719c68d` |
+| B | `fced15055ae244e095cf5347760daf25` | `923855e9b39d45329eb889957600bc1a` |
+
+### Revised learnings (post-audit)
+
+The original §"Learnings" section's findings are reinterpreted in light of the audit:
+
+- **Pattern (worked unexpectedly well — UPDATED)**: "Native task prefix + JSON-key-list suffix" still holds for GLM-OCR (0.5714 Arm B). NEW: **honest null-emission** (Gemma-4 emits JSON `null` for genuinely-missing fields rather than hallucinating) is a *better* pattern than full-schema-fill, but the pre-registered threshold penalizes it. Future probe re-design should pre-register a `keys_with_decision ≥ 12` metric (crediting null-for-missing).
+- **Anti-pattern (backfired — RECLASSIFIED)**: GLM-OCR Arm A schema-mimicry was correctly identified in the original retro as a "methodological caveat". The audit promoted it from caveat to **LIVE BUG B4**. The amended threshold (F1≥0.1) closes it.
+- **Friction (suggests L1/L3 gap — UPDATED)**: the bigger friction discovered by the audit is the **load-bearing adapter bug B1**. Cascade D shipped the DEFER verdict without reading every transcript end-to-end. **Captured as cross-project learning**: any "verdict committed" must be preceded by per-evidence end-to-end audit (the `no-half-knowledge` rule extended to verdicts, not just code).
+- **Trade-off insight (CONFIRMED)**: pre-registration discipline worked exactly as designed — it prevented post-hoc threshold-shopping. The amended threshold is honest methodology-discovery (ratified by ADR-021) because it's reported ALONGSIDE the pre-registered threshold, not in place of it.
+- **NEW Tooling discovery**: `scripts/rescore.py` (ADR-016) already had adapter A/B re-scoring infrastructure that could be extended with 4 additive CLI flags (`--baseline-adapter-module`, `--mlflow-experiment-name`, `--rescore-of-run-id`, plus the multipage migration) rather than building a parallel `scripts/rescore_probe.py`. Validates ADR-016's reuse-friendly design.
+
+### Cross-project candidates (UPDATED for `@sprint-review`)
+
+- **Pre-registration discipline** — UNCHANGED candidate. Worked twice now (pilot-13 + this probe).
+- **Per-evidence audit before verdict commit** — NEW candidate. The discipline: any "verdict committed" requires per-transcript / per-MLflow-run / per-artefact audit at the level of the bug catalog ADR-019. Promote to L1 rule as an extension of `make-sure-it-works` (which already covers code; this extends to evidence interpretation). Working title: `audit-before-verdict`.
+- **`rescore_of` MLflow tag convention** (ADR-020) — generalizable to ANY post-audit MLflow rescore in HORUS or downstream projects. Promote to L3 template (`python-ml-uv/rules/rescore-methodology.md`) once a second project uses it.
+- **2 × 2 verdict matrix shape** (ADR-021) — generalizable when a probe's pre-registered threshold has both (a) a clear amendment that addresses a discovered failure mode AND (b) a denominator question that affects the verdict surface. Pattern matches HELM §6 multi-metric reporting; CheckList multi-dimensional capability reporting. Could become an L2 HORUS skill `@probe-verdict-matrix` first; promote to L3 when reused.
+- **Inspector hardcoded experiment name** (B9) — still pending; file as separate HORUS issue post-merge.
+
+### Refs
+
+- ADR-019 (probe bug catalog — the 9 bugs)
+- ADR-020 (rescore methodology — the `rescore_of` tag + classification rule)
+- ADR-021 (verdict matrix amendments — the 2 × 2 surface)
+- ADR-018 §"Post-audit amendment" (the corrected ADR-018 verdict section)
+- `eval/probe-verdict-matrix.md` (the rendered verdict surface)
+- `~/.windsurf/plans/horus-probe-bug-cleanup-and-reverdict-4f44ea.md` (planning record)
+- Commits: `27a72dd` (ADR-019), `a23a3b4` (Wave 3.1), `df45611` (Wave 3.2), `0ccbf0f` (Phase 4), `22ec028` (Phase 5)

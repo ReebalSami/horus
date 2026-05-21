@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | **Accepted** (post-probe; verdict: DEFER #54 per `~/Projects/horus/docs/retros/m2d.5-structured-output-probe.md` — combined max-per-model 2/7 below ≥3 threshold) |
+| **Status** | **Accepted with post-audit amendments** (original verdict DEFER #54 committed at `d01afd1` was structurally invalid per ADR-019 §B1 — multi-page adapter discarded valid model output. Verdict superseded by the 2 × 2 matrix in ADR-021 + `eval/probe-verdict-matrix.md`. See §"Post-audit amendment" below for the corrected verdict surface.) |
 | **Date** | 2026-05-21 |
 | **Milestone** | `experiments-validated` (post-pilot-13 follow-ups; Seq 5 per `~/.windsurf/plans/horus-post-pilot13-rethink-46eaaa.md` §5) |
 | **Authored by** | Cascade D (issue #53 implementation session; plan `~/.windsurf/plans/horus-issue-53-structured-output-probe-4f44ea.md`) |
@@ -257,6 +257,92 @@ Cohort pooled `micro_F1=0.2034` (5.5× Arm A). 1 of 7 reach `(json_validity=1, c
 | **Combined (max per model)** | **2 / 7** (olmOCR-2-7B, GLM-OCR) | **below ≥3 threshold** |
 
 → **VERDICT: DEFER #54** (Experiment 2 full-corpus run with `adapter_mode="json"`). Route follow-up to #41 (Layer 2 MONEY-field adapter) + #55 (LoRA fine-tuning ADR). The substrate (schema fields + JSON adapter + harness dispatch + YAML overlays) remains landed-and-available for re-activation when (a) a future fine-tuned model lifts adherence above the threshold, OR (b) the threshold criterion is amended to weight value accuracy alongside shape adherence (capturing the GLM-OCR Arm A shape-mimicry failure mode).
+
+## Post-audit amendment (2026-05-21)
+
+> **Status of the original §"Empirical evidence" verdict above**: SUPERSEDED. The 2/7 combined-max-per-model count was computed by a metric harness that silently discarded valid model output (Gemma-4 emitted a perfect 16-key JSON object per page on BOTH arms with real values; the multi-page JSON adapter returned all-None per ADR-019 §B1). The §"Empirical evidence" table above STAYS in this ADR as the historical record of what was committed at `d01afd1`. The corrected verdict surface is below.
+
+### Bugs discovered post-merge (ADR-019)
+
+Locked catalog in `docs/decisions/ADR-019-probe-bug-catalog.md`. 9 confirmed rows, severity-classified, mechanism cited from saved transcripts:
+
+| # | Class | Severity | Disposition |
+|---|---|---|---|
+| **B1** | Adapter multipage parse failure (load-bearing — discards real Gemma-4 prediction) | HIGH | Closed by Wave 3.1 (commit `a23a3b4`) |
+| **B2** | `_FENCE_RE` non-greedy fence-bias asymmetry (GLM-OCR fenced gets credit; Gemma unfenced doesn't) | HIGH | Closed by Wave 3.1 |
+| **B3** | Granite-shape repeated-dicts (8+ identical placeholder dicts per page) | MEDIUM | Closed by Wave 3.1 (balanced-bracket recovery) |
+| **B4** | Pre-registered threshold passes schema-mimicry (GLM-OCR Arm A: 16 `<BT-N>` keys, F1=0) | MEDIUM (methodology) | Closed by Wave 3.2 amended threshold (ADR-021) |
+| **B5** | `tests/test_adapters_json.py` zero multipage coverage | HIGH (preventive) | Closed by Wave 3.1 (13 new TDD tests) |
+| **B6** | Granite Arm A decoder-loop on JSON OOD prompt | DIAGNOSTIC (model-behavior) | No code change — documented per ADR-020 |
+| **B7** | PaddleOCR-VL Arm A decoder-collapse (1024 lines of `0`) | DIAGNOSTIC (model-behavior) | No code change — documented per ADR-020 |
+| **B8** | PaliGemma2 base-VLM in 7-of-7 denominator (pre-registration error) | LOW (methodology) | Closed by Wave 3.2 N-of-6 denominator (ADR-021) |
+| **B11** | MinerU Arm A decoder-loop (33min wall-clock; `"value_type":` token repetition) | DIAGNOSTIC (model-behavior) | No code change — documented per ADR-020 |
+
+B9 (`scripts/inspect_pilot_13.py` hardcoded experiment) is out-of-scope per ADR-019; cascade-system queue entry already captured.
+
+### Corrected verdict surface (2 × 2 matrix per ADR-021)
+
+Computed by `scripts/compute_probe_verdict.py` from the rescore artefacts (`eval/probe-rescore-arm-{a,b}.txt`) using the FIXED JSON adapter (`horus.eval.adapters_json` post-Wave-3.1). Full per-model breakdown + cell details in `eval/probe-verdict-matrix.md`.
+
+| Denominator | Pre-registered `(json_validity ∧ canonical_keys ≥ 12)` | Amended `(... ∧ micro_F1 ≥ 0.1)` |
+|---|---|---|
+| **N of 7** (PaliGemma counted) | **FILE (3 of 7)** | **DEFER (2 of 7)** |
+| **N of 6** (PaliGemma flagged) | **FILE (3 of 6)** | **DEFER (2 of 6)** |
+
+- **Pre-registered passers**: `allenai/olmOCR-2-7B-1025` (F1 ≈ 0.6667), `ibm-granite/granite-docling-258M-mlx` (Arm A F1 = 0 — schema-mimicry), `zai-org/GLM-OCR` (Arm B F1 ≈ 0.5714; Arm A F1 = 0 schema-mimicry).
+- **Amended passers**: `allenai/olmOCR-2-7B-1025`, `zai-org/GLM-OCR` (the 2 models that simultaneously satisfy schema-conformance AND non-trivial F1).
+- **Disagreement diagonal (cell A FILE → cell D DEFER)**: the schema-mimicry gap is empirically material; PaliGemma denominator flag is methodologically honest but doesn't tip the verdict on this cohort.
+
+Honest disclosure: the matrix design is a methodology-discovery (ADR-019 found two failure modes unanticipated in §"Predicted outcomes" of this ADR — schema-mimicry + base-VLM in denominator), NOT a goalpost-move. Pre-registered cells (A + C) compute identically to the ADR-018 pre-registration; amended cells (B + D) are purely additive reporting.
+
+### Per-model diagnosis (corrected — fixed adapter against saved transcripts)
+
+| Model | Diagnosis |
+|---|---|
+| `allenai/olmOCR-2-7B-1025` | **Passes BOTH thresholds in both arms** (F1 = 0.6667 / 16 keys, both arms). Arm A: unfenced JSON page 1 with real values + fenced JSON page 2 with string-"null" + footer money. Arm B: fenced JSON both pages; page 2 has line-item-content hallucinations (e.g., `"seller_name": "Joghurt Banane"`) that first-non-null-wins suppresses in favor of page 1's real values. The most consistent JSON-prompt-honoring model in the cohort. |
+| `google/gemma-4-E4B-it` | **Highest F1 in cohort (0.6957)**, BUT fails canonical_keys ≥ 12 in BOTH arms (9 of 16 keys non-null). Gemma correctly emits JSON `null` for genuinely-missing fields (no `seller_vat_id`, no `buyer_reference`, no `line_total_amount` on page 1, etc.). The pre-registered threshold's non-null-count interpretation penalizes this honesty. Surfaced as a methodology asymmetry in ADR-021 §"Canonical_keys interpretation"; future probe re-design should pre-register a `keys_with_decision` metric that credits null-for-missing. Arms A + B are IDENTICAL by overlay design (Gemma is general-instruction-tuned; native prompt ≡ uniform prompt). |
+| `zai-org/GLM-OCR` | **Passes BOTH thresholds in Arm B** (16 keys, F1 = 0.5714); **schema-mimicry in Arm A** (16 placeholder `<BT-N>` keys, F1 = 0). The combined-max-per-arm rule lets Arm B's real extraction surface. Arm B page 2 has line-item-content hallucinations (key reuse with table content); first-non-null-wins keeps page 1's real values. Demonstrates the fence-aware adapter is a necessary fix BUT the model's Arm A schema-mimicry is a real failure mode — the threshold's amended F1 gate (B4) catches it correctly. |
+| `ibm-granite/granite-docling-258M-mlx` | **Passes pre-registered Arm A on schema-mimicry alone** (16 placeholder `<BT-N>` keys post-balanced-bracket recovery; F1 = 0). Arm B emits DocTags layout (model's native format; JSON suffix ignored — Cat-1 task-prefix lock). Granite is the canonical "schema-mimic passes, real-extraction fails" example that motivates ADR-021's amended threshold. |
+| `opendatalab/MinerU2.5-Pro-2604-1.2B` | **Fails BOTH thresholds in BOTH arms**. Arm A: 1970s wall-clock (33 min cap-hit) emitting `"value_type":` token-sequence repetition (decoder-loop on JSON OOD prompt; B11). Arm B: DocTags-table format with real values (Cat-1 task-prefix lock; JSON suffix ignored). Model-behavior failure per ADR-020; no extractor fix would help. |
+| `PaddlePaddle/PaddleOCR-VL` | **Fails BOTH thresholds in BOTH arms**. Arm A: corrupted Chinese-mixed pseudo-JSON page 1 + 1024 lines of literal `0` page 2 (decoder-collapse; quant × OOD prompt; B7). Arm B (native `OCR:` prefix + JSON suffix): clean OCR text page 1 + integers 1-575 page 2 (page-2 collapse). Model-behavior failure per ADR-020. |
+| `google/paligemma2-3b-mix-448` | **Fails BOTH thresholds in BOTH arms by construction** — base VLM per HF model card. Arm A: verbatim refusal ("Sorry, as a base VLM I am not trained..."). Arm B: partial cooperation ("OK\<eos\>" + key list, no JSON object). Flagged out of N-of-6 denominator per ADR-019 §B8 + ADR-021. Inclusion in the 7-of-7 denominator was a pre-registration error (knowable at ADR-009 §smoke time). |
+
+### MLflow audit trail (new parent runs cross-linked to original buggy parents)
+
+Per ADR-020 `rescore_of` tag convention. Original buggy parent runs UNTOUCHED on disk + in MLflow:
+
+| Arm | Original parent (buggy, untouched) | New rescore parent (corrected) | Cohort pooled micro_F1 |
+|---|---|---|---|
+| Arm A (`structured-output-probe-uniform`, exp_id 7) | `f9273a9d196742cdaa0831d7dcaa8608` | `0968311cb471414ead9c321b5719c68d` | **0.2581** (vs. all-None for the buggy adapter) |
+| Arm B (`structured-output-probe-native-json`, exp_id 8) | `fced15055ae244e095cf5347760daf25` | `923855e9b39d45329eb889957600bc1a` | **0.3438** |
+
+Cross-link query: `mlflow.search_runs(experiment_ids=[exp_id], filter_string="tags.rescore_of = '<original_id>'")`.
+
+### Status amendments locked
+
+- **Status field** (top metadata table): "Accepted with post-audit amendments" — see §"Post-audit amendment" (this section).
+- **Threshold pre-registration** (§"Pre-registered conditional verdict"): VERBATIM PRESERVED in cells A + C of the matrix.
+- **Verdict** (originally DEFER #54): SUPERSEDED by the 2 × 2 matrix above; under amended × N-of-6 (cell D) the verdict is DEFER (2 of 6) — same FILE/DEFER decision as the original buggy verdict, BUT with honest metrics + honest methodology.
+
+### What this means for downstream issues
+
+- **#54 (Experiment 2)**: cell A's FILE (3 of 7 pre-registered) suggests the JSON-adapter substrate is viable for the full 26-invoice corpus run, but cell D's DEFER (2 of 6 amended) flags that only 2 of 6 instruction-tuned models do non-trivial extraction. **Recommendation**: file #54 BUT scope it tightly to the 2 amended-passing models (olmOCR + GLM-OCR Arm B) for the cross-corpus validation; defer the schema-mimicry models (Granite Arm A; GLM-OCR Arm A) per the amended threshold.
+- **#41 (Layer 2 MONEY adapter)**: still relevant — Gemma's F1 = 0.6957 with regex would likely match or beat its JSON F1 once the MONEY-field gap is closed; JSON path doesn't obviate regex improvements.
+- **#55 (LoRA fine-tuning ADR)**: now MORE relevant — the amended verdict's DEFER (2 of 6) suggests fine-tuning is a credible path for the 4 instruction-tuned models that failed (Gemma + Granite + MinerU + PaddleOCR). Fine-tuning Gemma specifically could resolve its canonical_keys gap (model already extracts well; fine-tune to emit all 16 keys including ones it currently emits as null).
+
+### Refs
+
+- ADR-019 (probe bug catalog — the 9 bugs this amendment closes / documents)
+- ADR-020 (rescore methodology — the offline-rescore-from-saved-transcripts policy applied here)
+- ADR-021 (verdict matrix amendments — the 2 × 2 surface ratified here)
+- `eval/probe-verdict-matrix.md` (the rendered verdict surface)
+- `eval/probe-rescore-arm-{a,b}.txt` (the per-arm rescore output)
+- `scripts/compute_probe_verdict.py` (the verdict matrix orchestrator)
+- `scripts/rescore.py` (the rescore engine)
+- `~/.windsurf/plans/horus-probe-bug-cleanup-and-reverdict-4f44ea.md` (planning record for the post-audit work)
+- Commits: `27a72dd` (ADR-019), `a23a3b4` (Wave 3.1), `df45611` (Wave 3.2), `0ccbf0f` (Phase 4 rescore extension), `22ec028` (Phase 5 verdict matrix)
+
+---
 
 ## Source archival
 
