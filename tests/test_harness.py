@@ -292,12 +292,18 @@ def _make_test_cfg(
     experiment_name: str | None = None,
     invoice_subset: list[str] | None = None,
     dev_only: bool = False,
+    adapter_mode: str = "regex",
+    prompt_template_override: dict[str, str] | None = None,
 ) -> ExperimentConfig:
     """Build an ExperimentConfig for harness tests with isolated MLflow + cache paths.
 
     Extended for ADR-016 tests: `experiment_name`, `invoice_subset`, `dev_only`
     kwargs allow constructing dev-tier configs (HARKing-prevention guard) and
     YAML-subset-vs-CLI-precedence configs.
+
+    Extended for ADR-018 tests: `adapter_mode` + `prompt_template_override`
+    kwargs allow constructing structured-output probe configs (per-model prompt
+    override map + adapter dispatch mode).
     """
     if working_models is None:
         working_models = ["ibm-granite/granite-docling-258M-mlx"]
@@ -324,6 +330,8 @@ def _make_test_cfg(
             resume_on_existing_run=resume,
             invoice_subset=invoice_subset,
             dev_only=dev_only,
+            adapter_mode=adapter_mode,  # type: ignore[arg-type]
+            prompt_template_override=prompt_template_override,
         ),
     )
 
@@ -866,6 +874,231 @@ def test_run_cohort_logs_perf_metrics_in_nested_run_mps_backend(tmp_path: Path) 
     # Counts unchanged — these always work regardless of decode-tps availability.
     assert metrics["perf.generation_tokens_total"] == 128.0
     assert metrics["perf.pages_extracted_ok"] == 2.0
+
+
+# ===========================================================================
+# ADR-018 — adapter_mode + prompt_template_override dispatch (issue #53)
+# ===========================================================================
+
+
+@dataclass
+class _MockJSONExtractor:
+    """Mock extractor that emits VALID JSON containing some canonical FIELDS keys.
+
+    Used by the ADR-018 json-mode dispatch tests: when the harness routes through
+    `adapters_json` (not `adapters_regex`), this JSON output parses cleanly and
+    produces a non-empty predicted_dict the scorer can act on.
+    """
+
+    model_id: str
+    backend_name: str = "mock-json-extractor"
+    _loaded: bool = False
+    _calls: int = 0
+
+    def load(self) -> None:
+        self._loaded = True
+
+    def extract(self, image_path: Path, prompt: str, max_tokens: int) -> ExtractionResult:
+        self._calls += 1
+        # Synthetic JSON output mimicking what a JSON-prompted VLM would emit.
+        # Includes the 4 fields the EN16931_Einfach.pdf invoice ground-truth populates
+        # so the scorer can compute non-trivial F1 numbers (proves the dispatched
+        # adapter_module produced a parseable predicted_dict, not just None).
+        text = (
+            '{"invoice_number": "471102", '
+            '"issue_date": "2018-03-05", '
+            '"seller_name": "Lieferant GmbH", '
+            '"buyer_name": "Kunden AG"}'
+        )
+        return ExtractionResult(
+            model_id=self.model_id,
+            backend_name=self.backend_name,
+            text=text,
+            extract_seconds=0.01,
+        )
+
+    def unload(self) -> None:
+        self._loaded = False
+
+
+def test_run_cohort_regex_adapter_mode_is_default_back_compat(tmp_path: Path) -> None:
+    """Default `cohort.adapter_mode` is "regex" -- existing pilot-13 configs
+    continue to dispatch through `adapters_regex` unchanged (back-compat preserved).
+
+    Verifies the parent run tag and the transcript header both record the
+    regex mode when no adapter_mode is explicitly set.
+    """
+    cfg = _make_test_cfg(tmp_path)  # adapter_mode defaults to "regex"
+    assert cfg.cohort is not None
+    assert cfg.cohort.adapter_mode == "regex", "default not propagating through factory"
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockExtractorForHarness(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+
+    assert result.n_completed == 1, "regex baseline should still complete cleanly"
+
+    import mlflow  # noqa: PLC0415
+
+    parent = mlflow.MlflowClient().get_run(result.parent_run_id)
+    assert parent.data.tags.get("adapter_mode") == "regex", (
+        "parent run MUST tag adapter_mode='regex' for the default path (audit-trail)"
+    )
+
+    # Transcript header records the dispatched adapter.
+    transcript_dir = tmp_path / "transcripts"
+    transcripts = list(transcript_dir.glob("*.txt"))
+    assert len(transcripts) == 1, f"expected 1 transcript, got {len(transcripts)}: {transcripts}"
+    header_lines = transcripts[0].read_text(encoding="utf-8").splitlines()[:10]
+    adapter_line = next((line for line in header_lines if line.startswith("# Adapter:")), None)
+    assert adapter_line == "# Adapter:  regex", (
+        f"transcript MUST record dispatched adapter; got: {adapter_line!r}"
+    )
+
+
+def test_run_cohort_json_adapter_mode_with_full_overrides(tmp_path: Path) -> None:
+    """`cohort.adapter_mode="json"` + full `prompt_template_override` routes
+    every (model, invoice) tuple through `adapters_json`.
+
+    Verifies the JSON adapter is actually invoked (mock extractor emits JSON
+    that only the JSON adapter can parse; if dispatch was wrong, predicted_dict
+    would be all-None and no per-field scores would be positive).
+    """
+    cfg = _make_test_cfg(
+        tmp_path,
+        adapter_mode="json",
+        prompt_template_override={
+            "ibm-granite/granite-docling-258M-mlx": (
+                'Extract invoice fields as JSON: {"invoice_number": "...", ...}'
+            ),
+        },
+    )
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockJSONExtractor(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+
+    assert result.n_completed == 1
+    # JSON adapter MUST have parsed the mock's JSON output -> at least one positive
+    # per-field score. If dispatch routed to adapters_regex by mistake, the regex
+    # extractor would NOT find German labels in the JSON (since the mock emits
+    # English-keyed JSON, not "Rechnungsnummer: ..." German prose), so per-field
+    # scores would all be zero. This is the load-bearing dispatch invariant.
+    flattened = [
+        score for per_field in result.per_field_heatmap.values() for score in per_field.values()
+    ]
+    assert any(s > 0.0 for s in flattened), (
+        "JSON adapter dispatch failed: the mock emitted English-keyed JSON that "
+        "ONLY adapters_json can parse; all-zero scores means the regex adapter "
+        "was used by mistake."
+    )
+
+    import mlflow  # noqa: PLC0415
+
+    parent = mlflow.MlflowClient().get_run(result.parent_run_id)
+    assert parent.data.tags.get("adapter_mode") == "json", (
+        "parent run MUST tag adapter_mode='json' for the JSON path"
+    )
+
+
+def test_run_cohort_partial_prompt_override_falls_through_to_manifest(tmp_path: Path) -> None:
+    """Partial-coverage `prompt_template_override` (one of two models overridden)
+    falls through to `COHORT_MANIFEST[model_id]['prompt_template']` for the
+    un-overridden model.
+
+    Verifies the harness's `prompt_override.get(model_id, manifest_default)`
+    fall-through path -- the canonical "single-model probe under a multi-model
+    cohort" use case from ADR-018 §"Architecture" item 1.
+    """
+    overridden_model = "ibm-granite/granite-docling-258M-mlx"
+    other_model = "google/gemma-4-E4B-it"
+    override_prompt = 'JSON probe prompt for granite only: {"invoice_number": "..."}'
+
+    cfg = _make_test_cfg(
+        tmp_path,
+        working_models=[overridden_model, other_model],
+        # adapter_mode stays "regex" so the json-validator doesn't reject the
+        # partial-coverage override (validator only fires when adapter_mode="json").
+        prompt_template_override={overridden_model: override_prompt},
+    )
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockExtractorForHarness(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+
+    assert result.n_completed == 2, "both models should complete (override is partial)"
+
+    # Read both transcript headers; verify the prompt-preview line reflects the
+    # override for granite and the COHORT_MANIFEST default for gemma.
+    transcript_dir = tmp_path / "transcripts"
+    transcripts = sorted(transcript_dir.glob("*.txt"))
+    assert len(transcripts) == 2, f"expected 2 transcripts, got {len(transcripts)}"
+
+    headers = {t.stem: t.read_text(encoding="utf-8").splitlines()[:10] for t in transcripts}
+
+    def _prompt_line(lines: list[str]) -> str:
+        match = next((line for line in lines if line.startswith("# Prompt:")), None)
+        assert match is not None, f"missing # Prompt: header in {lines}"
+        return match
+
+    # Granite's transcript records the override prompt (first 80 chars).
+    granite_transcript_stem = next(stem for stem in headers if "granite" in stem.lower())
+    granite_prompt_line = _prompt_line(headers[granite_transcript_stem])
+    assert override_prompt[:60] in granite_prompt_line, (
+        f"granite's transcript MUST record the override prompt; got: {granite_prompt_line!r}"
+    )
+
+    # Gemma's transcript records something DIFFERENT (the manifest default).
+    gemma_transcript_stem = next(stem for stem in headers if "gemma" in stem.lower())
+    gemma_prompt_line = _prompt_line(headers[gemma_transcript_stem])
+    assert override_prompt[:60] not in gemma_prompt_line, (
+        f"gemma's transcript MUST NOT record granite's override; got: {gemma_prompt_line!r} "
+        f"(would mean dispatch leaked across models)"
+    )
+
+
+def test_run_cohort_adapter_mode_tag_propagates_to_nested_runs(tmp_path: Path) -> None:
+    """`adapter_mode` MLflow tag is set on BOTH parent and per-(model, invoice)
+    nested runs -- enables `mlflow.search_runs(filter="tags.adapter_mode='json'")`
+    to find probe nested runs without re-walking the parent linkage.
+    """
+    cfg = _make_test_cfg(
+        tmp_path,
+        adapter_mode="json",
+        prompt_template_override={
+            "ibm-granite/granite-docling-258M-mlx": '{"invoice_number": "..."}'
+        },
+    )
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockJSONExtractor(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+
+    assert result.n_completed == 1
+
+    import mlflow  # noqa: PLC0415
+
+    client = mlflow.MlflowClient()
+    parent = client.get_run(result.parent_run_id)
+    assert parent.data.tags.get("adapter_mode") == "json"
+
+    nested_runs = client.search_runs(
+        experiment_ids=[parent.info.experiment_id],
+        filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
+    )
+    assert len(nested_runs) == 1, f"expected 1 nested run, got {len(nested_runs)}"
+    nested = nested_runs[0]
+    assert nested.data.tags.get("adapter_mode") == "json", (
+        f"nested run MUST inherit adapter_mode tag; got tags={sorted(nested.data.tags)}"
+    )
 
 
 def test_run_cohort_dev_only_false_tags_runs_as_false(tmp_path: Path) -> None:
