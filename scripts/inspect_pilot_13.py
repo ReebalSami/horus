@@ -124,24 +124,37 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
     timing / throughput / memory axis. Same source data (the list of
     MLflow nested Run objects already in memory); independent rendering.
 
-    Columns:
-      - `model`     : model_id (HF canonical name)
-      - `n`         : count of FINISHED tuples with perf.* metrics
-      - `wall_s`    : mean `extract_seconds_total` (the entire scoring
-                      wall-clock; includes rasterization + adapter + scorer)
-      - `tps`       : mean `perf.generation_tps_mean` (native per-model
-                      tokenizer; NOT cross-model comparable — caveat per
-                      ADR-017 §"Decision 5")
-      - `chars/s`   : mean `perf.chars_per_sec` (tokenizer-agnostic
-                      sanity-check; pairs with `tps`)
-      - `gen_tok`   : mean `perf.generation_tokens_total` per tuple
-      - `peak_GB`   : mean `perf.peak_memory_gb` — for MLX models this is
-                      the true peak via `mx.get_peak_memory()`; for MPS
-                      models this is the post-extract snapshot via
-                      `torch.mps.driver_allocated_memory()` (ADR-017 §D2.A;
-                      documented limitation — snapshot, not transient peak)
-      - `%_max`     : `max(peak_GB) / mps_ceiling_gb * 100` if the parent
-                      logged `perf.mps_recommended_max_gb`; else blank
+    Columns (ADR-017 Amendment 1 — the TPS metric was split into two
+    after AA-methodology research; see ADR-017 §"Amendment 1"):
+      - `model`        : model_id (HF canonical name)
+      - `n`            : count of FINISHED tuples with perf.* metrics
+      - `wall_s`       : mean `extract_seconds_total` (entire scoring
+                         wall-clock; includes rasterization + adapter + scorer)
+      - `decode_tps`   : mean `perf.decode_tps_mean` — DECODE-ONLY tokens-per-second
+                         (matches Artificial Analysis "Output Speed" definition
+                         + MLX-VLM's `GenerationResult.generation_tps`). Available
+                         only for MLX-routed extractors (the library reports
+                         decode-only timing natively). Renders as `—` for
+                         Transformers-MPS rows (decode-only unmeasurable via
+                         public `transformers.generate(...)` API). Native
+                         per-model tokenizer — NOT cross-model comparable in
+                         absolute terms (re-tokenize with tiktoken o200k_base
+                         for AA-strict cross-model comparison; deferred to H4).
+      - `e2e_tps`      : mean `perf.inference_tps_mean` — END-TO-END
+                         tokens-per-second (includes prompt encoding +
+                         decode + post-processing). Always computable.
+                         Use this for user-perceived latency claims;
+                         use `decode_tps` for model-decode-speed claims.
+      - `chars/s`      : mean `perf.chars_per_sec` (e2e, tokenizer-agnostic
+                         sanity-check; pairs with `e2e_tps`)
+      - `gen_tok`      : mean `perf.generation_tokens_total` per tuple
+      - `peak_GB`      : mean `perf.peak_memory_gb` — for MLX models this is
+                         the true peak via `mx.get_peak_memory()`; for MPS
+                         models this is the post-extract snapshot via
+                         `torch.mps.driver_allocated_memory()` (ADR-017 §D2.A;
+                         documented limitation — snapshot, not transient peak)
+      - `%_max`        : `max(peak_GB) / mps_ceiling_gb * 100` if the parent
+                         logged `perf.mps_recommended_max_gb`; else `—`
 
     Sort: ascending by mean wall_s — fastest models top, slowest bottom.
     Eye-friendly for the H4 latency-efficiency story.
@@ -150,7 +163,10 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
     (no perf.* metrics on any nested run) get a single-line note instead
     of a table. Mixed runs (some tuples have perf.*, some don't) report
     the perf table over the perf-equipped subset + a footer note with
-    the un-equipped count.
+    the un-equipped count. Pre-Amendment-1 runs that logged the legacy
+    `perf.generation_tps_mean` are read back as `e2e_tps` (the legacy
+    formula was end-to-end despite the misleading field name); their
+    `decode_tps` renders as `—`.
 
     Args:
         nested: list of FINISHED nested Run objects (from MLflow). Same
@@ -178,7 +194,8 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
 
     # Per-model accumulators (mean across all FINISHED + perf-equipped tuples).
     per_model_wall: dict[str, list[float]] = defaultdict(list)
-    per_model_tps: dict[str, list[float]] = defaultdict(list)
+    per_model_decode_tps: dict[str, list[float]] = defaultdict(list)
+    per_model_e2e_tps: dict[str, list[float]] = defaultdict(list)
     per_model_chars: dict[str, list[float]] = defaultdict(list)
     per_model_tokens: dict[str, list[float]] = defaultdict(list)
     per_model_peak: dict[str, list[float]] = defaultdict(list)
@@ -193,13 +210,34 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
         metrics = r.data.metrics
 
         wall_s = metrics.get("extract_seconds_total")
-        has_perf = metrics.get("perf.generation_tps_mean") is not None
+        # ADR-017 Amendment 1: prefer the new split metrics; fall back to
+        # legacy `perf.generation_tps_mean` (which was end-to-end despite
+        # the misleading name). Detection: a run is "perf-equipped" if
+        # ANY of the three TPS metric keys is present.
+        has_decode_tps = metrics.get("perf.decode_tps_mean") is not None
+        has_inference_tps = metrics.get("perf.inference_tps_mean") is not None
+        has_legacy_tps = metrics.get("perf.generation_tps_mean") is not None
+        has_perf = has_decode_tps or has_inference_tps or has_legacy_tps
 
         if has_perf:
             n_with_perf += 1
             if wall_s is not None:
                 per_model_wall[m].append(float(wall_s))
-            per_model_tps[m].append(float(metrics["perf.generation_tps_mean"]))
+            # decode_tps: only from Amendment-1 metric (decode-only); legacy
+            # runs had no decode-only metric. Skip the bucket when 0.0 —
+            # MLflow logged 0.0 means decode_tps_available was false (MPS
+            # backend); rendering as — is the right semantic, not "0.00".
+            if has_decode_tps:
+                decode_val = float(metrics["perf.decode_tps_mean"])
+                if decode_val > 0.0:
+                    per_model_decode_tps[m].append(decode_val)
+            # e2e_tps: from Amendment-1 `inference_tps_mean` (preferred) or
+            # legacy `generation_tps_mean` (which WAS end-to-end). Both map
+            # to the same column.
+            if has_inference_tps:
+                per_model_e2e_tps[m].append(float(metrics["perf.inference_tps_mean"]))
+            elif has_legacy_tps:
+                per_model_e2e_tps[m].append(float(metrics["perf.generation_tps_mean"]))
             if metrics.get("perf.chars_per_sec") is not None:
                 per_model_chars[m].append(float(metrics["perf.chars_per_sec"]))
             if metrics.get("perf.generation_tokens_total") is not None:
@@ -230,7 +268,7 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
         print("  MPS ceiling: not logged at parent (host without MPS, or pre-#52 run)")
 
     header = (
-        f"{'model':<55} {'n':>4} {'wall_s':>9} {'tps':>8} "
+        f"{'model':<55} {'n':>4} {'wall_s':>9} {'decode_tps':>11} {'e2e_tps':>9} "
         f"{'chars/s':>9} {'gen_tok':>9} {'peak_GB':>9} {'%_max':>7}"
     )
     print(header)
@@ -251,9 +289,12 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
         ),
     )
     for m in all_models:
-        n = len(per_model_tps[m])
+        # Row count = perf-equipped FINISHED tuples for this model (uses
+        # the always-computable e2e_tps bucket as the canonical counter).
+        n = len(per_model_e2e_tps[m])
         wall_s = _mean_str(per_model_wall[m])
-        tps = _mean_str(per_model_tps[m])
+        decode_tps = _mean_str(per_model_decode_tps[m])
+        e2e_tps = _mean_str(per_model_e2e_tps[m])
         chars = _mean_str(per_model_chars[m])
         tokens = _mean_str(per_model_tokens[m], fmt="{:.0f}")
         peak = _mean_str(per_model_peak[m])
@@ -262,7 +303,10 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
             pct = f"{(max_peak / mps_ceiling_gb) * 100:.1f}%"
         else:
             pct = "—"
-        print(f"{m:<55} {n:>4} {wall_s:>9} {tps:>8} {chars:>9} {tokens:>9} {peak:>9} {pct:>7}")
+        print(
+            f"{m:<55} {n:>4} {wall_s:>9} {decode_tps:>11} {e2e_tps:>9} "
+            f"{chars:>9} {tokens:>9} {peak:>9} {pct:>7}"
+        )
 
     if n_without_perf > 0:
         print()

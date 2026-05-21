@@ -662,19 +662,31 @@ class _MockExtractorWithPerf:
         self._loaded = False
 
 
-def test_run_cohort_logs_perf_metrics_in_nested_run(tmp_path: Path) -> None:
-    """`run_cohort` logs `perf.*` metrics on each nested run when the extractor populates them.
+def test_run_cohort_logs_perf_metrics_in_nested_run_mlx_backend(tmp_path: Path) -> None:
+    """MLX-VLM backend: `run_cohort` logs decode-only + e2e perf metrics correctly.
 
-    The harness aggregates per-page perf fields into per-tuple metrics:
-      * `perf.generation_tokens_total`  — sum of per-page tokens
-      * `perf.generation_tps_mean`      — mean across pages
-      * `perf.chars_per_sec`            — derived from total chars / extract_seconds_total
-      * `perf.peak_memory_gb`           — max of per-page peak (MLX path)
-      * `perf.output_len_chars_total`   — sum
-      * `perf.pages_extracted_ok`       — count
+    ADR-017 Amendment 1 split the misleading single `perf.generation_tps_mean`
+    into two metrics with explicit semantics:
 
-    All 6 must appear; values must be positive when the extractor populates them.
-    Pins the Chunk 2 logging behaviour against silent regression.
+      * `perf.decode_tps_mean`      — decode-only TPS (matches Artificial
+        Analysis "Output Speed" definition + MLX-VLM's own
+        `GenerationResult.generation_tps`). Time-weighted aggregation:
+        `total_gen_tokens / total_decode_seconds` where
+        `decode_seconds_per_page = gen_tokens / generation_tps`.
+      * `perf.inference_tps_mean`   — end-to-end TPS (includes prompt encoding
+        + decode + post-processing). `total_gen_tokens / extract_seconds`.
+
+    For the MLX-mock `_MockExtractorWithPerf` (`generation_tps=12.5` per page,
+    `extract_seconds=0.01` per page, 2 pages of EN16931_Einfach):
+
+      * `decode_tps_mean`    = 128 / (128 / 12.5) = 12.5 (homogeneous mock,
+        time-weighted reduces to per-page value)
+      * `inference_tps_mean` = 128 / 0.02         = 6400.0 (mock's
+        artificially small extract_seconds intentionally tests the formula)
+      * `tags.perf.decode_tps_available` = "true" (MLX backend reports
+        decode-only TPS natively)
+
+    Pins the Amendment-1 logging contract against silent regression.
     """
     cfg = _make_test_cfg(tmp_path)
 
@@ -696,12 +708,15 @@ def test_run_cohort_logs_perf_metrics_in_nested_run(tmp_path: Path) -> None:
         output_format="list",
     )
     assert len(nested) == 1, f"expected 1 nested run, got {len(nested)}"
-    metrics = nested[0].data.metrics
+    nested_run = nested[0]
+    metrics = nested_run.data.metrics
+    tags = nested_run.data.tags
 
-    # All 6 perf metrics present.
+    # All Amendment-1 perf metrics present (the new dual-metric shape).
     for key in (
         "perf.generation_tokens_total",
-        "perf.generation_tps_mean",
+        "perf.decode_tps_mean",
+        "perf.inference_tps_mean",
         "perf.chars_per_sec",
         "perf.peak_memory_gb",
         "perf.output_len_chars_total",
@@ -711,21 +726,147 @@ def test_run_cohort_logs_perf_metrics_in_nested_run(tmp_path: Path) -> None:
             f"perf metric {key!r} missing from nested run; got keys={sorted(metrics)}"
         )
 
-    # Values reflect the mock's outputs (EN16931_Einfach is 2-page):
-    #   - 64 gen_tokens × 2 pages = 128
-    #   - peak_memory_gb = 2.5 (max across pages — same per-page value)
-    #   - mean_tps = total_tokens / total_seconds = 128 / 0.02 = 6400.0
-    #     (canonical throughput per Artificial Analysis methodology, NOT the
-    #     arithmetic mean of per-page tps — see harness.py §"perf metrics")
-    #   - chars_per_sec = total_chars / total_seconds (positive, formula)
+    # Legacy `perf.generation_tps_mean` (pre-Amendment-1 name) MUST NOT be
+    # logged anymore — it had ambiguous semantics (claimed AA, was actually
+    # end-to-end). Splitting it removed the bug.
+    assert "perf.generation_tps_mean" not in metrics, (
+        "perf.generation_tps_mean was the pre-Amendment-1 name; ADR-017 §Amendment 1 "
+        "split it into perf.decode_tps_mean + perf.inference_tps_mean. The legacy "
+        "name MUST NOT appear in fresh runs (would re-introduce the AA-vs-e2e "
+        "semantic ambiguity)."
+    )
+
+    # Counts and totals.
     assert metrics["perf.generation_tokens_total"] == 128.0
     assert metrics["perf.peak_memory_gb"] == 2.5
-    assert metrics["perf.generation_tps_mean"] == pytest.approx(128.0 / 0.02, rel=0.01), (
-        "perf.generation_tps_mean = total_tokens / total_seconds (throughput); "
-        "see harness.py mean_tps formula"
-    )
     assert metrics["perf.pages_extracted_ok"] == 2.0
     assert metrics["perf.chars_per_sec"] > 0.0
+
+    # Decode-only TPS (AA-canonical): time-weighted across 2 pages with
+    # identical per-page tps → reduces to the per-page value 12.5.
+    assert metrics["perf.decode_tps_mean"] == pytest.approx(12.5, rel=0.001), (
+        "perf.decode_tps_mean = total_gen_tokens / sum(gen_tokens / gen_tps) — "
+        "time-weighted decode-only Artificial Analysis 'Output Speed'. For the "
+        "homogeneous mock (12.5 tps per page), this MUST equal 12.5."
+    )
+
+    # End-to-end TPS: total / extract_seconds_total = 128 / 0.02 = 6400.0.
+    assert metrics["perf.inference_tps_mean"] == pytest.approx(128.0 / 0.02, rel=0.001), (
+        "perf.inference_tps_mean = total_gen_tokens / extract_seconds_pages_total — "
+        "end-to-end throughput including prompt encoding."
+    )
+
+    # Backend reported decode-only TPS → tag is "true".
+    assert tags.get("perf.decode_tps_available") == "true", (
+        f"MLX-VLM backend exposes decode-only TPS; expected tag 'true', "
+        f"got tags={sorted(tags)}"
+    )
+
+
+@dataclass
+class _MockMPSExtractorWithPerf:
+    """Mock Transformers-MPS extractor — generation_tps=0.0 by ADR-017 contract.
+
+    Sister to `_MockExtractorWithPerf` but with `backend_name='transformers-mps'`
+    and `generation_tps=0.0` (ADR-017 Amendment 1 contract — decode-only TPS
+    is unmeasurable via public `transformers.generate(...)` API; the harness
+    must NOT crash when no page exposes decode tps and MUST set
+    `tags.perf.decode_tps_available='false'`).
+    """
+
+    model_id: str
+    backend_name: str = "transformers-mps"
+    _loaded: bool = False
+    _calls: int = 0
+
+    def load(self) -> None:
+        self._loaded = True
+
+    def extract(self, image_path: Path, prompt: str, max_tokens: int) -> ExtractionResult:
+        self._calls += 1
+        text = (
+            f"Rechnungsnummer: 471102\n"
+            f"Rechnungsdatum: 2018-03-05\n"
+            f"Verkäufer\nName: Lieferant GmbH\n"
+            f"Käufer\nName: Kunden AG\n"
+            f"(synthetic page {self._calls} for {image_path.stem})\n"
+        )
+        return ExtractionResult(
+            model_id=self.model_id,
+            backend_name=self.backend_name,
+            text=text,
+            extract_seconds=0.01,
+            output_len_chars=len(text),
+            generation_tokens=64,
+            generation_tps=0.0,  # ADR-017 Amendment 1: decode-only unmeasurable on MPS
+            peak_memory_gb=0.0,  # MPS path: harness fills via driver_allocated_memory snapshot
+        )
+
+    def unload(self) -> None:
+        self._loaded = False
+
+
+def test_run_cohort_logs_perf_metrics_in_nested_run_mps_backend(tmp_path: Path) -> None:
+    """MPS backend: decode_tps_available='false', decode_tps_mean=0.0, inference_tps_mean>0.
+
+    ADR-017 Amendment 1 contract for backends that cannot separate decode-only
+    from end-to-end timing (Transformers-MPS via `transformers.generate(...)`):
+
+      * Per-page `generation_tps = 0.0` (sentinel for "decode-only unmeasurable").
+      * Harness MUST log `perf.decode_tps_mean = 0.0` (no eligible pages).
+      * Harness MUST set `tags.perf.decode_tps_available = "false"`.
+      * Harness MUST still log `perf.inference_tps_mean = total_tokens /
+        extract_seconds` (always computable from raw tokens + wall-clock).
+
+    Pins the MPS-path graceful-handling contract: the harness divides by
+    `r.generation_tps` only when `r.generation_tps > 0`, so a 0.0 sentinel
+    must not produce ZeroDivisionError.
+    """
+    cfg = _make_test_cfg(tmp_path)
+
+    def _fake_get_extractor(model_id: str) -> Any:
+        return _MockMPSExtractorWithPerf(model_id=model_id)
+
+    with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
+        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+
+    assert result.n_completed == 1
+
+    import mlflow  # noqa: PLC0415
+
+    experiment = mlflow.get_experiment_by_name(cfg.mlflow.experiment_name)
+    assert experiment is not None
+    nested = mlflow.search_runs(
+        experiment_ids=[experiment.experiment_id],
+        filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
+        output_format="list",
+    )
+    assert len(nested) == 1
+    nested_run = nested[0]
+    metrics = nested_run.data.metrics
+    tags = nested_run.data.tags
+
+    # Decode-only TPS: 0.0 (no page exposed decode tps).
+    assert metrics["perf.decode_tps_mean"] == 0.0, (
+        "MPS-mock pages all set generation_tps=0.0 → no eligible pages → "
+        "decode_tps_mean MUST be 0.0 (NOT ZeroDivisionError, NOT NaN)."
+    )
+
+    # End-to-end TPS still positive (always computable from tokens + wall-clock).
+    assert metrics["perf.inference_tps_mean"] == pytest.approx(128.0 / 0.02, rel=0.001), (
+        "perf.inference_tps_mean must be computed from raw gen_tokens + extract_seconds "
+        "even when decode_tps is unmeasurable. This is the metric MPS users actually see."
+    )
+
+    # Tag explicitly disclosing decode-only TPS unavailability.
+    assert tags.get("perf.decode_tps_available") == "false", (
+        f"MPS backend cannot expose decode-only TPS; tag MUST be 'false' "
+        f"(not absent, not 'true'). Got tags={sorted(tags)}"
+    )
+
+    # Counts unchanged — these always work regardless of decode-tps availability.
+    assert metrics["perf.generation_tokens_total"] == 128.0
+    assert metrics["perf.pages_extracted_ok"] == 2.0
 
 
 def test_run_cohort_dev_only_false_tags_runs_as_false(tmp_path: Path) -> None:

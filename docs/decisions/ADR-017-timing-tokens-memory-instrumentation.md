@@ -2,12 +2,129 @@
 
 | Field | Value |
 |---|---|
-| **Status** | Proposed |
+| **Status** | Accepted (Amendment 1 ratified 2026-05-20 — formula correction; see §"Amendment 1" below) |
 | **Date** | 2026-05-20 |
 | **Milestone** | `experiments-validated` (post-pilot-13 follow-ups; Seq 3 per `~/.windsurf/plans/horus-post-pilot13-rethink-46eaaa.md` §5) |
 | **Authored by** | Cascade D (issue #52 implementation session; plan `~/.windsurf/plans/horus-issue-52-timing-inspector-3fe7c5.md`) |
 | **Issue** | [`ReebalSami/horus#52`](https://github.com/ReebalSami/horus/issues/52) |
 | **Supersession trigger** | (1) PyTorch lands `torch.mps.max_memory_allocated()` (or equivalent transient-peak tracker on MPS) — pytorch/pytorch#104188 closes — replace the pre/post snapshot with the native API and supersede this ADR. OR (2) MLX-VLM removes / renames `GenerationResult.peak_memory` / `generation_tokens` / `generation_tps` (e.g., 1.0 release breaking changes) — author a supersession ADR with the migration path. OR (3) The thesis adopts a tiktoken-standardised tokens/sec metric for cross-model H4 comparison — supersession ADR ratifies the metric + its computation point in the harness. OR (4) The inspector outgrows plain-text rendering (e.g., > 15 models, multiple parent-run comparison) and switches to `rich` / `tabulate` / a separate dashboard — supersession ADR ratifies the new dependency + rendering substrate. OR (5) The `perf.*` MLflow namespace conflicts with a future MLflow built-in (e.g., MLflow 4.x reserves `perf.*` for a system-metrics integration) — supersession ADR migrates to a different prefix (`hardware.*` / `latency.*`). |
+
+## Amendment 1 — TPS metric formula correction (ratified 2026-05-20, mid-PR)
+
+### Trigger
+
+User feedback after the original 7-chunk implementation landed in branch but before PR was opened: *"i need clean work and clean delivery. why one test failed. and i saw you said before only worked for 1 model… scientific correctness is the most important thing. no skipping what necessary at all!! please recheck, revisit, review, research, make websearch."*
+
+### Bug
+
+Original §"Decision 5 (D1.A)" claimed the harness logged a single `perf.generation_tps_mean` computed as `total_gen_tokens / extract_seconds_pages_total` and asserted this matched **Artificial Analysis methodology** (cited in §"Current-state survey" + `docs/sources/tools/artificial-analysis-methodology.md`).
+
+Web-fetched re-verification (`https://artificialanalysis.ai/methodology/performance-benchmarking`, retrieved 2026-05-20) reveals AA's actual definition:
+
+> **Output Speed (output tokens per second)**: The average number of tokens received per second, **after the first token is received**.
+>
+> **Token Measurement**: All measurements of 'tokens' on Artificial Analysis are measured as OpenAI GPT-4 tokens as counted by OpenAI's tiktoken library (o200k_base). This standardizes the number of tokens counted across different models (with different tokenizers).
+
+Two scientific-correctness bugs in the original formula vs the AA-claimed methodology:
+
+1. **Time domain mismatch**: AA "Output Speed" is **decode-only** (excludes prompt-encoding time, measured AFTER the first token arrives). The original formula used `extract_seconds_pages_total` which is the full extract wall-clock including prompt encoding. The two metrics differ for any non-trivial prompt: AA Output Speed > end-to-end TPS for the same model.
+2. **Token unit mismatch**: AA standardises on tiktoken `o200k_base` for cross-model comparability. The original formula used native per-model tokenizers, which are NOT cross-model comparable in absolute terms.
+
+A second bug, orthogonal to the AA claim but discovered in the same review pass: **the per-page `generation_tps` field had inconsistent semantics across backends**:
+
+- **MLX-VLM path** (`MLXVLMExtractor`): used `GenerationResult.generation_tps` from the library, which IS decode-only per `mlx_vlm/generate.py:375-385` (`generation_tps = generation_tokens / generation_seconds` where `generation_seconds` excludes prompt encoding).
+- **Transformers-MPS path** (`TransformersMPSExtractor`): computed `generation_tps = generation_tokens / extract_seconds`, which is END-TO-END (includes prompt encoding).
+
+Same field name, different semantics → cross-backend H4 comparison would be apples-to-oranges.
+
+### Fix (Amendment 1)
+
+The decision space splits the misleading single TPS metric into **two metrics with explicit semantics** + an **availability tag** + a **per-backend extractor contract**:
+
+#### A. Per-page extractor contract (`src/horus/vlm_extractor.py`)
+
+`ExtractionResult.generation_tps` is **decode-only** TPS (matches AA "Output Speed" + MLX-VLM `GenerationResult.generation_tps`). When a backend cannot expose decode-only timing separately from end-to-end timing, it sets `generation_tps = 0.0` as a sentinel for "unmeasurable":
+
+| Backend | `generation_tps` | Reason |
+|---|---|---|
+| MLX-VLM | `GenerationResult.generation_tps` (decode-only, library-native) | MLX-VLM exposes decode-only timing in its public API |
+| Transformers-MPS | `0.0` | Public `transformers.generate(...)` does NOT expose first-token-arrival event; cannot separate prompt encoding from decode without instrumenting model internals (out of scope) |
+
+Future backends (PaddleOCR, GLM-OCR, etc.) follow the same contract: report decode-only TPS when measurable, else `0.0`.
+
+#### B. Per-tuple harness aggregation (`src/horus/eval/harness.py`)
+
+`run_cohort` logs **two** TPS metrics with explicit names + an **availability tag**:
+
+```python
+# Decode-only TPS (AA "Output Speed", time-weighted across pages).
+# Only counts pages where the extractor exposed decode-only tps.
+decode_eligible = [r for r in per_page if r.generation_tokens > 0 and r.generation_tps > 0.0]
+if decode_eligible:
+    total_decode_seconds = sum(r.generation_tokens / r.generation_tps for r in decode_eligible)
+    total_decode_tokens  = sum(r.generation_tokens for r in decode_eligible)
+    decode_tps_mean = total_decode_tokens / total_decode_seconds  # AA-canonical
+    decode_tps_available = True
+else:
+    decode_tps_mean = 0.0
+    decode_tps_available = False  # MPS-only cohort: decode-only unmeasurable
+
+# End-to-end TPS (system throughput including prompt encoding).
+# Always computable from raw counts + extract wall-clock.
+inference_tps_mean = total_gen_tokens / extract_seconds_pages_total
+
+mlflow.log_metric("perf.decode_tps_mean", decode_tps_mean)
+mlflow.log_metric("perf.inference_tps_mean", inference_tps_mean)
+mlflow.set_tag("perf.decode_tps_available", "true" if decode_tps_available else "false")
+```
+
+The legacy `perf.generation_tps_mean` metric is **removed** from new runs (ambiguous semantics). It is still **read** by the inspector for backward-compat (see C below).
+
+#### C. Inspector backward-compat (`scripts/inspect_pilot_13.py`)
+
+The inspector renders **two columns** (`decode_tps`, `e2e_tps`) instead of the original single `tps`. Backward-compat for pre-Amendment-1 parent runs:
+
+- A run is "perf-equipped" if **any** of `perf.decode_tps_mean`, `perf.inference_tps_mean`, or legacy `perf.generation_tps_mean` is present.
+- For legacy runs (only `perf.generation_tps_mean` present), the value is read into the **e2e_tps** column (the legacy formula was end-to-end despite the misleading name); decode_tps shows `—`.
+- For Amendment-1 runs with `decode_tps_mean = 0.0` (MPS backend sentinel), the inspector renders `—` (NOT `0.00` — 0.0 means unmeasurable, not zero throughput).
+
+#### D. Both metrics are scientifically meaningful
+
+The two metrics answer **different questions** and the H4 hypothesis test (latency-efficiency comparison; brainstorm v2 §6) cites **both**:
+
+- `decode_tps` answers "how fast does this model decode tokens?" — model-architecture / quantization / hardware-decode-loop benchmark. AA-canonical for cross-backend model-speed claims (when both backends expose it).
+- `inference_tps` answers "what end-to-end throughput does the user perceive?" — full-stack benchmark including prompt encoding overhead. The metric MPS users actually feel.
+
+Picking one and discarding the other would be intellectually lossy. Keeping both with explicit names + the availability tag preserves both signals.
+
+### Cross-model standardisation (still deferred)
+
+AA's tiktoken `o200k_base` standardisation is **still deferred to H4** (per the original ADR-017 §"What this ADR does NOT decide"). Adding it now would:
+
+1. Introduce a `tiktoken` dependency (~10 MB) used only at log time.
+2. Re-tokenize every output at log time (overhead per page).
+3. Pre-empt a hypothesis-test design choice (does H4 want decode_tps in native tokens for "what the model emits", or in tiktoken tokens for "comparable units"? Both are valid; the H4 author decides).
+
+When H4 lands, a supersession ADR ratifies whether to add `tiktoken` and where to compute the standardised metric (extractor-side vs harness-side vs inspector-side).
+
+### Out of scope for Amendment 1
+
+- **Background-thread MPS sampling** to capture transient peak memory during `model.generate()` — already-deferred (Axis B2.B in original Decision 2).
+- **Renaming `chars_per_sec` → `inference_chars_per_sec`** for symmetric naming — chars don't have a "decode-only" interpretation issue (no per-page decode-time breakdown of chars), so the naming asymmetry is acceptable.
+- **Removing the legacy `perf.generation_tps_mean` from any existing on-disk MLflow runs** — supersession-over-deletion per ADR-011. Existing MinerU MPS run (parent `6ba8901bcc474bf9b2791011b95541b6` from Chunk 7's smoke verification) keeps its legacy metric; the inspector reads it as e2e_tps.
+
+### Tests pinning the Amendment-1 contract
+
+- `tests/test_harness.py::test_run_cohort_logs_perf_metrics_in_nested_run_mlx_backend` — MLX path: `decode_tps_mean=12.5` (homogeneous mock), `inference_tps_mean=6400.0`, tag=`"true"`, asserts legacy `perf.generation_tps_mean` is NOT in metrics.
+- `tests/test_harness.py::test_run_cohort_logs_perf_metrics_in_nested_run_mps_backend` — MPS path: `decode_tps_mean=0.0` (no eligible pages), `inference_tps_mean=6400.0`, tag=`"false"`, no ZeroDivisionError.
+- `tests/test_inspect_pilot_13.py::test_print_perf_table_renders_full_table_when_metrics_present` — verifies both `decode_tps` and `e2e_tps` column headers + numeric MLX row vs `—` MPS row.
+- `tests/test_inspect_pilot_13.py::test_print_perf_table_reads_legacy_generation_tps_mean_as_e2e_tps` — pins the backward-compat path: legacy `perf.generation_tps_mean` renders as `e2e_tps`; decode_tps shows `—`.
+
+### Authoring discipline note
+
+Amendment 1 is the first **mid-PR** ADR amendment in HORUS (precedent: ADR-009 §Amendment 1 was post-merge). The user's directive that prompted it ("scientific correctness is the most important thing") aligns with `horus-decision-discipline` rule and `be-honest-direct-critical` global rule — when a decision turns out to have been built on a citation we hadn't actually verified, the right move is to re-verify, fix the substance, and amend the ADR before merging. Pretending the original formula was correct, or quietly adjusting it without amendment, would have shipped a false claim into the canonical evidence trail.
+
+---
 
 ## Context
 

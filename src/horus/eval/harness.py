@@ -910,38 +910,97 @@ def run_cohort(
                             extract_seconds_pages_total,
                         )
 
-                        # ADR-017 (issue #52) — per-tuple perf metrics.
+                        # ADR-017 (issue #52, Amendment 1) — per-tuple perf metrics.
                         # All values are aggregates of per-page ExtractionResult
                         # fields (populated by the extractors in Chunk 1).
-                        # `perf.generation_tps_mean` uses the time-weighted
-                        # throughput formula `total_tokens / total_seconds` —
-                        # the canonical "throughput" interpretation per
-                        # Artificial Analysis methodology and matches MLX-VLM's
-                        # own GenerationResult.generation_tps semantics
-                        # (see `mlx_vlm/generate.py:1791`). Errored pages
-                        # contribute 0 tokens + their failed extract time —
-                        # the metric reflects the user's wall-clock reality.
-                        # `perf.peak_memory_gb` is max across pages (MLX path
-                        # only at this chunk; Transformers-MPS pages have
-                        # peak_memory_gb=0.0 by design — Chunk 3 fills it
-                        # via parent-side `torch.mps.driver_allocated_memory`
-                        # snapshots per ADR-017 D2.A).
+                        #
+                        # Amendment 1 (post-merge research): the original
+                        # design logged a single `perf.generation_tps_mean`
+                        # computed as `total_gen_tokens / extract_seconds`,
+                        # claimed to match Artificial Analysis methodology.
+                        # Web-verified AA methodology
+                        # (`docs/sources/tools/artificial-analysis-methodology.md`):
+                        # AA "Output Speed" is DECODE-ONLY tokens-per-second,
+                        # measured AFTER the first token arrives (excludes
+                        # prompt encoding). The original formula computed
+                        # END-TO-END TPS, not decode-only — a scientific
+                        # correctness bug under the AA-claimed name. Amendment
+                        # 1 splits the metric into two with explicit semantics:
+                        #
+                        #   * `perf.decode_tps_mean` — decode-only (matches AA
+                        #     "Output Speed"). Computed as
+                        #     `total_gen_tokens / total_decode_seconds`, where
+                        #     `decode_seconds_per_page = gen_tokens / generation_tps`.
+                        #     Only available when extractors expose decode-only
+                        #     tps in `ExtractionResult.generation_tps` (MLX-VLM
+                        #     path via `GenerationResult.generation_tps`).
+                        #     For Transformers-MPS path, `generation_tps = 0.0`
+                        #     per vlm_extractor.py — decode-only is unmeasurable
+                        #     via public `transformers.generate(...)` API.
+                        #     When no page exposes decode tps, this metric is
+                        #     0.0 and `tags.decode_tps_available` is "false".
+                        #
+                        #   * `perf.inference_tps_mean` — end-to-end (system
+                        #     throughput including prompt encoding). Computed
+                        #     as `total_gen_tokens / extract_seconds_pages_total`.
+                        #     Always computable for any backend that reports
+                        #     `extract_seconds` + `generation_tokens`.
+                        #
+                        # Both metrics answer DIFFERENT questions
+                        # ("how fast does the model decode?" vs "what
+                        # end-to-end throughput does the user see?") and
+                        # both are scientifically meaningful. The thesis
+                        # H4 latency-efficiency comparison cites the AA-
+                        # canonical `decode_tps` for cross-backend model-
+                        # speed claims and `inference_tps` for user-facing
+                        # latency claims.
+                        #
+                        # `perf.peak_memory_gb`: max across pages. For
+                        # MLX-VLM path, populated from per-page
+                        # `peak_memory_gb` (`mx.get_peak_memory()` — true
+                        # peak). For Transformers-MPS path, per-page is
+                        # 0.0 by design and the post-snapshot of
+                        # `torch.mps.driver_allocated_memory()` overrides
+                        # below (snapshot-based stand-in per ADR-017 §D2.A
+                        # + pytorch/pytorch#104188 workaround).
                         ok_pages_results = [r for r in per_page if r.is_ok]
                         total_gen_tokens = sum(r.generation_tokens for r in per_page)
                         total_chars = sum(r.output_len_chars for r in per_page)
-                        if total_gen_tokens > 0 and extract_seconds_pages_total > 0.0:
-                            mean_tps = total_gen_tokens / extract_seconds_pages_total
-                        elif ok_pages_results:
-                            # Fallback: arithmetic mean of per-page tps (handles
-                            # the edge case where every page reports
-                            # generation_tokens=0 but generation_tps != 0 — e.g.,
-                            # a future extractor that estimates tps without an
-                            # exposed token count).
-                            mean_tps = sum(r.generation_tps for r in ok_pages_results) / len(
-                                ok_pages_results
+
+                        # Decode-only TPS: only includes pages where the
+                        # extractor exposed `generation_tps > 0` (MLX-VLM
+                        # path). Per-page decode_seconds = gen_tokens /
+                        # gen_tps. Time-weighted aggregation per AA
+                        # methodology.
+                        decode_eligible = [
+                            r
+                            for r in per_page
+                            if r.generation_tokens > 0 and r.generation_tps > 0.0
+                        ]
+                        if decode_eligible:
+                            total_decode_seconds = sum(
+                                r.generation_tokens / r.generation_tps for r in decode_eligible
                             )
+                            total_decode_tokens = sum(r.generation_tokens for r in decode_eligible)
+                            decode_tps_mean = (
+                                total_decode_tokens / total_decode_seconds
+                                if total_decode_seconds > 0.0
+                                else 0.0
+                            )
+                            decode_tps_available = True
                         else:
-                            mean_tps = 0.0
+                            decode_tps_mean = 0.0
+                            decode_tps_available = False
+
+                        # End-to-end TPS: total tokens / total extract wall-
+                        # clock. Includes prompt encoding + decode + post-
+                        # processing. Always computable when extract_seconds
+                        # > 0 and tokens > 0.
+                        if total_gen_tokens > 0 and extract_seconds_pages_total > 0.0:
+                            inference_tps_mean = total_gen_tokens / extract_seconds_pages_total
+                        else:
+                            inference_tps_mean = 0.0
+
                         chars_per_sec = (
                             total_chars / extract_seconds_pages_total
                             if extract_seconds_pages_total > 0.0
@@ -963,7 +1022,12 @@ def run_cohort(
                         if mps_post_alloc_mb is not None:
                             peak_mem_gb_max = mps_post_alloc_mb / 1024.0
                         mlflow.log_metric("perf.generation_tokens_total", float(total_gen_tokens))
-                        mlflow.log_metric("perf.generation_tps_mean", mean_tps)
+                        mlflow.log_metric("perf.decode_tps_mean", decode_tps_mean)
+                        mlflow.log_metric("perf.inference_tps_mean", inference_tps_mean)
+                        mlflow.set_tag(
+                            "perf.decode_tps_available",
+                            "true" if decode_tps_available else "false",
+                        )
                         mlflow.log_metric("perf.output_len_chars_total", float(total_chars))
                         mlflow.log_metric("perf.chars_per_sec", chars_per_sec)
                         mlflow.log_metric("perf.peak_memory_gb", peak_mem_gb_max)
