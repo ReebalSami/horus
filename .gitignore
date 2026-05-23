@@ -105,3 +105,6 @@ src/horus/eval/adapters_candidate.py
 # The canonical archive (no `-dev*` suffix) IS tracked.
 docs/sources/transcripts-multipage-dev/
 docs/sources/transcripts-multipage-dev-mlx/
+
+# Serena MCP tool — manages its own cache via .serena/.gitignore
+.serena/
