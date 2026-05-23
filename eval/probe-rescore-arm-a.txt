@@ -1,0 +1,221 @@
+Found 7 transcript files in docs/sources/transcripts-structured-probe-uniform.
+Building GT cache from 26 paired invoices...
+2026-05-21 14:26:53,507 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,508 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,508 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,509 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,509 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,509 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,511 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,511 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,511 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,512 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,512 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,512 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,513 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,513 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,513 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,514 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,514 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,514 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,516 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,516 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,516 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,518 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,518 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,518 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,519 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,519 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,519 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,520 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,521 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,521 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,522 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,522 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,522 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,523 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,523 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,523 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,524 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,524 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,524 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,526 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,526 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,526 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,527 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,527 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,527 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,529 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,529 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,529 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,530 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,530 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,530 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,531 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,531 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,531 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,532 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,532 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,532 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,534 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,534 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,534 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,535 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,535 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,535 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,537 [INFO] A valid XML file factur-x.xml has been found in the PDF
+2026-05-21 14:26:53,537 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,537 [INFO] XML file factur-x.xml extracted from PDF
+2026-05-21 14:26:53,539 [INFO] A valid XML file xrechnung.xml has been found in the PDF
+2026-05-21 14:26:53,539 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,539 [INFO] XML file xrechnung.xml extracted from PDF
+2026-05-21 14:26:53,541 [INFO] A valid XML file xrechnung.xml has been found in the PDF
+2026-05-21 14:26:53,541 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,541 [INFO] XML file xrechnung.xml extracted from PDF
+2026-05-21 14:26:53,547 [INFO] A valid XML file xrechnung.xml has been found in the PDF
+2026-05-21 14:26:53,547 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,547 [INFO] XML file xrechnung.xml extracted from PDF
+2026-05-21 14:26:53,552 [INFO] A valid XML file xrechnung.xml has been found in the PDF
+2026-05-21 14:26:53,553 [INFO] Flavor is factur-x (autodetected)
+2026-05-21 14:26:53,553 [INFO] XML file xrechnung.xml extracted from PDF
+  GT cache: 26 invoices loaded.
+  [7/7] scored zai-org__glm-ocr__EN16931_Einfach.txt
+
+==============================================================================================================
+Per-model micro_F1 by threshold τ (BASELINE adapter):
+model                                                    τ=0.50    Δ(τmax-τmin)
+--------------------------------------------------------------------------------------------------------------
+PaddlePaddle/PaddleOCR-VL                                0.0000    0.0000
+allenai/olmOCR-2-7B-1025                                 0.6667    0.0000
+google/gemma-4-E4B-it                                    0.6957    0.0000
+google/paligemma2-3b-mix-448                             0.0000    0.0000
+ibm-granite/granite-docling-258M-mlx                     0.0000    0.0000
+opendatalab/MinerU2.5-Pro-2604-1.2B                      0.0000    0.0000
+zai-org/GLM-OCR                                          0.0000    0.0000
+
+Cohort pooled micro_F1:
+metric                                                   τ=0.50
+-----------------------------------------------------------------------------------------------
+cohort pooled                                            0.2581
+
+==============================================================================================================
+Adapter A/B Δ at τ=0.50
+  STABILITY MODE: candidate missing; running baseline-vs-baseline (Google §24 sanity check)
+--------------------------------------------------------------------------------------------------------------
+model                                                   field                           baseline TP/FP/FN     candidate TP/FP/FN   Δ TP
+----------------------------------------------------------------------------------------------------------------------------------
+PaddlePaddle/PaddleOCR-VL                               buyer_name                              0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               buyer_reference                         0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               buyer_vat_id                            0/  0/  0              0/  0/  0   +0  
+PaddlePaddle/PaddleOCR-VL                               delivery_date                           0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               due_payable_amount                      0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               grand_total_amount                      0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               invoice_currency_code                   0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               invoice_number                          0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               issue_date                              0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               line_total_amount                       0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               seller_gln                              0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               seller_name                             0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               seller_tax_id                           0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               seller_vat_id                           0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               tax_basis_total_amount                  0/  0/  1              0/  0/  1   +0  
+PaddlePaddle/PaddleOCR-VL                               tax_total_amount                        0/  0/  1              0/  0/  1   +0  
+allenai/olmOCR-2-7B-1025                                buyer_name                              1/  0/  0              1/  0/  0   +0  
+allenai/olmOCR-2-7B-1025                                buyer_reference                         0/  0/  1              0/  0/  1   +0  
+allenai/olmOCR-2-7B-1025                                buyer_vat_id                            0/  1/  0              0/  1/  0   +0  
+allenai/olmOCR-2-7B-1025                                delivery_date                           1/  0/  0              1/  0/  0   +0  
+allenai/olmOCR-2-7B-1025                                due_payable_amount                      1/  0/  0              1/  0/  0   +0  
+allenai/olmOCR-2-7B-1025                                grand_total_amount                      1/  0/  0              1/  0/  0   +0  
+allenai/olmOCR-2-7B-1025                                invoice_currency_code                   1/  0/  0              1/  0/  0   +0  
+allenai/olmOCR-2-7B-1025                                invoice_number                          1/  0/  0              1/  0/  0   +0  
+allenai/olmOCR-2-7B-1025                                issue_date                              1/  0/  0              1/  0/  0   +0  
+allenai/olmOCR-2-7B-1025                                line_total_amount                       0/  0/  1              0/  0/  1   +0  
+allenai/olmOCR-2-7B-1025                                seller_gln                              0/  0/  1              0/  0/  1   +0  
+allenai/olmOCR-2-7B-1025                                seller_name                             1/  0/  0              1/  0/  0   +0  
+allenai/olmOCR-2-7B-1025                                seller_tax_id                           0/  0/  1              0/  0/  1   +0  
+allenai/olmOCR-2-7B-1025                                seller_vat_id                           0/  0/  1              0/  0/  1   +0  
+allenai/olmOCR-2-7B-1025                                tax_basis_total_amount                  0/  0/  1              0/  0/  1   +0  
+allenai/olmOCR-2-7B-1025                                tax_total_amount                        0/  0/  1              0/  0/  1   +0  
+google/gemma-4-E4B-it                                   buyer_name                              1/  0/  0              1/  0/  0   +0  
+google/gemma-4-E4B-it                                   buyer_reference                         0/  0/  1              0/  0/  1   +0  
+google/gemma-4-E4B-it                                   buyer_vat_id                            0/  0/  0              0/  0/  0   +0  
+google/gemma-4-E4B-it                                   delivery_date                           1/  0/  0              1/  0/  0   +0  
+google/gemma-4-E4B-it                                   due_payable_amount                      1/  0/  0              1/  0/  0   +0  
+google/gemma-4-E4B-it                                   grand_total_amount                      1/  0/  0              1/  0/  0   +0  
+google/gemma-4-E4B-it                                   invoice_currency_code                   1/  0/  0              1/  0/  0   +0  
+google/gemma-4-E4B-it                                   invoice_number                          1/  0/  0              1/  0/  0   +0  
+google/gemma-4-E4B-it                                   issue_date                              1/  0/  0              1/  0/  0   +0  
+google/gemma-4-E4B-it                                   line_total_amount                       0/  0/  1              0/  0/  1   +0  
+google/gemma-4-E4B-it                                   seller_gln                              0/  0/  1              0/  0/  1   +0  
+google/gemma-4-E4B-it                                   seller_name                             1/  0/  0              1/  0/  0   +0  
+google/gemma-4-E4B-it                                   seller_tax_id                           0/  0/  1              0/  0/  1   +0  
+google/gemma-4-E4B-it                                   seller_vat_id                           0/  0/  1              0/  0/  1   +0  
+google/gemma-4-E4B-it                                   tax_basis_total_amount                  0/  0/  1              0/  0/  1   +0  
+google/gemma-4-E4B-it                                   tax_total_amount                        0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            buyer_name                              0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            buyer_reference                         0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            buyer_vat_id                            0/  0/  0              0/  0/  0   +0  
+google/paligemma2-3b-mix-448                            delivery_date                           0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            due_payable_amount                      0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            grand_total_amount                      0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            invoice_currency_code                   0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            invoice_number                          0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            issue_date                              0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            line_total_amount                       0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            seller_gln                              0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            seller_name                             0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            seller_tax_id                           0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            seller_vat_id                           0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            tax_basis_total_amount                  0/  0/  1              0/  0/  1   +0  
+google/paligemma2-3b-mix-448                            tax_total_amount                        0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    buyer_name                              0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    buyer_reference                         0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    buyer_vat_id                            0/  1/  0              0/  1/  0   +0  
+ibm-granite/granite-docling-258M-mlx                    delivery_date                           0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    due_payable_amount                      0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    grand_total_amount                      0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    invoice_currency_code                   0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    invoice_number                          0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    issue_date                              0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    line_total_amount                       0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    seller_gln                              0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    seller_name                             0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    seller_tax_id                           0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    seller_vat_id                           0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    tax_basis_total_amount                  0/  0/  1              0/  0/  1   +0  
+ibm-granite/granite-docling-258M-mlx                    tax_total_amount                        0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     buyer_name                              0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     buyer_reference                         0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     buyer_vat_id                            0/  0/  0              0/  0/  0   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     delivery_date                           0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     due_payable_amount                      0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     grand_total_amount                      0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     invoice_currency_code                   0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     invoice_number                          0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     issue_date                              0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     line_total_amount                       0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     seller_gln                              0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     seller_name                             0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     seller_tax_id                           0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     seller_vat_id                           0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     tax_basis_total_amount                  0/  0/  1              0/  0/  1   +0  
+opendatalab/MinerU2.5-Pro-2604-1.2B                     tax_total_amount                        0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         buyer_name                              0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         buyer_reference                         0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         buyer_vat_id                            0/  1/  0              0/  1/  0   +0  
+zai-org/GLM-OCR                                         delivery_date                           0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         due_payable_amount                      0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         grand_total_amount                      0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         invoice_currency_code                   0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         invoice_number                          0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         issue_date                              0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         line_total_amount                       0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         seller_gln                              0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         seller_name                             0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         seller_tax_id                           0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         seller_vat_id                           0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         tax_basis_total_amount                  0/  0/  1              0/  0/  1   +0  
+zai-org/GLM-OCR                                         tax_total_amount                        0/  0/  1              0/  0/  1   +0  
+
+Cohort pooled micro_F1: baseline=0.2581  candidate=0.2581  Δ=+0.0000
+  ✓ stability check OK (baseline-vs-baseline Δ = 0).

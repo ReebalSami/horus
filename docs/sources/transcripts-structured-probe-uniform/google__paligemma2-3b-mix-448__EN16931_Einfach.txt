@@ -1,0 +1,14 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/paligemma2-3b-mix-448
+# Invoice:  EN16931_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  14.70s total
+# Adapter:  json
+# Prompt:   You are reading a German B2B invoice. Extract these fields and return ONLY a sin
+
+===== PAGE 1 =====
+Sorry, as a base VLM I am not trained to answer this question.<eos>
+===== PAGE 2 =====
+Sorry, as a base VLM I am not trained to answer this question.<eos>

@@ -48,6 +48,7 @@ __all__ = [
     "extract_transcript_body",
     "preprocess",
     "to_predicted_dict",
+    "to_predicted_dict_multipage",
 ]
 
 
@@ -675,3 +676,47 @@ def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:
     # the label "USt-IdNr. (Käufer)" is unambiguous).
 
     return predicted
+
+
+def to_predicted_dict_multipage(
+    per_page_texts: list[str],
+    model_id: str,
+) -> dict[str, str | None]:
+    """Multipage public-surface parity mirror for ``adapters_json.to_predicted_dict_multipage``.
+
+    Per ADR-019 §"Wave 3.1 architecture" — the harness dispatches to either
+    ``adapters`` (regex) or ``adapters_json`` (JSON) based on
+    ``cohort.adapter_mode``; both modules must expose
+    ``to_predicted_dict_multipage(per_page_texts, model_id)`` so the harness
+    can swap modules uniformly.
+
+    For the regex adapter, multi-page robustness comes "for free" — the
+    label-anchored German-label regex finds labels (``Rechnungsnummer:``,
+    ``Zahlbetrag:``, etc.) regardless of which page they appear on. The
+    pre-existing ``tests/test_scorer_integration_multipage.py`` empirically
+    demonstrates this on the MinerU multi-page transcripts (Step 7 evidence,
+    micro_F1 ≈ 0.75 on EN16931_Einfach via page-2 totals block lift).
+
+    Implementation: join per-page texts with ``\\n\\n`` (preserves the
+    inter-page blank line that the LEGACY harness path produced via
+    ``_strip_page_separators(concatenated)``; that path stripped the
+    ``===== PAGE N =====`` separator lines but left the surrounding newlines
+    intact, yielding ``\\n<p1>\\n\\n<p2>`` shape). Joining with ``\\n\\n``
+    here keeps the multipage rewire byte-equivalent to the legacy shape for
+    the regex adapter, preserving the pinned ADR-014 Step 7 F1 baseline at
+    ``tests/test_rescore.py::test_rescore_baseline_only_matches_legacy_ablation_at_tau_0_5``.
+
+    The single-input ``to_predicted_dict`` (delegated to) calls ``preprocess``
+    internally (line 611), so we don't double-preprocess here.
+
+    Args:
+        per_page_texts: list of raw per-page VLM outputs.
+        model_id: cohort model identifier (used by Layer 1 ``preprocess``
+            dispatch inside the delegated ``to_predicted_dict`` call).
+
+    Returns:
+        ``dict[english_key, str | None]`` with all 16 canonical FIELDS keys.
+        Same shape as ``to_predicted_dict``.
+    """
+    joined = "\n\n".join(per_page_texts)
+    return to_predicted_dict(joined, model_id)

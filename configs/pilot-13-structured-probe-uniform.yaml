@@ -1,0 +1,86 @@
+# pilot-13-structured-probe-uniform.yaml — ADR-018 Arm A overlay (issue #53)
+#
+# Structured-output probe Arm A: cohort-uniform JSON prompt for all 7 working
+# models. Tests the cleanest hypothesis -- "does the canonical schema instruction
+# work uniformly?". Sibling overlay `pilot-13-structured-probe-native-json.yaml`
+# carries Arm B (per-model native + JSON suffix; respects ADR-009 §"Per-model
+# native prompt strategy" task-prefix findings for Cat 2/3 models).
+#
+# Composed on top of `configs/pilot-13.yaml` (NOT on pilot-13-dev.yaml -- the
+# probe needs the FULL 7-model cohort, not the 1-model dev subset).
+#
+# Invocation:
+#
+#   make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-structured-probe-uniform.yaml
+#
+# What this overlay does:
+#
+#   - mlflow.experiment_name -> `structured-output-probe-uniform` (distinct
+#     from canonical `pilot-13-full` per ADR-016 `_CANONICAL_PRODUCTION_EXPERIMENTS`
+#     HARKing-guard; refused-on-collision when dev_only=true).
+#   - cohort.invoice_subset -> [EN16931_Einfach] (1-invoice probe scope per
+#     ADR-018 §"Decision + integration thoughts" §"Architecture" item 4).
+#   - cohort.parent_run_name -> `structured-probe-uniform` (distinct so
+#     mlflow.search_runs can filter by parent name).
+#   - cohort.transcript_archive_dir -> separate directory (probe transcripts
+#     NEVER pollute the 182-tuple canonical archive).
+#   - cohort.dev_only: true (HARKing-prevention forcing function inherited
+#     from ADR-016; pre-registered threshold + verdict in ADR-018 §"Decision +
+#     integration thoughts" §"Pre-registered conditional verdict" prevents any
+#     retro-fitting of the gating criterion).
+#   - cohort.adapter_mode: "json" (dispatches harness to
+#     `src/horus/eval/adapters_json.py` per ADR-018 schema addition in
+#     `src/horus/config.py`).
+#   - cohort.prompt_template_override: ALL 7 working_models get the SAME
+#     JSON-schema prompt (the "uniform" arm). Cross-field validator on
+#     CohortConfig already rejects unknown keys at boot, so the dict's keys
+#     MUST exactly match the 7 working_models list (validated pre-load).
+#
+# What is INHERITED unchanged from `pilot-13.yaml`:
+#
+#   - seed, eval.* (anls_threshold + tolerances + normalisation), rasterizer.*
+#     (dpi + cache_dir + image_format), cohort.working_models (the full 7),
+#     cohort.corpus_root, cohort.resume_on_existing_run, most mlflow.run_tags
+#     (overridden ones declared below).
+#
+# Pre-registered prompt (Arm A) -- locked PRE-PROBE per NeurIPS Paper Checklist
+# + brainstorm v2 §2 No-HARKing. The full 16-field JSON schema list matches
+# `src/horus/eval/ground_truth.py::FIELDS` (per ADR-012). Single-physical-line
+# JSON example so models that emit on one line are not penalized for matching
+# the format of the instruction.
+#
+# Refs: ADR-018 §"Pre-registered prompts" §"Arm A (cohort-uniform JSON)"
+# (this overlay's ratifying section), ADR-009 (cohort manifest), ADR-016
+# (dev_only HARKing guard + multi-file YAML composition), ADR-012 (canonical
+# 16-field schema), issue #53.
+
+mlflow:
+  experiment_name: structured-output-probe-uniform
+  run_tags:
+    stage: structured-output-probe
+    arm: uniform
+    issue: "53"
+    adr: ADR-018
+    pr: iss-53-structured-output-probe
+    probe_invoice: EN16931_Einfach
+
+cohort:
+  invoice_subset:
+    - EN16931_Einfach
+  parent_run_name: structured-probe-uniform
+  transcript_archive_dir: docs/sources/transcripts-structured-probe-uniform
+  dev_only: true
+  adapter_mode: json
+  prompt_template_override:
+    opendatalab/MinerU2.5-Pro-2604-1.2B: &uniform_prompt |-
+      You are reading a German B2B invoice. Extract these fields and return ONLY a single JSON object on one line, no commentary, no markdown fences:
+
+      {"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+      Use null for any field not present.
+    google/paligemma2-3b-mix-448: *uniform_prompt
+    ibm-granite/granite-docling-258M-mlx: *uniform_prompt
+    allenai/olmOCR-2-7B-1025: *uniform_prompt
+    PaddlePaddle/PaddleOCR-VL: *uniform_prompt
+    zai-org/GLM-OCR: *uniform_prompt
+    google/gemma-4-E4B-it: *uniform_prompt

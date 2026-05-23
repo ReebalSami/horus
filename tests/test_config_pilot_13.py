@@ -491,6 +491,174 @@ def test_from_yaml_extra_keys_still_rejected_after_merge(tmp_path: Path) -> None
         ExperimentConfig.from_yaml([base, overlay])
 
 
+# ---------------------------------------------------------------------------
+# 8. CohortConfig — prompt_template_override + adapter_mode (ADR-018)
+# ---------------------------------------------------------------------------
+
+
+def test_cohort_config_prompt_template_override_defaults_to_none() -> None:
+    """`CohortConfig.prompt_template_override` is None by default (back-compat)."""
+    cfg = CohortConfig(working_models=["m"])
+    assert cfg.prompt_template_override is None
+
+
+def test_cohort_config_adapter_mode_defaults_to_regex() -> None:
+    """`CohortConfig.adapter_mode` defaults to 'regex' (back-compat with all
+    pilot-13 configs predating ADR-018)."""
+    cfg = CohortConfig(working_models=["m"])
+    assert cfg.adapter_mode == "regex"
+
+
+def test_cohort_config_adapter_mode_json_requires_prompt_override() -> None:
+    """`adapter_mode='json'` without `prompt_template_override` → ValidationError
+    (Invariant 1: JSON adapter requires JSON-formatted prompts; default OCR
+    prompts would yield F1=0)."""
+    with pytest.raises(ValidationError, match="prompt_template_override"):
+        CohortConfig(working_models=["m"], adapter_mode="json")
+
+
+def test_cohort_config_adapter_mode_json_accepts_full_override() -> None:
+    """`adapter_mode='json'` with full `prompt_template_override` parses cleanly."""
+    cfg = CohortConfig(
+        working_models=["m1", "m2"],
+        adapter_mode="json",
+        prompt_template_override={"m1": "PROMPT-1", "m2": "PROMPT-2"},
+    )
+    assert cfg.adapter_mode == "json"
+    assert cfg.prompt_template_override == {"m1": "PROMPT-1", "m2": "PROMPT-2"}
+
+
+def test_cohort_config_partial_prompt_override_falls_through_to_manifest() -> None:
+    """Partial-coverage `prompt_template_override` (some models, not all) is
+    permitted — the harness falls back to COHORT_MANIFEST defaults for missing
+    models. This is a structurally valid Pydantic shape (validation only checks
+    keys ⊆ working_models, not keys ⊇ working_models)."""
+    cfg = CohortConfig(
+        working_models=["m1", "m2", "m3"],
+        adapter_mode="json",
+        prompt_template_override={"m1": "PROMPT-1"},  # only m1 overridden
+    )
+    assert cfg.prompt_template_override == {"m1": "PROMPT-1"}
+    assert "m2" not in cfg.prompt_template_override
+    assert "m3" not in cfg.prompt_template_override
+
+
+def test_cohort_config_prompt_override_unknown_key_rejected() -> None:
+    """`prompt_template_override` with a key NOT in `working_models` → ValidationError
+    (Invariant 2: catch YAML typos at boot per ADR-018)."""
+    with pytest.raises(ValidationError, match="not in cohort.working_models"):
+        CohortConfig(
+            working_models=["m1", "m2"],
+            adapter_mode="json",
+            prompt_template_override={
+                "m1": "PROMPT-1",
+                "typo-not-in-cohort": "PROMPT-X",  # silently-fall-through hazard
+            },
+        )
+
+
+def test_cohort_config_adapter_mode_rejects_unknown_value() -> None:
+    """`adapter_mode` outside {regex, json} Literal → ValidationError."""
+    with pytest.raises(ValidationError, match="adapter_mode"):
+        CohortConfig.model_validate(
+            {"working_models": ["m"], "adapter_mode": "xml"}  # not in Literal
+        )
+
+
+def test_loads_real_pilot_13_structured_probe_uniform_composition() -> None:
+    """`configs/pilot-13.yaml` + `configs/pilot-13-structured-probe-uniform.yaml`
+    compose cleanly (ADR-018 Arm A regression test).
+
+    Locks (a) the 7-model prompt_template_override covers all working_models
+    (no key-rejection from the validator), (b) adapter_mode propagates to
+    'json', (c) dev_only is true, (d) experiment_name is the probe's distinct
+    one, (e) invoice_subset is the 1-invoice probe scope.
+    """
+    base = REPO_ROOT / "configs" / "pilot-13.yaml"
+    overlay = REPO_ROOT / "configs" / "pilot-13-structured-probe-uniform.yaml"
+    assert base.is_file(), f"missing base config: {base}"
+    assert overlay.is_file(), f"missing Arm A overlay: {overlay}"
+
+    cfg = ExperimentConfig.from_yaml([base, overlay])
+
+    # ----- mlflow: overlay-distinct experiment name + probe-arm run tags -----
+    assert cfg.mlflow.experiment_name == "structured-output-probe-uniform"
+    assert cfg.mlflow.run_tags.get("arm") == "uniform"
+    assert cfg.mlflow.run_tags.get("issue") == "53"
+    assert cfg.mlflow.run_tags.get("adr") == "ADR-018"
+    assert cfg.mlflow.run_tags.get("probe_invoice") == "EN16931_Einfach"
+
+    # ----- cohort: full 7-model list INHERITED from base; probe substrate set -----
+    assert cfg.cohort is not None
+    assert len(cfg.cohort.working_models) == 7, "Arm A inherits full 7-model cohort from base"
+    assert cfg.cohort.invoice_subset == ["EN16931_Einfach"]
+    assert cfg.cohort.parent_run_name == "structured-probe-uniform"
+    assert str(cfg.cohort.transcript_archive_dir) == (
+        "docs/sources/transcripts-structured-probe-uniform"
+    )
+    assert cfg.cohort.dev_only is True, "HARKing-prevention guard active"
+    assert cfg.cohort.adapter_mode == "json", "Arm A routes through adapters_json"
+    assert cfg.cohort.prompt_template_override is not None
+    assert set(cfg.cohort.prompt_template_override.keys()) == set(cfg.cohort.working_models), (
+        "Arm A's override map MUST cover all 7 working_models (uniform arm — every model "
+        "gets the SAME prompt; validator rejects unknown keys at boot)"
+    )
+
+    # All 7 prompts must be identical (the "uniform" property of Arm A).
+    distinct_prompts = set(cfg.cohort.prompt_template_override.values())
+    assert len(distinct_prompts) == 1, (
+        f"Arm A is the uniform arm; all 7 prompts must be identical (found "
+        f"{len(distinct_prompts)} distinct prompts via YAML anchor + alias)"
+    )
+
+    # ----- inherited from base (untouched by overlay) -----
+    assert cfg.seed == 42
+    assert cfg.eval is not None and cfg.eval.anls_threshold == 0.5
+    assert cfg.rasterizer is not None and cfg.rasterizer.dpi == 300
+
+
+def test_loads_real_pilot_13_structured_probe_native_json_composition() -> None:
+    """`configs/pilot-13.yaml` + `configs/pilot-13-structured-probe-native-json.yaml`
+    compose cleanly (ADR-018 Arm B regression test).
+
+    Same shape as the Arm A test, with one structural difference: per-model
+    prompts MUST be distinct (Arm B respects ADR-009 §"Per-model native prompt
+    strategy" — different task prefixes per model).
+    """
+    base = REPO_ROOT / "configs" / "pilot-13.yaml"
+    overlay = REPO_ROOT / "configs" / "pilot-13-structured-probe-native-json.yaml"
+    assert base.is_file(), f"missing base config: {base}"
+    assert overlay.is_file(), f"missing Arm B overlay: {overlay}"
+
+    cfg = ExperimentConfig.from_yaml([base, overlay])
+
+    assert cfg.mlflow.experiment_name == "structured-output-probe-native-json"
+    assert cfg.mlflow.run_tags.get("arm") == "native-json"
+
+    assert cfg.cohort is not None
+    assert len(cfg.cohort.working_models) == 7
+    assert cfg.cohort.invoice_subset == ["EN16931_Einfach"]
+    assert cfg.cohort.parent_run_name == "structured-probe-native-json"
+    assert str(cfg.cohort.transcript_archive_dir) == (
+        "docs/sources/transcripts-structured-probe-native-json"
+    )
+    assert cfg.cohort.dev_only is True
+    assert cfg.cohort.adapter_mode == "json"
+    assert cfg.cohort.prompt_template_override is not None
+    assert set(cfg.cohort.prompt_template_override.keys()) == set(cfg.cohort.working_models)
+
+    # Arm B distinguishing property: ≥3 distinct prompts across the 7 models
+    # (Gemma re-uses the Arm A uniform prompt by design per ADR-018 §"Per-model
+    # prompt rationale"; the other 6 models each have their own native-prefix
+    # variant -- at minimum the 6 Cat-1/Cat-2 task-prefix-locked models differ
+    # from each other).
+    distinct_prompts = set(cfg.cohort.prompt_template_override.values())
+    assert len(distinct_prompts) >= 5, (
+        f"Arm B should have at least 5 distinct prompts across 7 models "
+        f"(per-model native task prefix); got {len(distinct_prompts)} distinct"
+    )
+
+
 def test_loads_real_pilot_13_dev_composition() -> None:
     """`configs/pilot-13.yaml` + `configs/pilot-13-dev.yaml` compose cleanly (ADR-016).
 

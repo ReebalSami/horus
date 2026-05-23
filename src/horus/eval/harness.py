@@ -76,7 +76,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from horus.config import ExperimentConfig
-from horus.eval.adapters import preprocess, to_predicted_dict
+from horus.eval import adapters as adapters_regex
+from horus.eval import adapters_json
 from horus.eval.ground_truth import FIELDS, GroundTruth, parse_cii_xml
 from horus.eval.rasterize import rasterize_pdf
 from horus.eval.scorer import InvoiceFieldScores, score
@@ -337,6 +338,7 @@ def _score_single_invoice(
     transcript_archive_dir: Path,
     gt: GroundTruth,
     eval_cfg: Any,  # EvalConfig | None — None falls back to scorer's defaults
+    adapter_module: Any = adapters_regex,  # ADR-018: adapters_regex (default) | adapters_json
 ) -> tuple[InvoiceFieldScores, str, list[ExtractionResult]]:
     """Score one (model, invoice) tuple end-to-end.
 
@@ -378,6 +380,12 @@ def _score_single_invoice(
     transcript_archive_dir.mkdir(parents=True, exist_ok=True)
     model_slug = _model_slug(model_id)
     transcript_path = transcript_archive_dir / f"{model_slug}__{invoice_stem}.txt"
+    # ADR-018: surface the prompt's first 80 chars in the transcript header so
+    # reviewers can verify which arm (uniform / native+json / default) a given
+    # transcript came from. Single-line replacement of newlines / tabs prevents
+    # multi-line prompts from breaking the comment shape.
+    prompt_preview = prompt.replace("\n", " ").replace("\t", " ")[:80]
+    adapter_mode_tag = "json" if adapter_module is adapters_json else "regex"
     transcript_header = (
         f"# Multi-page transcript (ADR-014 PR(c))\n"
         f"# Model:    {model_id}\n"
@@ -386,14 +394,28 @@ def _score_single_invoice(
         f"# DPI:      {raster_dpi}\n"
         f"# Errors:   {sum(1 for r in per_page_results if not r.is_ok)}/{len(per_page_results)}\n"
         f"# Extract:  {sum(r.extract_seconds for r in per_page_results):.2f}s total\n"
+        f"# Adapter:  {adapter_mode_tag}\n"
+        f"# Prompt:   {prompt_preview}\n"
         f"\n"
     )
     transcript_path.write_text(transcript_header + concatenated, encoding="utf-8")
 
-    # 4. Strip separators + preprocess + to_predicted_dict.
-    scorer_input = _strip_page_separators(concatenated)
-    preprocessed = preprocess(scorer_input, model_id)
-    predicted_dict = to_predicted_dict(preprocessed, model_id)
+    # 4. Per-page parse + merge via the multipage adapter API.
+    #    ADR-019 Wave 3.1: replaces the `_strip_page_separators(concatenated) →
+    #    preprocess → to_predicted_dict` chain that silently dropped per-page-valid
+    #    JSON shapes (Gemma-4 unfenced 2-dict concat per B1; GLM-OCR fence-bias
+    #    asymmetry per B2; Granite decoder-loop dict-repetition per B3). The
+    #    multipage API parses each page independently and merges with
+    #    first-non-None-wins (page 1 dominant per ADR-012 tristate semantics);
+    #    defends against page-2 hallucinations (e.g., olmOCR Arm B page 2's
+    #    "Joghurt Banane" leaking into seller_name).
+    #
+    #    Both adapters (regex `adapters` + json `adapters_json`) expose the same
+    #    `to_predicted_dict_multipage(per_page_texts, model_id)` signature per
+    #    the parity test in tests/test_adapters_json.py
+    #    ::test_public_surface_signature_parity_with_adapters.
+    per_page_texts = [r.text for r in per_page_results]
+    predicted_dict = adapter_module.to_predicted_dict_multipage(per_page_texts, model_id)
 
     # 5. Score.
     scores = score(
@@ -751,6 +773,10 @@ def run_cohort(
         mlflow.set_tag("n_invoices", str(len(pairs)))
         mlflow.set_tag("resume_enabled", str(cohort_cfg.resume_on_existing_run))
         mlflow.set_tag("dev_only", dev_only_tag_value)
+        # ADR-018: surface the adapter dispatch on the parent run so MLflow
+        # search_runs can filter on it (e.g., `tags.adapter_mode = 'json'` to
+        # find probe runs without re-iterating nested-run tags).
+        mlflow.set_tag("adapter_mode", cohort_cfg.adapter_mode)
         mlflow.log_param("seed", cfg.seed)
         mlflow.log_param("dpi", raster_cfg.dpi)
         if eval_cfg is not None:
@@ -786,7 +812,13 @@ def run_cohort(
             )
 
             manifest_entry = COHORT_MANIFEST[model_id]
-            prompt = manifest_entry["prompt_template"]
+            # ADR-018: per-model prompt override map (cohort.prompt_template_override)
+            # falls through to COHORT_MANIFEST defaults for models not present in the
+            # override dict. Partial-coverage dicts (some models, not all) are valid;
+            # the cross-field validator on CohortConfig already rejected unknown keys
+            # at boot, so a `.get(model_id, default)` here is safe and intentional.
+            prompt_override = cohort_cfg.prompt_template_override or {}
+            prompt = prompt_override.get(model_id, manifest_entry["prompt_template"])
             max_tokens = manifest_entry["max_tokens"]
 
             extractor = get_extractor(model_id)
@@ -864,6 +896,15 @@ def run_cohort(
                     mps_pre_alloc_mb = _snapshot_mps_driver_alloc_mb_or_none(extractor)
 
                     t_start = time.perf_counter()
+                    # ADR-018: dispatch adapter module via cohort.adapter_mode
+                    # (Literal["regex", "json"]). Binary dispatch — NOT a
+                    # pluggable framework. At exactly 2 variants this stays under
+                    # ADR-016 supersession trigger #3 ("past 2 variants").
+                    adapter_module = (
+                        adapters_json
+                        if cohort_cfg.adapter_mode == "json"
+                        else adapters_regex
+                    )
                     scores, _transcript, per_page = _score_single_invoice(
                         model_id=model_id,
                         pdf_path=pdf_path,
@@ -876,6 +917,7 @@ def run_cohort(
                         transcript_archive_dir=cohort_cfg.transcript_archive_dir,
                         gt=gt,
                         eval_cfg=eval_cfg,
+                        adapter_module=adapter_module,
                     )
                     elapsed = time.perf_counter() - t_start
 
@@ -896,6 +938,7 @@ def run_cohort(
                         mlflow.set_tag("profile", profile)
                         mlflow.set_tag("xml_route", "facturx")
                         mlflow.set_tag("dev_only", dev_only_tag_value)
+                        mlflow.set_tag("adapter_mode", cohort_cfg.adapter_mode)
                         mlflow.set_tag("pages", str(len(per_page)))
                         mlflow.set_tag("page_errors", str(sum(1 for r in per_page if not r.is_ok)))
 

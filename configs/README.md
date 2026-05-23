@@ -62,6 +62,21 @@ make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
 
 `pilot-13-dev.yaml` is a ~15-line overlay declaring only what differs from the base (1 model instead of 7, 3 invoices instead of 26, distinct MLflow experiment name + transcript archive dir, `dev_only: true` HARKing-prevention guard). The shared knobs (seed, eval thresholds, rasterizer DPI, corpus root, resume policy, most MLflow tags) inherit unchanged from `pilot-13.yaml`.
 
+### Structured-output probe overlays (ADR-018, issue #53)
+
+Two overlays drive the structured-output prompting probe (1 invoice × 7 models × 2 prompt arms):
+
+```bash
+# Arm A — cohort-uniform JSON prompt for all 7 models
+make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-structured-probe-uniform.yaml
+
+# Arm B — per-model native task prefix + JSON suffix (respects ADR-009 §"Per-model native
+# prompt strategy" task-prefix-lock findings for Cat 2/3 models)
+make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-structured-probe-native-json.yaml
+```
+
+Both overlays compose on `pilot-13.yaml` (NOT on `pilot-13-dev.yaml` — the probe needs the FULL 7-model cohort, not the 1-model dev subset). Both set `cohort.adapter_mode: json` (dispatches harness to `src/horus/eval/adapters_json.py`), `cohort.invoice_subset: [EN16931_Einfach]` (1-invoice probe scope), `cohort.dev_only: true` (HARKing-prevention forcing function inherited from ADR-016), and distinct `mlflow.experiment_name` + `cohort.parent_run_name` + `cohort.transcript_archive_dir`. The per-model prompts in `cohort.prompt_template_override` are pre-registered in ADR-018 §"Pre-registered prompts" — locked PRE-PROBE per NeurIPS Paper Checklist + brainstorm v2 §2 No-HARKing.
+
 **Merge semantics**:
 
 - **Scalars** (str, int, bool, None) — later file wins.
