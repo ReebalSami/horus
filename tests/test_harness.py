@@ -55,6 +55,7 @@ from horus.eval.harness import (
     run_cohort,
 )
 from horus.vlm_extractor import ExtractionResult
+from tests._corpus import skip_if_no_corpus
 from tests.conftest import ZUGFERD_CORPUS_DIR, ZUGFERD_FX_DIR
 
 # ===========================================================================
@@ -202,6 +203,7 @@ def test_extract_and_concat_per_page_loop() -> None:
         assert f"output-for-page-{i}" in concatenated
 
 
+@skip_if_no_corpus  # ADR-023: iterates ZUGFERD_CORPUS_DIR
 def test_list_paired_invoices_matches_conftest_helper() -> None:
     """`harness._list_paired_invoices` returns the same 26 pairs as conftest's helper.
 
@@ -336,6 +338,7 @@ def _make_test_cfg(
     )
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_single_model_single_invoice_e2e(tmp_path: Path) -> None:
     """End-to-end smoke: 1 model × 1 invoice → 1 nested MLflow run with non-zero F1 inputs."""
     cfg = _make_test_cfg(tmp_path)
@@ -362,6 +365,7 @@ def test_run_cohort_single_model_single_invoice_e2e(tmp_path: Path) -> None:
     assert any(s > 0.0 for s in flattened), "Mock extractor should produce ≥1 positive field score"
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_resume_skips_finished_nested_runs(tmp_path: Path) -> None:
     """Re-invoking on the same tracking_uri skips already-FINISHED nested runs."""
     cfg = _make_test_cfg(tmp_path)
@@ -388,6 +392,7 @@ def test_run_cohort_resume_skips_finished_nested_runs(tmp_path: Path) -> None:
         assert second.n_completed == 1
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_xrechnung_uses_facturx_not_sidecar(tmp_path: Path) -> None:
     """XRECHNUNG fixtures: GT issue_date is 2018-* (factur-x), not 2024-* (sidecar).
 
@@ -433,6 +438,7 @@ def test_run_cohort_xrechnung_uses_facturx_not_sidecar(tmp_path: Path) -> None:
     )
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_profile_aggregation(tmp_path: Path) -> None:
     """Per-profile (EN16931 vs XRECHNUNG) + pooled F1 are all reported separately."""
     cfg = _make_test_cfg(tmp_path)
@@ -481,6 +487,7 @@ def test_run_cohort_raises_on_missing_rasterizer_or_cohort_cfg(tmp_path: Path) -
 # ===========================================================================
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_invoice_subset_from_yaml_applied(tmp_path: Path) -> None:
     """`cohort.invoice_subset` from YAML is honored when CLI subset is None (ADR-016)."""
     cfg = _make_test_cfg(
@@ -501,6 +508,7 @@ def test_run_cohort_invoice_subset_from_yaml_applied(tmp_path: Path) -> None:
     assert result.n_completed == 1
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_cli_invoice_subset_overrides_yaml(tmp_path: Path) -> None:
     """CLI `invoice_subset` overrides `cohort.invoice_subset` from YAML (ADR-016)."""
     cfg = _make_test_cfg(
@@ -548,6 +556,7 @@ def test_run_cohort_dev_only_blocks_canonical_experiment(tmp_path: Path) -> None
         run_cohort(cfg)
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_dev_only_tags_parent_and_nested_runs(tmp_path: Path) -> None:
     """`dev_only=true` tags parent + every nested run with `dev_only=true` (ADR-016)."""
     cfg = _make_test_cfg(
@@ -673,6 +682,7 @@ class _MockExtractorWithPerf:
         self._loaded = False
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_logs_perf_metrics_in_nested_run_mlx_backend(tmp_path: Path) -> None:
     """MLX-VLM backend: `run_cohort` logs decode-only + e2e perf metrics correctly.
 
@@ -816,6 +826,7 @@ class _MockMPSExtractorWithPerf:
         self._loaded = False
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_logs_perf_metrics_in_nested_run_mps_backend(tmp_path: Path) -> None:
     """MPS backend: decode_tps_available='false', decode_tps_mean=0.0, inference_tps_mean>0.
 
@@ -924,6 +935,7 @@ class _MockJSONExtractor:
         self._loaded = False
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_regex_adapter_mode_is_default_back_compat(tmp_path: Path) -> None:
     """Default `cohort.adapter_mode` is "regex" -- existing pilot-13 configs
     continue to dispatch through `adapters_regex` unchanged (back-compat preserved).
@@ -961,6 +973,7 @@ def test_run_cohort_regex_adapter_mode_is_default_back_compat(tmp_path: Path) ->
     )
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_json_adapter_mode_with_full_overrides(tmp_path: Path) -> None:
     """`cohort.adapter_mode="json"` + full `prompt_template_override` routes
     every (model, invoice) tuple through `adapters_json`.
@@ -1008,6 +1021,7 @@ def test_run_cohort_json_adapter_mode_with_full_overrides(tmp_path: Path) -> Non
     )
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_partial_prompt_override_falls_through_to_manifest(tmp_path: Path) -> None:
     """Partial-coverage `prompt_template_override` (one of two models overridden)
     falls through to `COHORT_MANIFEST[model_id]['prompt_template']` for the
@@ -1066,6 +1080,7 @@ def test_run_cohort_partial_prompt_override_falls_through_to_manifest(tmp_path: 
     )
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_adapter_mode_tag_propagates_to_nested_runs(tmp_path: Path) -> None:
     """`adapter_mode` MLflow tag is set on BOTH parent and per-(model, invoice)
     nested runs -- enables `mlflow.search_runs(filter="tags.adapter_mode='json'")`
@@ -1104,6 +1119,7 @@ def test_run_cohort_adapter_mode_tag_propagates_to_nested_runs(tmp_path: Path) -
     )
 
 
+@skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
 def test_run_cohort_dev_only_false_tags_runs_as_false(tmp_path: Path) -> None:
     """Default `dev_only=False` still tags parent + nested with `dev_only=false` (audit-trail)."""
     cfg = _make_test_cfg(

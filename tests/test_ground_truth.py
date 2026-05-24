@@ -42,12 +42,18 @@ from horus.eval.ground_truth import (
     _normalize_string,
     _passthrough,
 )
+from tests._corpus import skip_if_no_corpus
 from tests.conftest import (
     EINFACH_CII,
     EINFACH_PDF,
     REPO_ROOT,
     ZUGFERD_CII_DIR,
 )
+
+# ADR-023: every test in this module requires the ZUGFeRD corpus on disk
+# (parses real EINFACH_CII + EINFACH_PDF + iterates ZUGFERD_CII_DIR).
+# Skips automatically when the corpus is absent (CI or fresh dev clone).
+pytestmark = skip_if_no_corpus
 
 # ---------------------------------------------------------------------------
 # Smoke-fixture-specific expected values (verified against PDF + XML eye-check)

@@ -4,7 +4,14 @@ Centralizes the ZUGFeRD corpus paths so individual test modules don't hardcode
 deep relative paths like `data/raw/german/zugferd-corpus/XML-Rechnung/FX/...`
 (refactor hazard — if the corpus moves, only this file needs updating).
 
-Public constants:
+Path constants + availability predicates + skipif decorators (`skip_if_no_corpus`,
+`skip_if_no_fixtures`) live in `tests/_corpus.py` (the canonical helper module
+per ADR-023; mirrors scikit-learn's `sklearn/utils/_testing.py` pattern). This
+file re-exports the path constants for backward compatibility with test
+modules that already import them from `tests.conftest`, and defines the
+parametrized fixtures.
+
+Public constants (re-exported from `tests._corpus`):
   - `REPO_ROOT`             — repo root (absolute Path)
   - `ZUGFERD_CORPUS_DIR`    — root of the ZUGFeRD test corpus
   - `ZUGFERD_FX_DIR`        — Factur-X (PDF) sub-directory
@@ -30,26 +37,35 @@ from pathlib import Path
 
 import pytest
 
-# ---------------------------------------------------------------------------
-# Path constants — single source of truth for corpus locations
-# ---------------------------------------------------------------------------
+# Re-export path constants from the canonical helper module so existing
+# `from tests.conftest import ZUGFERD_FX_DIR` imports keep working.
+from tests._corpus import (
+    EINFACH_CII,
+    EINFACH_PDF,
+    HETZNER_PDF,
+    REPO_ROOT,
+    ZUGFERD_CII_DIR,
+    ZUGFERD_CORPUS_DIR,
+    ZUGFERD_FX_DIR,
+    ZUGFERD_UNSTRUCTURED_DIR,
+)
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-ZUGFERD_CORPUS_DIR = REPO_ROOT / "data" / "raw" / "german" / "zugferd-corpus"
-ZUGFERD_FX_DIR = ZUGFERD_CORPUS_DIR / "XML-Rechnung" / "FX"
-ZUGFERD_CII_DIR = ZUGFERD_CORPUS_DIR / "XML-Rechnung" / "CII"
-ZUGFERD_UNSTRUCTURED_DIR = ZUGFERD_CORPUS_DIR / "unstructured"
-
-# Smoke fixture — canonical EN16931 invoice + its paired FeRD-shipped .cii.xml
-# sidecar. Used as the primary smoke-test target across ADR-010, ADR-012, and
-# pilot #13's eval harness.
-EINFACH_PDF = ZUGFERD_FX_DIR / "EN16931_Einfach.pdf"
-EINFACH_CII = ZUGFERD_CII_DIR / "EN16931_Einfach.cii.xml"
-
-# Negative-test fixture — Hetzner PDF without embedded factur-x XML
-# attachment. Per ADR-010 Probe 3: factur-x extraction returns None on this
-# input; downstream callers (including PR(a)'s parser) are never invoked.
-HETZNER_PDF = ZUGFERD_UNSTRUCTURED_DIR / "RE-E-974-Hetzner_2016-01-19_R0005532486.pdf"
+__all__ = [
+    "EINFACH_CII",
+    "EINFACH_PDF",
+    "HETZNER_PDF",
+    "REPO_ROOT",
+    "ZUGFERD_CII_DIR",
+    "ZUGFERD_CORPUS_DIR",
+    "ZUGFERD_FX_DIR",
+    "ZUGFERD_UNSTRUCTURED_DIR",
+    "corpus_cii_xmls",
+    "corpus_fx_pdfs",
+    "en16931_paired_invoice",
+    "paired_invoice",
+    "pytest_generate_tests",
+    "xrechnung_paired_invoice",
+]
 
 
 # ---------------------------------------------------------------------------
@@ -149,3 +165,11 @@ def xrechnung_paired_invoice(
 ) -> Iterator[tuple[Path, Path]]:
     """Yields one paired invoice per XRECHNUNG_*-prefixed fixture (4 invoices)."""
     yield request.param  # pragma: no cover — populated by pytest_generate_tests
+
+
+# ADR-023: the auto-mark `pytest_collection_modifyitems` hook from the
+# original marker design was deleted in the skipif-unification amendment.
+# Fixture-driven corpus dependency is now handled by `_list_paired_invoices`
+# returning `[]` when the corpus is absent → pytest's parametrize produces
+# zero items → tests using these fixtures simply don't get collected. No
+# explicit marking needed. See ADR-023 §"Decision" for the unified design.

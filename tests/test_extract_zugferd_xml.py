@@ -22,6 +22,13 @@ from pathlib import Path
 
 import pytest
 
+from tests._corpus import skip_if_no_corpus
+
+# ADR-023: every test in this module requires the ZUGFeRD corpus on disk
+# (hard `assert ... .exists()` calls + factur-x extraction from real PDFs).
+# Skips automatically when the corpus is absent (CI or fresh dev clone).
+pytestmark = skip_if_no_corpus
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ZUGFERD_FX_DIR = REPO_ROOT / "data" / "raw" / "german" / "zugferd-corpus" / "XML-Rechnung" / "FX"
 ZUGFERD_CII_DIR = REPO_ROOT / "data" / "raw" / "german" / "zugferd-corpus" / "XML-Rechnung" / "CII"

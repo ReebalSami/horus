@@ -4,7 +4,7 @@
 help:
 	@echo "Available targets:"
 	@echo "  install         uv sync (install all deps + dev group)"
-	@echo "  test            uv run pytest"
+	@echo "  test            uv run pytest (corpus tests auto-skip when corpus is absent; see ADR-023)"
 	@echo "  lint            uv run ruff check (lint only; no fix)"
 	@echo "  format          uv run ruff format (apply formatting)"
 	@echo "  typecheck       uv run mypy src tests"

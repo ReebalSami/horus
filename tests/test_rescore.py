@@ -42,23 +42,18 @@ import pytest
 # manipulation needed).
 from scripts import rescore
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-TRANSCRIPTS_DIR = REPO_ROOT / "docs" / "sources" / "transcripts-multipage"
-CORPUS_ROOT = REPO_ROOT / "data" / "raw" / "german" / "zugferd-corpus"
-
-# These tests need the full pilot-13 transcript archive + corpus to run.
-_HAS_TRANSCRIPTS = TRANSCRIPTS_DIR.is_dir() and any(TRANSCRIPTS_DIR.glob("*.txt"))
-_HAS_CORPUS = CORPUS_ROOT.is_dir()
-_HAS_FIXTURES = _HAS_TRANSCRIPTS and _HAS_CORPUS
-
-skip_if_no_fixtures = pytest.mark.skipif(
-    not _HAS_FIXTURES,
-    reason=(
-        "Requires docs/sources/transcripts-multipage/ + data/raw/german/zugferd-corpus/ "
-        "to be present (ADR-014 Step 7 evidence)."
-    ),
+# ADR-023: `skip_if_no_fixtures` (= transcripts-multipage AND corpus PDFs) lives
+# in the canonical `tests/_corpus.py` helper module alongside its sibling
+# `skip_if_no_corpus` (corpus-only). Both use the content-aware `_HAS_CORPUS`
+# predicate that inspects actual PDF content (not just dir-exists, which is
+# defeated by the git-tracked MANIFEST.md per .gitignore allowlist).
+from tests._corpus import (
+    TRANSCRIPTS_DIR,
+    skip_if_no_fixtures,
 )
-
+from tests._corpus import (
+    ZUGFERD_CORPUS_DIR as CORPUS_ROOT,  # alias preserves rescore.rescore_transcripts call sites
+)
 
 # ---------------------------------------------------------------------------
 # 1. AdapterPair loading + stability semantics

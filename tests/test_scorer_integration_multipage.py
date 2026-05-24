@@ -53,7 +53,13 @@ from horus.eval.adapters import preprocess, to_predicted_dict
 from horus.eval.ground_truth import GroundTruth
 from horus.eval.harness import _extract_groundtruth_via_facturx, _strip_page_separators
 from horus.eval.scorer import score
+from tests._corpus import skip_if_no_corpus
 from tests.conftest import EINFACH_PDF, ZUGFERD_FX_DIR
+
+# ADR-023: every test in this module requires the ZUGFeRD corpus on disk
+# (uses EINFACH_PDF + ZUGFERD_FX_DIR for factur-x GT extraction).
+# Skips automatically when the corpus is absent (CI or fresh dev clone).
+pytestmark = skip_if_no_corpus
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TRANSCRIPTS_MULTIPAGE_DIR = REPO_ROOT / "docs" / "sources" / "transcripts-multipage"

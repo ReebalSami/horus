@@ -1,0 +1,72 @@
+name: CI
+
+# ADR-023: Continuous integration for HORUS. Runs lint + typecheck (cache-cleared)
+# + test (corpus-dependent tests auto-skip via pytest.mark.skipif in
+# `tests/_corpus.py`) on every push to main + every PR against main.
+#
+# Scope: lint + typecheck + all pytest-collectable tests. Corpus-touching tests
+# auto-skip when `data/raw/german/zugferd-corpus/XML-Rechnung/FX/*.pdf` is
+# absent (the predicate `skip_if_no_corpus` inspects content, not just dir
+# presence — `MANIFEST.md` is git-tracked). macOS-only smoke targets
+# (`make inference-smoke`, `make cohort-smoke`) and Apple-Silicon-only
+# `test_inference_smoke.py` tests are platform-gated via `pytest.mark.skipif`
+# (skip on ubuntu-latest). See ADR-023 §"Decision" + §"Known limitations".
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-flight runs for the same PR / branch when a new commit lands.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: lint + typecheck + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # ADR-023 + docs/sources/tools/astral-setup-uv.md: pin by SHA (v8.1.0
+      # canonical example as of 2026-05-23 via Context7 /astral-sh/setup-uv).
+      # `enable-cache: true` caches the uv binary + dependency wheels.
+      # Cache key invalidates on changes to pyproject.toml or uv.lock.
+      # `python-version` is omitted — `uv sync` reads .python-version (3.14).
+      - name: Install uv (with cache)
+        id: setup-uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+
+      - name: Install Python 3.14 + dependencies (frozen lock)
+        run: uv sync --locked
+
+      - name: Lint (ruff check + ruff format --check)
+        run: make lint
+
+      # ADR-023 + docs/sources/tools/mypy-import-discovery.md:
+      # mandatory cache-cleared mypy invocation. Warm `.mypy_cache/` can
+      # silently mask `import-not-found` errors after config changes (the
+      # nondeterminism trap surfaced during the evidence-base audit).
+      - name: Typecheck (mypy, cache-cleared)
+        run: |
+          rm -rf .mypy_cache
+          make typecheck
+
+      # ADR-023: `make test` runs the full suite. Corpus-dependent tests
+      # auto-skip via `pytest.mark.skipif` decorators in `tests/_corpus.py`
+      # (`skip_if_no_corpus` + `skip_if_no_fixtures`) — same code path as
+      # local dev clones without the corpus fetched. macOS-only tests in
+      # `tests/test_inference_smoke.py` auto-skip via `requires_macos`.
+      # No `-m` filter; no marker registration; no `make test-ci` target.
+      - name: Test
+        run: make test
