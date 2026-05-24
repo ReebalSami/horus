@@ -125,3 +125,9 @@ addopts = "-ra"
 # resolves without per-file sys.path manipulation. Paths are relative to rootdir
 # (the directory containing this pyproject.toml).
 pythonpath = ["."]
+# ADR-023: register the `requires_corpus` marker (gates corpus-touching tests;
+# deselected by `make test-ci` for the ubuntu-latest CI runner that doesn't have
+# data/raw/german/zugferd-corpus/ available).
+markers = [
+    "requires_corpus: test requires the ZUGFeRD test corpus at data/raw/german/zugferd-corpus/ (deselected by make test-ci; per ADR-023)",
+]

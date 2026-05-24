@@ -49,6 +49,11 @@ from tests.conftest import (
     ZUGFERD_CII_DIR,
 )
 
+# ADR-023: every test in this module requires the ZUGFeRD corpus on disk
+# (parses real EINFACH_CII + EINFACH_PDF + iterates ZUGFERD_CII_DIR).
+# Deselected by `make test-ci` on the ubuntu-latest CI runner.
+pytestmark = pytest.mark.requires_corpus
+
 # ---------------------------------------------------------------------------
 # Smoke-fixture-specific expected values (verified against PDF + XML eye-check)
 # ---------------------------------------------------------------------------

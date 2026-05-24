@@ -149,3 +149,39 @@ def xrechnung_paired_invoice(
 ) -> Iterator[tuple[Path, Path]]:
     """Yields one paired invoice per XRECHNUNG_*-prefixed fixture (4 invoices)."""
     yield request.param  # pragma: no cover — populated by pytest_generate_tests
+
+
+# ---------------------------------------------------------------------------
+# ADR-023 — auto-mark tests consuming corpus parametrized fixtures
+# ---------------------------------------------------------------------------
+
+_CORPUS_FIXTURES = frozenset(
+    {
+        "paired_invoice",
+        "en16931_paired_invoice",
+        "xrechnung_paired_invoice",
+        "corpus_fx_pdfs",
+        "corpus_cii_xmls",
+    }
+)
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    """Auto-apply ``@pytest.mark.requires_corpus`` to tests using corpus fixtures.
+
+    Single source of truth for fixture-driven corpus dependency: any test
+    consuming one of ``_CORPUS_FIXTURES`` is marked, so ``make test-ci`` (which
+    runs ``pytest -m "not requires_corpus"``) deselects them cleanly on the
+    ubuntu-latest CI runner where ``data/raw/german/zugferd-corpus/`` is not
+    available.
+
+    Direct-path corpus dependencies (no fixture, e.g.,
+    ``EINFACH_PDF.exists()``) are NOT auto-marked here — they get a module-
+    level ``pytestmark`` (5 files) or a test-level decorator (8 tests in
+    ``test_harness.py``) instead. See ADR-023 §"Decision" for the three-layer
+    application strategy.
+    """
+    for item in items:
+        fixturenames = set(getattr(item, "fixturenames", ()))
+        if fixturenames & _CORPUS_FIXTURES:
+            item.add_marker(pytest.mark.requires_corpus)

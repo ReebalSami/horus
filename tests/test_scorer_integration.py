@@ -55,6 +55,11 @@ EINFACH_CII = (
     / "EN16931_Einfach.cii.xml"
 )
 
+# ADR-023: every test in this module requires the ZUGFeRD corpus on disk
+# (the `einfach_gt` fixture parses EINFACH_CII; transcripts are not corpus).
+# Deselected by `make test-ci` on the ubuntu-latest CI runner.
+pytestmark = pytest.mark.requires_corpus
+
 
 # Working cohort transcripts (7 of 10 models that ran to completion per ADR-009).
 # DeepSeek-OCR-2 / Qwen3-VL-4B / Molmo-7B-D errored at load/inference and have

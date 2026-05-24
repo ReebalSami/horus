@@ -55,6 +55,11 @@ from horus.eval.harness import _extract_groundtruth_via_facturx, _strip_page_sep
 from horus.eval.scorer import score
 from tests.conftest import EINFACH_PDF, ZUGFERD_FX_DIR
 
+# ADR-023: every test in this module requires the ZUGFeRD corpus on disk
+# (uses EINFACH_PDF + ZUGFERD_FX_DIR for factur-x GT extraction).
+# Deselected by `make test-ci` on the ubuntu-latest CI runner.
+pytestmark = pytest.mark.requires_corpus
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TRANSCRIPTS_MULTIPAGE_DIR = REPO_ROOT / "docs" / "sources" / "transcripts-multipage"
 
