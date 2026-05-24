@@ -362,7 +362,7 @@ def _safe_json_loads(text: str, default: Any = None) -> Any:
     """
     try:
         return json.loads(text)
-    except (json.JSONDecodeError, ValueError):
+    except json.JSONDecodeError, ValueError:
         return default
 
 

@@ -52,7 +52,7 @@ Handoff context: `cascade-system/docs/handoffs/cascade-d-master-thesis.md`.
 
 ## Toolchain (Python ML / research)
 
-- Python 3.14+ (pinned in `.python-version`)
+- Python 3.14+ (pinned in `.python-version`); codebase uses **PEP 758** unparenthesized `except A, B:` syntax (intentionally adopted by `ruff 0.15+` + Black PR 4720; valid in 3.14+, `SyntaxError` in ≤3.13). Cosmetically surprising but correct — running `ruff format` on a 3.14 codebase will strip parens from `except (A, B):` tuples without exception name. See PR #62 for context.
 - `uv` (Astral) — exclusive package manager (per `uv-discipline`)
 - **Runtime deps** (pinned in `pyproject.toml` `[project] dependencies`), grouped by purpose:
   - **Config + I/O**: `pydantic` / `pydantic-settings` / `pyyaml` (ADR-004; per `horus-config-discipline`)

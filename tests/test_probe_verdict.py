@@ -201,8 +201,7 @@ def test_verdict_defer_when_2_of_7_pass_pre_registered() -> None:
 def test_verdict_defer_when_zero_pass() -> None:
     """0 of 7 models pass → DEFER."""
     scores = {
-        f"m{i}": ModelScore(model_id=f"m{i}", arm_a=_failing_arm(), arm_b=None)
-        for i in range(7)
+        f"m{i}": ModelScore(model_id=f"m{i}", arm_a=_failing_arm(), arm_b=None) for i in range(7)
     }
     matrix = compute_verdict_matrix(scores)
     assert matrix.pre_registered_n_of_7.n_passing == 0
@@ -212,8 +211,7 @@ def test_verdict_defer_when_zero_pass() -> None:
 def test_verdict_file_when_all_pass() -> None:
     """7 of 7 models pass → FILE."""
     scores = {
-        f"m{i}": ModelScore(model_id=f"m{i}", arm_a=_passing_arm(), arm_b=None)
-        for i in range(7)
+        f"m{i}": ModelScore(model_id=f"m{i}", arm_a=_passing_arm(), arm_b=None) for i in range(7)
     }
     matrix = compute_verdict_matrix(scores)
     assert matrix.pre_registered_n_of_7.n_passing == 7
@@ -233,9 +231,7 @@ def test_paligemma_counted_in_n_of_7_denominator() -> None:
             arm_a=_failing_arm(),
             arm_b=_failing_arm(),
         ),
-        "model_passing": ModelScore(
-            model_id="model_passing", arm_a=_passing_arm(), arm_b=None
-        ),
+        "model_passing": ModelScore(model_id="model_passing", arm_a=_passing_arm(), arm_b=None),
     }
     matrix = compute_verdict_matrix(scores)
     assert matrix.pre_registered_n_of_7.n_total == 2
@@ -251,9 +247,7 @@ def test_paligemma_flagged_in_n_of_6_denominator() -> None:
             arm_a=_failing_arm(),
             arm_b=_failing_arm(),
         ),
-        "model_passing": ModelScore(
-            model_id="model_passing", arm_a=_passing_arm(), arm_b=None
-        ),
+        "model_passing": ModelScore(model_id="model_passing", arm_a=_passing_arm(), arm_b=None),
     }
     matrix = compute_verdict_matrix(scores)
     # PaliGemma is excluded from BOTH passing and failing in the N-of-6 cell.
@@ -286,8 +280,7 @@ def test_paligemma_passing_still_excluded_from_n_of_6() -> None:
 def test_paligemma_absent_from_input_n_of_6_unchanged() -> None:
     """No PaliGemma in input → N-of-7 and N-of-6 cells have identical n_total."""
     scores = {
-        f"m{i}": ModelScore(model_id=f"m{i}", arm_a=_passing_arm(), arm_b=None)
-        for i in range(5)
+        f"m{i}": ModelScore(model_id=f"m{i}", arm_a=_passing_arm(), arm_b=None) for i in range(5)
     }
     matrix = compute_verdict_matrix(scores)
     assert matrix.pre_registered_n_of_7.n_total == 5
