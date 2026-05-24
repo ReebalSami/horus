@@ -47,8 +47,13 @@ TRANSCRIPTS_DIR = REPO_ROOT / "docs" / "sources" / "transcripts-multipage"
 CORPUS_ROOT = REPO_ROOT / "data" / "raw" / "german" / "zugferd-corpus"
 
 # These tests need the full pilot-13 transcript archive + corpus to run.
+# ADR-023 first-CI-run amendment: `CORPUS_ROOT.is_dir()` alone is too weak —
+# `data/raw/german/zugferd-corpus/MANIFEST.md` is git-tracked (per .gitignore
+# allowlist for the per-corpus audit-trail record), so on CI the dir exists
+# but contains only MANIFEST.md. Strengthen to require actual PDF content
+# (matches the `XML-Rechnung/FX/` layout that conftest.py also expects).
 _HAS_TRANSCRIPTS = TRANSCRIPTS_DIR.is_dir() and any(TRANSCRIPTS_DIR.glob("*.txt"))
-_HAS_CORPUS = CORPUS_ROOT.is_dir()
+_HAS_CORPUS = CORPUS_ROOT.is_dir() and any((CORPUS_ROOT / "XML-Rechnung" / "FX").glob("*.pdf"))
 _HAS_FIXTURES = _HAS_TRANSCRIPTS and _HAS_CORPUS
 
 skip_if_no_fixtures = pytest.mark.skipif(

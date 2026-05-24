@@ -127,6 +127,38 @@ Dated 2026-05-23. Sources consulted via web search + `context7` MCP (`mcp2_resol
 - **CI as required status check NOT YET configured** — `gh api -X PATCH ... required_status_checks` requires the workflow to have run at least once on `main` (to register the check). Post-merge of this ADR, a follow-up step will add CI as a required check (separate small PR or in-place via the GitHub UI; not load-bearing for the ADR scope).
 - **Cache key invalidation on every `pyproject.toml` change** — including doc-only changes to `[project]` metadata. Acceptable trade-off for explicit, predictable cache behavior.
 
+### First-CI-run amendments (2026-05-23)
+
+The first CI run on PR #67 (commit `5d0074c`) caught two gaps that the author-time audit + corpus-absent local simulation missed. Both are amendments to the original Decision section; the test-marker design is unchanged.
+
+**Amendment 1 — Platform skip on `tests/test_inference_smoke.py` (3 tests)**
+
+ADR-007's dual-track stack (`mlx-vlm` + `transformers` + PyTorch MPS) is macOS/Apple-Silicon-only. The import-only smokes for `mlx_vlm` / `mlx.core` / `torch.backends.mps.is_available()` fail on `ubuntu-latest` with `ImportError: libmlx.so` + `AssertionError: PyTorch MPS backend not available`. Fix: add `@pytest.mark.skipif(sys.platform != "darwin", ...)` to 3 of the 4 tests in the file (`test_transformers_importable` stays unconditional — transformers is cross-platform). The `requires_macos` skipif marker is defined at module-top via `pytest.mark.skipif(sys.platform != "darwin", ...)`.
+
+Reasoning for `skipif` over a custom marker (analogous to `requires_corpus`): platform availability is a hard environmental gate; `skipif` is the standard pytest idiom and doesn't need registration. The `requires_corpus` marker exists because corpus presence is a deliberate data-availability gate that `make test-ci` consults; macOS-only is a runtime platform gate, semantically distinct.
+
+**Amendment 2 — Strengthen `_HAS_CORPUS` predicate in `tests/test_rescore.py`**
+
+The original predicate `_HAS_CORPUS = CORPUS_ROOT.is_dir()` was too weak. Per `.gitignore`'s allowlist for per-corpus audit-trail records (`!data/raw/german/*/MANIFEST.md`), the `data/raw/german/zugferd-corpus/` directory exists on CI checkout containing only `MANIFEST.md` (+ `LICENSE`, `README.md`, `sha256.txt`). `is_dir()` returns True; the 3 `@skip_if_no_fixtures`-decorated tests run; factur-x extraction over non-existent PDFs returns empty → F1=0 → `assert 0.45 < 0.0` fails.
+
+Fix: `_HAS_CORPUS = CORPUS_ROOT.is_dir() and any((CORPUS_ROOT / "XML-Rechnung" / "FX").glob("*.pdf"))`. Matches the `XML-Rechnung/FX/` layout that `tests/conftest.py` also expects. On CI: predicate evaluates to False → `skip_if_no_fixtures` correctly triggers → 3 tests skip.
+
+**Process learning for future CI introductions**
+
+The local CI-realism simulation (`mv data/raw/german/zugferd-corpus /tmp/...`) was insufficient — it moved the entire dir, hiding the empty-MANIFEST-only state that CI's `git clone` actually produces. A more accurate sim:
+
+```sh
+# CI-equivalent: dir present, content absent
+mv data/raw/german/zugferd-corpus/XML-Rechnung /tmp/stash-X
+mv data/raw/german/zugferd-corpus/unstructured /tmp/stash-X
+mv data/raw/german/zugferd-corpus/{fatturaPA,incoming,other,PEPPOL,ZUGFeRDv1,ZUGFeRDv2} /tmp/stash-X
+make test-ci  # the load-bearing assertion
+# Restore:
+mv /tmp/stash-X/* data/raw/german/zugferd-corpus/
+```
+
+The general principle: simulate the **git-checkout-only state** (tracked files only), not the **dir-absent state**. Captured in the L1 queue entry for cross-project propagation.
+
 ## Source archival
 
 - `docs/sources/tools/github-actions.md` — GitHub Actions documentation reference stub.

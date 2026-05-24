@@ -15,8 +15,26 @@ invoice through them) lives in `scripts/inference_smoke.py` and runs via
 from __future__ import annotations
 
 import re
+import sys
+
+import pytest
+
+# ADR-023 first-CI-run amendment: MLX core, mlx-vlm, and PyTorch MPS backend
+# are macOS/Apple-Silicon-only (per ADR-007 dual-track hardware-fit). On
+# ubuntu-latest CI runners these imports fail (`libmlx.so` not found; MPS
+# not available). Platform skip preserves the ADR-007 hardware-wiring
+# assertion on macOS while letting CI pass on Linux. The `transformers`
+# import test is cross-platform and remains unconditional.
+requires_macos = pytest.mark.skipif(
+    sys.platform != "darwin",
+    reason=(
+        "MLX core + mlx-vlm + PyTorch MPS backend are macOS/Apple-Silicon-only "
+        "(ADR-007 dual-track hardware-fit; per ADR-023 first-CI-run amendment)."
+    ),
+)
 
 
+@requires_macos
 def test_mlx_vlm_importable() -> None:
     """mlx-vlm imports without error and exposes a SemVer-shaped version."""
     import mlx_vlm
@@ -37,6 +55,7 @@ def test_transformers_importable() -> None:
     )
 
 
+@requires_macos
 def test_torch_mps_backend_available() -> None:
     """PyTorch's MPS backend is available — confirms the Transformers + MPS
     fallback path is wired on this M1 Pro machine. If this fails, either the
@@ -56,6 +75,7 @@ def test_torch_mps_backend_available() -> None:
     )
 
 
+@requires_macos
 def test_mlx_core_importable_via_mlx_vlm() -> None:
     """`mlx-vlm` pulls in `mlx>=0.31.2` transitively per its runtime deps;
     confirm the MLX core is importable and reports an MLX-Metal backend
