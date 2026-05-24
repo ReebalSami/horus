@@ -33,16 +33,14 @@ counting, adapter loading) run unconditionally.
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
 
-# scripts/ is not a package — load rescore via sys.path manipulation.
-SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
-sys.path.insert(0, str(SCRIPTS_DIR))
-
-import rescore  # noqa: E402
+# ADR-022: `scripts/` is a Python package; `from scripts import rescore` resolves
+# natively via pytest's `pythonpath = ["."]` ini config (no per-file sys.path
+# manipulation needed).
+from scripts import rescore
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TRANSCRIPTS_DIR = REPO_ROOT / "docs" / "sources" / "transcripts-multipage"

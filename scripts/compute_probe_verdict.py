@@ -47,12 +47,20 @@ from horus.eval.probe_verdict import (
     compute_verdict_matrix,
 )
 
-# scripts/ is not a package — load sibling modules via sys.path injection.
-SCRIPTS_DIR = Path(__file__).resolve().parent
-if str(SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPTS_DIR))
+# ADR-022: `scripts/` IS a Python package (has __init__.py); siblings are imported
+# via `from scripts import …`. When this script is invoked via direct path
+# (`uv run python scripts/compute_probe_verdict.py`), Python adds `scripts/` to
+# sys.path[0] but NOT the repo root, so `from scripts import …` would fail. The
+# `sys.path.insert(0, REPO_ROOT)` below makes the repo root discoverable. This
+# is the canonical Python invocation-discovery idiom for standalone-invocable
+# package modules that import siblings. `python -m scripts.compute_probe_verdict`
+# would also work without this insert (Python adds CWD to sys.path[0] for -m),
+# but the Makefile + ad-hoc usage favor direct-path invocation.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
-import rescore  # noqa: E402 — sibling module via SCRIPTS_DIR path injection
+from scripts import rescore  # noqa: E402 — repo-root insert above is the discovery prologue
 
 
 def _build_per_model_arm_score(

@@ -121,3 +121,7 @@ indent-style = "space"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-ra"
+# ADR-022: repo root on sys.path during pytest sessions so `from scripts import X`
+# resolves without per-file sys.path manipulation. Paths are relative to rootdir
+# (the directory containing this pyproject.toml).
+pythonpath = ["."]
