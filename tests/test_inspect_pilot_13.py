@@ -10,23 +10,18 @@ Strategy: real MLflow + sqlite tracking (matches `test_harness.py` style); no
 real VLM extractor. Synthetic parent + nested runs are written directly via
 `mlflow.start_run` / `log_metric`. This isolates the inspector logic from the
 upstream harness write path.
-
-`scripts/` is not a package — `inspect_pilot_13` loads via `sys.path` manipulation
-(matches the `tests/test_rescore.py` precedent).
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
 
-# scripts/ is not a package — load inspect_pilot_13 via sys.path manipulation.
-SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
-sys.path.insert(0, str(SCRIPTS_DIR))
-
-import inspect_pilot_13  # noqa: E402
+# ADR-022: `scripts/` is a Python package; `from scripts import inspect_pilot_13`
+# resolves natively via pytest's `pythonpath = ["."]` ini config (no per-file
+# sys.path manipulation needed).
+from scripts import inspect_pilot_13
 
 
 def _make_synthetic_parent_with_nested(
