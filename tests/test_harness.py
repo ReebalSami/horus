@@ -520,8 +520,10 @@ def test_run_cohort_cli_invoice_subset_overrides_yaml(tmp_path: Path) -> None:
     # Spot-check: search_runs for invoice_id=EN16931_Einfach exists; XRECHNUNG_Einfach does NOT.
     import mlflow  # noqa: PLC0415
 
+    experiment = mlflow.get_experiment_by_name(cfg.mlflow.experiment_name)
+    assert experiment is not None, "experiment must exist after run_cohort"
     runs = mlflow.search_runs(
-        experiment_ids=[mlflow.get_experiment_by_name(cfg.mlflow.experiment_name).experiment_id],
+        experiment_ids=[experiment.experiment_id],
         filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
         output_format="list",
     )
@@ -572,9 +574,10 @@ def test_run_cohort_dev_only_tags_parent_and_nested_runs(tmp_path: Path) -> None
         f"parent run missing dev_only tag; got tags={parent.data.tags}"
     )
     # All nested runs tagged dev_only=true.
-    experiment_id = mlflow.get_experiment_by_name(cfg.mlflow.experiment_name).experiment_id
+    experiment = mlflow.get_experiment_by_name(cfg.mlflow.experiment_name)
+    assert experiment is not None, "experiment must exist after run_cohort"
     nested = mlflow.search_runs(
-        experiment_ids=[experiment_id],
+        experiment_ids=[experiment.experiment_id],
         filter_string=f"tags.mlflow.parentRunId = '{result.parent_run_id}'",
         output_format="list",
     )

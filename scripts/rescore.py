@@ -769,8 +769,7 @@ def main(argv: list[str]) -> int:
         baseline_module = importlib.import_module(args.baseline_adapter_module)
     except ImportError as exc:
         print(
-            f"ERROR: cannot import baseline adapter module "
-            f"{args.baseline_adapter_module!r}: {exc}",
+            f"ERROR: cannot import baseline adapter module {args.baseline_adapter_module!r}: {exc}",
             file=sys.stderr,
         )
         return 2

@@ -211,9 +211,7 @@ def _model_passes(
     """
     return _arm_passes(
         score.arm_a, canonical_keys_min=canonical_keys_min, f1_min=f1_min
-    ) or _arm_passes(
-        score.arm_b, canonical_keys_min=canonical_keys_min, f1_min=f1_min
-    )
+    ) or _arm_passes(score.arm_b, canonical_keys_min=canonical_keys_min, f1_min=f1_min)
 
 
 # ---------------------------------------------------------------------------
@@ -255,9 +253,7 @@ def _build_cell(
     failing.sort()
     n_passing = len(passing)
     n_total = n_passing + len(failing)
-    verdict: Literal["FILE", "DEFER"] = (
-        "FILE" if n_passing >= pass_count_threshold else "DEFER"
-    )
+    verdict: Literal["FILE", "DEFER"] = "FILE" if n_passing >= pass_count_threshold else "DEFER"
     return CellVerdict(
         passing_models=tuple(passing),
         failing_models=tuple(failing),

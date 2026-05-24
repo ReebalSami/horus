@@ -901,9 +901,7 @@ def run_cohort(
                     # pluggable framework. At exactly 2 variants this stays under
                     # ADR-016 supersession trigger #3 ("past 2 variants").
                     adapter_module = (
-                        adapters_json
-                        if cohort_cfg.adapter_mode == "json"
-                        else adapters_regex
+                        adapters_json if cohort_cfg.adapter_mode == "json" else adapters_regex
                     )
                     scores, _transcript, per_page = _score_single_invoice(
                         model_id=model_id,

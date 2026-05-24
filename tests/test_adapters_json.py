@@ -201,10 +201,7 @@ def test_to_predicted_dict_recovers_from_prose_around_json() -> None:
 
 def test_to_predicted_dict_recovers_from_trailing_comma() -> None:
     """``{"a": "b",}`` (Python / JS-style trailing comma) -> sanitizer recovers."""
-    raw = (
-        '{"invoice_number": "INV-001", '
-        '"seller_name": "Test GmbH", }'
-    )
+    raw = '{"invoice_number": "INV-001", "seller_name": "Test GmbH", }'
     result = to_predicted_dict(raw, model_id="m")
     assert result["invoice_number"] == "INV-001"
     assert result["seller_name"] == "Test GmbH"
@@ -213,8 +210,7 @@ def test_to_predicted_dict_recovers_from_trailing_comma() -> None:
 def test_to_predicted_dict_non_json_text_yields_all_none() -> None:
     """Plain prose / OCR-style output -> all 16 canonical keys map to None."""
     raw = (
-        "Rechnung Nr. INV-001 vom 15.01.2024. Verk\u00e4ufer: Test GmbH. "
-        "Gesamtbetrag: 119,00 EUR."
+        "Rechnung Nr. INV-001 vom 15.01.2024. Verk\u00e4ufer: Test GmbH. Gesamtbetrag: 119,00 EUR."
     )
     result = to_predicted_dict(raw, model_id="m")
     assert all(v is None for v in result.values()), (
@@ -342,18 +338,18 @@ def test_multipage_fenced_real_values_glm_arm_b_shape() -> None:
     page 1 real values are preserved.
     """
     p1 = (
-        '```json\n'
+        "```json\n"
         '{"invoice_number": "471102", "issue_date": "2018-03-05", '
         '"seller_name": "Lieferant GmbH", "seller_gln": "4000001123452"}\n'
-        '```'
+        "```"
     )
     # Page 2 of GLM-OCR Arm B: line-item content leaked into JSON keys
     # ("seller_name": "Art-Nr-Kunde", "buyer_name": "TB100A4"). Page 1 must win.
     p2 = (
-        '```json\n'
+        "```json\n"
         '{"seller_name": "Art-Nr-Kunde", "buyer_name": "TB100A4", '
         '"line_total_amount": "9,900.00"}\n'
-        '```'
+        "```"
     )
     result = to_predicted_dict_multipage([p1, p2], model_id="zai-org/GLM-OCR")
     assert result["invoice_number"] == "471102"
@@ -383,9 +379,7 @@ def test_multipage_repeated_placeholder_dicts_granite_arm_a_shape() -> None:
     )
     p1 = "\n\n".join([placeholder] * 8)  # 8 repeats per page (Granite Arm A shape)
     p2 = "\n\n".join([placeholder] * 8)
-    result = to_predicted_dict_multipage(
-        [p1, p2], model_id="ibm-granite/granite-docling-258M-mlx"
-    )
+    result = to_predicted_dict_multipage([p1, p2], model_id="ibm-granite/granite-docling-258M-mlx")
     assert result["invoice_number"] == "<BT-1>"  # placeholder surfaces (F1=0 by design)
     assert result["issue_date"] == "<BT-2 ISO 8601>"
     assert result["invoice_currency_code"] == "<BT-5>"
@@ -406,10 +400,10 @@ def test_multipage_mixed_fenced_unfenced_olmocr_arm_a_shape() -> None:
         '"seller_name": "Lieferantant GmbH", "buyer_name": "Kunden AG Mitte"}'
     )
     p2 = (
-        '```json\n'
+        "```json\n"
         '{"line_total_amount": "198,00", "tax_total_amount": "198,00", '
         '"grand_total_amount": "529,87", "due_payable_amount": "529,87"}\n'
-        '```'
+        "```"
     )
     result = to_predicted_dict_multipage([p1, p2], model_id="allenai/olmOCR-2-7B-1025")
     assert result["invoice_number"] == "471102"
@@ -501,9 +495,7 @@ def test_multipage_all_pages_unparseable_yields_all_none() -> None:
     """
     p1 = "Sorry, as a base VLM I am not trained to answer this question."
     p2 = "OK"
-    result = to_predicted_dict_multipage(
-        [p1, p2], model_id="google/paligemma2-3b-mix-448"
-    )
+    result = to_predicted_dict_multipage([p1, p2], model_id="google/paligemma2-3b-mix-448")
     assert all(v is None for v in result.values())
 
 

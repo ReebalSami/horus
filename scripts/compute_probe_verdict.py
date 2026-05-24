@@ -163,9 +163,7 @@ def _render_per_model_table(
         "| Model | Arm A: JSON | Arm A: keys/16 | Arm A: F1 | "
         "Arm B: JSON | Arm B: keys/16 | Arm B: F1 | Note |"
     )
-    lines.append(
-        "|---|---|---|---|---|---|---|---|"
-    )
+    lines.append("|---|---|---|---|---|---|---|---|")
     for model_id in sorted(per_model_scores.keys()):
         score = per_model_scores[model_id]
         flag = " (base-VLM; N-of-6 excluded)" if model_id == paligemma_model_id else ""
@@ -245,8 +243,7 @@ def render_full_report(
     lines.append("## Per-model breakdown (per arm)")
     lines.append("")
     lines.append(
-        "Combined-max-per-arm rule (ADR-018): a model passes if EITHER arm "
-        "satisfies the threshold."
+        "Combined-max-per-arm rule (ADR-018): a model passes if EITHER arm satisfies the threshold."
     )
     lines.append("")
     lines.append(_render_per_model_table(per_model_scores, paligemma_model_id=paligemma_model_id))
