@@ -41,6 +41,7 @@ from horus.config import EvalConfig
 from horus.eval.adapters import extract_transcript_body, to_predicted_dict
 from horus.eval.ground_truth import GroundTruth, parse_cii_xml
 from horus.eval.scorer import InvoiceFieldScores, score
+from tests._corpus import skip_if_no_corpus
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TRANSCRIPTS_DIR = REPO_ROOT / "docs" / "sources" / "transcripts"
@@ -57,8 +58,8 @@ EINFACH_CII = (
 
 # ADR-023: every test in this module requires the ZUGFeRD corpus on disk
 # (the `einfach_gt` fixture parses EINFACH_CII; transcripts are not corpus).
-# Deselected by `make test-ci` on the ubuntu-latest CI runner.
-pytestmark = pytest.mark.requires_corpus
+# Skips automatically when the corpus is absent (CI or fresh dev clone).
+pytestmark = skip_if_no_corpus
 
 
 # Working cohort transcripts (7 of 10 models that ran to completion per ADR-009).

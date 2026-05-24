@@ -125,9 +125,9 @@ addopts = "-ra"
 # resolves without per-file sys.path manipulation. Paths are relative to rootdir
 # (the directory containing this pyproject.toml).
 pythonpath = ["."]
-# ADR-023: register the `requires_corpus` marker (gates corpus-touching tests;
-# deselected by `make test-ci` for the ubuntu-latest CI runner that doesn't have
-# data/raw/german/zugferd-corpus/ available).
-markers = [
-    "requires_corpus: test requires the ZUGFeRD test corpus at data/raw/german/zugferd-corpus/ (deselected by make test-ci; per ADR-023)",
-]
+# ADR-023 (post first-CI-run redesign): the `requires_corpus` marker was deleted
+# in favour of `pytest.mark.skipif`-based gating via `tests/_corpus.py` —
+# `skip_if_no_corpus` + `skip_if_no_fixtures` decorators. Per pytest's official
+# recommendation ("It is better to use the pytest.mark.skipif marker when
+# possible to declare a test to be skipped under certain conditions like
+# mismatching platforms or dependencies."). No marker registration needed.

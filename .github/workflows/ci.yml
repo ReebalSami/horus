@@ -1,12 +1,16 @@
 name: CI
 
 # ADR-023: Continuous integration for HORUS. Runs lint + typecheck (cache-cleared)
-# + test-ci (corpus-skipped) on every push to main + every PR against main.
+# + test (corpus-dependent tests auto-skip via pytest.mark.skipif in
+# `tests/_corpus.py`) on every push to main + every PR against main.
 #
-# Scope: lint + typecheck + non-corpus tests. macOS-only smoke targets
-# (`make inference-smoke`, `make cohort-smoke`) and corpus-touching tests are
-# discipline-enforced locally (see ADR-023 §"Known limitations" + the
-# `make-sure-it-works` cascade-system rule).
+# Scope: lint + typecheck + all pytest-collectable tests. Corpus-touching tests
+# auto-skip when `data/raw/german/zugferd-corpus/XML-Rechnung/FX/*.pdf` is
+# absent (the predicate `skip_if_no_corpus` inspects content, not just dir
+# presence — `MANIFEST.md` is git-tracked). macOS-only smoke targets
+# (`make inference-smoke`, `make cohort-smoke`) and Apple-Silicon-only
+# `test_inference_smoke.py` tests are platform-gated via `pytest.mark.skipif`
+# (skip on ubuntu-latest). See ADR-023 §"Decision" + §"Known limitations".
 
 on:
   push:
@@ -21,7 +25,7 @@ concurrency:
 
 jobs:
   check:
-    name: lint + typecheck + test-ci
+    name: lint + typecheck + test
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -58,8 +62,11 @@ jobs:
           rm -rf .mypy_cache
           make typecheck
 
-      # ADR-023: `make test-ci` runs `pytest -m "not requires_corpus"`,
-      # deselecting tests that need data/raw/german/zugferd-corpus/.
-      # Local full suite is `make test`; CI subset is `make test-ci`.
-      - name: Test (non-corpus subset)
-        run: make test-ci
+      # ADR-023: `make test` runs the full suite. Corpus-dependent tests
+      # auto-skip via `pytest.mark.skipif` decorators in `tests/_corpus.py`
+      # (`skip_if_no_corpus` + `skip_if_no_fixtures`) — same code path as
+      # local dev clones without the corpus fetched. macOS-only tests in
+      # `tests/test_inference_smoke.py` auto-skip via `requires_macos`.
+      # No `-m` filter; no marker registration; no `make test-ci` target.
+      - name: Test
+        run: make test

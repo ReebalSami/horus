@@ -24,12 +24,13 @@ from pathlib import Path
 import pytest
 
 from horus.eval.rasterize import rasterize_pdf
+from tests._corpus import skip_if_no_corpus
 from tests.conftest import EINFACH_PDF, ZUGFERD_FX_DIR
 
 # ADR-023: every test in this module requires the ZUGFeRD corpus on disk
 # (rasterizes real PDFs from EINFACH_PDF + ZUGFERD_FX_DIR).
-# Deselected by `make test-ci` on the ubuntu-latest CI runner.
-pytestmark = pytest.mark.requires_corpus
+# Skips automatically when the corpus is absent (CI or fresh dev clone).
+pytestmark = skip_if_no_corpus
 
 # ---------------------------------------------------------------------------
 # Test 1 — canonical fixture has 2 pages

@@ -1,10 +1,10 @@
-.PHONY: help install test test-ci lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui inspect-pilot-13 clean
+.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui inspect-pilot-13 clean
 
 # Default target — list available commands.
 help:
 	@echo "Available targets:"
 	@echo "  install         uv sync (install all deps + dev group)"
-	@echo "  test            uv run pytest"
+	@echo "  test            uv run pytest (corpus tests auto-skip when corpus is absent; see ADR-023)"
 	@echo "  lint            uv run ruff check (lint only; no fix)"
 	@echo "  format          uv run ruff format (apply formatting)"
 	@echo "  typecheck       uv run mypy src tests"
@@ -26,13 +26,6 @@ install:
 
 test:
 	uv run pytest
-
-# CI test subset (ADR-023): deselects corpus-touching tests via the
-# `requires_corpus` marker. Used by `.github/workflows/ci.yml` on
-# ubuntu-latest where `data/raw/german/zugferd-corpus/` is not available.
-# Local invocation: `make test-ci` to simulate CI's pytest scope.
-test-ci:
-	uv run pytest -m "not requires_corpus"
 
 lint:
 	uv run ruff check src tests scripts
