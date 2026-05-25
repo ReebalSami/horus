@@ -32,6 +32,7 @@ book:
   date-format: iso
   chapters:
     - index.qmd
+    - experiments/01-zugferd.py
   references: references.qmd
   search: true
   page-navigation: true

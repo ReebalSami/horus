@@ -1,28 +1,24 @@
 # ---
-# title: "EDA on the ZUGFeRD corpus"
-# subtitle: "Descriptive-only analysis (Issue #46, ADR-024)"
+# title: "ZUGFeRD German corpus"
+# subtitle: "Chapter 1 — invoice-extraction substrate (151 PDFs + 88 sidecar XMLs)"
 # author: "Reebal Sami"
 # date: "2026-05-25"
-# format:
-#   html:
-#     toc: true
-#     toc-depth: 3
-#     code-fold: true
-#     fig-format: svg
-#   pdf:
-#     toc: true
-#     toc-depth: 3
-#     fig-format: pdf
+# params:
+#   cfg_path: "configs/eda-zugferd.yaml"
 # jupyter: python3
 # ---
 
 # %% [markdown]
-# # Introduction {#sec-intro}
+# # ZUGFeRD German corpus {#sec-zugferd}
 #
-# This notebook is a **descriptive-only** exploratory data analysis of the
-# ZUGFeRD corpus on disk at `data/raw/german/zugferd-corpus/` (151 PDFs +
-# 88 standalone XMLs, sealed via `MANIFEST.md`). Its scope per issue #46
-# and the locked plan at `~/.windsurf/plans/eda-zugferd-9c4a5b.md`:
+# This chapter is a **descriptive-only** exploratory data analysis of the
+# ZUGFeRD German corpus on disk at `data/raw/german/zugferd-corpus/` (151
+# PDFs + 88 standalone XMLs, sealed via `MANIFEST.md`). Its scope per
+# issue #46 (originally scoped single-dataset; expanded to a full-corpus
+# multi-chapter Quarto Book per [ADR-025](../docs/decisions/ADR-025-eda-multi-dataset-book-structure.md))
+# and the locked plans at `~/.windsurf/plans/eda-zugferd-9c4a5b.md`
+# (Phase 1, single-dataset) +
+# `~/.windsurf/plans/eda-full-corpus-ed5d97.md` (Phase 2, this expansion):
 #
 # 1. Characterize the corpus (per-flavor / per-profile / per-page-count
 #    / per-field statistics).
@@ -66,38 +62,44 @@
 # %%
 from __future__ import annotations
 
-import re
 import sys
-import warnings
 from collections import Counter
 from pathlib import Path
 
-import facturx
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
-import plotly.io as pio
-import pypdfium2 as pdfium
 import seaborn as sns
-from lxml import etree
 
 from horus.config import ExperimentConfig
-from horus.eval.ground_truth import FIELDS, GroundTruth, parse_cii_xml
+from horus.eda import zugferd_loader as zl
+from horus.eda.figures import PLOTLY_LAYOUT, apply_styles
+from horus.eval.ground_truth import FIELDS
 from horus.seeding import set_global_seed
 
-# %% tags=["parameters"]
+# %%
 # Default for interactive runs (e.g., `quarto render` without `-P`).
-# Papermill / Quarto override via `-P cfg_path:configs/<name>.yaml`.
+# Quarto Books override via `params: {cfg_path: ...}` in this file's
+# YAML frontmatter; `make eda` overrides via `quarto render -P cfg_path:...`;
+# `make experiment` overrides via `papermill -p cfg_path ...` (papermill
+# prepends an injected-parameter cell at notebook top, so the absence of an
+# explicit `tags=["parameters"]` cell tag here is fine).
 cfg_path: str = "configs/eda-zugferd.yaml"
 
 # %%
-# Repo root (resolved from this file's location at jupytext-evaluation time;
-# falls back to cwd for direct interactive use).
-try:
-    REPO_ROOT = Path(__file__).resolve().parent.parent  # type: ignore[name-defined]
-except NameError:
-    REPO_ROOT = Path.cwd()
+# Repo root: walk up from cwd looking for `pyproject.toml`. Robust against
+# cwd state (Quarto Books renders chapters with cwd set to the chapter
+# directory; papermill runs from repo root; direct interactive runs vary).
+def _find_repo_root() -> Path:
+    cur = Path.cwd().resolve()
+    for parent in [cur, *cur.parents]:
+        if (parent / "pyproject.toml").exists():
+            return parent
+    return cur
+
+
+REPO_ROOT = _find_repo_root()
 
 # Resolve cfg_path relative to repo root if not absolute.
 _cfg_resolved = Path(cfg_path)
@@ -148,49 +150,26 @@ if not CORPUS_ROOT.is_dir():
 
 # %%
 # Editorial palette + styling (FT/NYT-influenced muted aesthetic per Q5=C
-# hybrid in the plan). Static figures = matplotlib/seaborn; interactive
-# figures = Plotly. The two stacks are intentionally separate per ADR-024:
-# static survives the PDF export; interactive is HTML-only.
-sns.set_theme(
-    style="white",
-    palette=EDA.palette_static,
-    context="paper",
-    font_scale=1.05,
+# hybrid in the plan). Delegates to `horus.eda.figures.apply_styles()`
+# which configures matplotlib/seaborn (static figures, survive PDF) +
+# Plotly (interactive widgets, HTML-only). Both stacks are intentionally
+# separate per ADR-024.
+_styles = apply_styles(
+    palette_static=EDA.palette_static,
+    palette_interactive=EDA.palette_interactive,
+    n_colors=12,
 )
+# PALETTE / PALETTE_HEX are kept as module-local names for the cells below
+# (matches the pre-Phase-B variable names so cell logic doesn't change).
+PALETTE = _styles.palette
+PALETTE_HEX = _styles.palette_hex
+
+# Per-chapter overrides on top of `apply_styles` defaults:
 plt.rcParams["figure.dpi"] = EDA.figure_dpi
 plt.rcParams["savefig.dpi"] = EDA.figure_dpi
-plt.rcParams["axes.spines.top"] = False
-plt.rcParams["axes.spines.right"] = False
-plt.rcParams["axes.titlesize"] = 12
 plt.rcParams["axes.titleweight"] = "semibold"
 plt.rcParams["axes.titlepad"] = 14
-plt.rcParams["axes.labelsize"] = 10
-plt.rcParams["axes.labelweight"] = "regular"
-plt.rcParams["xtick.labelsize"] = 9
-plt.rcParams["ytick.labelsize"] = 9
 plt.rcParams["legend.frameon"] = False
-plt.rcParams["legend.fontsize"] = 9
-plt.rcParams["figure.titlesize"] = 13
-
-# Plotly default template + figure size.
-pio.templates.default = EDA.palette_interactive
-PLOTLY_LAYOUT = dict(
-    margin=dict(t=60, l=60, r=20, b=60),
-    font=dict(family="DejaVu Sans, sans-serif", size=12),
-    title=dict(x=0.0, xanchor="left", font=dict(size=14)),
-)
-
-# Curated palette (12 muted colors for per-flavor / per-profile faceting).
-# Two parallel forms: PALETTE = list of (r, g, b) tuples for matplotlib/seaborn
-# (which accept tuples natively); PALETTE_HEX = list of "#rrggbb" strings for
-# Plotly (which rejects raw RGB tuples in color_discrete_sequence /
-# color_continuous_scale — see plotly/_plotly_utils/basevalidators.py).
-PALETTE = sns.color_palette(EDA.palette_static, n_colors=12)
-PALETTE_HEX = PALETTE.as_hex()
-
-# Suppress factur-x's verbose schema warnings during bulk parsing
-# (we capture errors explicitly in §9 Anomalies; surface them there).
-warnings.filterwarnings("ignore", category=UserWarning, module="facturx")
 
 # Show ALL rows of small per-field tables (16 fields). Default Jupyter HTML
 # repr applies `display.min_rows=10` truncation EVEN when `display.max_rows`
@@ -224,73 +203,15 @@ print(f"Figure DPI:          {EDA.figure_dpi}")
 # %%
 # ---------------------------------------------------------------------------
 # Filesystem walk → corpus_index DataFrame.
+#
+# `zl.walk` extends `horus.eda.corpus_walk.walk` with ZUGFeRD-specific
+# extension classification (`.cii.xml` / `.ubl.xml` collapse to `.xml`)
+# + `is_pdf` / `is_xml` boolean columns. The shared corpus walker handles
+# dotfile + metadata filtering (per the forensic audit on 2026-05-25:
+# without it, the walk reported a fake "Other: 6" extension class +
+# inflated duplicate-filename count from 4 to 9). See ADR-025.
 # ---------------------------------------------------------------------------
-
-
-def _classify_extension(path: Path) -> str:
-    """Map filename to a normalized extension class.
-
-    `.cii.xml` and `.ubl.xml` collapse to plain `.xml` since the schema
-    distinction is captured by `subdir` (XML-Rechnung/CII vs UBL).
-    """
-    name = path.name.lower()
-    if name.endswith(".pdf"):
-        return ".pdf"
-    if name.endswith(".xml"):
-        return ".xml"
-    return path.suffix.lower() or "(none)"
-
-
-def walk_corpus(root: Path) -> pd.DataFrame:
-    """Walk corpus root and produce a one-row-per-file DataFrame.
-
-    Filters out corpus-metadata + git-machinery files so the index contains
-    only PDF / XML content. Per the forensic audit (2026-05-25): without
-    filtering `.gitkeep` and `.gitignore`, the walk reported (a) a fake
-    "Other: 6" extension class and (b) inflated the duplicate-filename count
-    from 4 (real fatturaPA mirrors) to 9 (5 .gitkeep dups in symtrax empty
-    subdirs).
-    """
-    SKIP_NAMES = {"MANIFEST.md", "sha256.txt", "README.md", "LICENSE"}
-    rows: list[dict[str, object]] = []
-    for path in sorted(root.rglob("*")):
-        if not path.is_file():
-            continue
-        # Skip explicit metadata files.
-        if path.name in SKIP_NAMES:
-            continue
-        # Skip git-machinery dotfiles (.gitkeep, .gitignore, .DS_Store, etc.).
-        # These are filesystem cruft, not corpus content.
-        if path.name.startswith("."):
-            continue
-        rel = path.relative_to(root)
-        parts = rel.parts
-        flavor = parts[0] if len(parts) >= 1 else "(root)"
-        subdir = parts[1] if len(parts) >= 2 else "(none)"
-        nested = "/".join(parts[2:-1]) if len(parts) > 3 else ""
-        ext = _classify_extension(path)
-        rows.append(
-            {
-                "path": path,
-                "relative_path": rel,
-                "flavor": flavor,
-                "subdir": subdir,
-                "nested": nested,
-                "filename": path.name,
-                "extension": ext,
-                "size_bytes": path.stat().st_size,
-                "is_pdf": ext == ".pdf",
-                "is_xml": ext == ".xml",
-            }
-        )
-    if not rows:
-        raise RuntimeError(
-            f"Corpus walk produced zero files under {root}. Verify the corpus is fully fetched."
-        )
-    return pd.DataFrame(rows)
-
-
-corpus_index = walk_corpus(CORPUS_ROOT)
+corpus_index = zl.walk(CORPUS_ROOT)
 print(f"Corpus walk produced {len(corpus_index):,} files.")
 print(f"  PDFs: {int(corpus_index['is_pdf'].sum()):>4}")
 print(f"  XMLs: {int(corpus_index['is_xml'].sum()):>4}")
@@ -455,35 +376,14 @@ plt.show()
 
 # %%
 # ---------------------------------------------------------------------------
-# Compute page counts for every PDF.
+# Compute page counts for every PDF via `zl.get_page_count` (pypdfium2-
+# backed; failures surface as None in §9 Anomalies). Library code lives
+# in `src/horus/eda/zugferd_loader.py` per ADR-025; this cell is just
+# the call site.
 # ---------------------------------------------------------------------------
-
-
-def get_page_count(pdf_path: Path) -> int | None:
-    """Return PDF page count via pypdfium2; None on parse failure.
-
-    Uses the canonical try/finally + `.close()` pattern from
-    `src/horus/eval/rasterize.py:119-138` (pypdfium2 4.30 lacks `__exit__`,
-    so the `with` statement is unsupported per the upstream API).
-    """
-    try:
-        doc = pdfium.PdfDocument(str(pdf_path))
-    except Exception:  # noqa: BLE001 — surface in §9 Anomalies, not here
-        return None
-    try:
-        return len(doc)
-    except Exception:  # noqa: BLE001
-        return None
-    finally:
-        try:
-            doc.close()
-        except Exception:  # noqa: BLE001 — cleanup; weakref.finalize is the safety net
-            pass
-
-
 pdf_rows = corpus_index[corpus_index["is_pdf"]].copy()
 print(f"Computing page counts for {len(pdf_rows)} PDFs...", flush=True)
-pdf_rows["page_count"] = pdf_rows["path"].apply(get_page_count)
+pdf_rows["page_count"] = pdf_rows["path"].apply(zl.get_page_count)
 pdf_rows["page_count_known"] = pdf_rows["page_count"].notna()
 n_failed = int((~pdf_rows["page_count_known"]).sum())
 print(f"  ✓ {len(pdf_rows) - n_failed} PDFs parsed; {n_failed} failed (surfaced in §9).")
@@ -595,77 +495,30 @@ plt.show()
 # %%
 # ---------------------------------------------------------------------------
 # Route 1: profile from filename pattern.
-# ---------------------------------------------------------------------------
-# `\b` word boundaries DON'T work here because `_` is a word char in Python
-# regex (\w includes underscore). Filenames like `zugferd_2p0_EN16931_Einfach.pdf`
-# have `_` on both sides of the profile token — no word boundary exists. Use
-# explicit `(?:^|[_/-])` and `(?:[_/-.]|$)` separators instead, plus IGNORECASE
-# for camelcase variants.
-# Char classes use `-` LAST to mean a literal hyphen (otherwise `[_/-.]` parses
-# `/-.` as a malformed range from `/` to `.`).
 #
-# BUG-CATCH: BASICWL must precede BASIC in this dict because the dict-iteration
-# order matches lookup order in `profile_from_filename()`. The previous
-# `BASIC(?:WL)?` form matched both BASIC and BASICWL filenames but always
-# returned key "BASIC", causing 6 of 10 route-disagreement false positives
-# in §4 (e.g., `Facture_DOM_BASICWL.pdf` filename → "BASIC", XML → "BASICWL").
-# Separate explicit pattern (allowing space, underscore, or hyphen between
-# "BASIC" and "WL", since `BASIC WL/` and `BASIC-WL_` both appear in corpus).
-PROFILE_PATTERNS = {
-    "BASICWL": re.compile(r"(?:^|[_/-])BASIC[ _-]?WL(?:[_/.-]|$)", re.IGNORECASE),
-    "MINIMUM": re.compile(r"(?:^|[_/-])MINIMUM(?:[_/.-]|$)", re.IGNORECASE),
-    "BASIC": re.compile(r"(?:^|[_/-])BASIC(?:[_/.-]|$)", re.IGNORECASE),
-    "EN16931": re.compile(r"(?:^|[_/-])EN[_]?16931(?:[_/.-]|$)", re.IGNORECASE),
-    "EXTENDED": re.compile(r"(?:^|[_/-])(EXTENDED|Erweitert)(?:[_/.-]|$)", re.IGNORECASE),
-    "XRECHNUNG": re.compile(r"(?:^|[_/-])XRECHNUNG(?:[_/.-]|$)", re.IGNORECASE),
-}
-
-
-def profile_from_filename(name: str) -> str | None:
-    for profile, pat in PROFILE_PATTERNS.items():
-        if pat.search(name):
-            return profile
-    return None
-
-
-pdf_rows["profile_from_name"] = pdf_rows["filename"].apply(profile_from_filename)
+# Patterns + lookup live in `horus.eda.zugferd_loader` per ADR-025.
+# `zl.PROFILE_PATTERNS` is the ordered dict (BASICWL > MINIMUM > BASIC >
+# EN16931 > EXTENDED > XRECHNUNG); `zl.profile_from_filename` walks it.
+# BASICWL precedes BASIC by deliberate insertion order (BUG-CATCH: a
+# previous version had `BASIC(?:WL)?` which always returned "BASIC";
+# tests in `tests/test_eda_zugferd_loader.py::test_profile_basicwl_*`
+# guard against accidental re-ordering).
+# ---------------------------------------------------------------------------
+pdf_rows["profile_from_name"] = pdf_rows["filename"].apply(zl.profile_from_filename)
 print("Profile distribution (from filename pattern):")
 print(pdf_rows["profile_from_name"].value_counts(dropna=False).to_string())
 
 # %%
 # ---------------------------------------------------------------------------
-# Route 2: profile from embedded XML (factur-x extraction).
+# Route 2: profile from embedded XML via `zl.extract_xml_and_level`.
+#
+# Library code lives in `horus.eda.zugferd_loader` per ADR-025. The helper
+# wraps factur-x's `get_xml_from_pdf` + `get_flavor` + `get_level` with
+# the schema-warning suppression context manager (see `zl.suppress_facturx_warnings`).
+# Returns `(xml_bytes, flavor, level)` or `(None, None, None)` on failure.
 # ---------------------------------------------------------------------------
-
-
-def extract_xml_and_level(pdf_path: Path) -> tuple[bytes | None, str | None, str | None]:
-    """Return (xml_bytes, flavor, level) or (None, None, None) on failure.
-
-    Suppresses stderr noise from factur-x's schema warnings; surfaces
-    failures in §9 (Anomalies). Used for both §4 (level) and §5 (16-field
-    presence rates) and §7 (line-item count).
-    """
-    try:
-        pdf_bytes = pdf_path.read_bytes()
-        # check_xsd / check_schematron disabled for bulk EDA — corpus has
-        # known-invalid PDFs in fail/ subdirs (intentional).
-        result = facturx.get_xml_from_pdf(pdf_bytes, check_xsd=False, check_schematron=False)
-        if not result or not result[0]:
-            return None, None, None
-        _name, xml_bytes = result
-        try:
-            tree = etree.fromstring(xml_bytes)
-            flavor = facturx.get_flavor(tree)
-            level = facturx.get_level(tree)
-        except Exception:  # noqa: BLE001
-            return xml_bytes, None, None
-        return xml_bytes, flavor, level
-    except Exception:  # noqa: BLE001
-        return None, None, None
-
-
 print(f"Extracting embedded XML for {len(pdf_rows)} PDFs (slow; ~30-90s)...", flush=True)
-extractions = pdf_rows["path"].apply(extract_xml_and_level)
+extractions = pdf_rows["path"].apply(zl.extract_xml_and_level)
 pdf_rows["xml_bytes"] = extractions.map(lambda t: t[0])
 pdf_rows["xml_flavor"] = extractions.map(lambda t: t[1])
 pdf_rows["xml_level"] = extractions.map(lambda t: t[2])
@@ -803,41 +656,22 @@ plt.show()
 
 # %%
 # ---------------------------------------------------------------------------
-# Parse GroundTruth dict for every successfully-extracted XML.
+# Parse GroundTruth dict for every successfully-extracted XML via
+# `zl.parse_one_gt` (wraps `horus.eval.ground_truth.parse_cii_xml` with
+# `None`-safe handling). Library code lives in `horus.eda.zugferd_loader`
+# per ADR-025.
 # ---------------------------------------------------------------------------
-
-
-def parse_one_gt(xml_bytes: bytes | None) -> GroundTruth | None:
-    if xml_bytes is None:
-        return None
-    try:
-        return parse_cii_xml(xml_bytes)
-    except Exception:  # noqa: BLE001
-        return None
-
-
 print(f"Parsing GroundTruth for {n_xml_ok} extracted XMLs...", flush=True)
-pdf_rows["gt"] = pdf_rows["xml_bytes"].apply(parse_one_gt)
+pdf_rows["gt"] = pdf_rows["xml_bytes"].apply(zl.parse_one_gt)
 pdf_rows["gt_parseable"] = pdf_rows["gt"].notna()
 
-
-def _gt_has_any_field(gt: GroundTruth | None) -> bool:
-    """True iff the parsed GT has at least 1 field with a non-None normalized value.
-
-    This is the "parser-meaningful" predicate: ZUGFeRDv1-namespace PDFs
-    parse cleanly into an empty GroundTruth (no exception, no fields)
-    because `parse_cii_xml` uses v2 XPaths exclusively. Any other empty-GT
-    cases (malformed v2 XML, schema deviations) also fall here. The §5/§6/§8
-    presence-rate computations need this stricter denominator to avoid the
-    false "84.2%" parser-scope artifact (the v1 subset = 23 PDFs systemically
-    contributes 0/16 fields each, dragging mandatory-field rates down).
-    """
-    if gt is None:
-        return False
-    return any(f.normalized_value is not None for f in gt.header.values())
-
-
-pdf_rows["gt_meaningful"] = pdf_rows["gt"].apply(_gt_has_any_field)
+# `zl.gt_has_any_field` distinguishes "GT-parseable but empty" (the
+# ZUGFeRDv1-namespace silent-empty case — v2 XPaths match 0 elements
+# without raising) from "GT-meaningful" (≥1 field with non-None
+# normalized_value). Without this predicate, §5/§6/§8 mandatory-field
+# presence rates would be artificially capped at ~84% (parser-scope
+# artifact, not corpus property). See ADR-025 §"Context".
+pdf_rows["gt_meaningful"] = pdf_rows["gt"].apply(zl.gt_has_any_field)
 n_gt = int(pdf_rows["gt_parseable"].sum())
 n_gt_meaningful = int(pdf_rows["gt_meaningful"].sum())
 print(f"  ✓ {n_gt} PDFs yielded a parseable GroundTruth dict.")
@@ -875,22 +709,10 @@ if EDA.ground_truth_required and n_gt_meaningful == 0:
 field_keys = list(FIELDS.keys())
 gt_subset = pdf_rows[pdf_rows["gt_meaningful"]].copy()
 
-
-def field_value_present(gt: GroundTruth, key: str) -> bool:
-    """True iff the field has a non-None normalized value (IS_GT per ADR-013).
-
-    Per `src/horus/eval/ground_truth.py:GroundTruthField` schema:
-      - `is_present=False` → field absent from XML → NO_GT
-      - `is_present=True` + `normalized_value is None` → present but normalizer
-        rejected → EXCLUDED (per ADR-013 §Truth table)
-      - `normalized_value is not None` → IS_GT (countable for F1)
-    """
-    field = gt.header.get(key)
-    if field is None:
-        return False
-    return field.normalized_value is not None
-
-
+# `zl.field_value_present` is the IS_GT predicate per ADR-013 §Truth table
+# (is_present=True + normalized_value is not None). Library code in
+# `horus.eda.zugferd_loader` per ADR-025.
+#
 # BUG-CATCH: an earlier version of this cell used
 #   pd.DataFrame({key: gt_subset["gt"].apply(...) for key in field_keys},
 #                index=gt_subset["filename"])
@@ -904,7 +726,7 @@ def field_value_present(gt: GroundTruth, key: str) -> bool:
 # AFTER construction.
 gt_list = list(gt_subset["gt"])
 presence_data = {
-    key: [field_value_present(gt, key) for gt in gt_list] for key in field_keys
+    key: [zl.field_value_present(gt, key) for gt in gt_list] for key in field_keys
 }
 presence_matrix = pd.DataFrame(presence_data, dtype=bool)
 presence_matrix.index = pd.Index(gt_subset["filename"].values, name="filename")
@@ -1053,18 +875,15 @@ plt.show()
 
 # %%
 # ---------------------------------------------------------------------------
-# Helper: collect non-None values for a given field across the GT-parseable subset.
+# Local closure that captures `gt_subset["gt"]` and delegates to
+# `zl.gt_field_values`. Library code in `horus.eda.zugferd_loader` per
+# ADR-025; chapter-local closure preserves the cell-level `field_values(key)`
+# call sites below without forcing every callsite to pass the iterable.
 # ---------------------------------------------------------------------------
 
 
 def field_values(field_key: str) -> list[object]:
-    out: list[object] = []
-    for gt in gt_subset["gt"]:
-        f = gt.header.get(field_key)
-        if f is None or f.normalized_value is None:
-            continue
-        out.append(f.normalized_value)
-    return out
+    return zl.gt_field_values(gt_subset["gt"], field_key)
 
 
 # %%
@@ -1222,47 +1041,21 @@ for field in code_fields:
 
 # %%
 # ---------------------------------------------------------------------------
-# Line-item count via lxml xpath on the embedded CII XML.
+# Line-item count via `zl.line_item_count` (XPath against the ZUGFeRDv2
+# CII namespace; returns None for v1 / non-ZUGFeRD XMLs). Library code in
+# `horus.eda.zugferd_loader` per ADR-025.
 # ---------------------------------------------------------------------------
-NS = {
-    "rsm": "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100",
-    "ram": "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100",
-}
-
-
-def line_item_count(xml_bytes: bytes | None) -> int | None:
-    if xml_bytes is None:
-        return None
-    try:
-        tree = etree.fromstring(xml_bytes)
-        items = tree.xpath("//ram:IncludedSupplyChainTradeLineItem", namespaces=NS)
-        return len(items)
-    except Exception:  # noqa: BLE001
-        return None
-
-
-pdf_rows["line_item_count"] = pdf_rows["xml_bytes"].apply(line_item_count)
+pdf_rows["line_item_count"] = pdf_rows["xml_bytes"].apply(zl.line_item_count)
 
 # %%
 # ---------------------------------------------------------------------------
-# Apply the pre-committed tier rule.
+# Apply the pre-committed tier rule via `zl.assign_complexity_tier`.
+# Library code in `horus.eda.zugferd_loader` per ADR-025; thresholds come
+# from `EDA.complexity` (locked in `configs/eda-zugferd.yaml` BEFORE the
+# EDA runs, per ADR-024 + brainstorm v2 §2 HARKing safeguards).
 # ---------------------------------------------------------------------------
-
-
-def assign_tier(pages: int | None, items: int | None) -> str:
-    """Apply EDA.complexity thresholds (locked in YAML)."""
-    if pages is None or items is None:
-        return "(unknown)"
-    cfg_c = EDA.complexity
-    if pages <= cfg_c.simple_max_pages and items <= cfg_c.simple_max_line_items:
-        return "simple"
-    if pages <= cfg_c.medium_max_pages and items <= cfg_c.medium_max_line_items:
-        return "medium"
-    return "complex"
-
-
 pdf_rows["complexity_tier"] = [
-    assign_tier(p, li)
+    zl.assign_complexity_tier(p, li, cfg=EDA.complexity)
     for p, li in zip(pdf_rows["page_count"], pdf_rows["line_item_count"], strict=False)
 ]
 print("Complexity tier counts:")
@@ -1325,26 +1118,12 @@ plt.show()
 # The 16-field schema has no explicit country fields. Country is derived
 # from EU VAT-ID prefixes (DE/FR/GB/ES/IT/...) — the first 2 chars of
 # `seller_vat_id` and `buyer_vat_id` per ISO 3166 / EU VAT structure.
-vat_prefix_pattern = re.compile(r"^([A-Z]{2})")
-
-
-def extract_country_codes(gt: GroundTruth) -> list[tuple[str, str]]:
-    """Return [(role, country)] pairs derived from VAT-ID prefixes."""
-    out: list[tuple[str, str]] = []
-    for role, key in (("seller", "seller_vat_id"), ("buyer", "buyer_vat_id")):
-        f = gt.header.get(key)
-        if f is None or f.normalized_value is None:
-            continue
-        m = vat_prefix_pattern.match(str(f.normalized_value))
-        if m:
-            out.append((role, m.group(1)))
-    return out
-
-
+# `zl.extract_country_codes_from_gt` returns [(role, country)] pairs;
+# library code in `horus.eda.zugferd_loader` per ADR-025.
 seller_countries: list[str] = []
 buyer_countries: list[str] = []
 for gt in gt_subset["gt"]:
-    for role, country in extract_country_codes(gt):
+    for role, country in zl.extract_country_codes_from_gt(gt):
         if role == "seller":
             seller_countries.append(country)
         else:
