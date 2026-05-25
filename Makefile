@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui inspect-pilot-13 clean
+.PHONY: help install test lint format typecheck experiment eda mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui inspect-pilot-13 clean
 
 # Default target — list available commands.
 help:
@@ -9,6 +9,7 @@ help:
 	@echo "  format          uv run ruff format (apply formatting)"
 	@echo "  typecheck       uv run mypy src tests"
 	@echo "  experiment      jupytext + papermill on NB=experiments/<name>.py CFG=configs/<name>.yaml"
+	@echo "  eda             Quarto render NB=experiments/<name>.py CFG=configs/<name>.yaml -> HTML book + PDF (ADR-024)"
 	@echo "  mustang-jar     download + checksum-verify Mustang-CLI JAR (validator; ADR-005)"
 	@echo "  zugferd-smoke   end-to-end smoke: factur-x generate + Mustang validate (ADR-005)"
 	@echo "  inference-smoke real-model smoke: load Granite-Docling-258M via mlx-vlm + Transformers+MPS (ADR-007)"
@@ -54,6 +55,35 @@ experiment:
 	uv run jupytext --to py:percent $(NB:.py=.executed.ipynb) -o $(NB:.py=.executed.py)
 	rm -f $(NB:.py=.ipynb)
 	@echo "Executed: $(NB:.py=.executed.py) (and .executed.ipynb) [cfg=$(CFG)]"
+
+# Quarto-rendered EDA notebook (ADR-024). Renders a jupytext .py:percent
+# source-of-truth into ONE archived HTML book + ONE PDF, with cross-refs,
+# citations, page numbers, figure captions, code-folding. Layered ON TOP of
+# `notebook-discipline` (jupytext stays the source-of-truth; this target is
+# additive alongside `make experiment`).
+#
+# Per `horus-config-discipline`: ONE papermill-style param `cfg_path` injected
+# via Quarto's `-P key:value` flag. The notebook's first cell calls
+# `EDAConfig.from_yaml(cfg_path)` (Pydantic-validates-at-boot).
+#
+# Outputs (gitignored):
+#   $(NB:.py=.html)  — interactive HTML book (Plotly + matplotlib/seaborn)
+#   $(NB:.py=.pdf)   — print-ready PDF (matplotlib/seaborn static figures only;
+#                       Plotly drops gracefully to static fallbacks)
+#
+# Pre-flight: requires Quarto CLI on PATH (`brew install quarto`). The check
+# refuses to render if absent rather than silently producing a confusing error.
+#
+# Usage: make eda NB=experiments/eda-zugferd.py CFG=configs/eda-zugferd.yaml
+eda:
+	@if [ -z "$(NB)" ] || [ -z "$(CFG)" ]; then \
+		echo "Usage: make eda NB=experiments/<slug>.py CFG=configs/<slug>.yaml"; \
+		exit 1; \
+	fi
+	@command -v quarto >/dev/null 2>&1 || (echo "ERROR: Quarto CLI not found. Install via 'brew install quarto' (macOS) or see https://quarto.org/docs/get-started/." && exit 1)
+	uv run quarto render $(NB) --to html --execute -P cfg_path:$(CFG)
+	uv run quarto render $(NB) --to pdf  --execute -P cfg_path:$(CFG)
+	@echo "Rendered: $(NB:.py=.html) + $(NB:.py=.pdf) [cfg=$(CFG)]"
 
 # Mustang Project (Java) — ZUGFeRD validator (cross-tool check; ADR-005).
 # Version + SHA-256 pinned for reproducibility. JAR is gitignored.

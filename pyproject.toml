@@ -18,10 +18,12 @@ dependencies = [
     "mineru>=3.1.11",
     "mlflow>=3.7",
     "mlx-vlm>=0.5.0",
+    "plotly>=6.0,<7.0",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
     "pypdfium2>=4.30,<5",
     "pyyaml>=6.0.3",
+    "seaborn>=0.13,<0.14",
     "torch>=2.5",
     "torchvision>=0.20",
     "transformers>=5.5.0",
@@ -95,6 +97,12 @@ ignore_missing_imports = true
 # typing surface). Same override pattern as factur-x / fpdf / mineru / mlx_vlm / mlflow.
 [[tool.mypy.overrides]]
 module = ["pypdfium2", "pypdfium2.*"]
+ignore_missing_imports = true
+
+# ADR-024: plotly 6.x ships no py.typed marker; seaborn 0.13.x ships no py.typed.
+# Same override pattern as factur-x / fpdf / mineru / mlx_vlm / mlflow / pypdfium2.
+[[tool.mypy.overrides]]
+module = ["plotly", "plotly.*", "seaborn", "seaborn.*"]
 ignore_missing_imports = true
 
 [tool.ruff]

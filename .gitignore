@@ -27,6 +27,15 @@ dist/
 experiments/*.executed.ipynb
 experiments/*.executed.py
 
+# ADR-024: Quarto build artifacts (`make eda`). Source-of-truth is the .py:percent
+# file (tracked); HTML/PDF + Quarto's per-document and project-level execution
+# caches are transient and never committed.
+experiments/*.html
+experiments/*.pdf
+experiments/.quarto/
+/_freeze/
+.quarto/
+
 # Environment
 .env
 .env.local

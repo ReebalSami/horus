@@ -1,0 +1,56 @@
+# Quarto project config (ADR-024).
+#
+# Source-of-truth for `make eda` rendering. Reads jupytext .py:percent files
+# from experiments/ and renders to HTML book + PDF. Per ADR-024:
+#
+# - HTML output: Plotly interactive widgets + matplotlib/seaborn static figures.
+#   The "Interactive Explorer" sections in the EDA notebook surface Plotly
+#   versions; the rest of the document uses static editorial figures.
+# - PDF output: matplotlib/seaborn static figures only. Plotly drops to static
+#   fallbacks gracefully (Quarto's documented behavior).
+#
+# Per-document overrides (e.g., `title:` in the notebook's YAML front-matter)
+# layer on top of these project-level defaults.
+
+project:
+  type: default
+  render:
+    - "experiments/*.py"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    code-fold: true
+    code-tools: true
+    fig-format: svg
+    fig-cap-location: bottom
+    fig-responsive: true
+    smooth-scroll: true
+    embed-resources: false
+  pdf:
+    documentclass: scrartcl
+    papersize: a4
+    fontsize: 11pt
+    toc: true
+    toc-depth: 3
+    fig-cap-location: bottom
+    fig-format: pdf
+    fig-pos: "H"
+    geometry:
+      - top=2.5cm
+      - bottom=2.5cm
+      - left=2.5cm
+      - right=2.5cm
+    colorlinks: true
+
+execute:
+  echo: true
+  warning: false
+  freeze: auto
+
+# Citations + cross-references work out of the box; no per-project bib file
+# yet (the EDA notebook can declare `bibliography: <path>.bib` in its
+# YAML front-matter when needed).
