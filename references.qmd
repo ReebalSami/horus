@@ -1,0 +1,47 @@
+---
+title: "References"
+---
+
+# References {#sec-references .unnumbered}
+
+This chapter consolidates citations from across the Book. Sources archived per [ADR-002 source-archival convention](docs/decisions/ADR-002-source-archival.md) live under `docs/sources/<type>/<slug>.md` with Obsidian-clipper-compatible frontmatter; click-through targets below point to the canonical online source AND the local archived stub when present.
+
+## Methodology
+
+- **Datasheets for Datasets** — Gebru, T., Morgenstern, J., Vecchione, B., Vaughan, J. W., Wallach, H., Daumé III, H., & Crawford, K. (2018). *Datasheets for Datasets.* arXiv:1803.09010. [PDF](https://arxiv.org/pdf/1803.09010) · [arXiv](https://arxiv.org/abs/1803.09010) · [Local stub](docs/sources/papers/gebru-2018-datasheets-for-datasets.md). The per-dataset documentation template adopted across all 7 chapters of this Book per [ADR-025](docs/decisions/ADR-025-eda-multi-dataset-book-structure.md).
+- **HARKing — Hypothesizing After the Results are Known** — Kerr, N. L. (1998). *Personality and Social Psychology Review* 2(3), 196–217. [Local stub](docs/sources/papers/kerr-1998-harking.md). Methodological reference for the No-HARKing safeguards locked in brainstorm v2 §2 and inherited by every chapter's HARKing pre-commitments.
+- **NeurIPS Datasets and Benchmarks Track checklist** — see `docs/sources/papers/neurips-paper-checklist.md`.
+
+## Toolchain
+
+- **Quarto** — Posit, PBC. *Quarto — An open-source scientific and technical publishing system.* [quarto.org](https://quarto.org/) · [Books format](https://quarto.org/docs/books/) · [Local stub](docs/sources/tools/quarto.md). Rendering layer for this Book per [ADR-024](docs/decisions/ADR-024-eda-visualization-stack.md) + [ADR-025](docs/decisions/ADR-025-eda-multi-dataset-book-structure.md).
+- **Plotly** — Plotly Technologies Inc. *Plotly Python Open Source Graphing Library.* [plotly.com/python](https://plotly.com/python/) · [Local stub](docs/sources/tools/plotly.md). Interactive figures (HTML output only).
+- **matplotlib** — Hunter, J. D. (2007). *Matplotlib: A 2D graphics environment.* Computing in Science & Engineering 9(3), 90–95. [matplotlib.org](https://matplotlib.org/) · [Local stub](docs/sources/tools/matplotlib.md).
+- **seaborn** — Waskom, M. L. (2021). *seaborn: statistical data visualization.* Journal of Open Source Software 6(60), 3021. [seaborn.pydata.org](https://seaborn.pydata.org/) · [Local stub](docs/sources/tools/seaborn.md).
+
+## Datasets
+
+Per-dataset citations and provenance details live in each chapter's §1 Provenance section + the consolidated Datasheets appendix. Brief pointers:
+
+- **ZUGFeRD/Factur-X corpus** — [github.com/ZUGFeRD/corpus](https://github.com/ZUGFeRD/corpus) · [Local stub](docs/sources/datasets/zugferd-corpus.md). Apache-2.0. Sample collection by Mustang Project (Jochen Stärk) for testing ZUGFeRD readers + validators. See @sec-zugferd.
+- **fatura2-invoices** — Mathieu1256 et al. *FATURA2-invoices.* [HuggingFace](https://huggingface.co/datasets/mathieu1256/FATURA2-invoices) · [Local stub](docs/sources/datasets/fatura2-invoices.md). CC-BY-4.0. *(Chapter 2; Phase C.)*
+- **OmniDocBench** — OpenDataLab. *OmniDocBench.* [HuggingFace](https://huggingface.co/datasets/opendatalab/OmniDocBench) · [Local stub](docs/sources/datasets/omnidocbench.md). Custom non-commercial-research license. *(Chapter 3; Phase C.)*
+- **FUNSD — Form Understanding in Noisy Scanned Documents** — Jaume, G., Ekenel, H. K., & Thiran, J.-P. (2019). [funsd-website](https://guillaumejaume.github.io/FUNSD/) · [Local stub](docs/sources/datasets/funsd.md). Non-commercial research only. *(Chapter 4; Phase C.)*
+- **parsee-ai-invoices-example** — Parsee.ai. [HuggingFace](https://huggingface.co/datasets/parsee-ai/invoices-example) · [Local stub](docs/sources/datasets/parsee-ai-invoices-example.md). MIT. *(Chapter 5; Phase C.)*
+- **CORD-v2** — Park, S., Shin, S., Lee, B., Lee, J., Surh, J., Seo, M., & Lee, H. (2019). *CORD: A Consolidated Receipt Dataset for Post-OCR Parsing.* Naver Clova. [HuggingFace](https://huggingface.co/datasets/naver-clova-ix/cord-v2) · [Local stub](docs/sources/datasets/cord-v2.md). CC-BY-4.0. *(Chapter 6; Phase C.)*
+- **inv-cdip-tobacco** — Salesforce. [GitHub](https://github.com/salesforce/inv-cdip) · [Local stub](docs/sources/datasets/inv-cdip-tobacco.md). CC-BY-NC-4.0. *(Chapter 7; Phase C.)*
+
+## ADRs cross-referenced
+
+- [ADR-002 — Source-archival convention](docs/decisions/ADR-002-source-archival.md)
+- [ADR-009 — ADR numbering allocation](docs/decisions/ADR-009-adr-numbering-allocation.md)
+- [ADR-011 — Supersession-over-deletion](docs/decisions/ADR-011-supersession-over-deletion.md)
+- [ADR-013 — VLM prediction scorer (16-field F1, IS_GT/NO_GT truth table)](docs/decisions/ADR-013-vlm-prediction-scorer.md)
+- [ADR-024 — EDA visualization stack](docs/decisions/ADR-024-eda-visualization-stack.md)
+- [ADR-025 — EDA scope expansion: multi-dataset Book + Datasheets template](docs/decisions/ADR-025-eda-multi-dataset-book-structure.md)
+
+## Project artefacts
+
+- Implementation plan: `~/.windsurf/plans/eda-full-corpus-ed5d97.md`
+- Original ZUGFeRD-only plan (Phase 1, completed 2026-05-25): `~/.windsurf/plans/eda-zugferd-9c4a5b.md`
+- Brainstorm v2 (locked, 2026-05-08): `docs/prompts/stages/02-brainstorm.md`

@@ -1,0 +1,39 @@
+# eda-funsd.yaml — ADR-025 chapter 4 (English form-understanding benchmark)
+#
+# Drives the descriptive-only EDA on FUNSD (Form Understanding in Noisy
+# Scanned Documents; Jaume, Ekenel, & Thiran, 2019; non-commercial-
+# research license): 199 noisy scanned forms with hand-annotated
+# entity-relation pairs (149 training + 50 testing).
+#
+# All knobs live HERE per `horus-config-discipline`. HARKing safeguards:
+# `expected_min_examples` PRE-COMMITTED before EDA runs.
+#
+# Refs: ADR-024, ADR-025, `data/raw/english/funsd/MANIFEST.md`.
+
+seed: 42
+
+mlflow:
+  experiment_name: eda-funsd
+  run_tags:
+    stage: eda
+    chapter: "4"
+    dataset: funsd
+    adr: ADR-025
+    descriptive_only: "true"
+  tracking_uri: null
+
+eda:
+  corpus_root: data/raw/english/funsd
+  output_dir: experiments
+  palette_static: muted
+  palette_interactive: plotly_white
+  figure_dpi: 300
+
+  fine_tuning_anchors:
+    lora_min_examples: 200
+    lora_target_examples: 2000
+    eval_min_examples_for_thesis: 100
+
+  # 199 total forms expected (149 train + 50 test).
+  # 195 = small partial-download buffer.
+  expected_min_examples: 195

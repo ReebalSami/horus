@@ -18,10 +18,12 @@ dependencies = [
     "mineru>=3.1.11",
     "mlflow>=3.7",
     "mlx-vlm>=0.5.0",
+    "plotly>=6.0,<7.0",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
     "pypdfium2>=4.30,<5",
     "pyyaml>=6.0.3",
+    "seaborn>=0.13,<0.14",
     "torch>=2.5",
     "torchvision>=0.20",
     "transformers>=5.5.0",
@@ -34,6 +36,7 @@ dev = [
     "mypy>=1.13",
     "jupytext>=1.16",
     "papermill>=2.6",
+    "ipykernel>=6.29",
     "types-pyyaml>=6.0.12.20260510",
 ]
 
@@ -97,9 +100,47 @@ ignore_missing_imports = true
 module = ["pypdfium2", "pypdfium2.*"]
 ignore_missing_imports = true
 
+# ADR-024: plotly 6.x ships no py.typed marker; seaborn 0.13.x ships no py.typed.
+# Same override pattern as factur-x / fpdf / mineru / mlx_vlm / mlflow / pypdfium2.
+[[tool.mypy.overrides]]
+module = ["plotly", "plotly.*", "seaborn", "seaborn.*"]
+ignore_missing_imports = true
+
+# ADR-025: pandas ships no py.typed marker by default; pandas-stubs is the
+# community-maintained stubs package, but the project precedent is the
+# override pattern over an extra dev dep (matches factur-x / fpdf / mineru /
+# mlx_vlm / mlflow / pypdfium2 / plotly / seaborn). Re-evaluate if pandas
+# operations grow type-heavy enough to warrant pandas-stubs as a dev dep.
+[[tool.mypy.overrides]]
+module = ["pandas", "pandas.*"]
+ignore_missing_imports = true
+
+# ADR-025 chapter 2: pyarrow ships no py.typed marker (`pyarrow-stubs`
+# is community-maintained but not adopted; same precedent as the other
+# overrides above). Used by `horus.eda.fatura2_loader` for parquet
+# metadata reads (`pq.read_metadata` row counts) + by tests for parquet
+# fixtures (`pa.table(...)` + `pq.write_table(...)`).
+[[tool.mypy.overrides]]
+module = ["pyarrow", "pyarrow.*"]
+ignore_missing_imports = true
+
+# ADR-025 chapter 2: PIL (Pillow) — same one-line override; transitive
+# dep used by the chapter notebook for thumbnail rendering of fatura2
+# JPEGs in §3 Sample inspection.
+[[tool.mypy.overrides]]
+module = ["PIL", "PIL.*"]
+ignore_missing_imports = true
+
 [tool.ruff]
 line-length = 100
 target-version = "py314"
+# experiments/ holds jupytext :percent files (research artefacts per
+# `notebook-discipline`). They contain Quarto cell-options (`#| key: value`)
+# that ruff format would corrupt to `# | key: value`, breaking Quarto rendering.
+# Per ADR-024 + notebook-discipline: experiments are runtime artefacts, not
+# production source. Already outside the Makefile lint scope; making the
+# exclusion consistent across direct ruff invocations.
+extend-exclude = ["experiments"]
 
 [tool.ruff.lint]
 select = [
