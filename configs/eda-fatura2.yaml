@@ -1,0 +1,89 @@
+# eda-fatura2.yaml — ADR-025 chapter 2 (English invoice substrate)
+#
+# Lock file for `make eda NB=experiments/02-fatura2.py CFG=configs/eda-fatura2.yaml`
+# (single-chapter render) AND `make eda-book` (full Book, which reads the
+# `params: {cfg_path: ...}` block from the chapter's YAML frontmatter).
+#
+# Drives the descriptive-only EDA on fatura2-invoices (HuggingFace
+# mathieu1256/FATURA2-invoices, CC-BY-4.0): ~10,000 English synthetic
+# invoice images with NER-tagged tokens + bounding boxes (50 templates ×
+# 200 instances). Storage: 2 parquet files (8600 train + 1400 test) with
+# embedded JPEG bytes + per-token NER tags + per-token bounding boxes.
+#
+# All knobs live HERE per `horus-config-discipline` (architectural forcing
+# function). The chapter notebook reads ONE param `cfg_path`, calls
+# `ExperimentConfig.from_yaml(cfg_path)`, and accesses knobs via `cfg.eda.*`.
+#
+# HARKing safeguards (per brainstorm v2 §2 + ADR-024 + ADR-025):
+#
+#   - This is a descriptive-only EDA chapter. The H1–H6 set in brainstorm
+#     v2 §6 is READ-ONLY for this artifact. Patterns that look hypothesis-
+#     shaped go to the chapter's §7 Exploratory observations log, NOT into
+#     H1–H6.
+#   - `expected_min_examples` is PRE-COMMITTED here BEFORE the EDA runs.
+#     Retroactive adjustment leaves a git-tracked paper trail.
+#
+# Refs: ADR-024 (visualization stack), ADR-025 (multi-dataset Book +
+# Datasheets), ADR-004 (config library), horus-config-discipline.md (L2),
+# notebook-discipline.md (L3), `data/raw/english/fatura2-invoices/MANIFEST.md`
+# (provenance + sha256_aggregate seal).
+
+seed: 42
+
+mlflow:
+  experiment_name: eda-fatura2
+  run_tags:
+    stage: eda
+    chapter: "2"
+    dataset: fatura2-invoices
+    adr: ADR-025
+    descriptive_only: "true"
+  tracking_uri: null
+
+eda:
+  # Corpus root walked by the chapter. The 2 parquet files live under
+  # `data/`; the chapter loader finds train + test splits automatically.
+  corpus_root: data/raw/english/fatura2-invoices
+
+  # Output directory for Quarto-rendered HTML + PDF (gitignored as build
+  # artifacts; `make eda-book` writes to `_book/` per ADR-025; this knob
+  # is retained for `make eda` single-chapter renders that go to
+  # `experiments/02-fatura2.html` + `.pdf`).
+  output_dir: experiments
+
+  # Static editorial palette (matplotlib/seaborn). FT/NYT-influenced muted
+  # palette per ADR-024 §"Hybrid aesthetic" Q5=C.
+  palette_static: muted
+
+  # Interactive figure template (Plotly). plotly_white = cleanest editorial
+  # baseline.
+  palette_interactive: plotly_white
+
+  # DPI for static figures saved to disk.
+  figure_dpi: 300
+
+  # Literature-grounded anchors for the fine-tuning sufficiency report.
+  # Per ADR-025: each chapter inherits the same anchors (LoRA range +
+  # eval-min) since they're literature-grounded, not corpus-specific.
+  fine_tuning_anchors:
+    lora_min_examples: 200
+    lora_target_examples: 2000
+    eval_min_examples_for_thesis: 100
+
+  # Sanity-check: corpus must contain at least this many examples (parquet
+  # rows). Default 9000 = 10000 total minus a small buffer for partial-
+  # download recovery. Set to 10000 once full-acquisition is confirmed
+  # post-MANIFEST verification (which it is per the on-disk audit on
+  # 2026-05-25: train=8600 + test=1400 = 10000 exact).
+  expected_min_examples: 9000
+
+  # PDF-specific knobs (inherited defaults; not used by this chapter):
+  # - `expected_min_pdfs` (default 26 from ZUGFeRD chapter; this chapter
+  #   has zero PDFs — it's a parquet+image corpus)
+  # - `page_count_bins` (default [1,2,3,5,10,20]; not applicable to
+  #   single-page invoice images)
+  # - `complexity` (default thresholds; not applicable — the FATURA paper's
+  #   complexity is a function of template variety, not pages × line items)
+  # - `ground_truth_required` (default true; the chapter overrides at the
+  #   call site by checking `expected_min_examples` instead, since fatura2
+  #   has NER tags, not a CII-XML ground truth schema).

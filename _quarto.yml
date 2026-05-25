@@ -33,6 +33,7 @@ book:
   chapters:
     - index.qmd
     - experiments/01-zugferd.py
+    - experiments/02-fatura2.py
   references: references.qmd
   search: true
   page-navigation: true

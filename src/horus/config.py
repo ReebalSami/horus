@@ -658,7 +658,20 @@ class EDAConfig(BaseModel):
             "many PDFs under `corpus_root`. Default 26 = the pilot-13 XML-"
             "Rechnung/FX subset. Below this → corpus not fully fetched; the "
             "notebook surfaces a loud warning. Set to 151 for the post-fetch "
-            "expected count."
+            "expected count. PDF-corpus-only knob; non-PDF chapters use "
+            "`expected_min_examples` instead (per ADR-025)."
+        ),
+    )
+    expected_min_examples: int | None = Field(
+        default=None,
+        ge=1,
+        description=(
+            "Generic sanity-check minimum for non-PDF corpora (per ADR-025): "
+            "the EDA expects to discover at least this many examples (parquet "
+            "rows, image-annotation pairs, etc.) under `corpus_root`. Default "
+            'None means "don\'t check" (PDF chapters use `expected_min_pdfs`). '
+            "Set per-dataset in each chapter's YAML — e.g., 9000 for fatura2 "
+            "(10K total minus a small buffer)."
         ),
     )
     ground_truth_required: bool = Field(

@@ -251,6 +251,37 @@ def test_eda_config_rejects_zero_expected_min_pdfs() -> None:
         EDAConfig(expected_min_pdfs=0)
 
 
+def test_eda_config_expected_min_examples_default_is_none() -> None:
+    """`expected_min_examples` defaults to None (per ADR-025: PDF chapters use
+    `expected_min_pdfs`; only non-PDF chapters set this).
+    """
+    cfg = EDAConfig()
+    assert cfg.expected_min_examples is None
+
+
+def test_eda_config_accepts_expected_min_examples() -> None:
+    """Non-PDF chapters set `expected_min_examples` per ADR-025."""
+    cfg = EDAConfig(expected_min_examples=9000)
+    assert cfg.expected_min_examples == 9000
+
+
+def test_eda_config_rejects_zero_expected_min_examples() -> None:
+    """`expected_min_examples < 1` → ValidationError (per Field ge=1)."""
+    with pytest.raises(ValidationError, match="expected_min_examples"):
+        EDAConfig(expected_min_examples=0)
+
+
+def test_eda_config_pdf_and_non_pdf_knobs_coexist() -> None:
+    """Both `expected_min_pdfs` AND `expected_min_examples` can be set; chapters
+    pick whichever is relevant. PDF chapters reference `expected_min_pdfs`;
+    non-PDF chapters reference `expected_min_examples`. Coexistence in the
+    schema is intentional per ADR-025.
+    """
+    cfg = EDAConfig(expected_min_pdfs=151, expected_min_examples=10000)
+    assert cfg.expected_min_pdfs == 151
+    assert cfg.expected_min_examples == 10000
+
+
 # ---------------------------------------------------------------------------
 # 6. ExperimentConfig — optional `eda:` (backward-compat with existing YAMLs)
 # ---------------------------------------------------------------------------
