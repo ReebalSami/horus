@@ -1,0 +1,55 @@
+# eda-omnidocbench.yaml — ADR-025 chapter 3 (multilingual document benchmark)
+#
+# Lock file for `make eda NB=experiments/03-omnidocbench.py CFG=configs/eda-omnidocbench.yaml`
+# (single-chapter render) AND `make eda-book` (full Book).
+#
+# Drives the descriptive-only EDA on OmniDocBench (HuggingFace
+# opendatalab/OmniDocBench, custom non-commercial-research license):
+# 1651 multilingual document images (Chinese 47% + English 46% + mixed
+# 7%) covering books / PPTs / papers / exams / textbooks / newspapers /
+# magazines / research reports / notes / historical documents. NOT an
+# invoice dataset — see chapter §5 HORUS-relevance for the framing.
+#
+# All knobs live HERE per `horus-config-discipline`. The chapter
+# notebook reads ONE param `cfg_path` and accesses knobs via `cfg.eda.*`.
+#
+# HARKing safeguards (per brainstorm v2 §2 + ADR-024 + ADR-025):
+#
+#   - This is a descriptive-only EDA chapter. The H1–H6 set is
+#     READ-ONLY. Hypothesis-shaped patterns go to §7 Exploratory
+#     observations log.
+#   - `expected_min_examples` is PRE-COMMITTED here BEFORE the EDA runs.
+#
+# Refs: ADR-024, ADR-025, ADR-004 (config library),
+# horus-config-discipline (L2), notebook-discipline (L3),
+# `data/raw/multilingual/omnidocbench/MANIFEST.md`.
+
+seed: 42
+
+mlflow:
+  experiment_name: eda-omnidocbench
+  run_tags:
+    stage: eda
+    chapter: "3"
+    dataset: omnidocbench
+    adr: ADR-025
+    descriptive_only: "true"
+  tracking_uri: null
+
+eda:
+  corpus_root: data/raw/multilingual/omnidocbench
+  output_dir: experiments
+  palette_static: muted
+  palette_interactive: plotly_white
+  figure_dpi: 300
+
+  # Literature-grounded anchors (inherited; same per-chapter pattern as
+  # chapter 2 fatura2 — anchors are dataset-agnostic literature numbers).
+  fine_tuning_anchors:
+    lora_min_examples: 200
+    lora_target_examples: 2000
+    eval_min_examples_for_thesis: 100
+
+  # Sanity-check: 1651 entries on disk per MANIFEST.md.
+  # 1600 = small partial-download buffer.
+  expected_min_examples: 1600
