@@ -775,12 +775,23 @@ def field_value_present(gt: GroundTruth, key: str) -> bool:
     return field.normalized_value is not None
 
 
-presence_matrix = pd.DataFrame(
-    {key: gt_subset["gt"].apply(lambda g, k=key: field_value_present(g, k)) for key in field_keys},
-    index=gt_subset["filename"],
-).astype(bool)  # `Series.apply` over an object-dtype Series returns object-dtype;
-# explicit cast to bool makes downstream `.mean(axis=0)` produce float64 (else
-# `dtype=object` propagates and the round/astype chain in the next cell breaks).
+# BUG-CATCH: an earlier version of this cell used
+#   pd.DataFrame({key: gt_subset["gt"].apply(...) for key in field_keys},
+#                index=gt_subset["filename"])
+# Pandas tried to ALIGN the Series-from-apply (RangeIndex 0..145) against the
+# string-typed `filename` index → no common labels → all values became NaN →
+# `.astype(bool)` converted NaN → True → presence_matrix was solid-True →
+# every field's presence rate was a fake 1.0. The check that surfaced it was
+# the contradiction with cell [40] field-frequency counts (123 currency
+# values, not 146). Bypassing the trap by constructing from positional list
+# comprehensions (no Series alignment) and attaching the filename index
+# AFTER construction.
+gt_list = list(gt_subset["gt"])
+presence_data = {
+    key: [field_value_present(gt, key) for gt in gt_list] for key in field_keys
+}
+presence_matrix = pd.DataFrame(presence_data, dtype=bool)
+presence_matrix.index = pd.Index(gt_subset["filename"].values, name="filename")
 presence_matrix.shape
 
 # %%
