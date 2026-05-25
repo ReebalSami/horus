@@ -603,9 +603,18 @@ plt.show()
 # for camelcase variants.
 # Char classes use `-` LAST to mean a literal hyphen (otherwise `[_/-.]` parses
 # `/-.` as a malformed range from `/` to `.`).
+#
+# BUG-CATCH: BASICWL must precede BASIC in this dict because the dict-iteration
+# order matches lookup order in `profile_from_filename()`. The previous
+# `BASIC(?:WL)?` form matched both BASIC and BASICWL filenames but always
+# returned key "BASIC", causing 6 of 10 route-disagreement false positives
+# in §4 (e.g., `Facture_DOM_BASICWL.pdf` filename → "BASIC", XML → "BASICWL").
+# Separate explicit pattern (allowing space, underscore, or hyphen between
+# "BASIC" and "WL", since `BASIC WL/` and `BASIC-WL_` both appear in corpus).
 PROFILE_PATTERNS = {
+    "BASICWL": re.compile(r"(?:^|[_/-])BASIC[ _-]?WL(?:[_/.-]|$)", re.IGNORECASE),
     "MINIMUM": re.compile(r"(?:^|[_/-])MINIMUM(?:[_/.-]|$)", re.IGNORECASE),
-    "BASIC": re.compile(r"(?:^|[_/-])BASIC(?:WL)?(?:[_/.-]|$)", re.IGNORECASE),
+    "BASIC": re.compile(r"(?:^|[_/-])BASIC(?:[_/.-]|$)", re.IGNORECASE),
     "EN16931": re.compile(r"(?:^|[_/-])EN[_]?16931(?:[_/.-]|$)", re.IGNORECASE),
     "EXTENDED": re.compile(r"(?:^|[_/-])(EXTENDED|Erweitert)(?:[_/.-]|$)", re.IGNORECASE),
     "XRECHNUNG": re.compile(r"(?:^|[_/-])XRECHNUNG(?:[_/.-]|$)", re.IGNORECASE),
@@ -661,8 +670,21 @@ pdf_rows["xml_bytes"] = extractions.map(lambda t: t[0])
 pdf_rows["xml_flavor"] = extractions.map(lambda t: t[1])
 pdf_rows["xml_level"] = extractions.map(lambda t: t[2])
 pdf_rows["xml_extracted"] = pdf_rows["xml_bytes"].notna()
+# `xml_flavor == "zugferd"` is factur-x's tag for ZUGFeRDv1 (the v1 namespace
+# uses `<rsm:CrossIndustryDocument>`; v2 / factur-x uses
+# `<rsm:CrossIndustryInvoice>`). `parse_cii_xml` in this project uses v2
+# XPaths exclusively (`/rsm:CrossIndustryInvoice/...`), so it silently
+# returns an empty GroundTruth for v1 PDFs. Detecting + flagging the v1
+# subset here lets us define a "parser-meaningful" eval substrate
+# downstream and surface v1 namespace as an anomaly category in §9.
+pdf_rows["is_zugferd_v1"] = pdf_rows["xml_flavor"] == "zugferd"
 n_xml_ok = int(pdf_rows["xml_extracted"].sum())
+n_v1 = int(pdf_rows["is_zugferd_v1"].sum())
 print(f"  ✓ {n_xml_ok} / {len(pdf_rows)} PDFs yielded an embedded XML attachment.")
+print(
+    f"  ⓘ {n_v1} of those are ZUGFeRDv1 namespace (parser-incompatible; "
+    f"see §5 + §9 for downstream handling)."
+)
 
 # %%
 # ---------------------------------------------------------------------------
@@ -745,6 +767,24 @@ plt.show()
 #   the filenames are wrong or the embedded XML doesn't match the
 #   declared profile (a real bug in some test corpora). Use the embedded-
 #   XML route as authoritative.
+# - **Forensic audit of route disagreements**: a previous iteration
+#   reported 10 disagreements (with a buggy regex). After fixing the
+#   `BASICWL` precedence bug (the `BASIC(?:WL)?` pattern matched
+#   BASICWL filenames but always returned key "BASIC"), the residual
+#   disagreements are factur-x library limitations:
+#   - **XRECHNUNG → EN16931 collapse**: factur-x's `get_level()` returns
+#     the parent norm (EN16931) for XRECHNUNG-extended XMLs because the
+#     library doesn't preserve the German-specific CustomizationID
+#     (`urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:standard:xrechnung_3.0`).
+#     Filename-route correctly identifies these as XRECHNUNG; XML-route
+#     under-classifies as EN16931. For thesis-grade profile classification
+#     of XML-Rechnung/FX PDFs, parse CustomizationID directly OR use
+#     mustang-cli's profile detector. Documented limitation; deferred.
+#   - **ZUGFeRDv1 levels (BASIC, COMFORT, EXTENDED) vs ZUGFeRDv2 levels
+#     (BASIC, EN16931, EXTENDED)**: COMFORT is v1-only; EN16931 is v2-
+#     only. Filename pattern returns None for v1 levels (we didn't add
+#     COMFORT to PROFILE_PATTERNS); XML route returns the correct
+#     v1 level. The route-coverage breakdown surfaces this v1/v2 split.
 
 # %% [markdown]
 # ---
@@ -779,26 +819,61 @@ def parse_one_gt(xml_bytes: bytes | None) -> GroundTruth | None:
 print(f"Parsing GroundTruth for {n_xml_ok} extracted XMLs...", flush=True)
 pdf_rows["gt"] = pdf_rows["xml_bytes"].apply(parse_one_gt)
 pdf_rows["gt_parseable"] = pdf_rows["gt"].notna()
+
+
+def _gt_has_any_field(gt: GroundTruth | None) -> bool:
+    """True iff the parsed GT has at least 1 field with a non-None normalized value.
+
+    This is the "parser-meaningful" predicate: ZUGFeRDv1-namespace PDFs
+    parse cleanly into an empty GroundTruth (no exception, no fields)
+    because `parse_cii_xml` uses v2 XPaths exclusively. Any other empty-GT
+    cases (malformed v2 XML, schema deviations) also fall here. The §5/§6/§8
+    presence-rate computations need this stricter denominator to avoid the
+    false "84.2%" parser-scope artifact (the v1 subset = 23 PDFs systemically
+    contributes 0/16 fields each, dragging mandatory-field rates down).
+    """
+    if gt is None:
+        return False
+    return any(f.normalized_value is not None for f in gt.header.values())
+
+
+pdf_rows["gt_meaningful"] = pdf_rows["gt"].apply(_gt_has_any_field)
 n_gt = int(pdf_rows["gt_parseable"].sum())
+n_gt_meaningful = int(pdf_rows["gt_meaningful"].sum())
 print(f"  ✓ {n_gt} PDFs yielded a parseable GroundTruth dict.")
+print(
+    f"  ⓘ {n_gt_meaningful} of those produced ≥1 extracted field "
+    f"(parser-meaningful subset; the §5/§6/§8 denominator)."
+)
+print(
+    f"  ⓘ {n_gt - n_gt_meaningful} parsed cleanly but yielded 0 fields "
+    "(ZUGFeRDv1 namespace; see §5 + §9)."
+)
 print(
     f"  ✗ {len(pdf_rows) - n_gt} PDFs failed somewhere in the chain "
     "(no XML attachment, malformed XML, or schema deviations); see §9."
 )
 
-if EDA.ground_truth_required and n_gt == 0:
+if EDA.ground_truth_required and n_gt_meaningful == 0:
     raise RuntimeError(
-        "cfg.eda.ground_truth_required=True but the GT-parseable subset is "
-        "empty (0 PDFs). The corpus may be misconfigured. See §9 for the "
-        "anomaly distribution."
+        "cfg.eda.ground_truth_required=True but the parser-meaningful subset "
+        "is empty (0 PDFs with ≥1 extracted field). The corpus may be "
+        "misconfigured or the parser may need namespace-version updates. "
+        "See §9 for the anomaly distribution."
     )
 
 # %%
 # ---------------------------------------------------------------------------
 # Build a 16-column boolean matrix: rows = PDFs, columns = field-keys.
+# Using `gt_meaningful` (NOT `gt_parseable`) as the denominator. This excludes
+# the 23 ZUGFeRDv1-namespace PDFs that parse cleanly but yield 0 fields,
+# avoiding the parser-scope artifact that would otherwise cap mandatory-field
+# presence rates at 123/146 = 84.2%. Within the meaningful subset, mandatory
+# fields are expected to approach 100% (which is the corpus property we
+# actually want to characterize).
 # ---------------------------------------------------------------------------
 field_keys = list(FIELDS.keys())
-gt_subset = pdf_rows[pdf_rows["gt_parseable"]].copy()
+gt_subset = pdf_rows[pdf_rows["gt_meaningful"]].copy()
 
 
 def field_value_present(gt: GroundTruth, key: str) -> bool:
@@ -932,17 +1007,27 @@ plt.show()
 # %% [markdown]
 # **Discussion §5 (16-field presence rates)**:
 #
-# - Near-universal fields (>=95% presence) are the corpus's mandatory
-#   backbone — these are the F1-scorer's "everyone must produce these"
-#   targets. Pilot-13's MONEY-field FN failures (per ADR-019 bug catalog)
-#   are concentrated in these high-presence-rate fields, which is exactly
-#   why adapter improvements there drive headline F1.
+# - **Denominator note**: this section's denominator is the
+#   "parser-meaningful" subset (`pdf_rows[gt_meaningful]`), NOT the full
+#   146-PDF GT-parseable subset. The 23 ZUGFeRDv1-namespace PDFs that
+#   parse cleanly into empty GroundTruths are excluded — they contribute
+#   0/16 fields each and would falsely cap mandatory-field rates around
+#   84%. See §9 + the cell-output notice immediately above the parser
+#   call. The thesis F1 evaluation substrate inherits this scope: the
+#   16-field scorer cannot grade v1-namespace PDFs without parser
+#   extension.
+# - Near-universal fields (>=95% presence within the meaningful subset)
+#   are the corpus's mandatory backbone — these are the F1-scorer's
+#   "everyone must produce these" targets. Pilot-13's MONEY-field FN
+#   failures (per ADR-019 bug catalog) are concentrated in these
+#   high-presence-rate fields, which is exactly why adapter improvements
+#   there drive headline F1.
 # - Lower-presence fields are optional or profile-specific (e.g.,
-#   `currency_code` BT-5 only present when EN16931+; `delivery_address`
-#   only present when distinct from buyer). These DO NOT enter F1
-#   denominators per ADR-013 §"Truth table" — fields with `NO_GT` are
-#   excluded from both numerator and denominator. So a corpus full of
-#   missing optionals is NOT a corpus full of FN.
+#   `delivery_date` BT-72 only required for some profiles; `seller_gln`
+#   BT-29/0088 only when the seller has a GS1 GLN registered). These
+#   DO NOT enter F1 denominators per ADR-013 §"Truth table" — fields
+#   with `NO_GT` are excluded from both numerator and denominator. So a
+#   corpus full of missing optionals is NOT a corpus full of FN.
 # - The heatmap surfaces row-clusters = profile groupings (MINIMUM rows
 #   are short; EN16931+ rows are full). A future column-cluster ordering
 #   could highlight field co-occurrence (deferred — not load-bearing for
@@ -1310,15 +1395,25 @@ n_total = len(pdf_rows)
 n_no_pages = int((~pdf_rows["page_count_known"]).sum())
 n_no_xml = int((~pdf_rows["xml_extracted"]).sum())
 n_no_gt = int((~pdf_rows["gt_parseable"]).sum())
+n_v1_silent = int((pdf_rows["gt_parseable"] & ~pdf_rows["gt_meaningful"]).sum())
+n_no_meaningful = int((~pdf_rows["gt_meaningful"]).sum())
 print("Failure-mode counts (cumulative; later stages depend on earlier):")
-print(f"  PDFs total:                  {n_total:>4}")
-print(f"  Page-count parse failed:     {n_no_pages:>4}  ({100 * n_no_pages / n_total:.1f}%)")
-print(f"  XML attachment missing/bad:  {n_no_xml:>4}  ({100 * n_no_xml / n_total:.1f}%)")
-print(f"  GroundTruth parse failed:    {n_no_gt:>4}  ({100 * n_no_gt / n_total:.1f}%)")
+print(f"  PDFs total:                       {n_total:>4}")
+print(f"  Page-count parse failed:          {n_no_pages:>4}  ({100 * n_no_pages / n_total:.1f}%)")
+print(f"  XML attachment missing/bad:       {n_no_xml:>4}  ({100 * n_no_xml / n_total:.1f}%)")
+print(f"  GroundTruth parse failed:         {n_no_gt:>4}  ({100 * n_no_gt / n_total:.1f}%)")
+print(
+    f"  GT parsed but 0 fields (v1 ns):   {n_v1_silent:>4}  "
+    f"({100 * n_v1_silent / n_total:.1f}%)  ← parser-scope, not corpus quality"
+)
+print(
+    f"  Parser-meaningful subset:         "
+    f"{n_total - n_no_meaningful:>4}  ({100 * (n_total - n_no_meaningful) / n_total:.1f}%)"
+)
 
 # %%
 # ---------------------------------------------------------------------------
-# Per-flavor failure breakdown.
+# Per-flavor failure breakdown (incl. v1-namespace silent-empty category).
 # ---------------------------------------------------------------------------
 failure_table = (
     pdf_rows.groupby("flavor")
@@ -1327,6 +1422,10 @@ failure_table = (
         no_pages=("page_count_known", lambda s: (~s).sum()),
         no_xml=("xml_extracted", lambda s: (~s).sum()),
         no_gt=("gt_parseable", lambda s: (~s).sum()),
+        v1_silent=(
+            "gt_meaningful",
+            lambda s: int((pdf_rows.loc[s.index, "gt_parseable"] & ~s).sum()),
+        ),
     )
     .sort_values("pdfs", ascending=False)
 )
@@ -1354,6 +1453,24 @@ if n_dup_filenames:
 #   are robust and which have known broken PDFs.
 # - Duplicate filenames across flavors are usually intentional (the same
 #   reference invoice in multiple ZUGFeRD variants).
+# - **`v1_silent` column** = ZUGFeRDv1-namespace PDFs that parse cleanly
+#   into an empty GroundTruth dict. NOT a corpus-quality issue:
+#   `parse_cii_xml` (`src/horus/eval/ground_truth.py`) uses v2 XPaths
+#   exclusively (`/rsm:CrossIndustryInvoice/...`); ZUGFeRDv1 uses
+#   `<rsm:CrossIndustryDocument>` with different namespace URIs, so every
+#   field XPath returns 0 elements without raising. **Implication for
+#   evaluation substrate**: the parser's actual scope is v2-namespace
+#   PDFs only. The 23 v1 PDFs (~15% of corpus) cannot be used by the
+#   16-field scorer without a v1-aware parser extension (out of scope
+#   for this thesis; documented as future work).
+# - **5 unparseable PDFs** (factur-x failed to extract embedded XML)
+#   audited separately:
+#   - 2 in `ZUGFeRDv2/fail/` (intentionally invalid; expected)
+#   - 2 in `ZUGFeRDv1/correct/Mustangproject/MustangGnuaccountingBeispielRE-*`
+#     (likely factur-x library limitation on certain v1 PDFs from this
+#     generator; not a corpus error)
+#   - 1 in `unstructured/` (Hetzner real-world PDF; no embedded XML by
+#     design — non-Factur-X invoice retained for OCR-route benchmarking)
 
 # %% [markdown]
 # ---
@@ -1370,18 +1487,19 @@ if n_dup_filenames:
 # Numbers feeding the commentary.
 # ---------------------------------------------------------------------------
 A = EDA.fine_tuning_anchors
-n_eval_substrate = n_gt
+n_eval_substrate = n_gt_meaningful  # parser-meaningful subset (excludes v1 ns)
 n_total_corpus = n_total
 n_user_belege_committed = 60  # per Q4 user-strategic-input (plan §7.1)
 n_user_belege_target = 100  # per Q4 user-strategic-input
 n_lora_min = A.lora_min_examples
 n_lora_target = A.lora_target_examples
 n_eval_min = A.eval_min_examples_for_thesis
-print(f"Evaluation substrate (GT-parseable):     {n_eval_substrate}")
-print(f"Total ZUGFeRD corpus:                    {n_total_corpus}")
-print(f"User-committed Belege (existing):        {n_user_belege_committed}")
-print(f"User-targeted Belege (self-collectable): {n_user_belege_target}")
-print(f"LoRA range (literature anchor):          [{n_lora_min}, {n_lora_target}]")
+print(f"Evaluation substrate (parser-meaningful):  {n_eval_substrate}  (v2 namespace; usable by 16-field scorer)")
+print(f"  └─ ZUGFeRDv1-namespace excluded:         {n_gt - n_gt_meaningful}  (parser scope; future work)")
+print(f"Total ZUGFeRD corpus:                       {n_total_corpus}")
+print(f"User-committed Belege (existing):           {n_user_belege_committed}")
+print(f"User-targeted Belege (self-collectable):    {n_user_belege_target}")
+print(f"LoRA range (literature anchor):             [{n_lora_min}, {n_lora_target}]")
 print(f"Eval N for thesis-defendable F1 (≤±0.10 95% CI half-width): {n_eval_min}")
 
 # %% [markdown]
@@ -1391,13 +1509,18 @@ print(f"Eval N for thesis-defendable F1 (≤±0.10 95% CI half-width): {n_eval_m
 # **For thesis-defendable evaluation** (the headline F1 numbers):
 #
 # - The literature anchor for ≤±0.10 95% CI half-width on a binary
-#   success rate is `eval_min_examples_for_thesis` = `{n_eval_min}` PDFs.
+#   success rate is the `eval_min_examples_for_thesis` value printed
+#   above (configured in `cfg.eda.fine_tuning_anchors`).
 # - Comparators: arxiv 2510.15727 (Oct 2025 invoice extraction, Docling vs
 #   LlamaExtractor) used 102 invoices. Berghaus et al. 2025 (cited in
 #   brainstorm v2 §7.1) used 350.
-# - The ZUGFeRD corpus's GT-parseable subset = `{n_eval_substrate}` PDFs.
-#   This is the dev/training substrate, NOT the held-out test set per
-#   Q4=A in the EDA plan + brainstorm v2 §9.3.
+# - The ZUGFeRD corpus's PARSER-MEANINGFUL subset (printed above as the
+#   evaluation substrate; v2 namespace; ~123 PDFs) is the dev/training
+#   substrate, NOT the held-out test set per Q4=A in the EDA plan +
+#   brainstorm v2 §9.3. The 23 ZUGFeRDv1-namespace PDFs cannot be
+#   scored by the 16-field scorer without parser extension; they remain
+#   in the corpus for OCR-route benchmarking and as a future-work
+#   migration target.
 # - The held-out test set is EXTERNAL: user has 60+ private Belege in
 #   hand + ~40 reachable via self-collection = ~100 redacted Belege
 #   (matches `eval_min_examples_for_thesis`). Belege storage =
@@ -1407,9 +1530,9 @@ print(f"Eval N for thesis-defendable F1 (≤±0.10 95% CI half-width): {n_eval_m
 # **For future LoRA fine-tuning** (issue #55, not decided in this EDA):
 #
 # - LoRA range per literature anchor: `[lora_min_examples,
-#   lora_target_examples]` = `[{n_lora_min}, {n_lora_target}]` examples.
-# - ZUGFeRD GT-parseable alone (`{n_eval_substrate}`) is below
-#   `lora_min_examples` = `{n_lora_min}`. Augmentation paths:
+#   lora_target_examples]` printed above. ZUGFeRD parser-meaningful
+#   alone (~123) is below the LoRA min — augmentation needed.
+# - Augmentation paths:
 #   - **Mustang Project + factur-x synthesis** (per brainstorm v2 §7.5):
 #     unlimited synthetic ZUGFeRD invoices already supported by
 #     `make zugferd-smoke`. Generator-shaped (NOT Beleg-shaped); thesis
@@ -1420,8 +1543,8 @@ print(f"Eval N for thesis-defendable F1 (≤±0.10 95% CI half-width): {n_eval_m
 #   - **GI 2021 acquisition** (P1 deferred, brainstorm v2 §6.2): 977 real
 #     German invoices from `dl.gi.de`. Adds breadth; license review +
 #     MANIFEST authoring + sha256 sealing pending.
-# - Total reachable training pool: ~`{n_eval_substrate}` (ZUGFeRD) +
-#   ~50 (Belege train portion) + N (Mustang synth) ≈ `{n_eval_substrate + 50}`+
+# - Total reachable training pool (parser-meaningful): ~123 (ZUGFeRDv2)
+#   + ~50 (Belege train portion) + N (Mustang synth, unbounded) ≈ 173+
 #   even before any GI 2021 acquisition. With Mustang synth this scales
 #   freely into the LoRA target range.
 #
