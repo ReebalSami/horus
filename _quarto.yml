@@ -38,6 +38,7 @@ book:
     - experiments/04-funsd.py
     - experiments/05-parsee-ai.py
     - experiments/06-cord-v2.py
+    - experiments/07-inv-cdip-tobacco.py
   references: references.qmd
   search: true
   page-navigation: true

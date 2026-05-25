@@ -1,0 +1,45 @@
+# eda-inv-cdip-tobacco.yaml — ADR-025 chapter 7 (annotations-only labeled invoices)
+#
+# Drives the descriptive-only EDA on inv-cdip-tobacco (Salesforce
+# inv-cdip GitHub repo; Gao et al. 2022, ACL Spa-NLP Workshop;
+# CC-BY-NC-4.0): 350 labeled invoice annotations with 7 canonical
+# field labels (Invoice_number / Purchase_order / Invoice_date /
+# Due_date / Amount_due / Total_amount / Total_tax). Underlying
+# UCSF Industry Documents tobacco-collection PDF scans intentionally
+# NOT downloaded per acquisition decision (sub-issue #28 closed
+# not-planned 2026-05-13); annotation-only acquisition is sufficient
+# for Berghaus-baseline cross-comparison without raw scans.
+#
+# All knobs live HERE per `horus-config-discipline`. HARKing safeguards:
+# `expected_min_examples` PRE-COMMITTED before EDA runs.
+#
+# Refs: ADR-024, ADR-025, `data/raw/english/inv-cdip-tobacco/MANIFEST.md`,
+# `docs/sources/datasets/inv-cdip-tobacco.md`.
+
+seed: 42
+
+mlflow:
+  experiment_name: eda-inv-cdip-tobacco
+  run_tags:
+    stage: eda
+    chapter: "7"
+    dataset: inv-cdip-tobacco
+    adr: ADR-025
+    descriptive_only: "true"
+  tracking_uri: null
+
+eda:
+  corpus_root: data/raw/english/inv-cdip-tobacco
+  output_dir: experiments
+  palette_static: muted
+  palette_interactive: plotly_white
+  figure_dpi: 300
+
+  fine_tuning_anchors:
+    lora_min_examples: 200
+    lora_target_examples: 2000
+    eval_min_examples_for_thesis: 100
+
+  # 350 annotations expected per README (the labeled set).
+  # 340 = small partial-load buffer.
+  expected_min_examples: 340
