@@ -1,0 +1,41 @@
+# eda-parsee-ai.yaml — ADR-025 chapter 5 (bilingual MIT-licensed Q&A sample)
+#
+# Drives the descriptive-only EDA on parsee-ai-invoices-example
+# (HuggingFace `parsee-ai/invoices-example`, MIT license): 45 prompt /
+# truth-answer pairs generated from 15 underlying invoice PDFs on
+# app.parsee.ai. Designed for evaluating LLMs on RAG-style invoice
+# question answering. **Bilingual** — en + de — unique among the HORUS
+# 7-dataset substrate.
+#
+# All knobs live HERE per `horus-config-discipline`. HARKing safeguards:
+# `expected_min_examples` PRE-COMMITTED before EDA runs.
+#
+# Refs: ADR-024, ADR-025, `data/raw/english/parsee-ai-invoices-example/MANIFEST.md`,
+# `docs/sources/datasets/parsee-ai-invoices-example.md`.
+
+seed: 42
+
+mlflow:
+  experiment_name: eda-parsee-ai
+  run_tags:
+    stage: eda
+    chapter: "5"
+    dataset: parsee-ai-invoices-example
+    adr: ADR-025
+    descriptive_only: "true"
+  tracking_uri: null
+
+eda:
+  corpus_root: data/raw/english/parsee-ai-invoices-example
+  output_dir: experiments
+  palette_static: muted
+  palette_interactive: plotly_white
+  figure_dpi: 300
+
+  fine_tuning_anchors:
+    lora_min_examples: 200
+    lora_target_examples: 2000
+    eval_min_examples_for_thesis: 100
+
+  # 45 rows expected (single parquet file). 40 = small partial-load buffer.
+  expected_min_examples: 40

@@ -36,6 +36,7 @@ book:
     - experiments/02-fatura2.py
     - experiments/03-omnidocbench.py
     - experiments/04-funsd.py
+    - experiments/05-parsee-ai.py
   references: references.qmd
   search: true
   page-navigation: true
