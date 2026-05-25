@@ -1,0 +1,41 @@
+# eda-cord-v2.yaml — ADR-025 chapter 6 (Korean receipts; Donut-style format)
+#
+# Drives the descriptive-only EDA on CORD-v2 (Consolidated Receipt Dataset,
+# version 2; HuggingFace `naver-clova-ix/cord-v2`, CC-BY-4.0): 1000 Korean
+# receipt images with Donut-style hierarchical JSON ground-truth
+# annotations (menu items + sub_total financial fields). 800 train + 100
+# validation + 100 test.
+#
+# All knobs live HERE per `horus-config-discipline`. HARKing safeguards:
+# `expected_min_examples` PRE-COMMITTED before EDA runs.
+#
+# Refs: ADR-024, ADR-025, `data/raw/korean/cord-v2/MANIFEST.md`,
+# `docs/sources/datasets/cord-v2.md`.
+
+seed: 42
+
+mlflow:
+  experiment_name: eda-cord-v2
+  run_tags:
+    stage: eda
+    chapter: "6"
+    dataset: cord-v2
+    adr: ADR-025
+    descriptive_only: "true"
+  tracking_uri: null
+
+eda:
+  corpus_root: data/raw/korean/cord-v2
+  output_dir: experiments
+  palette_static: muted
+  palette_interactive: plotly_white
+  figure_dpi: 300
+
+  fine_tuning_anchors:
+    lora_min_examples: 200
+    lora_target_examples: 2000
+    eval_min_examples_for_thesis: 100
+
+  # 1000 rows expected (800 train + 100 validation + 100 test).
+  # 950 = small partial-load buffer.
+  expected_min_examples: 950
