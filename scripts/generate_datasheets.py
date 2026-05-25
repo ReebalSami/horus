@@ -1,0 +1,1008 @@
+"""Generate `experiments/A1-datasheets.qmd` from Datasheet pydantic objects.
+
+Per ADR-025 §"Per-chapter content template" + the consolidated
+Datasheets-for-Datasets appendix requirement: this script declares
+one :class:`horus.eda.datasheet.Datasheet` per HORUS-substrate
+dataset, renders each via :func:`render_to_qmd`, and concatenates
+the outputs into the appendix file `experiments/A1-datasheets.qmd`.
+
+The script is a one-shot generator. Re-run when:
+  - A dataset's Datasheet content needs updating (per-chapter
+    §1/§2 audit).
+  - The Datasheet model schema changes.
+  - A new dataset is added to the substrate.
+
+Output is committed to git (the generated .qmd is the source-of-truth
+for Quarto Book rendering, NOT this script). Pydantic validation of
+the 7 Datasheet objects happens at script-run time — malformed
+content fails fast before any .qmd is written.
+
+Usage:
+    uv run python scripts/generate_datasheets.py
+
+Refs: ADR-025, src/horus/eda/datasheet.py,
+docs/sources/papers/gebru-2018-datasheets-for-datasets.md.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from horus.eda.datasheet import Datasheet, DatasheetSection, render_to_qmd
+
+
+def _section(items: list[tuple[str, str]]) -> list[DatasheetSection]:
+    """Helper to build a list of DatasheetSection from (question, answer) pairs."""
+    return [DatasheetSection(question=q, answer=a) for q, a in items]
+
+
+# ---------------------------------------------------------------------------
+# Datasheet 1 — ZUGFeRD German corpus
+# ---------------------------------------------------------------------------
+
+DS_ZUGFERD = Datasheet(
+    slug="zugferd",
+    title="ZUGFeRD German corpus",
+    motivation=_section(
+        [
+            (
+                "For what purpose was the dataset created?",
+                "The ZUGFeRD/Factur-X/XRechnung sample corpus was assembled by the "
+                "Forum elektronische Rechnung Deutschland (FeRD) + its EU counterparts "
+                "to demonstrate the EN16931 hybrid PDF/A-3 + CII XML invoice standard. "
+                "HORUS uses the public sample corpus as its primary German invoice "
+                "substrate for thesis evaluation (per brainstorm v2 §15 Datasets + "
+                "ADR-024 §Context).",
+            ),
+            (
+                "Who created the dataset and who funded its creation?",
+                "FeRD (Forum elektronische Rechnung Deutschland) — German national-level "
+                "industry consortium administering the ZUGFeRD/Factur-X standard. The "
+                "EN16931 European e-invoicing standard is funded by the EU Commission's "
+                "Digital Single Market initiative.",
+            ),
+        ]
+    ),
+    composition=_section(
+        [
+            (
+                "What do the instances that comprise the dataset represent?",
+                "151 hybrid PDF/A-3 invoices + 88 standalone CII XML files. Each PDF "
+                "embeds a machine-readable CII XML attachment carrying the 16-field "
+                "EN16931 ground-truth schema (BT-1 Invoice number, BT-2 Issue date, "
+                "BT-3 Invoice type code, ...). The corpus spans 4 flavors (Factur-X / "
+                "ZUGFeRD-v2 / ZUGFeRDv1 / XRechnung) and 4 profiles (MINIMUM / BASIC "
+                "WL / BASIC / COMFORT / EN16931 / EXTENDED).",
+            ),
+            (
+                "Is there a label or target associated with each instance?",
+                "Yes. Each invoice carries its CII XML ground-truth embedded "
+                "(Factur-X / ZUGFeRD-v2 / XRechnung) or as a sidecar (88 standalone "
+                "XMLs). The 16 EN16931 fields are extracted programmatically by "
+                "`src/horus/eval/ground_truth.py` per the EN16931 BT-NN identifiers.",
+            ),
+            (
+                "Are there recommended data splits?",
+                "No standard train/test split ships with the sample corpus. HORUS "
+                "treats ZUGFeRD as **training + development substrate only** per "
+                "brainstorm v2 §9.3 (Q4=A in the locked plan); the held-out test "
+                "set is self-collected Belege + future GI 2021 frozen subset, both "
+                "off-corpus.",
+            ),
+            (
+                "Are there errors, sources of noise, or redundancies in the dataset?",
+                "Yes (per chapter @sec-zugferd §9): 25 invoices use the deprecated "
+                "ZUGFeRDv1 namespace (urn:ferd:CrossIndustryDocument:invoice:1p0) which "
+                "the current `parse_cii_xml` parser does not handle — surfaced as "
+                "Decision Register entry DR-1.",
+            ),
+        ]
+    ),
+    collection=_section(
+        [
+            (
+                "How was the data associated with each instance acquired?",
+                "PDFs assembled from FeRD's public sample distribution + cross-EU "
+                "reference samples shipped by Factur-X (FNFE-MPE, France) and "
+                "XRechnung (Koordinierungsstelle für IT-Standards, Germany). All "
+                "instances are synthetic demonstration invoices, NOT real customer "
+                "documents.",
+            ),
+            (
+                "If the dataset is a sample, what is the larger set?",
+                "The larger set is the full population of real German B2B invoices "
+                "issued under EN16931 — an estimated 10⁹+ documents per year across "
+                "the German Mittelstand. The 151-PDF corpus is a sample-for-demonstration, "
+                "NOT a statistically representative sample of the population.",
+            ),
+        ]
+    ),
+    preprocessing=_section(
+        [
+            (
+                "Was any preprocessing/cleaning/labeling of the data done?",
+                "Minimal HORUS-side preprocessing: corpus walk (sha256-sealed in "
+                "MANIFEST.md), CII XML extraction via factur-x + Mustang (ADR-010), "
+                "PDF rasterization via pypdfium2 for VLM inputs. No content cleaning; "
+                "the corpus is consumed as-shipped.",
+            ),
+        ]
+    ),
+    uses=_section(
+        [
+            (
+                "Has the dataset been used for any tasks already?",
+                "Multiple academic + industry purposes: EN16931 compliance "
+                "demonstration, parser/validator regression testing (Mustang, "
+                "factur-x, KoSIT-validator), pilot-13 HORUS VLM cohort evaluation "
+                "(chapter @sec-zugferd §11). Reported HORUS F1=0.49 is a smoke "
+                "result on a 13-invoice pilot subset, NOT a thesis-defendable "
+                "number.",
+            ),
+            (
+                "What tasks should the dataset NOT be used for?",
+                "Statistical inference about real-world German invoice content — "
+                "the corpus is synthetic demonstration content with non-realistic "
+                "field values (placeholder vendor names, dates, etc.). NOT "
+                "appropriate for real-world per-field value-distribution claims.",
+            ),
+        ]
+    ),
+    distribution=_section(
+        [
+            (
+                "How will the dataset be distributed?",
+                "Apache-2.0 licensed; distributed via the FeRD GitHub organization + "
+                "Factur-X official distribution (FNFE-MPE). Each PDF + XML carries "
+                "its own attribution requirement; the corpus aggregate inherits "
+                "Apache-2.0 from the upstream packaging.",
+            ),
+            (
+                "Will the dataset be distributed under a copyright/license?",
+                "Yes — Apache-2.0 (the most permissive license in the HORUS "
+                "substrate). Production HORUS deployment can train + ship on "
+                "ZUGFeRD content with attribution.",
+            ),
+        ]
+    ),
+    maintenance=_section(
+        [
+            (
+                "Who will be supporting/hosting/maintaining the dataset?",
+                "FeRD + Factur-X (FNFE-MPE) consortium. New samples land on each "
+                "EN16931 update; the standard itself is maintained by CEN TC 434.",
+            ),
+            (
+                "Will the dataset be updated?",
+                "Yes — each major EN16931 revision produces new sample releases. "
+                "HORUS's snapshot is sha256-sealed in MANIFEST.md; any future "
+                "refresh will produce a new MANIFEST + new acquisition record per "
+                "the `make data-manifest` reproducibility recipe.",
+            ),
+        ]
+    ),
+)
+
+
+# ---------------------------------------------------------------------------
+# Datasheet 2 — fatura2-invoices
+# ---------------------------------------------------------------------------
+
+DS_FATURA2 = Datasheet(
+    slug="fatura2",
+    title="fatura2-invoices (English synthetic)",
+    motivation=_section(
+        [
+            (
+                "For what purpose was the dataset created?",
+                "Originally introduced by Limam, Dhiaf, & Kessentini 2023 "
+                "(arXiv:2311.11856) as a multi-layout invoice image dataset for "
+                "document analysis + understanding research. The HuggingFace port "
+                "(`mathieu1256/FATURA2-invoices`) repackages the LayoutLMv3-"
+                "compatible split + adds parquet shards for direct "
+                "`datasets.load_dataset()` use.",
+            ),
+            (
+                "Who created the dataset?",
+                "Limam, Dhiaf, & Kessentini (2023) — the FATURA paper authors. "
+                "The HuggingFace port is by `mathieu1256`.",
+            ),
+        ]
+    ),
+    composition=_section(
+        [
+            (
+                "What do the instances represent?",
+                "10,000 synthetic English invoice images with per-token NER tags "
+                "+ per-token bounding boxes. Generated from 50 distinct layouts × "
+                "200 instances via per-template content randomization (names, "
+                "addresses, dates, amounts).",
+            ),
+            (
+                "Is there a label or target associated with each instance?",
+                "Yes — 24-class token-level NER tags following the FATURA paper §3.2 "
+                "schema (TABLE / LOGO / DATE / NUMBER / SELLER ADDRESS / BUYER "
+                "ADDRESS / TOTAL / etc.). The HuggingFace port encodes them as `int64` "
+                "IDs without an embedded ClassLabel mapping — the full table is in "
+                "the paper.",
+            ),
+            (
+                "Are there recommended data splits?",
+                "Yes — 8600 train + 1400 test (the HuggingFace dataset card's canonical split).",
+            ),
+            (
+                "What does each instance consist of?",
+                "Per-row HuggingFace parquet shape: `{id, image: {bytes, path}, "
+                "tokens: list[str], bboxes: list[list[int]], ner_tags: list[int]}`. "
+                "Each image is single-page JPEG.",
+            ),
+        ]
+    ),
+    collection=_section(
+        [
+            (
+                "How was the data associated with each instance acquired?",
+                "Synthetic generation per the FATURA paper §3.3: 50 template "
+                "layouts × per-template content randomization. Logos are generated "
+                "via latent-diffusion text-to-image; names / addresses / amounts "
+                "are randomized from curated repositories. NO real consumer "
+                "invoices are included.",
+            ),
+        ]
+    ),
+    preprocessing=_section(
+        [
+            (
+                "Was any preprocessing/cleaning/labeling done?",
+                "Synthetic generation IS the preprocessing — tokens + bboxes + "
+                "ner_tags are produced at generation time, not retroactively "
+                "labeled. Per the paper, the synthetic-generation pipeline "
+                "guarantees consistency between rendered visuals + annotation.",
+            ),
+        ]
+    ),
+    uses=_section(
+        [
+            (
+                "Has the dataset been used for any tasks already?",
+                "Per the FATURA paper: invoice extraction model training + "
+                "evaluation across multiple LayoutLM-family architectures. The "
+                "HuggingFace port additionally supports direct LayoutLMv3 "
+                "fine-tuning via the `datasets.load_dataset` API.",
+            ),
+            (
+                "What tasks should the dataset NOT be used for?",
+                "**Real-world OCR noise modeling** — fatura2 is clean synthetic "
+                "rendering with no scan tilt / paper artefacts / handwritten "
+                "annotations. Performance on fatura2 is an OVERESTIMATE of "
+                "performance on real Belege.",
+            ),
+        ]
+    ),
+    distribution=_section(
+        [
+            (
+                "How will the dataset be distributed?",
+                "Via HuggingFace Hub (`mathieu1256/FATURA2-invoices`); git-LFS "
+                "for the parquet shards.",
+            ),
+            (
+                "Under what license?",
+                "CC-BY-4.0 — permissive with attribution. Production HORUS "
+                "deployment can train on fatura2 content with attribution to "
+                "Limam et al. 2023 + the `mathieu1256` port.",
+            ),
+        ]
+    ),
+    maintenance=_section(
+        [
+            (
+                "Who supports the dataset?",
+                "Maintained by `mathieu1256` on HuggingFace; the underlying paper "
+                "authors do not directly maintain the HF port.",
+            ),
+            (
+                "Is there an errata channel?",
+                "GitHub issues on the original FATURA paper repo + HuggingFace "
+                "discussions on the dataset page. No formal versioning policy.",
+            ),
+        ]
+    ),
+)
+
+
+# ---------------------------------------------------------------------------
+# Datasheet 3 — OmniDocBench
+# ---------------------------------------------------------------------------
+
+DS_OMNIDOCBENCH = Datasheet(
+    slug="omnidocbench",
+    title="OmniDocBench (multilingual document benchmark)",
+    motivation=_section(
+        [
+            (
+                "For what purpose was the dataset created?",
+                "OpenDataLab created OmniDocBench as a multilingual document-"
+                "understanding benchmark spanning books, papers, PPTs, exams, "
+                "newspapers, and historical documents. Goal: broad coverage for "
+                "OCR + layout-detection robustness evaluation across document "
+                "types.",
+            ),
+            (
+                "Who created the dataset?",
+                "OpenDataLab (Shanghai AI Laboratory / Pjlab) — the "
+                "opendatalab/OmniDocBench HuggingFace organization.",
+            ),
+        ]
+    ),
+    composition=_section(
+        [
+            (
+                "What do the instances represent?",
+                "1651 document images with hand-annotated region-level layout "
+                "labels (text_block / title / equation_isolated / figure / table / "
+                "header / footer / etc. — 18+ category_types). Source documents "
+                "span Chinese (47%) + English (46%) + en-ch mixed (7%) + a small "
+                "tail of other languages.",
+            ),
+            (
+                "Is there a label or target associated with each instance?",
+                "Yes — per-region bounding box + category_type label encoded in "
+                "`OmniDocBench.json`. Schema is OmniDocBench-specific, NOT COCO/Pascal "
+                "VOC; re-parsing required for downstream tools that expect standard "
+                "formats.",
+            ),
+            (
+                "Are there errors or noise in the dataset?",
+                "Yes (per chapter @sec-omnidocbench §6): 34 of 670 `.png` files "
+                "carry JPEG content (header `ffd8ffe0` instead of `89504e47`). "
+                "Source-side dataset issue, NOT acquisition corruption. PIL handles "
+                "them via auto-format-detection.",
+            ),
+        ]
+    ),
+    collection=_section(
+        [
+            (
+                "How was the data acquired?",
+                "Mixed-source acquisition by OpenDataLab from public document "
+                "collections (academic papers, books, PPT exports). Per-document "
+                "provenance is documented in OmniDocBench.json `data_source` "
+                "field.",
+            ),
+        ]
+    ),
+    preprocessing=_section(
+        [
+            (
+                "Was any preprocessing done?",
+                "Yes — page rasterization to PNG, hand-annotation of region-level "
+                "labels by OpenDataLab annotation staff. Special-issue tags "
+                "(table_horizontal, watermark, fuzzy_scan, etc.) added during "
+                "annotation pass for robustness-evaluation use.",
+            ),
+        ]
+    ),
+    uses=_section(
+        [
+            (
+                "Has the dataset been used for any tasks already?",
+                "OmniDocBench is a published benchmark used in multiple OCR + "
+                "layout-detection papers as the multilingual robustness reference.",
+            ),
+            (
+                "What tasks should the dataset NOT be used for?",
+                "**Invoice-specific extraction** — `data_source` distribution "
+                "contains zero invoice-class entries (verified empirically in "
+                "chapter @sec-omnidocbench §4). OmniDocBench is breadth, NOT "
+                "invoice-depth.",
+            ),
+            (
+                "Is there anything a user should know about how the dataset should not be used?",
+                "License is research-only — production deployment is excluded. "
+                "Documented in chapter @sec-omnidocbench §6 + Decision Register "
+                "DR-3.",
+            ),
+        ]
+    ),
+    distribution=_section(
+        [
+            (
+                "How is the dataset distributed?",
+                "Via HuggingFace Hub (`opendatalab/OmniDocBench`). git-LFS for the "
+                "large image collection (~1.5 GB).",
+            ),
+            (
+                "Under what license?",
+                "Custom non-commercial-research-only "
+                "(`LicenseRef-OmniDocBench-research-only`). README's "
+                "Copyright Statement: *for research purposes only and not for "
+                "commercial use*.",
+            ),
+        ]
+    ),
+    maintenance=_section(
+        [
+            (
+                "Who supports the dataset?",
+                "OpenDataLab (Shanghai AI Laboratory).",
+            ),
+        ]
+    ),
+)
+
+
+# ---------------------------------------------------------------------------
+# Datasheet 4 — FUNSD
+# ---------------------------------------------------------------------------
+
+DS_FUNSD = Datasheet(
+    slug="funsd",
+    title="FUNSD (form-understanding noisy scanned documents)",
+    motivation=_section(
+        [
+            (
+                "For what purpose was the dataset created?",
+                "FUNSD was introduced by Jaume, Ekenel, & Thiran (2019) as a "
+                "noisy-scan form-understanding benchmark. Per the paper: a "
+                "deliberately-noisy subset of RVL-CDIP focusing on form-shaped "
+                "tax / business / NDA documents.",
+            ),
+            (
+                "Who created the dataset?",
+                "Jaume, Ekenel, & Thiran (EPFL) — published at ICDARW 2019.",
+            ),
+        ]
+    ),
+    composition=_section(
+        [
+            (
+                "What do the instances represent?",
+                "199 noisy scanned forms (149 training + 50 testing) with "
+                "per-entity bounding boxes + 4-class entity labels (other / "
+                "question / answer / header) + entity-relation linking pairs. "
+                "Documents are 1980s-2000s scanned business documents (tax forms / "
+                "NDAs / contracts).",
+            ),
+            (
+                "Is there a label or target associated with each instance?",
+                "Yes — per-entity bbox + label + linking array. The linking array "
+                "encodes which entities form question-answer pairs (e.g., "
+                "[question_id, answer_id]) — load-bearing for form-understanding "
+                "F1.",
+            ),
+            (
+                "What does each instance consist of?",
+                "Paired `<id>.png` + `<id>.json` files under "
+                "`dataset/{training_data,testing_data}/{images,annotations}/`. "
+                "Image is rasterized form scan; JSON is the entity annotation.",
+            ),
+        ]
+    ),
+    collection=_section(
+        [
+            (
+                "How was the data acquired?",
+                "Subset of the RVL-CDIP corpus (Harley et al. 2015), itself a "
+                "subset of the UCSF Industry Documents Library. Selection criterion: "
+                "noisier real-world-scanned forms — the dataset name advertises "
+                "the noise as a feature.",
+            ),
+        ]
+    ),
+    preprocessing=_section(
+        [
+            (
+                "Was any preprocessing done?",
+                "Per the paper: minimal — the dataset preserves real-world OCR "
+                "noise (uneven baselines, photocopier streaks, fax artefacts) by "
+                "design. Manual entity-labeling done by the paper authors.",
+            ),
+        ]
+    ),
+    uses=_section(
+        [
+            (
+                "Has the dataset been used for any tasks already?",
+                "Canonical LayoutLM / LayoutLMv2 / LayoutLMv3 form-understanding "
+                "evaluation benchmark. Most form-understanding papers report FUNSD "
+                "F1 — reporting HORUS-VLM-cohort F1 on FUNSD gives published-"
+                "comparable methodology baseline.",
+            ),
+            (
+                "What tasks should the dataset NOT be used for?",
+                "**Direct invoice extraction** — FUNSD is forms (Q-A pairs), not "
+                "invoices (line items). Cannot train an invoice-extraction model "
+                "directly on FUNSD content; can only train a document-VLM whose "
+                "form-skill transfers to invoices.",
+            ),
+        ]
+    ),
+    distribution=_section(
+        [
+            (
+                "How is the dataset distributed?",
+                "Direct ZIP download from "
+                "`https://guillaumejaume.github.io/FUNSD/dataset.zip` — the FUNSD "
+                "authors host the canonical copy themselves.",
+            ),
+            (
+                "Under what license?",
+                "`LicenseRef-FUNSD-noncommercial-research` — research-only. "
+                "Production HORUS deployment must NOT train on FUNSD.",
+            ),
+        ]
+    ),
+    maintenance=_section(
+        [
+            (
+                "Who supports the dataset?",
+                "EPFL (Jaume + lab); the FUNSD website has been stable since 2019.",
+            ),
+        ]
+    ),
+)
+
+
+# ---------------------------------------------------------------------------
+# Datasheet 5 — parsee-ai-invoices-example
+# ---------------------------------------------------------------------------
+
+DS_PARSEE_AI = Datasheet(
+    slug="parsee-ai",
+    title="Parsee AI invoices-example (bilingual MIT)",
+    motivation=_section(
+        [
+            (
+                "For what purpose was the dataset created?",
+                "Created by Parsee AI as a sample dataset for evaluating LLMs on "
+                "RAG-style invoice question answering using the `parsee-core` "
+                "extraction toolkit (v0.1.3.11). Per the README: a fixture for "
+                "LLM evaluation on Parsee's structured-answer format.",
+            ),
+            (
+                "Who created the dataset?",
+                "Parsee AI — distributed via the `parsee-ai` HuggingFace organization.",
+            ),
+        ]
+    ),
+    composition=_section(
+        [
+            (
+                "What do the instances represent?",
+                "45 prompt / truth-answer pairs generated from 15 underlying "
+                "invoice PDFs accessible on `app.parsee.ai`. Each underlying PDF "
+                "generates 3 rows (one each for element types `general0`, "
+                "`general1`, `general2`).",
+            ),
+            (
+                "Is there a label or target?",
+                "Yes — `TRUTH_answer` column contains the ground-truth answer in "
+                "parsee's structured format: `(main question): VALUE\\n(meta0): "
+                "X\\n(meta1): Y\\nSources: [N]`. The `(key): value` sections enable "
+                "parsee-core to score LLM responses field-by-field, NOT as a "
+                "single string match.",
+            ),
+            (
+                "Is the data complete or a sample?",
+                "Sample — 15 underlying invoices × 3 elements. Designed as a "
+                "fixture, NOT a comprehensive benchmark.",
+            ),
+            (
+                "What is the size of the dataset?",
+                "45 rows × 5 string columns; 42.7 KB parquet. The smallest "
+                "dataset in the HORUS substrate.",
+            ),
+        ]
+    ),
+    collection=_section(
+        [
+            (
+                "How was the data acquired?",
+                "Parsee AI selected 15 publicly-accessible invoice PDFs on their "
+                "`app.parsee.ai` platform and ran the parsee-core extraction + "
+                "question-generation pipeline against them. The underlying PDFs "
+                "are NOT included in the dataset — only the extracted features + "
+                "truth.",
+            ),
+        ]
+    ),
+    preprocessing=_section(
+        [
+            (
+                "Was any preprocessing done?",
+                "Yes — heavy preprocessing. The `FEATURE_full_prompt` column is "
+                "the full RAG-style context window supplied to the LLM during "
+                "evaluation; the `TRUTH_answer` column is the structured ground-"
+                "truth in parsee's evaluation format. Both are derivatives of "
+                "the underlying invoice PDFs, NOT raw content.",
+            ),
+        ]
+    ),
+    uses=_section(
+        [
+            (
+                "Has the dataset been used for tasks already?",
+                "Per the Parsee blog: LLM evaluation using parsee-core's "
+                "structured-answer match metric. Specific comparison numbers "
+                "(GPT-4 / Claude / etc.) are documented in Parsee's "
+                "parsee-datasets GitHub repo.",
+            ),
+            (
+                "What tasks should it NOT be used for?",
+                "**Direct invoice-extraction model training** — 45 rows is "
+                "below the LoRA fine-tuning floor; the dataset ships pre-parsed "
+                "Q-and-A, not raw OCR + bboxes. Useful only as evaluation "
+                "fixture.",
+            ),
+        ]
+    ),
+    distribution=_section(
+        [
+            (
+                "How is the dataset distributed?",
+                "Via HuggingFace Hub (`parsee-ai/invoices-example`).",
+            ),
+            (
+                "Under what license?",
+                "MIT — the most permissive license in the HORUS substrate. "
+                "Production HORUS deployment can use parsee-ai content with "
+                "minimal attribution.",
+            ),
+        ]
+    ),
+    maintenance=_section(
+        [
+            (
+                "Who supports the dataset?",
+                "Parsee AI — the dataset is one of several public artifacts "
+                "supporting their `parsee-core` toolkit.",
+            ),
+            (
+                "Is there an erratum noted?",
+                "MANIFEST.md declares `language: english` but the README declares "
+                "`en, de` and empirical inspection finds ~40% German content. "
+                "Surfaced in chapter @sec-parsee-ai §6 + Decision Register DR-5.",
+            ),
+        ]
+    ),
+)
+
+
+# ---------------------------------------------------------------------------
+# Datasheet 6 — CORD-v2
+# ---------------------------------------------------------------------------
+
+DS_CORD_V2 = Datasheet(
+    slug="cord-v2",
+    title="CORD-v2 (Consolidated Receipt Dataset, Korean)",
+    motivation=_section(
+        [
+            (
+                "For what purpose was the dataset created?",
+                "Curated by NAVER CLOVA for the Donut paper (Kim et al. 2022, "
+                "ECCV — *OCR-free Document Understanding Transformer*). The "
+                "Donut training pipeline uses CORD-v2 as its primary supervised-"
+                "training set; the dataset has since become the canonical OCR-"
+                "free document-VLM benchmark.",
+            ),
+            (
+                "Who created the dataset?",
+                "NAVER CLOVA OCR team (South Korea).",
+            ),
+        ]
+    ),
+    composition=_section(
+        [
+            (
+                "What do the instances represent?",
+                "1000 Korean receipt images (800 train + 100 validation + 100 "
+                "test) with Donut-style hierarchical JSON ground-truth. Each "
+                "receipt's GT carries `gt_parse: {menu: [...], sub_total: {...}, "
+                "total: {...}}` with optional `meta`, `valid_line`, `roi` "
+                "additional fields.",
+            ),
+            (
+                "Is there a label or target?",
+                "Yes — structured JSON ground-truth. `menu` contains per-line-item "
+                "objects with `{nm, cnt, price, ...}` keys; `total.total_price` "
+                "is the headline total. `menu` is polymorphic: dict for 1-item "
+                "receipts, list for multi-item.",
+            ),
+            (
+                "Are there recommended data splits?",
+                "Yes — 800 train + 100 validation + 100 test (the HF dataset "
+                "card's canonical split; matches the Donut paper).",
+            ),
+            (
+                "What does each instance consist of?",
+                "Per-row HF parquet shape: `{image: {bytes, path}, ground_truth: "
+                "<json-string>}`. Image bytes are JPEG/PNG; ~300-500 KB per row.",
+            ),
+        ]
+    ),
+    collection=_section(
+        [
+            (
+                "How was the data acquired?",
+                "Per the Donut paper §3 + the CORD-v2 README: real-world Korean "
+                "point-of-sale receipts (grocery / restaurant / retail) collected "
+                "by NAVER CLOVA for OCR research. Hand-annotated by NAVER staff.",
+            ),
+            (
+                "If a sample, what is the larger set?",
+                "The original CORD dataset (v1, 2019) had 1000 receipts; CORD-v2 "
+                "is the curated 1000-receipt benchmark version. The larger "
+                "population is Korean retail receipts — billions per year, this "
+                "is a small curated sample.",
+            ),
+        ]
+    ),
+    preprocessing=_section(
+        [
+            (
+                "Was any preprocessing done?",
+                "Yes — image rasterization, JSON annotation by NAVER OCR team. "
+                "Per the paper: deliberate inclusion of OCR-noisy receipts to "
+                "stress-test the OCR-free architecture.",
+            ),
+        ]
+    ),
+    uses=_section(
+        [
+            (
+                "Has the dataset been used for tasks already?",
+                "Yes — extensively. Donut paper + every subsequent OCR-free "
+                "document-VLM paper (Pix2Struct / LayoutLMv3-extended / "
+                "Qwen-VL / etc.) reports CORD F1. Reporting HORUS-VLM-cohort F1 "
+                "on CORD enables direct published-comparable methodology "
+                "anchor.",
+            ),
+            (
+                "What tasks should it NOT be used for?",
+                "**Direct German invoice extraction** — CORD-v2 is Korean "
+                "receipts, NOT German invoices. Cross-domain + cross-language + "
+                "cross-document-type. Useful only as cross-domain comparator.",
+            ),
+        ]
+    ),
+    distribution=_section(
+        [
+            (
+                "How is the dataset distributed?",
+                "Via HuggingFace Hub (`naver-clova-ix/cord-v2`). git-LFS for the "
+                "~2.3 GB image data.",
+            ),
+            (
+                "Under what license?",
+                "CC-BY-4.0 — permissive with attribution. Production HORUS "
+                "deployment can train on CORD-v2 with attribution to NAVER CLOVA "
+                "+ the Donut paper.",
+            ),
+        ]
+    ),
+    maintenance=_section(
+        [
+            (
+                "Who supports the dataset?",
+                "NAVER CLOVA. The HuggingFace mirror has been stable since 2022-07.",
+            ),
+        ]
+    ),
+)
+
+
+# ---------------------------------------------------------------------------
+# Datasheet 7 — inv-cdip-tobacco
+# ---------------------------------------------------------------------------
+
+DS_INV_CDIP = Datasheet(
+    slug="inv-cdip-tobacco",
+    title="inv-cdip-tobacco (Salesforce labeled subset)",
+    motivation=_section(
+        [
+            (
+                "For what purpose was the dataset created?",
+                "Salesforce Research (Gao et al. 2022, ACL Spa-NLP Workshop — "
+                "*Field Extraction from Forms with Unlabeled Data*) introduced "
+                "inv-cdip as a labeled subset of the CDIP (Complaint, Document, "
+                "Image Processing) corpus. Goal: enable semi-supervised invoice "
+                "extraction research — train on the ~200K unlabeled bulk + "
+                "evaluate on the 350 labeled set.",
+            ),
+            (
+                "Who created the dataset?",
+                "Gao, M., Chen, Z., Naik, N., Hashimoto, K., Xiong, C., & "
+                "Xu, R. (Salesforce Research, 2022).",
+            ),
+        ]
+    ),
+    composition=_section(
+        [
+            (
+                "What do the instances represent?",
+                "350 labeled invoice annotations drawn from the UCSF Industry "
+                "Documents Library tobacco-document collection (1980s-2000s "
+                "scanned business documents). Each annotation carries `image_dims` "
+                "+ a `Fields` list with `key.tag` + `value.label` + `value.tag` + "
+                "`value.bbox`.",
+            ),
+            (
+                "Is there a label or target?",
+                "Yes — 7 documented canonical field labels (Invoice_number, "
+                "Purchase_order, Invoice_date, Due_date, Amount_due, "
+                "Total_amount, Total_tax) per the README. **However**, empirical "
+                "inspection (chapter @sec-inv-cdip §6) finds 4 of 7 labels in "
+                "JSON differ from the documented form — case drift + extra "
+                "suffix. Surfaced in Decision Register DR-5.",
+            ),
+            (
+                "What does each instance consist of?",
+                "JSON-only files under `annotation/<id>.json`. Underlying tobacco "
+                "PDF scans are NOT downloaded — per acquisition decision "
+                "(sub-issue #28 closed not-planned 2026-05-13). Annotation-only "
+                "by design.",
+            ),
+            (
+                "Are there errors in the dataset?",
+                "Yes — the README-vs-JSON label drift (above) is a real source-"
+                "side documentation error. Also: most invoices have only 3-4 "
+                "of 7 possible labels (schema is sparse in practice).",
+            ),
+        ]
+    ),
+    collection=_section(
+        [
+            (
+                "How was the data acquired?",
+                "UCSF Industry Documents Library tobacco-collection — public "
+                "scans available at "
+                "`https://www.industrydocuments.ucsf.edu/docs/<id>`. Salesforce "
+                "selected 350 invoices for hand-labeling + ~200K for the unlabeled "
+                "bulk training set.",
+            ),
+            (
+                "If a sample, what is the larger set?",
+                "The larger set is the full UCSF tobacco-document collection — "
+                "millions of legal-discovery documents from US tobacco "
+                "litigation. 350 + ~200K is a small curated invoice-class "
+                "sample.",
+            ),
+        ]
+    ),
+    preprocessing=_section(
+        [
+            (
+                "Was any preprocessing done?",
+                "Yes — invoice-class filtering of the broader CDIP corpus, "
+                "rasterization of original PDF scans, hand-annotation of the 350 "
+                "labeled set by Salesforce annotation staff.",
+            ),
+        ]
+    ),
+    uses=_section(
+        [
+            (
+                "Has the dataset been used for tasks already?",
+                "Yes — the Salesforce paper trains a semi-supervised extraction "
+                "model on 200K unlabeled + 350 labeled. Berghaus et al. 2025 use "
+                "the labeled subset as one of their VLM evaluation sets — "
+                "reporting HORUS-VLM-cohort F1 on the same 350 invoices is the "
+                "load-bearing methodology comparator.",
+            ),
+            (
+                "What tasks should it NOT be used for?",
+                "**Production deployment training** — CC-BY-NC-4.0 license "
+                "excludes commercial use. Thesis-defense research use is "
+                "acceptable; a production HORUS product cannot ship a model "
+                "trained on inv-cdip-tobacco.",
+            ),
+            (
+                "Is there anything a user should know about how the dataset should not be used?",
+                "Tobacco-industry 1980s-2000s documents are NOT representative "
+                "of modern e-commerce / B2B / SaaS invoices. Performance on "
+                "inv-cdip-tobacco does NOT predict performance on contemporary "
+                "German B2B invoices.",
+            ),
+        ]
+    ),
+    distribution=_section(
+        [
+            (
+                "How is the dataset distributed?",
+                "Via the Salesforce inv-cdip GitHub repo "
+                "(`https://github.com/salesforce/inv-cdip`). Annotations as JSON "
+                "in the repo; underlying scans fetchable via the provided "
+                "`download_data.py` (NOT used by HORUS).",
+            ),
+            (
+                "Under what license?",
+                "CC-BY-NC-4.0 — restrictive. The underlying UCSF tobacco "
+                "documents have their own Fair Use guidance per "
+                "https://www.industrydocuments.ucsf.edu/help/copyright/.",
+            ),
+        ]
+    ),
+    maintenance=_section(
+        [
+            (
+                "Who supports the dataset?",
+                "Salesforce Research. Last commit on the GitHub repo: "
+                "2024-10-29 (relatively stable).",
+            ),
+        ]
+    ),
+)
+
+
+# ---------------------------------------------------------------------------
+# Generation entrypoint
+# ---------------------------------------------------------------------------
+
+
+ALL_DATASHEETS: tuple[Datasheet, ...] = (
+    DS_ZUGFERD,
+    DS_FATURA2,
+    DS_OMNIDOCBENCH,
+    DS_FUNSD,
+    DS_PARSEE_AI,
+    DS_CORD_V2,
+    DS_INV_CDIP,
+)
+
+
+HEADER = """\
+---
+title: "Appendix A1 — Per-dataset Datasheets"
+---
+
+# Per-dataset Datasheets {#sec-datasheets}
+
+This appendix consolidates the per-dataset Datasheet-for-Datasets entries
+for the 7 HORUS substrate datasets, following the canonical 7-section
+schema proposed in Gebru et al. 2018, *Datasheets for Datasets*
+(arXiv:1803.09010). Each entry mirrors the per-chapter §1 Provenance + §2
+Composition content in a question-answer format suitable for thesis
+appendix archival.
+
+**Sources**: per-chapter §1 + §2 content (chapters @sec-zugferd through
+@sec-inv-cdip). Generated mechanically by `scripts/generate_datasheets.py`
+from Pydantic-validated `horus.eda.datasheet.Datasheet` objects.
+
+**Scope discipline**: the answers are descriptive — they document what
+each dataset IS, NOT what HORUS should do with it. Scope decisions live
+in downstream PRD / ADR phases (see the Decision Register in chapter
+@sec-cross-corpus §6).
+
+"""
+
+
+def main() -> None:
+    """Build A1-datasheets.qmd from the declared Datasheet objects."""
+    repo_root = Path(__file__).resolve().parent.parent
+    output_path = repo_root / "experiments" / "A1-datasheets.qmd"
+
+    chunks = [HEADER]
+    for ds in ALL_DATASHEETS:
+        chunks.append(render_to_qmd(ds))
+        chunks.append("")  # Blank line between datasets
+
+    content = "\n".join(chunks).rstrip() + "\n"
+    output_path.write_text(content, encoding="utf-8")
+    print(f"Wrote {output_path} ({len(content):,} chars, {content.count(chr(10))} lines)")
+    print(f"Datasheets included: {len(ALL_DATASHEETS)}")
+    for ds in ALL_DATASHEETS:
+        n_total = (
+            len(ds.motivation)
+            + len(ds.composition)
+            + len(ds.collection)
+            + len(ds.preprocessing)
+            + len(ds.uses)
+            + len(ds.distribution)
+            + len(ds.maintenance)
+        )
+        print(f"  - {ds.slug:<22s} {n_total:>2d} Q&A pairs")
+
+
+if __name__ == "__main__":
+    main()

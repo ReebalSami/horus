@@ -39,6 +39,9 @@ book:
     - experiments/05-parsee-ai.py
     - experiments/06-cord-v2.py
     - experiments/07-inv-cdip-tobacco.py
+    - experiments/08-cross-corpus.py
+  appendices:
+    - experiments/A1-datasheets.qmd
   references: references.qmd
   search: true
   page-navigation: true
