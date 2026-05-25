@@ -192,6 +192,15 @@ PALETTE_HEX = PALETTE.as_hex()
 # (we capture errors explicitly in §9 Anomalies; surface them there).
 warnings.filterwarnings("ignore", category=UserWarning, module="facturx")
 
+# Show ALL rows of small per-field tables (16 fields). Default Jupyter HTML
+# repr applies `display.min_rows=10` truncation EVEN when `display.max_rows`
+# is None — so a 16-row frame elides one row. Setting both forces full
+# rendering. See pandas/io/formats/format.py:DataFrameFormatter for the
+# truncation cascade.
+pd.set_option("display.max_rows", None)
+pd.set_option("display.min_rows", 25)
+pd.set_option("display.width", 120)
+
 print(f"Static palette:      {EDA.palette_static} ({len(PALETTE)} colors)")
 print(f"Interactive template: {EDA.palette_interactive}")
 print(f"Figure DPI:          {EDA.figure_dpi}")
@@ -233,14 +242,26 @@ def _classify_extension(path: Path) -> str:
 
 
 def walk_corpus(root: Path) -> pd.DataFrame:
-    """Walk corpus root and produce a one-row-per-file DataFrame."""
+    """Walk corpus root and produce a one-row-per-file DataFrame.
+
+    Filters out corpus-metadata + git-machinery files so the index contains
+    only PDF / XML content. Per the forensic audit (2026-05-25): without
+    filtering `.gitkeep` and `.gitignore`, the walk reported (a) a fake
+    "Other: 6" extension class and (b) inflated the duplicate-filename count
+    from 4 (real fatturaPA mirrors) to 9 (5 .gitkeep dups in symtrax empty
+    subdirs).
+    """
+    SKIP_NAMES = {"MANIFEST.md", "sha256.txt", "README.md", "LICENSE"}
     rows: list[dict[str, object]] = []
     for path in sorted(root.rglob("*")):
         if not path.is_file():
             continue
-        # Skip MANIFEST.md / sha256.txt / README.md / LICENSE — these are
-        # metadata, not corpus content.
-        if path.name in {"MANIFEST.md", "sha256.txt", "README.md", "LICENSE"}:
+        # Skip explicit metadata files.
+        if path.name in SKIP_NAMES:
+            continue
+        # Skip git-machinery dotfiles (.gitkeep, .gitignore, .DS_Store, etc.).
+        # These are filesystem cruft, not corpus content.
+        if path.name.startswith("."):
             continue
         rel = path.relative_to(root)
         parts = rel.parts
@@ -319,8 +340,28 @@ flavor_summary
 # - Per-flavor counts above let us see at a glance how the corpus splits.
 #   The `XML-Rechnung/FX` row is the pilot-13 substrate (26 PDFs); other
 #   flavors expand the EDA's reach beyond what pilot-13 saw.
-# - Files in `MANIFEST.md` / `sha256.txt` / `README.md` / `LICENSE` are
-#   excluded as metadata. The corpus_index counts ONLY content files.
+# - Filter scope: corpus-metadata (`MANIFEST.md`, `sha256.txt`, `README.md`,
+#   `LICENSE`) AND git-machinery dotfiles (`.gitkeep`, `.gitignore`, …) are
+#   excluded. The corpus_index counts ONLY content files.
+# - **Forensic findings on per-flavor exotica** (out-of-scope for HORUS but
+#   informative for the thesis methodology chapter):
+#   - **PEPPOL (2 XMLs, 86.8 MB)**: `Large_Invoice_sample{1,2}.xml` from
+#     Qvalia (Swedish PEPPOL provider). Synthetic stress-test invoices —
+#     `sample2` contains 63,404 `<cac:InvoiceLine>` elements. Real-world
+#     invoices have 5–50 line items. **Out of HORUS scope** (no PDFs to
+#     feed VLMs); informative for the thesis-methodology framing of
+#     "extreme line-item counts as parser-conformance probes, not real-
+#     world distribution".
+#   - **`other/` flavor (2 XMLs, 12.6 KB)**: `eicar.cii.xml` + `eicar.ubl.xml`
+#     — the EICAR antivirus test signature embedded in CII + UBL invoices.
+#     Security-scanner validation substrate; NOT actual e-invoices.
+#   - **`incoming/` (empty)**: placeholder for future corpus drops.
+#   - **`fatturaPA` (15 XMLs)**: Italian B2G/B2B format. Out of HORUS scope
+#     (no German tax-law alignment; no paired PDFs).
+#   - **9 → 4 duplicate filenames after metadata filter**: the remaining 4
+#     are `IT01234567890_FPA0{1,2}.xml` mirrored in
+#     `fatturaPA/{eigor,official}/valid/` — intentional cross-vendor
+#     equivalence tests, not corpus errors.
 
 # %% [markdown]
 # ---
@@ -808,6 +849,12 @@ field_rates = (
     )
 )
 field_rates["bt_code"] = [FIELDS[f].bt_code for f in field_rates.index]
+# Sanity-check: 16 fields in, 16 fields out (FIELDS registry size).
+assert len(field_rates) == len(FIELDS) == 16, (
+    f"Expected 16 fields; got {len(field_rates)} in field_rates "
+    f"vs {len(FIELDS)} in FIELDS. Missing: "
+    f"{set(FIELDS) - set(field_rates.index)}"
+)
 field_rates
 
 # %%
