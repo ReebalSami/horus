@@ -27,3 +27,29 @@ Quarto — open-source scientific and technical publishing system from Posit (RS
 - Books format: `https://quarto.org/docs/books/`
 
 **Alternative renderers considered + rejected in ADR-024**: nbconvert HTML alone (sibling-files-messy problem persists); marimo as full notebook replacement (disrupts `notebook-discipline` mid-thesis); Streamlit/Dash dashboards (transient, not archival); pure matplotlib + nbconvert (loses interactivity).
+
+## Books format details (ADR-025)
+
+ADR-025 extends ADR-024's single-notebook scope into a multi-chapter Quarto Book covering all 7 datasets in `data/raw/`. The Books format (`https://quarto.org/docs/books/`) is Quarto's standard for multi-chapter scientific reports, inheriting from Pandoc + bookdown lineage.
+
+**Project type**: `_quarto.yml` declares `project.type: book` (instead of ADR-024's `default`); a `book:` section lists chapters in order. Each chapter is a separate `.py:percent` (jupytext) or `.qmd` file. Quarto compiles the chapters into a single navigable HTML book at `_book/index.html` (with sidebar TOC, chapter numbers, search) and a single PDF at `_book/<title>.pdf`.
+
+**Cross-references across chapters**: `@sec-id` / `@fig-id` / `@tbl-id` / `@eq-id` syntax resolves across chapter boundaries (per `https://quarto.org/docs/authoring/cross-references.html`). Links between chapters use standard `[link text](other-chapter.qmd#section-id)` syntax.
+
+**Required files**: `index.qmd` (preface; HTML home page) + at least one chapter; conventionally `references.qmd` for the bibliography. Appendices declared via `book.appendices:` list (separate from `book.chapters:`).
+
+**Numbering**: chapters are auto-numbered; sections per chapter are auto-numbered; `.unnumbered` class on a heading opts out (e.g., `# Preface {.unnumbered}` for the index file). `number-depth: N` (top-level format option, NOT under `book:`) controls section-numbering depth.
+
+**Books-specific docs entry points**:
+- Books overview: `https://quarto.org/docs/books/`
+- Book structure: `https://quarto.org/docs/books/book-structure.html`
+- Book output formats (HTML / PDF / EPUB): `https://quarto.org/docs/books/book-output.html`
+- Cross-references in books: `https://quarto.org/docs/authoring/cross-references.html`
+
+**HORUS Book scaffold (per ADR-025)**:
+- `index.qmd` (preface; scope; methodology overview)
+- 7 chapter notebooks (`experiments/01-zugferd.py` through `experiments/07-inv-cdip-tobacco.py`)
+- 1 cross-corpus synthesis chapter (`experiments/08-cross-corpus.py`)
+- 1 consolidated Datasheets-for-Datasets appendix (`experiments/A1-datasheets.qmd`)
+- 1 references / bibliography (`experiments/references.qmd`)
+- Output: `_book/index.html` (HTML book) + `_book/Horus-EDA.pdf` (PDF) — both gitignored as build artifacts.

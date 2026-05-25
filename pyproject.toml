@@ -106,6 +106,15 @@ ignore_missing_imports = true
 module = ["plotly", "plotly.*", "seaborn", "seaborn.*"]
 ignore_missing_imports = true
 
+# ADR-025: pandas ships no py.typed marker by default; pandas-stubs is the
+# community-maintained stubs package, but the project precedent is the
+# override pattern over an extra dev dep (matches factur-x / fpdf / mineru /
+# mlx_vlm / mlflow / pypdfium2 / plotly / seaborn). Re-evaluate if pandas
+# operations grow type-heavy enough to warrant pandas-stubs as a dev dep.
+[[tool.mypy.overrides]]
+module = ["pandas", "pandas.*"]
+ignore_missing_imports = true
+
 [tool.ruff]
 line-length = 100
 target-version = "py314"

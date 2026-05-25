@@ -1,0 +1,72 @@
+---
+title: "Preface"
+---
+
+# Preface {#sec-preface .unnumbered}
+
+This Book is the **exploratory data analysis** for the HORUS master's thesis (FH Wedel, SS 2026): a privacy-first document-intelligence system for German tax/accounting professionals using local vision-language models. The Book characterizes every dataset on disk in `data/raw/`, dataset-by-dataset, before any modeling decisions are made.
+
+## What this Book is
+
+A **descriptive characterization** of the HORUS thesis data substrate. Every chapter answers the same question for one dataset: *what's actually in there, and what does the thesis methodology need to know about it?*
+
+The Book follows two academic standards:
+
+- **Quarto Books** (Posit) — a multi-chapter scientific publishing format with first-class cross-references, automatic numbering, dual HTML + PDF output. See `docs/sources/tools/quarto.md` for the toolchain rationale (ratified in [ADR-024](docs/decisions/ADR-024-eda-visualization-stack.md) + [ADR-025](docs/decisions/ADR-025-eda-multi-dataset-book-structure.md)).
+- **Datasheets for Datasets** ([Gebru et al. 2018](https://arxiv.org/abs/1803.09010)) — the per-dataset documentation template adopted by major ML conferences (NeurIPS Datasets and Benchmarks Track) and the academic gold standard for dataset transparency. Every chapter ends with a Datasheet appendix entry covering the seven canonical sections (motivation / composition / collection / preprocessing / uses / distribution / maintenance). The consolidated appendix is at `experiments/A1-datasheets.qmd` (added as chapters land).
+
+## What this Book is NOT
+
+- **Not a hypothesis test.** The pre-registered hypothesis set H1–H6 (timestamped 2026-05-08 in `docs/prompts/stages/02-brainstorm.md` §6) is **READ-ONLY** for this artifact, per the HARKing safeguards locked in brainstorm v2 §2 + ADR-025. Hypothesis-shaped patterns surfaced during EDA go to each chapter's `## §7 — Exploratory observations log`, NOT retroactively into H1–H6.
+- **Not a scope decision.** This EDA describes; the next phases (PRD, spec, ADRs) decide. No claim in this Book commits the thesis to using a particular dataset for a particular purpose. Observations that look load-bearing for a future scope decision are surfaced in the cross-corpus synthesis chapter's *Decision register*.
+- **Not a fine-tuning recommendation.** The `## Sufficiency commentary` sections in each chapter discuss whether the dataset *could* support fine-tuning per the literature anchors in `cfg.eda.fine_tuning_anchors`; the *whether to* is deferred to issue [#55](https://github.com/ReebalSami/horus/issues/55).
+
+## Reading order
+
+| Chapter | Dataset | Status |
+|---|---|---|
+| @sec-zugferd | ZUGFeRD German corpus | ✓ landed |
+| (Chapter 2) | fatura2-invoices (English) | Phase C |
+| (Chapter 3) | OmniDocBench (multilingual) | Phase C |
+| (Chapter 4) | FUNSD (English) | Phase C |
+| (Chapter 5) | parsee-ai (English) | Phase C |
+| (Chapter 6) | CORD-v2 (Korean) | Phase C |
+| (Chapter 7) | inv-cdip-tobacco (English; annotations only) | Phase C |
+| (Chapter 8) | Cross-corpus synthesis + Decision register | Phase D |
+| Appendix A1 | Per-dataset Datasheets | Phase B+C |
+
+The Book is rendered locally via `make eda-book` from the source repository; the rendered Book is **not** deployed to GitHub Pages during iteration (deferred per ADR-025 §"Decision" until the Book passes end-to-end review).
+
+## Per-chapter content template
+
+To keep chapters comparable, every dataset chapter follows the same seven sections (cited inline against Gebru's Datasheets schema):
+
+1. **§1 — Provenance** (Datasheets §3.1 Motivation): origin, license, retrieval recipe, MANIFEST verification.
+2. **§2 — Composition** (Datasheets §3.2): file count, format breakdown, size-on-disk, language, label/annotation type, schema.
+3. **§3 — Sample inspection** (Datasheets §3.3): random-sample load + visual; verify `sample_load_passed` claim from MANIFEST holds.
+4. **§4 — Distributional properties** (dataset-specific): field-presence rates, value distributions, anomalies, edge cases.
+5. **§5 — HORUS-relevance assessment**: which thesis evaluation paths can use this dataset (VLM extraction / OCR comparator / fine-tuning training-pool / methodology breadth only / out-of-scope) — descriptive only, NO scope decisions.
+6. **§6 — Anomalies & limitations**: license caveats, schema gaps, mislabeled files, missing-by-design subsets.
+7. **§7 — Exploratory observations log**: hypothesis-shaped patterns surfaced during inspection, captured per the `bidirectional-learning-pipe` rule.
+
+## Toolchain note (one-time)
+
+The Book renders via Quarto + Plotly + matplotlib/seaborn (per ADR-024). Build prerequisites:
+
+```sh
+brew install quarto       # ~80 MB; provides the `quarto` CLI
+uv sync                   # installs Python deps; per `uv-discipline`
+make eda-book             # renders the full book to _book/index.html + _book/Horus-EDA.pdf
+```
+
+For fast single-chapter iteration (no full Book render):
+
+```sh
+make eda NB=experiments/01-zugferd.py CFG=configs/eda-zugferd.yaml
+```
+
+The `_book/` output directory is **gitignored** (build artifact).
+
+## Provenance
+
+This artifact is the deliverable for HORUS issue [#46](https://github.com/ReebalSami/horus/issues/46) (originally scoped single-dataset; expanded to multi-dataset per [ADR-025](docs/decisions/ADR-025-eda-multi-dataset-book-structure.md), 2026-05-25). The expansion was driven by user feedback during EDA review: *"This is the whole point of EDA — I want to know everything about the data"* (2026-05-25). The implementation plan is at `~/.windsurf/plans/eda-full-corpus-ed5d97.md`.

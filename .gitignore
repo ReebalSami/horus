@@ -27,12 +27,14 @@ dist/
 experiments/*.executed.ipynb
 experiments/*.executed.py
 
-# ADR-024: Quarto build artifacts (`make eda`). Source-of-truth is the .py:percent
-# file (tracked); HTML/PDF + Quarto's per-document and project-level execution
-# caches are transient and never committed.
+# ADR-024 + ADR-025: Quarto build artifacts (`make eda` + `make eda-book`).
+# Source-of-truth is the .py:percent files + .qmd files (tracked); HTML/PDF
+# + Quarto's per-document and project-level execution caches are transient
+# and never committed.
 experiments/*.html
 experiments/*.pdf
 experiments/.quarto/
+/_book/
 /_freeze/
 .quarto/
 
@@ -117,3 +119,6 @@ docs/sources/transcripts-multipage-dev-mlx/
 
 # Serena MCP tool — manages its own cache via .serena/.gitignore
 .serena/
+
+/.quarto/
+**/*.quarto_ipynb
