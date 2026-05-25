@@ -1,0 +1,89 @@
+# eda-zugferd.yaml — ADR-024 EDA visualization stack
+#
+# Lock file for `make eda NB=experiments/eda-zugferd.py CFG=configs/eda-zugferd.yaml`.
+# Drives the descriptive-only EDA on the 151-PDF ZUGFeRD corpus + 88 standalone
+# XMLs per issue #46 + the locked plan at ~/.windsurf/plans/eda-zugferd-9c4a5b.md.
+#
+# All knobs live HERE per `horus-config-discipline` (architectural forcing
+# function). The notebook (`experiments/eda-zugferd.py`) reads ONE papermill-
+# style param `cfg_path`, calls `ExperimentConfig.from_yaml(cfg_path)`, and
+# accesses knobs via `cfg.eda.*`.
+#
+# HARKing safeguards (per brainstorm v2 §2 + ADR-024 + plan §5):
+#
+#   - This is a descriptive-only EDA. The H1–H6 set in brainstorm v2 §6 is
+#     READ-ONLY for this artifact. Patterns that look hypothesis-shaped go
+#     to the Exploratory observations log (notebook §3.3k), NOT into H1–H6.
+#   - Complexity-tier thresholds are PRE-COMMITTED here BEFORE the EDA runs.
+#     Retroactive adjustment leaves a git-tracked paper trail.
+#   - Held-out test set is EXTERNAL (Belege + future GI 2021) per Q4=A in the
+#     plan; ZUGFeRD is fully training/dev substrate. Pilot-13 F1=0.49 is a
+#     smoke result, NOT a thesis claim.
+#
+# Refs: ADR-024 §"Decision + integration thoughts", ADR-004 (config library),
+# ADR-009 (cohort manifest), ADR-014 (rasterizer + harness substrate),
+# horus-config-discipline.md (L2), notebook-discipline.md (L3),
+# horus-source-archival.md (L2), brainstorm v2 §2 + §6 + §9.3 + §12.
+
+seed: 42
+
+mlflow:
+  experiment_name: eda-zugferd
+  run_tags:
+    stage: eda
+    issue: "46"
+    adr: ADR-024
+    descriptive_only: "true"
+  tracking_uri: null
+
+eda:
+  # Corpus root walked by the EDA. Per Q3=A: all 151 PDFs in scope (file-centric);
+  # standalone XMLs (88 across CII / UBL / fatturaPA / PEPPOL) get a side-section.
+  corpus_root: data/raw/german/zugferd-corpus
+
+  # Output directory for Quarto-rendered HTML + PDF (gitignored as build artifacts).
+  output_dir: experiments
+
+  # Page-count distribution histogram bin edges. Pilot-13 evidence: most
+  # invoices are 1-page; long-tail at 10-20 pages for document packs.
+  page_count_bins: [1, 2, 3, 5, 10, 20]
+
+  # Static editorial palette (matplotlib/seaborn). FT/NYT-influenced muted
+  # palette per Q5=C hybrid.
+  palette_static: muted
+
+  # Interactive figure template (Plotly). plotly_white = cleanest editorial
+  # baseline.
+  palette_interactive: plotly_white
+
+  # DPI for static figures saved to disk (PNG fallbacks; SVG is preferred for
+  # Quarto HTML output via _quarto.yml format.html.fig-format: svg).
+  figure_dpi: 300
+
+  # Pre-committed complexity-tier thresholds (HARKing-safeguard per plan §5).
+  # Categorization rule:
+  #   simple  if pages <= simple_max_pages   AND line_items <= simple_max_line_items
+  #   medium  if pages <= medium_max_pages   AND line_items <= medium_max_line_items
+  #   complex otherwise
+  complexity:
+    simple_max_pages: 1
+    simple_max_line_items: 5
+    medium_max_pages: 3
+    medium_max_line_items: 20
+
+  # Literature-grounded anchors for the fine-tuning sufficiency report (§3.3j).
+  # See ComplexityTierConfig + FineTuningAnchorsConfig docstrings in
+  # src/horus/config.py for citations.
+  fine_tuning_anchors:
+    lora_min_examples: 200
+    lora_target_examples: 2000
+    eval_min_examples_for_thesis: 100
+
+  # Sanity-check: corpus must contain at least this many PDFs. Default 26 =
+  # pilot-13 XML-Rechnung/FX subset minimum. Set to 151 once the full corpus
+  # is verified on disk.
+  expected_min_pdfs: 26
+
+  # If true (default), the EDA fails fast when the GT-parseable subset is
+  # empty. Set false only for non-CII corpora (e.g., future fatturaPA EDA).
+  ground_truth_required: true
