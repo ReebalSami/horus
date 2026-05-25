@@ -50,7 +50,11 @@ experiment:
 		echo "Usage: make experiment NB=experiments/<name>.py CFG=configs/<name>.yaml"; \
 		exit 1; \
 	fi
-	uv run jupytext --to ipynb $(NB) -o $(NB:.py=.ipynb)
+	@# Uses the per-venv `python3` Jupyter kernel auto-registered by ipykernel
+	@# at `.venv/share/jupyter/kernels/python3/` when `uv sync` installs the
+	@# dev group. No user-global kernel registration needed; the kernel is
+	@# scoped to this venv and dies with it (no system-wide litter).
+	uv run jupytext --set-kernel python3 --to ipynb $(NB) -o $(NB:.py=.ipynb)
 	uv run papermill -p cfg_path "$(CFG)" $(NB:.py=.ipynb) $(NB:.py=.executed.ipynb)
 	uv run jupytext --to py:percent $(NB:.py=.executed.ipynb) -o $(NB:.py=.executed.py)
 	rm -f $(NB:.py=.ipynb)

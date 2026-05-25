@@ -36,6 +36,7 @@ dev = [
     "mypy>=1.13",
     "jupytext>=1.16",
     "papermill>=2.6",
+    "ipykernel>=6.29",
     "types-pyyaml>=6.0.12.20260510",
 ]
 
@@ -108,6 +109,13 @@ ignore_missing_imports = true
 [tool.ruff]
 line-length = 100
 target-version = "py314"
+# experiments/ holds jupytext :percent files (research artefacts per
+# `notebook-discipline`). They contain Quarto cell-options (`#| key: value`)
+# that ruff format would corrupt to `# | key: value`, breaking Quarto rendering.
+# Per ADR-024 + notebook-discipline: experiments are runtime artefacts, not
+# production source. Already outside the Makefile lint scope; making the
+# exclusion consistent across direct ruff invocations.
+extend-exclude = ["experiments"]
 
 [tool.ruff.lint]
 select = [
