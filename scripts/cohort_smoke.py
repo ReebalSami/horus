@@ -439,14 +439,11 @@ def main(argv: list[str]) -> int:
     )
     ordered = _order_models(model_ids, policy=args.ordering)
 
-    # Stream output to either stdout or `--out` file as we go, so users see
-    # per-model progress in long cohort runs (rather than waiting for the
-    # full 20-40 min cohort sweep to print at the end).
-    out_stream: TextIO
+    # Optional file transcript stream — opened only when --out PATH is given.
+    # Dashboard (TUI or PlainAdapter) owns stdout; transcripts go to the file.
+    out_stream: TextIO | None = None
     if args.out is not None:
         out_stream = Path(args.out).open("w", encoding="utf-8")
-    else:
-        out_stream = sys.stdout
 
     # Parent MLflow run context (no-op nullcontext when tracker is None).
     parent_tags: dict[str, str] = {
@@ -460,147 +457,160 @@ def main(argv: list[str]) -> int:
         else nullcontext()
     )
 
-    display.on_sweep_start("cohort-smoke", len(ordered), 1)
-
-    try:
-        print("=" * 72, file=out_stream)
-        print("HORUS cohort smoke — ADR-009 §Decision evidence", file=out_stream)
-        print("=" * 72, file=out_stream)
-        print(f"Image:          {image_path}", file=out_stream)
-        print(f"Image size:     {image_path.stat().st_size:,} bytes", file=out_stream)
-        print(f"Cohort size:    {len(ordered)} model(s)", file=out_stream)
-        print(f"Ordering:       {args.ordering}", file=out_stream)
-        if args.max_tokens is not None:
-            print(f"max_tokens:     {args.max_tokens} (CLI override)", file=out_stream)
-        if tracker is not None:
-            print(f"MLflow:         enabled (cfg={args.cfg})", file=out_stream)
-            print(f"Hardware:       {parent_tags['hardware_fingerprint']}", file=out_stream)
-            print(f"Commit SHA:     {parent_tags['commit_sha']}", file=out_stream)
-        print(file=out_stream)
-        out_stream.flush()
-
-        with parent_cm:
-            # Parent-level params (constant across the cohort sweep).
-            if tracker is not None and cfg is not None:
-                tracker.log_param("seed", cfg.seed)
-                tracker.log_param("cohort_size", len(ordered))
-                tracker.log_param("ordering", args.ordering)
-                tracker.log_param("image_path", str(image_path))
+    with display:
+        display.on_sweep_start("cohort-smoke", len(ordered), 1)
+        try:
+            # Write header to --out file only (dashboard owns stdout in TTY mode;
+            # PlainDisplayAdapter emits on_sweep_start summary in non-TTY mode).
+            if out_stream is not None:
+                print("=" * 72, file=out_stream)
+                print("HORUS cohort smoke — ADR-009 §Decision evidence", file=out_stream)
+                print("=" * 72, file=out_stream)
+                print(f"Image:          {image_path}", file=out_stream)
+                print(f"Image size:     {image_path.stat().st_size:,} bytes", file=out_stream)
+                print(f"Cohort size:    {len(ordered)} model(s)", file=out_stream)
+                print(f"Ordering:       {args.ordering}", file=out_stream)
                 if args.max_tokens is not None:
-                    tracker.log_param("max_tokens_override", args.max_tokens)
-
-            results: list[ExtractionResult] = []
-            for idx, model_id in enumerate(ordered, start=1):
-                display.on_model_load_start(idx, model_id)
-
-                manifest_entry = COHORT_MANIFEST[model_id]
-                category = manifest_entry["category"]
-                effective_max_tokens = (
-                    args.max_tokens if args.max_tokens is not None else manifest_entry["max_tokens"]
-                )
-
-                # Per-model nested run.
-                nested_cm = (
-                    tracker.start_run(run_name=_model_slug(model_id), nested=True)
-                    if tracker is not None
-                    else nullcontext()
-                )
-                with nested_cm:
-                    result = _run_one(
-                        model_id=model_id,
-                        image_path=image_path,
-                        max_tokens_override=args.max_tokens,
-                        display=display,
-                        model_idx=idx,
-                        total_models=len(ordered),
+                    print(f"max_tokens:     {args.max_tokens} (CLI override)", file=out_stream)
+                if tracker is not None:
+                    print(f"MLflow:         enabled (cfg={args.cfg})", file=out_stream)
+                    print(
+                        f"Hardware:       {parent_tags['hardware_fingerprint']}",
+                        file=out_stream,
                     )
-                    results.append(result)
-
-                    if tracker is not None:
-                        tracker.log_param("model_id", model_id)
-                        tracker.log_param("backend_name", result.backend_name)
-                        tracker.log_param("category", category)
-                        tracker.log_param("max_tokens", effective_max_tokens)
-                        tracker.log_param("prompt_template", manifest_entry["prompt_template"])
-                        tracker.set_tag("status", "ok" if result.is_ok else "error")
-                        if result.is_ok:
-                            tracker.log_metric("load_seconds", result.load_seconds)
-                            tracker.log_metric("extract_seconds", result.extract_seconds)
-                            tracker.log_metric("output_len_chars", float(result.output_len_chars))
-                            # Persist the full extracted text as an artifact via
-                            # tempfile (MLflow log_artifact copies on call return).
-                            with tempfile.NamedTemporaryFile(
-                                mode="w",
-                                suffix=".txt",
-                                prefix=f"{_model_slug(model_id)}_output_",
-                                encoding="utf-8",
-                                delete=False,
-                            ) as f:
-                                f.write(result.text)
-                                tmppath = f.name
-                            try:
-                                tracker.log_artifact(tmppath)
-                            finally:
-                                Path(tmppath).unlink(missing_ok=True)
-                        else:
-                            tracker.log_metric("load_seconds", result.load_seconds)
-                            tracker.set_tag(
-                                "error_type",
-                                type(result.error).__name__ if result.error else "unknown",
-                            )
-
-                # Print transcript block (preserved, unconditional — the
-                # tracker calls are ADDITIVE, not replacement output).
-                print(_format_block(result, category=category), file=out_stream)
+                    print(f"Commit SHA:     {parent_tags['commit_sha']}", file=out_stream)
                 print(file=out_stream)
                 out_stream.flush()
 
-            n_ok = sum(1 for r in results if r.is_ok)
+            with parent_cm:
+                # Parent-level params (constant across the cohort sweep).
+                if tracker is not None and cfg is not None:
+                    tracker.log_param("seed", cfg.seed)
+                    tracker.log_param("cohort_size", len(ordered))
+                    tracker.log_param("ordering", args.ordering)
+                    tracker.log_param("image_path", str(image_path))
+                    if args.max_tokens is not None:
+                        tracker.log_param("max_tokens_override", args.max_tokens)
 
-            # Parent-level aggregate metrics + dummy heatmap (proves the
-            # extended Protocol's `log_dict` capability per ADR-011 §Decision).
-            # Pilot #13's eval harness replaces the dummy with real per-field
-            # F1 against CII XML ground truth (ADR-010).
-            if tracker is not None:
-                tracker.log_metric("n_ok", float(n_ok))
-                tracker.log_metric("n_models", float(len(results)))
-                tracker.log_metric(
-                    "total_load_seconds",
-                    float(sum(r.load_seconds for r in results)),
-                )
-                tracker.log_metric(
-                    "total_extract_seconds",
-                    float(sum(r.extract_seconds for r in results if r.is_ok)),
-                )
-                tracker.log_dict(
-                    "field_f1_dummy",
-                    {
-                        "seller_name": 0.85,
-                        "invoice_number": 0.95,
-                        "invoice_date": 0.90,
-                        "total_amount": 0.88,
-                        "_note": (
-                            "Dummy per-field F1 heatmap; demonstrates ADR-011 "
-                            "Tracker.log_dict capability. Pilot #13's eval harness "
-                            "replaces these stub values with real F1 against "
-                            "CII XML ground truth (ADR-010)."
-                        ),
-                    },
-                )
+                results: list[ExtractionResult] = []
+                for idx, model_id in enumerate(ordered, start=1):
+                    display.on_model_load_start(idx, model_id)
 
-            print("=" * 72, file=out_stream)
-            print(
-                f"SUMMARY: {n_ok}/{len(results)} cohort models ran to completion",
-                file=out_stream,
-            )
-            if n_ok < len(results):
-                failed = [r.model_id for r in results if not r.is_ok]
-                print(f"Failed:  {failed}", file=out_stream)
-            print("=" * 72, file=out_stream)
-            display.on_sweep_complete()
-    finally:
-        if args.out is not None:
-            out_stream.close()
+                    manifest_entry = COHORT_MANIFEST[model_id]
+                    category = manifest_entry["category"]
+                    effective_max_tokens = (
+                        args.max_tokens
+                        if args.max_tokens is not None
+                        else manifest_entry["max_tokens"]
+                    )
+
+                    # Per-model nested run.
+                    nested_cm = (
+                        tracker.start_run(run_name=_model_slug(model_id), nested=True)
+                        if tracker is not None
+                        else nullcontext()
+                    )
+                    with nested_cm:
+                        result = _run_one(
+                            model_id=model_id,
+                            image_path=image_path,
+                            max_tokens_override=args.max_tokens,
+                            display=display,
+                            model_idx=idx,
+                            total_models=len(ordered),
+                        )
+                        results.append(result)
+
+                        if tracker is not None:
+                            tracker.log_param("model_id", model_id)
+                            tracker.log_param("backend_name", result.backend_name)
+                            tracker.log_param("category", category)
+                            tracker.log_param("max_tokens", effective_max_tokens)
+                            tracker.log_param("prompt_template", manifest_entry["prompt_template"])
+                            tracker.set_tag("status", "ok" if result.is_ok else "error")
+                            if result.is_ok:
+                                tracker.log_metric("load_seconds", result.load_seconds)
+                                tracker.log_metric("extract_seconds", result.extract_seconds)
+                                tracker.log_metric(
+                                    "output_len_chars", float(result.output_len_chars)
+                                )
+                                # Persist the full extracted text as an artifact via
+                                # tempfile (MLflow log_artifact copies on call return).
+                                with tempfile.NamedTemporaryFile(
+                                    mode="w",
+                                    suffix=".txt",
+                                    prefix=f"{_model_slug(model_id)}_output_",
+                                    encoding="utf-8",
+                                    delete=False,
+                                ) as f:
+                                    f.write(result.text)
+                                    tmppath = f.name
+                                try:
+                                    tracker.log_artifact(tmppath)
+                                finally:
+                                    Path(tmppath).unlink(missing_ok=True)
+                            else:
+                                tracker.log_metric("load_seconds", result.load_seconds)
+                                tracker.set_tag(
+                                    "error_type",
+                                    type(result.error).__name__ if result.error else "unknown",
+                                )
+
+                    # Write transcript to --out file only (not stdout).
+                    if out_stream is not None:
+                        print(_format_block(result, category=category), file=out_stream)
+                        print(file=out_stream)
+                        out_stream.flush()
+
+                n_ok = sum(1 for r in results if r.is_ok)
+
+                # Parent-level aggregate metrics + dummy heatmap (proves the
+                # extended Protocol's `log_dict` capability per ADR-011 §Decision).
+                # Pilot #13's eval harness replaces the dummy with real per-field
+                # F1 against CII XML ground truth (ADR-010).
+                if tracker is not None:
+                    tracker.log_metric("n_ok", float(n_ok))
+                    tracker.log_metric("n_models", float(len(results)))
+                    tracker.log_metric(
+                        "total_load_seconds",
+                        float(sum(r.load_seconds for r in results)),
+                    )
+                    tracker.log_metric(
+                        "total_extract_seconds",
+                        float(sum(r.extract_seconds for r in results if r.is_ok)),
+                    )
+                    tracker.log_dict(
+                        "field_f1_dummy",
+                        {
+                            "seller_name": 0.85,
+                            "invoice_number": 0.95,
+                            "invoice_date": 0.90,
+                            "total_amount": 0.88,
+                            "_note": (
+                                "Dummy per-field F1 heatmap; demonstrates ADR-011 "
+                                "Tracker.log_dict capability. Pilot #13's eval "
+                                "harness replaces these stub values with real F1 "
+                                "against CII XML ground truth (ADR-010)."
+                            ),
+                        },
+                    )
+
+                # Write summary to --out file only (not stdout).
+                if out_stream is not None:
+                    print("=" * 72, file=out_stream)
+                    print(
+                        f"SUMMARY: {n_ok}/{len(results)} cohort models ran to completion",
+                        file=out_stream,
+                    )
+                    if n_ok < len(results):
+                        failed = [r.model_id for r in results if not r.is_ok]
+                        print(f"Failed:  {failed}", file=out_stream)
+                    print("=" * 72, file=out_stream)
+
+                display.on_sweep_complete()
+        finally:
+            if out_stream is not None:
+                out_stream.close()
 
     return 0 if n_ok == len(results) else 1
 

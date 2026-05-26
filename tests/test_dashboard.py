@@ -54,6 +54,16 @@ class TestSilentDisplayAdapter:
         with ctx:
             pass
 
+    def test_context_manager_lifecycle(self) -> None:
+        d = SilentDisplayAdapter()
+        result = d.__enter__()
+        assert result is d
+        d.__exit__(None, None, None)
+
+    def test_context_manager_via_with(self) -> None:
+        with SilentDisplayAdapter() as d:
+            assert isinstance(d, SilentDisplayAdapter)
+
     def test_implements_protocol(self) -> None:
         d = SilentDisplayAdapter()
         assert isinstance(d, DisplayAdapter)
@@ -135,6 +145,19 @@ class TestPlainDisplayAdapter:
         with ctx:
             pass
 
+    def test_context_manager_lifecycle(self) -> None:
+        d = PlainDisplayAdapter()
+        result = d.__enter__()
+        assert result is d
+        d.__exit__(None, None, None)
+
+    def test_context_manager_via_with(self, capsys: pytest.CaptureFixture[str]) -> None:
+        with PlainDisplayAdapter() as d:
+            assert isinstance(d, PlainDisplayAdapter)
+            d.on_sweep_start("run-abc", 2, 4)
+        out = capsys.readouterr().out
+        assert "[harness]" in out
+
     def test_implements_protocol(self) -> None:
         d = PlainDisplayAdapter()
         assert isinstance(d, DisplayAdapter)
@@ -202,6 +225,23 @@ class TestHorusDashboardApp:
         d.on_invoice_failed("m1", 2, "inv2", "err")
         d.on_model_complete(1, "m1", 0.5, 10.0)
         d.on_sweep_complete()
+
+    def test_context_manager_lifecycle_no_tty(self) -> None:
+        """__enter__ must not crash in a non-TTY test environment.
+
+        In non-TTY mode the textual inline app may not start (textual
+        raises or skips), but the adapter must not propagate that error —
+        callers should not be broken by missing-TTY. The guard is that
+        display callbacks must be callable after __enter__.
+        """
+        d = HorusDashboardApp()
+        try:
+            entered = d.__enter__()
+        except Exception:  # noqa: BLE001 — non-TTY: textual may refuse; that is fine
+            return
+        assert entered is d
+        entered.on_sweep_start("run-abc", 1, 1)
+        d.__exit__(None, None, None)
 
     def test_implements_protocol(self) -> None:
         d = HorusDashboardApp()

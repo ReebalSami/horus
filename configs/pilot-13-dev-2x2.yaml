@@ -1,0 +1,64 @@
+# pilot-13-dev-2x2.yaml — 2-model × 2-invoice dev sweep for dashboard TUI verification
+#
+# Purpose: live verification of the ADR-026 cohort dashboard TUI (feat/cohort-dashboard-tui
+# PR #73). Exercises both MLX and Transformers-MPS backends across two invoice profiles
+# (EN16931 + XRECHNUNG) to confirm:
+#
+#   1. `HorusDashboardApp.__enter__()` starts the textual inline app.
+#   2. 3-section layout renders: RichLog top / current-model bar middle / sweep bar bottom.
+#   3. HF download bars stream natively during extractor.load() (A3-suspend per ADR-026).
+#   4. Both on_model_load_start + on_model_loaded fire per model (2×).
+#   5. Both on_invoice_complete (or on_invoice_failed) fire per (model, invoice) tuple (4×).
+#   6. on_sweep_complete fires once; dashboard exits cleanly.
+#
+# Models:
+#   - ibm-granite/granite-docling-258M-mlx  : MLX backend, ~0.5 GB weights, ~30 s load
+#   - opendatalab/MinerU2.5-Pro-2604-1.2B   : Transformers-MPS backend, ~5 GB weights,
+#                                             ~90 s load; ~5 GB HF download on first run
+#
+# Invoices (2 fixtures from the ZUGFeRD corpus):
+#   - EN16931_Einfach  : single-page EN16931 profile (page-1 rasterization)
+#   - XRECHNUNG_Einfach: single-page XRECHNUNG profile (factur-x GT route)
+#
+# Total: 2 models × 2 invoices = 4 (model, invoice) tuples.
+# Estimated wall-clock: ~5-8 min (first run with MinerU download); ~3-4 min if cached.
+#
+# Composition with base config (ADR-016 multi-file YAML deep-merge; later files win):
+#
+#   make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev-2x2.yaml
+#
+# What changes from the base config:
+#   - mlflow.experiment_name → `pilot-13-dev-2x2` (distinct from canonical `pilot-13-full`;
+#     dev_only=true HARKing-guard refuses to log to canonical experiments per ADR-016)
+#   - cohort.working_models → 2 models (MLX + Transformers-MPS)
+#   - cohort.invoice_subset → 2 fixtures (EN16931 + XRECHNUNG)
+#   - cohort.parent_run_name → `pilot-13-dev-2x2`
+#   - cohort.transcript_archive_dir → distinct from canonical archives
+#   - cohort.dev_only → true (HARKing-prevention forcing function)
+#
+# What is INHERITED from `pilot-13.yaml`:
+#   - seed, eval.*, rasterizer.* (dpi=300, cache_dir, image_format),
+#     cohort.corpus_root, cohort.resume_on_existing_run,
+#     mlflow.run_tags (most keys), mlflow.tracking_uri.
+#
+# Refs: ADR-026 (dashboard TUI), ADR-016 (multi-file YAML composition),
+# feat/cohort-dashboard-tui PR #73.
+
+mlflow:
+  experiment_name: pilot-13-dev-2x2
+  run_tags:
+    stage: pilot-13-dev-2x2
+    issue: "73"
+    adr: ADR-026
+    pr: feat-cohort-dashboard-tui
+
+cohort:
+  working_models:
+    - ibm-granite/granite-docling-258M-mlx      # Cat 1 — MLX backend (~0.5 GB)
+    - opendatalab/MinerU2.5-Pro-2604-1.2B       # Cat 1 — Transformers-MPS (~5 GB)
+  invoice_subset:
+    - EN16931_Einfach
+    - XRECHNUNG_Einfach
+  parent_run_name: pilot-13-dev-2x2
+  transcript_archive_dir: docs/sources/transcripts-multipage-dev-2x2
+  dev_only: true

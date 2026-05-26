@@ -86,6 +86,8 @@ from horus.vlm_extractor import COHORT_MANIFEST, ExtractionResult, get_extractor
 if TYPE_CHECKING:
     import matplotlib.figure
 
+    from horus.cli.dashboard import DisplayAdapter
+
 __all__ = ["HarnessRunResult", "run_cohort"]
 
 _LOGGER = logging.getLogger(__name__)
@@ -645,7 +647,7 @@ def run_cohort(
     *,
     invoice_subset: list[str] | None = None,
     model_subset: list[str] | None = None,
-    display: object = None,
+    display: DisplayAdapter | None = None,
 ) -> HarnessRunResult:
     """Run the full (cohort × corpus) cross-product → MLflow nested runs → cohort heatmap.
 
@@ -771,7 +773,9 @@ def run_cohort(
     dev_only_tag_value = str(cohort_cfg.dev_only).lower()
 
     # ----- 5. Parent run + nested loop -----
-    with mlflow.start_run(run_name=cohort_cfg.parent_run_name) as parent_run:
+    # `with display` opens HorusDashboardApp.__enter__() (starts the TUI thread)
+    # before the mlflow run begins; both are exited in LIFO order on completion.
+    with display, mlflow.start_run(run_name=cohort_cfg.parent_run_name) as parent_run:
         parent_run_id = parent_run.info.run_id
 
         # Parent tags from config
