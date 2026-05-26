@@ -11,17 +11,20 @@
 #   5. Both on_invoice_complete (or on_invoice_failed) fire per (model, invoice) tuple (4×).
 #   6. on_sweep_complete fires once; dashboard exits cleanly.
 #
-# Models:
-#   - ibm-granite/granite-docling-258M-mlx  : MLX backend, ~0.5 GB weights, ~30 s load
-#   - opendatalab/MinerU2.5-Pro-2604-1.2B   : Transformers-MPS backend, ~5 GB weights,
-#                                             ~90 s load; ~5 GB HF download on first run
+# Models (both MLX-backend — Transformers-MPS hits a textual+subprocess fd issue
+# during from_pretrained() that's documented as a known limitation; the dashboard
+# verification only needs 2 models to exercise per-model TUI transitions, not
+# backend coverage. Backend coverage is a separate concern handled by
+# pilot-13-dev-mlx.yaml when running headlessly):
+#   - ibm-granite/granite-docling-258M-mlx  : ~0.5 GB weights, ~30 s load
+#   - deepseek-ai/DeepSeek-OCR-2            : MLX 4-bit, ~2 GB weights, ~60 s load
 #
 # Invoices (2 fixtures from the ZUGFeRD corpus):
 #   - EN16931_Einfach  : single-page EN16931 profile (page-1 rasterization)
 #   - XRECHNUNG_Einfach: single-page XRECHNUNG profile (factur-x GT route)
 #
 # Total: 2 models × 2 invoices = 4 (model, invoice) tuples.
-# Estimated wall-clock: ~5-8 min (first run with MinerU download); ~3-4 min if cached.
+# Estimated wall-clock: ~3-5 min (first run with DeepSeek download); ~2-3 min if cached.
 #
 # Composition with base config (ADR-016 multi-file YAML deep-merge; later files win):
 #
@@ -55,7 +58,7 @@ mlflow:
 cohort:
   working_models:
     - ibm-granite/granite-docling-258M-mlx      # Cat 1 — MLX backend (~0.5 GB)
-    - opendatalab/MinerU2.5-Pro-2604-1.2B       # Cat 1 — Transformers-MPS (~5 GB)
+    - deepseek-ai/DeepSeek-OCR-2                # Cat 2 — MLX 4-bit (~2 GB)
   invoice_subset:
     - EN16931_Einfach
     - XRECHNUNG_Einfach

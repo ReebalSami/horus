@@ -452,6 +452,14 @@ def _render_cohort_heatmap(
     Annotations: cell-value text overlay at >=0.5 (per-cell legibility; under-0.5
     is too dark for readable annotation against viridis).
     """
+    # Force the non-GUI ``Agg`` backend BEFORE pyplot import. The cohort
+    # harness runs in a worker thread (``HorusDashboardApp.run_with_harness``
+    # inverts the textual/harness threading per ADR-026), and macOS's default
+    # GUI backend refuses to create FigureManagers outside the main thread.
+    # ``Agg`` is thread-safe and produces identical PNG artefacts.
+    import matplotlib  # noqa: PLC0415
+
+    matplotlib.use("Agg", force=True)
     import matplotlib.pyplot as plt  # noqa: PLC0415 — defer heavy import
     import numpy as np  # noqa: PLC0415
 
