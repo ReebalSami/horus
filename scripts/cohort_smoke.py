@@ -53,7 +53,7 @@ import sys
 import tempfile
 from contextlib import nullcontext
 from pathlib import Path
-from typing import TextIO
+from typing import Any, TextIO
 
 from horus.cli.banner import print_banner
 from horus.cli.dashboard import DisplayAdapter, get_display_adapter
@@ -457,7 +457,9 @@ def main(argv: list[str]) -> int:
         else nullcontext()
     )
 
-    with display:
+    _result: dict[str, Any] = {}
+
+    def _harness() -> None:
         display.on_sweep_start("cohort-smoke", len(ordered), 1)
         try:
             # Write header to --out file only (dashboard owns stdout in TTY mode;
@@ -608,10 +610,15 @@ def main(argv: list[str]) -> int:
                     print("=" * 72, file=out_stream)
 
                 display.on_sweep_complete()
+                _result["n_ok"] = n_ok
+                _result["results"] = results
         finally:
             if out_stream is not None:
                 out_stream.close()
 
+    display.run_with_harness(_harness)
+    n_ok = _result.get("n_ok", 0)
+    results = _result.get("results", [])
     return 0 if n_ok == len(results) else 1
 
 

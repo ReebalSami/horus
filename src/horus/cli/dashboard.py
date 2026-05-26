@@ -55,6 +55,7 @@ import os
 import sys
 import threading
 import time
+from collections.abc import Callable
 from contextlib import nullcontext
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
@@ -125,6 +126,8 @@ class DisplayAdapter(Protocol):
     def suspend(self) -> contextlib.AbstractContextManager[None]: ...
     def __enter__(self) -> DisplayAdapter: ...
     def __exit__(self, *exc: object) -> None: ...
+
+    def run_with_harness(self, fn: Callable[[], None]) -> None: ...
 
 
 # ---------------------------------------------------------------------------
@@ -234,6 +237,10 @@ class PlainDisplayAdapter:
     def __exit__(self, *exc: object) -> None:
         pass
 
+    def run_with_harness(self, fn: Callable[[], None]) -> None:
+        with self:
+            fn()
+
 
 # ---------------------------------------------------------------------------
 # SilentDisplayAdapter
@@ -310,6 +317,9 @@ class SilentDisplayAdapter:
     def __exit__(self, *exc: object) -> None:
         pass
 
+    def run_with_harness(self, fn: Callable[[], None]) -> None:
+        fn()
+
 
 # ---------------------------------------------------------------------------
 # HorusDashboardApp — textual inline app
@@ -341,6 +351,8 @@ class HorusDashboardApp:
         self._start_ts: float = 0.0
         self._model_f1_acc: list[float] = []
         self._model_start_ts: float = 0.0
+        self._parent_run_id: str = ""
+        self._weights_gb: float = 0.0
 
     def _safe_call(self, fn: Any, *args: Any) -> None:
         """Push *fn(*args)* into the app's event loop from the harness thread."""
@@ -355,6 +367,8 @@ class HorusDashboardApp:
         self._total_invoices = total_invoices
         self._completed_tuples = 0
         self._start_ts = time.monotonic()
+        self._parent_run_id = parent_run_id
+        self._weights_gb = 0.0
         fn = self._app._on_sweep_start if self._app is not None else None
         if fn is not None:
             self._safe_call(fn, parent_run_id, total_models, total_invoices)
@@ -372,6 +386,7 @@ class HorusDashboardApp:
         model_id: str,
         weights_gb: float,
     ) -> None:
+        self._weights_gb = max(self._weights_gb, weights_gb)
         fn = self._app._on_model_loaded if self._app is not None else None
         if fn is not None:
             self._safe_call(fn, model_idx, model_id, weights_gb)
@@ -461,17 +476,49 @@ class HorusDashboardApp:
         return nullcontext()
 
     def __enter__(self) -> HorusDashboardApp:
-        self._app = _HorusTUIApp()
-        self._app._start_inline()
         return self
 
     def __exit__(self, *exc: object) -> None:
-        if self._app is not None:
+        pass
+
+    def run_with_harness(self, fn: Callable[[], None]) -> None:
+        """Run *fn* in a background thread while the textual TUI blocks the main thread.
+
+        Textual's ``LinuxInlineDriver.start_application_mode()`` calls
+        ``signal.signal(SIGWINCH, ...)`` which Python forbids outside the main
+        thread.  The previous ``_start_inline()`` design ran the TUI in a
+        daemon thread — raising ``ValueError`` on every real run.  This method
+        inverts the model: TUI owns the main thread; harness runs in a daemon
+        thread.  When *fn* completes (or raises), the TUI is signalled to exit.
+        """
+        import asyncio  # noqa: PLC0415
+
+        self._app = _HorusTUIApp()
+        exc_holder: list[BaseException | None] = [None]
+
+        def _worker() -> None:
+            self._app.wait_ready()  # wait for on_mount to fire
             try:
-                self._app._stop_inline()
-            except Exception:  # noqa: BLE001
-                pass
-            self._app = None
+                fn()
+            except BaseException as exc:  # noqa: BLE001
+                exc_holder[0] = exc
+            finally:
+                if self._app is not None and self._app.is_running:
+                    try:
+                        self._app.call_from_thread(self._app.exit)
+                    except Exception:  # noqa: BLE001
+                        pass
+
+        t = threading.Thread(target=_worker, daemon=True, name="horus-harness")
+        t.start()
+
+        asyncio.run(self._app.run_async(inline=True))
+
+        t.join(timeout=60.0)
+        self._app = None
+
+        if exc_holder[0] is not None:
+            raise exc_holder[0]
 
 
 # ---------------------------------------------------------------------------
@@ -487,35 +534,32 @@ class _HorusTUIApp:
     """
 
     def __init__(self) -> None:
-        self._app: Any = None  # _TextualHorusApp when active
+        self._ready: threading.Event = threading.Event()
+        self._app: Any = _TextualHorusApp(ready=self._ready)
         self._thread: threading.Thread | None = None
         self.is_running: bool = False
 
-    def _start_inline(self) -> None:
-        import threading  # noqa: PLC0415
+    def wait_ready(self, timeout: float = 5.0) -> bool:
+        """Block until HorusApp.on_mount has fired — app is mounted and safe to call."""
+        return self._ready.wait(timeout=timeout)
 
-        self._app = _TextualHorusApp()
-        ready_event = threading.Event()
-
-        def _run() -> None:
-            import asyncio  # noqa: PLC0415
-
-            async def _inner() -> None:
-                ready_event.set()
-                await self._app.run_async(inline=True)
-
-            asyncio.run(_inner())
-
-        self._thread = threading.Thread(target=_run, daemon=True, name="horus-tui")
-        self._thread.start()
-        ready_event.wait(timeout=5.0)
+    async def run_async(self, *, inline: bool = False) -> None:
+        """Run the textual app on the calling thread until exit() is called."""
         self.is_running = True
+        try:
+            await self._app.run_async(inline=inline)
+        finally:
+            self.is_running = False
+
+    def exit(self, *args: Any) -> None:
+        if self._app is not None:
+            self._app.exit()
+
+    def _start_inline(self) -> None:
+        """Deprecated — superseded by HorusDashboardApp.run_with_harness()."""
 
     def _stop_inline(self) -> None:
-        if self._app is not None and self._app.is_running:
-            self._app.call_from_thread(self._app.exit)
-        if self._thread is not None:
-            self._thread.join(timeout=3.0)
+        """Deprecated — superseded by HorusDashboardApp.run_with_harness()."""
         self.is_running = False
 
     def call_from_thread(self, fn: Any, *args: Any) -> None:
@@ -639,8 +683,9 @@ def _short_model(model_id: str) -> str:
 class _TextualHorusApp:
     """The actual textual.App, assembled lazily to avoid import-at-module-level."""
 
-    def __init__(self) -> None:
+    def __init__(self, ready: threading.Event | None = None) -> None:
         self._built_app: Any = None  # HorusApp(App) instance; typed as Any (defined inside _build)
+        self._ready = ready
         self._build()
 
     def _build(self) -> None:
@@ -655,8 +700,21 @@ class _TextualHorusApp:
 
         eagle_orange = "#E8833A"
         hieroglyph_cyan = "#3AA8C8"
-        EAGLE_ORANGE = eagle_orange  # noqa: N806 — used in f-strings for CSS + markup
+        EAGLE_ORANGE = eagle_orange  # noqa: N806
         HIEROGLYPH_CYAN = hieroglyph_cyan  # noqa: N806
+        _ready = self._ready  # closure for on_mount
+
+        def _model_dots(current: int, total: int) -> str:
+            """● ● ○ ○ ○  N/M — filled-cyan done, bold-orange current, dim empty."""
+            parts = []
+            for i in range(1, total + 1):
+                if i < current:
+                    parts.append(f"[{HIEROGLYPH_CYAN}]●[/]")
+                elif i == current:
+                    parts.append(f"[bold {EAGLE_ORANGE}]●[/]")
+                else:
+                    parts.append("[dim]○[/]")
+            return " ".join(parts) + f"  [dim]{current}/{total}[/]"
 
         class HorusApp(App):  # noqa: N801 — defined inside function; inherits from Any-typed App
             CSS = f"""
@@ -666,6 +724,11 @@ class _TextualHorusApp:
             #title-bar {{
                 color: {EAGLE_ORANGE};
                 text-style: bold;
+                padding: 0 1;
+                height: 1;
+            }}
+            #log-summary {{
+                color: $text-muted;
                 padding: 0 1;
                 height: 1;
             }}
@@ -696,6 +759,11 @@ class _TextualHorusApp:
                 padding: 0 1;
                 height: 1;
             }}
+            #sweep-stats {{
+                color: $text-muted;
+                padding: 0 1;
+                height: 1;
+            }}
             #footer-hint {{
                 color: $text-muted;
                 padding: 0 1;
@@ -706,12 +774,23 @@ class _TextualHorusApp:
             BINDINGS = [
                 ("q", "quit", "Quit"),
                 ("space", "toggle_pause", "Pause"),
+                ("d", "toggle_dark", "Dark"),
             ]
+
+            _n_ok: int = 0
+            _n_failed: int = 0
+            _inflight: int = 0
+            _parent_run_id: str = ""
+            _total_tuples: int = 0
 
             def compose(self) -> ComposeResult:
                 yield Static(
                     f"[bold {EAGLE_ORANGE}]🦅 HORUS cohort sweep[/] — starting…",
                     id="title-bar",
+                )
+                yield Static(
+                    "[dim]▼ Completed  — —  starting…[/]",
+                    id="log-summary",
                 )
                 yield RichLog(id="log-section", markup=True, auto_scroll=True)
                 yield Rule(id="section-rule")
@@ -720,42 +799,63 @@ class _TextualHorusApp:
                 yield Rule()
                 yield Label("Sweep: (starting…)", id="sweep-label")
                 yield ProgressBar(total=100, show_eta=False, id="sweep-bar")
+                yield Static("", id="sweep-stats")
                 yield Static(
-                    "[dim][ Q quit  ·  ↑↓ scroll log  ·  SPACE pause ][/]",
+                    "[dim][ Q quit  ·  ↑↓ scroll log  ·  SPACE pause  ·  D dark ][/]",
                     id="footer-hint",
                 )
+
+            def on_mount(self) -> None:
+                if _ready is not None:
+                    _ready.set()
 
             def action_toggle_pause(self) -> None:
                 pass
 
+            def _refresh_summary(self) -> None:
+                self.query_one("#log-summary", Static).update(
+                    f"[dim]▼ Completed  "
+                    f"[green]{self._n_ok} ✓[/]  "
+                    f"[{'red' if self._n_failed else 'dim'}]{self._n_failed} ⚠[/]"
+                    f"  {'[bold ' + HIEROGLYPH_CYAN + ']' if self._inflight else '[dim]'}"
+                    f"{self._inflight} in flight"
+                    f"{'[/]' if self._inflight else '[/]'}[/]"
+                )
+
             def _on_sweep_start(
                 self, parent_run_id: str, total_models: int, total_invoices: int
             ) -> None:
-                short_id = parent_run_id[:8] if len(parent_run_id) >= 8 else parent_run_id
+                self._parent_run_id = (
+                    parent_run_id[:8] if len(parent_run_id) >= 8 else parent_run_id
+                )
+                self._total_tuples = total_models * total_invoices
+                short_id = self._parent_run_id
                 self.query_one("#title-bar", Static).update(
-                    f"[bold {EAGLE_ORANGE}]🦅 HORUS cohort sweep[/] "
-                    f"[dim]parent={short_id}  {total_models} models × "
-                    f"{total_invoices} invoices = {total_models * total_invoices} tuples[/]"
+                    f"[bold {EAGLE_ORANGE}]🦅 HORUS cohort sweep[/]  "
+                    f"[dim]parent={short_id}  "
+                    f"{total_models}×{total_invoices}={self._total_tuples} tuples[/]"
                 )
-                total_t = float(total_models * total_invoices)
-                self.query_one("#sweep-bar", ProgressBar).update(total=total_t)
+                self.query_one("#sweep-bar", ProgressBar).update(total=float(self._total_tuples))
                 self.query_one("#sweep-label", Label).update(
-                    f"[{EAGLE_ORANGE}]Sweep:[/] 0/{total_models * total_invoices}  (0%)"
+                    f"[{EAGLE_ORANGE}]Sweep:[/] 0/{self._total_tuples}  (0%)"
                 )
+                self.query_one("#sweep-stats", Static).update(f"[dim]parent {short_id}[/]")
+                self._refresh_summary()
 
             def _on_model_load_start(self, model_idx: int, model_id: str) -> None:
                 log = self.query_one("#log-section", RichLog)
                 log.write(
-                    f"[bold {HIEROGLYPH_CYAN}]⏵[/] [{HIEROGLYPH_CYAN}]{_short_model(model_id)}[/]"
-                    "  loading …"
+                    f"[{HIEROGLYPH_CYAN}]⏵[/] [{HIEROGLYPH_CYAN}]{_short_model(model_id)}[/]"
+                    f"  [{EAGLE_ORANGE}]loading …[/]"
                 )
                 self.query_one("#model-label", Label).update(
-                    f"[{HIEROGLYPH_CYAN}]Model {model_idx}:[/] {_short_model(model_id)} — loading …"
+                    f"[{HIEROGLYPH_CYAN}]Model {model_idx}:[/]"
+                    f" {_short_model(model_id)} — [{EAGLE_ORANGE}]loading …[/]"
                 )
                 self.query_one("#model-bar", ProgressBar).update(progress=0.0)
 
             def _on_model_loaded(self, model_idx: int, model_id: str, weights_gb: float) -> None:
-                gb_str = f"  {weights_gb:.1f} GB" if weights_gb > 0 else ""
+                gb_str = f"  [{EAGLE_ORANGE}]{weights_gb:.1f} GB[/]" if weights_gb > 0 else ""
                 self.query_one("#model-label", Label).update(
                     f"[{HIEROGLYPH_CYAN}]Model {model_idx}:[/] {_short_model(model_id)}{gb_str}"
                 )
@@ -769,10 +869,13 @@ class _TextualHorusApp:
                 total_invoices: int,
                 invoice_name: str,
             ) -> None:
+                self._inflight = max(0, self._inflight) + 1
+                self._refresh_summary()
                 short_inv = invoice_name[:30]
+                dots = _model_dots(model_idx, total_models)
                 self.query_one("#model-label", Label).update(
-                    f"[{HIEROGLYPH_CYAN}]Model {model_idx}/{total_models}:[/] "
-                    f"{_short_model(model_id)}  [{invoice_idx}/{total_invoices}] {short_inv}"
+                    f"[{HIEROGLYPH_CYAN}]{_short_model(model_id):<28}[/]  "
+                    f"{dots}  [{EAGLE_ORANGE}]⏵[/] {short_inv}"
                 )
 
             def _on_invoice_complete(
@@ -788,6 +891,9 @@ class _TextualHorusApp:
                 total_tuples: int,
                 elapsed_s: float,
             ) -> None:
+                self._n_ok += 1
+                self._inflight = max(0, self._inflight - 1)
+                self._refresh_summary()
                 log = self.query_one("#log-section", RichLog)
                 if micro_f1 >= 0.5:
                     f1_color = "green"
@@ -797,7 +903,7 @@ class _TextualHorusApp:
                     f1_color = "red"
                 log.write(
                     f"[green]✓[/] [{HIEROGLYPH_CYAN}]{_short_model(model_id):<28}[/]  "
-                    f"{invoice_name:<40}  "
+                    f"{invoice_name:<38}  "
                     f"f1=[{f1_color}]{micro_f1:.3f}[/]  "
                     f"p={page_count}  ({seconds:.1f}s)"
                 )
@@ -808,6 +914,9 @@ class _TextualHorusApp:
                     f"[{EAGLE_ORANGE}]Sweep:[/] {completed_tuples}/{total_tuples}"
                     f"  ({pct}%)  elapsed {int(elapsed_s // 60)}m {int(elapsed_s % 60):02d}s"
                     f"  ETA {eta}"
+                )
+                self.query_one("#sweep-stats", Static).update(
+                    f"[dim]parent {self._parent_run_id}[/]"
                 )
                 self.query_one("#model-bar", ProgressBar).update(progress=float(invoice_idx))
 
@@ -820,10 +929,13 @@ class _TextualHorusApp:
                 completed_tuples: int,
                 total_tuples: int,
             ) -> None:
+                self._n_failed += 1
+                self._inflight = max(0, self._inflight - 1)
+                self._refresh_summary()
                 log = self.query_one("#log-section", RichLog)
                 log.write(
                     f"[bold red]⚠[/] [{HIEROGLYPH_CYAN}]{_short_model(model_id):<28}[/]  "
-                    f"{invoice_name:<40}  [bold red]FAILED[/]: {error[:60]}"
+                    f"{invoice_name:<38}  [bold red]FAILED[/]: {error[:55]}"
                 )
                 self.query_one("#sweep-bar", ProgressBar).update(progress=float(completed_tuples))
                 self.query_one("#model-bar", ProgressBar).update(progress=float(invoice_idx))
@@ -839,13 +951,17 @@ class _TextualHorusApp:
                 m, s = divmod(int(total_seconds), 60)
                 log.write(
                     f"[bold green]✔[/] [{EAGLE_ORANGE}]{_short_model(model_id)}[/]"
-                    f"  done  mean_f1={mean_f1:.3f}  ({m}m {s:02d}s)"
+                    f"  done  mean_f1=[{'green' if mean_f1 >= 0.5 else 'yellow'}]"
+                    f"{mean_f1:.3f}[/]  ({m}m {s:02d}s)"
                 )
 
             def _on_sweep_complete(self) -> None:
                 log = self.query_one("#log-section", RichLog)
                 log.write(f"[bold {EAGLE_ORANGE}]🦅 HORUS sweep complete.[/]")
-                self.query_one("#sweep-label", Label).update(f"[{EAGLE_ORANGE}]Sweep complete ✔[/]")
+                self.query_one("#sweep-label", Label).update(
+                    f"[bold {EAGLE_ORANGE}]Sweep complete ✔[/]"
+                )
+                self._refresh_summary()
 
         self._built_app = HorusApp()
 

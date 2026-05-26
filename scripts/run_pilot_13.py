@@ -34,8 +34,10 @@ from __future__ import annotations
 import argparse
 import sys
 
+from horus.cli.banner import print_banner
+from horus.cli.dashboard import get_display_adapter
 from horus.config import ExperimentConfig
-from horus.eval.harness import run_cohort
+from horus.eval.harness import HarnessRunResult, run_cohort
 from horus.seeding import set_global_seed
 
 
@@ -122,6 +124,7 @@ def main(argv: list[str]) -> int:
 
     set_global_seed(cfg.seed)
 
+    print_banner()
     print(
         f"[pilot-13] cfg={cfg_display} "
         f"experiment={cfg.mlflow.experiment_name!r} "
@@ -135,11 +138,21 @@ def main(argv: list[str]) -> int:
     if not cfg.cohort.resume_on_existing_run:
         print("[pilot-13] resume DISABLED (--no-resume)", flush=True)
 
-    result = run_cohort(
-        cfg,
-        invoice_subset=args.invoices,
-        model_subset=args.models,
-    )
+    display = get_display_adapter()
+    _result_box: list[HarnessRunResult] = []
+
+    def _harness() -> None:
+        _result_box.append(
+            run_cohort(
+                cfg,
+                invoice_subset=args.invoices,
+                model_subset=args.models,
+                display=display,
+            )
+        )
+
+    display.run_with_harness(_harness)
+    result = _result_box[0]
 
     # Summary footer.
     print()

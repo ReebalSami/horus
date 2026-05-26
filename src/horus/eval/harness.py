@@ -773,9 +773,7 @@ def run_cohort(
     dev_only_tag_value = str(cohort_cfg.dev_only).lower()
 
     # ----- 5. Parent run + nested loop -----
-    # `with display` opens HorusDashboardApp.__enter__() (starts the TUI thread)
-    # before the mlflow run begins; both are exited in LIFO order on completion.
-    with display, mlflow.start_run(run_name=cohort_cfg.parent_run_name) as parent_run:
+    with mlflow.start_run(run_name=cohort_cfg.parent_run_name) as parent_run:
         parent_run_id = parent_run.info.run_id
 
         # Parent tags from config
