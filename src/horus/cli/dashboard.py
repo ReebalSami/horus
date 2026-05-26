@@ -343,6 +343,8 @@ class HorusDashboardApp:
       (via ``call_from_thread``); this is thread-safe per textual's model.
     """
 
+    LOG_PATH = "/tmp/horus-last-run.log"
+
     def __init__(self) -> None:
         self._app: Any = None  # _HorusTUIApp when active; Any to avoid mypy dynamic-class issues
         self._total_models = 0
@@ -353,12 +355,30 @@ class HorusDashboardApp:
         self._model_start_ts: float = 0.0
         self._parent_run_id: str = ""
         self._weights_gb: float = 0.0
+        # Visibility: TUI clears its inline area on exit, so the dashboard's
+        # log content disappears. Mirror every lifecycle event to (a) an in-
+        # memory list printed to stderr after the TUI exits and (b) a tail-able
+        # log file at /tmp/horus-last-run.log. This guarantees the user sees
+        # what happened even if the TUI rendering itself has issues.
+        self._event_log: list[str] = []
+        self._failures: list[tuple[str, str, str]] = []  # (model_id, inv, err)
+        self._log_file: Any = None
 
     def _safe_call(self, fn: Any, *args: Any) -> None:
         """Push *fn(*args)* into the app's event loop from the harness thread."""
         if self._app is not None and self._app.is_running:
             try:
                 self._app.call_from_thread(fn, *args)
+            except Exception:  # noqa: BLE001
+                pass
+
+    def _emit(self, line: str) -> None:
+        """Record a lifecycle event to memory + tail-able log file."""
+        self._event_log.append(line)
+        if self._log_file is not None:
+            try:
+                self._log_file.write(line + "\n")
+                self._log_file.flush()
             except Exception:  # noqa: BLE001
                 pass
 
@@ -369,6 +389,10 @@ class HorusDashboardApp:
         self._start_ts = time.monotonic()
         self._parent_run_id = parent_run_id
         self._weights_gb = 0.0
+        short_id = parent_run_id[:8] if len(parent_run_id) >= 8 else parent_run_id
+        self._emit(
+            f"[sweep] start parent={short_id} models={total_models} invoices={total_invoices}"
+        )
         fn = self._app._on_sweep_start if self._app is not None else None
         if fn is not None:
             self._safe_call(fn, parent_run_id, total_models, total_invoices)
@@ -376,6 +400,7 @@ class HorusDashboardApp:
     def on_model_load_start(self, model_idx: int, model_id: str) -> None:
         self._model_f1_acc = []
         self._model_start_ts = time.monotonic()
+        self._emit(f"[model {model_idx}/{self._total_models}] loading {model_id}")
         fn = self._app._on_model_load_start if self._app is not None else None
         if fn is not None:
             self._safe_call(fn, model_idx, model_id)
@@ -387,6 +412,8 @@ class HorusDashboardApp:
         weights_gb: float,
     ) -> None:
         self._weights_gb = max(self._weights_gb, weights_gb)
+        gb_str = f" ({weights_gb:.1f} GB)" if weights_gb > 0 else ""
+        self._emit(f"[model {model_idx}/{self._total_models}] loaded \u2713 {model_id}{gb_str}")
         fn = self._app._on_model_loaded if self._app is not None else None
         if fn is not None:
             self._safe_call(fn, model_idx, model_id, weights_gb)
@@ -400,6 +427,7 @@ class HorusDashboardApp:
         total_invoices: int,
         invoice_name: str,
     ) -> None:
+        self._emit(f"  [{invoice_idx}/{total_invoices}] {invoice_name}: extracting")
         fn = self._app._on_invoice_start if self._app is not None else None
         if fn is not None:
             self._safe_call(
@@ -418,6 +446,10 @@ class HorusDashboardApp:
     ) -> None:
         self._completed_tuples += 1
         self._model_f1_acc.append(micro_f1)
+        self._emit(
+            f"  [{invoice_idx}/{total_invoices}] {invoice_name}: "
+            f"\u2713 f1={micro_f1:.3f} pages={page_count} ({seconds:.1f}s)"
+        )
         fn = self._app._on_invoice_complete if self._app is not None else None
         if fn is not None:
             self._safe_call(
@@ -442,6 +474,8 @@ class HorusDashboardApp:
         error: str,
     ) -> None:
         self._completed_tuples += 1
+        self._failures.append((model_id, invoice_name, error))
+        self._emit(f"  [{invoice_idx}] {invoice_name}: \u26a0 FAILED ({model_id}): {error}")
         fn = self._app._on_invoice_failed if self._app is not None else None
         if fn is not None:
             self._safe_call(
@@ -461,18 +495,30 @@ class HorusDashboardApp:
         mean_f1: float,
         total_seconds: float,
     ) -> None:
+        self._emit(
+            f"[model {model_idx}/{self._total_models}] {model_id} done "
+            f"mean_f1={mean_f1:.3f} ({total_seconds:.1f}s)"
+        )
         fn = self._app._on_model_complete if self._app is not None else None
         if fn is not None:
             self._safe_call(fn, model_idx, model_id, mean_f1, total_seconds)
 
     def on_sweep_complete(self) -> None:
+        elapsed = time.monotonic() - self._start_ts
+        m, s = divmod(int(elapsed), 60)
+        self._emit(f"[sweep] complete ({m}m {s}s)")
         fn = self._app._on_sweep_complete if self._app is not None else None
         if fn is not None:
             self._safe_call(fn)
 
     def suspend(self) -> contextlib.AbstractContextManager[None]:
-        if self._app is not None:
-            return self._app.suspend()
+        # Cross-thread textual ``app.suspend()`` invokes ``signal.signal()`` from
+        # the calling thread inside the driver's pause/resume — which Python
+        # forbids outside the main thread (same restriction that motivated the
+        # threading inversion in `run_with_harness`). Returning ``nullcontext``
+        # from a worker thread means HF tqdm bars during ``extractor.load()``
+        # are NOT shown live (the dashboard's ``loading…`` line + the post-TUI
+        # event log are the surfaced signals). Trade-off documented in ADR-026.
         return nullcontext()
 
     def __enter__(self) -> HorusDashboardApp:
@@ -490,8 +536,18 @@ class HorusDashboardApp:
         daemon thread — raising ``ValueError`` on every real run.  This method
         inverts the model: TUI owns the main thread; harness runs in a daemon
         thread.  When *fn* completes (or raises), the TUI is signalled to exit.
+
+        After the TUI exits, the in-memory event log is printed to stderr so the
+        user sees what happened (the inline TUI clears its render area on exit).
+        The same lines are mirrored to ``LOG_PATH`` for durable inspection.
         """
         import asyncio  # noqa: PLC0415
+
+        # Open the durable log file (best-effort — falls back to memory only).
+        try:
+            self._log_file = open(self.LOG_PATH, "w", encoding="utf-8")  # noqa: SIM115
+        except Exception:  # noqa: BLE001
+            self._log_file = None
 
         self._app = _HorusTUIApp()
         exc_holder: list[BaseException | None] = [None]
@@ -502,6 +558,7 @@ class HorusDashboardApp:
                 fn()
             except BaseException as exc:  # noqa: BLE001
                 exc_holder[0] = exc
+                self._emit(f"[harness] WORKER EXCEPTION: {type(exc).__name__}: {exc}")
             finally:
                 if self._app is not None and self._app.is_running:
                     try:
@@ -512,10 +569,35 @@ class HorusDashboardApp:
         t = threading.Thread(target=_worker, daemon=True, name="horus-harness")
         t.start()
 
-        asyncio.run(self._app.run_async(inline=True))
+        try:
+            asyncio.run(self._app.run_async(inline=True))
+        finally:
+            t.join(timeout=60.0)
+            self._app = None
+            if self._log_file is not None:
+                try:
+                    self._log_file.close()
+                except Exception:  # noqa: BLE001
+                    pass
+                self._log_file = None
 
-        t.join(timeout=60.0)
-        self._app = None
+        # TUI inline area is cleared on exit. Replay the event log to stderr
+        # so the user sees a permanent record in the terminal scrollback.
+        if self._event_log:
+            print("", file=sys.stderr, flush=True)
+            print(
+                f"[harness] event log (full record at {self.LOG_PATH}):",
+                file=sys.stderr,
+                flush=True,
+            )
+            for line in self._event_log:
+                print(line, file=sys.stderr, flush=True)
+
+        if self._failures:
+            print("", file=sys.stderr, flush=True)
+            print("[harness] FAILURES:", file=sys.stderr, flush=True)
+            for model_id, invoice_name, error in self._failures:
+                print(f"  - {model_id} / {invoice_name}: {error}", file=sys.stderr, flush=True)
 
         if exc_holder[0] is not None:
             raise exc_holder[0]
