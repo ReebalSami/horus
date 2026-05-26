@@ -51,17 +51,15 @@ Precedence (first match wins):
 from __future__ import annotations
 
 import contextlib
-import math
 import os
 import sys
+import threading
 import time
 from contextlib import nullcontext
-from typing import TYPE_CHECKING, runtime_checkable
-
-from typing import Protocol
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -142,9 +140,7 @@ class PlainDisplayAdapter:
         self._total_invoices = 0
         self._start_ts: float = 0.0
 
-    def on_sweep_start(
-        self, parent_run_id: str, total_models: int, total_invoices: int
-    ) -> None:
+    def on_sweep_start(self, parent_run_id: str, total_models: int, total_invoices: int) -> None:
         self._total_models = total_models
         self._total_invoices = total_invoices
         self._start_ts = time.monotonic()
@@ -207,8 +203,7 @@ class PlainDisplayAdapter:
         error: str,
     ) -> None:
         print(
-            f"[harness]   [{invoice_idx}/{self._total_invoices}] {invoice_name}: "
-            f"FAILED: {error}",
+            f"[harness]   [{invoice_idx}/{self._total_invoices}] {invoice_name}: FAILED: {error}",
             flush=True,
         )
 
@@ -248,9 +243,7 @@ class PlainDisplayAdapter:
 class SilentDisplayAdapter:
     """No-op adapter for tests — emits nothing."""
 
-    def on_sweep_start(
-        self, parent_run_id: str, total_models: int, total_invoices: int
-    ) -> None:
+    def on_sweep_start(self, parent_run_id: str, total_models: int, total_invoices: int) -> None:
         pass
 
     def on_model_load_start(self, model_idx: int, model_id: str) -> None:
@@ -341,7 +334,7 @@ class HorusDashboardApp:
     """
 
     def __init__(self) -> None:
-        self._app: _HorusTUIApp | None = None
+        self._app: Any = None  # _HorusTUIApp when active; Any to avoid mypy dynamic-class issues
         self._total_models = 0
         self._total_invoices = 0
         self._completed_tuples = 0
@@ -349,36 +342,29 @@ class HorusDashboardApp:
         self._model_f1_acc: list[float] = []
         self._model_start_ts: float = 0.0
 
-    def _safe_call(self, fn: object, *args: object) -> None:
+    def _safe_call(self, fn: Any, *args: Any) -> None:
         """Push *fn(*args)* into the app's event loop from the harness thread."""
         if self._app is not None and self._app.is_running:
             try:
-                self._app.call_from_thread(fn, *args)  # type: ignore[arg-type]
+                self._app.call_from_thread(fn, *args)
             except Exception:  # noqa: BLE001
                 pass
 
-    def on_sweep_start(
-        self, parent_run_id: str, total_models: int, total_invoices: int
-    ) -> None:
+    def on_sweep_start(self, parent_run_id: str, total_models: int, total_invoices: int) -> None:
         self._total_models = total_models
         self._total_invoices = total_invoices
         self._completed_tuples = 0
         self._start_ts = time.monotonic()
-        self._safe_call(
-            self._app._on_sweep_start if self._app else lambda *a: None,  # type: ignore[union-attr]
-            parent_run_id,
-            total_models,
-            total_invoices,
-        )
+        fn = self._app._on_sweep_start if self._app is not None else None
+        if fn is not None:
+            self._safe_call(fn, parent_run_id, total_models, total_invoices)
 
     def on_model_load_start(self, model_idx: int, model_id: str) -> None:
         self._model_f1_acc = []
         self._model_start_ts = time.monotonic()
-        self._safe_call(
-            self._app._on_model_load_start if self._app else lambda *a: None,  # type: ignore[union-attr]
-            model_idx,
-            model_id,
-        )
+        fn = self._app._on_model_load_start if self._app is not None else None
+        if fn is not None:
+            self._safe_call(fn, model_idx, model_id)
 
     def on_model_loaded(
         self,
@@ -386,12 +372,9 @@ class HorusDashboardApp:
         model_id: str,
         weights_gb: float,
     ) -> None:
-        self._safe_call(
-            self._app._on_model_loaded if self._app else lambda *a: None,  # type: ignore[union-attr]
-            model_idx,
-            model_id,
-            weights_gb,
-        )
+        fn = self._app._on_model_loaded if self._app is not None else None
+        if fn is not None:
+            self._safe_call(fn, model_idx, model_id, weights_gb)
 
     def on_invoice_start(
         self,
@@ -402,15 +385,11 @@ class HorusDashboardApp:
         total_invoices: int,
         invoice_name: str,
     ) -> None:
-        self._safe_call(
-            self._app._on_invoice_start if self._app else lambda *a: None,  # type: ignore[union-attr]
-            model_id,
-            model_idx,
-            total_models,
-            invoice_idx,
-            total_invoices,
-            invoice_name,
-        )
+        fn = self._app._on_invoice_start if self._app is not None else None
+        if fn is not None:
+            self._safe_call(
+                fn, model_id, model_idx, total_models, invoice_idx, total_invoices, invoice_name
+            )
 
     def on_invoice_complete(
         self,
@@ -424,19 +403,21 @@ class HorusDashboardApp:
     ) -> None:
         self._completed_tuples += 1
         self._model_f1_acc.append(micro_f1)
-        self._safe_call(
-            self._app._on_invoice_complete if self._app else lambda *a: None,  # type: ignore[union-attr]
-            model_id,
-            invoice_idx,
-            total_invoices,
-            invoice_name,
-            micro_f1,
-            page_count,
-            seconds,
-            self._completed_tuples,
-            self._total_models * self._total_invoices,
-            time.monotonic() - self._start_ts,
-        )
+        fn = self._app._on_invoice_complete if self._app is not None else None
+        if fn is not None:
+            self._safe_call(
+                fn,
+                model_id,
+                invoice_idx,
+                total_invoices,
+                invoice_name,
+                micro_f1,
+                page_count,
+                seconds,
+                self._completed_tuples,
+                self._total_models * self._total_invoices,
+                time.monotonic() - self._start_ts,
+            )
 
     def on_invoice_failed(
         self,
@@ -446,15 +427,17 @@ class HorusDashboardApp:
         error: str,
     ) -> None:
         self._completed_tuples += 1
-        self._safe_call(
-            self._app._on_invoice_failed if self._app else lambda *a: None,  # type: ignore[union-attr]
-            model_id,
-            invoice_idx,
-            invoice_name,
-            error,
-            self._completed_tuples,
-            self._total_models * self._total_invoices,
-        )
+        fn = self._app._on_invoice_failed if self._app is not None else None
+        if fn is not None:
+            self._safe_call(
+                fn,
+                model_id,
+                invoice_idx,
+                invoice_name,
+                error,
+                self._completed_tuples,
+                self._total_models * self._total_invoices,
+            )
 
     def on_model_complete(
         self,
@@ -463,18 +446,14 @@ class HorusDashboardApp:
         mean_f1: float,
         total_seconds: float,
     ) -> None:
-        self._safe_call(
-            self._app._on_model_complete if self._app else lambda *a: None,  # type: ignore[union-attr]
-            model_idx,
-            model_id,
-            mean_f1,
-            total_seconds,
-        )
+        fn = self._app._on_model_complete if self._app is not None else None
+        if fn is not None:
+            self._safe_call(fn, model_idx, model_id, mean_f1, total_seconds)
 
     def on_sweep_complete(self) -> None:
-        self._safe_call(
-            self._app._on_sweep_complete if self._app else lambda *a: None,  # type: ignore[union-attr]
-        )
+        fn = self._app._on_sweep_complete if self._app is not None else None
+        if fn is not None:
+            self._safe_call(fn)
 
     def suspend(self) -> contextlib.AbstractContextManager[None]:
         if self._app is not None:
@@ -508,8 +487,8 @@ class _HorusTUIApp:
     """
 
     def __init__(self) -> None:
-        self._app: _TextualHorusApp | None = None
-        self._thread: object = None
+        self._app: Any = None  # _TextualHorusApp when active
+        self._thread: threading.Thread | None = None
         self.is_running: bool = False
 
     def _start_inline(self) -> None:
@@ -523,12 +502,12 @@ class _HorusTUIApp:
 
             async def _inner() -> None:
                 ready_event.set()
-                await self._app.run_async(inline=True)  # type: ignore[union-attr]
+                await self._app.run_async(inline=True)
 
             asyncio.run(_inner())
 
         self._thread = threading.Thread(target=_run, daemon=True, name="horus-tui")
-        self._thread.start()  # type: ignore[union-attr]
+        self._thread.start()
         ready_event.wait(timeout=5.0)
         self.is_running = True
 
@@ -536,21 +515,19 @@ class _HorusTUIApp:
         if self._app is not None and self._app.is_running:
             self._app.call_from_thread(self._app.exit)
         if self._thread is not None:
-            self._thread.join(timeout=3.0)  # type: ignore[union-attr]
+            self._thread.join(timeout=3.0)
         self.is_running = False
 
-    def call_from_thread(self, fn: object, *args: object) -> None:
+    def call_from_thread(self, fn: Any, *args: Any) -> None:
         if self._app is not None and self._app.is_running:
-            self._app.call_from_thread(fn, *args)  # type: ignore[arg-type]
+            self._app.call_from_thread(fn, *args)
 
     def suspend(self) -> contextlib.AbstractContextManager[None]:
         if self._app is not None and self._app.is_running:
             return self._app.suspend()
         return nullcontext()
 
-    def _on_sweep_start(
-        self, parent_run_id: str, total_models: int, total_invoices: int
-    ) -> None:
+    def _on_sweep_start(self, parent_run_id: str, total_models: int, total_invoices: int) -> None:
         if self._app:
             self._app._on_sweep_start(parent_run_id, total_models, total_invoices)
 
@@ -558,9 +535,7 @@ class _HorusTUIApp:
         if self._app:
             self._app._on_model_load_start(model_idx, model_id)
 
-    def _on_model_loaded(
-        self, model_idx: int, model_id: str, weights_gb: float
-    ) -> None:
+    def _on_model_loaded(self, model_idx: int, model_id: str, weights_gb: float) -> None:
         if self._app:
             self._app._on_model_loaded(model_idx, model_id, weights_gb)
 
@@ -665,17 +640,25 @@ class _TextualHorusApp:
     """The actual textual.App, assembled lazily to avoid import-at-module-level."""
 
     def __init__(self) -> None:
-        self._built_app: object = None
+        self._built_app: Any = None  # HorusApp(App) instance; typed as Any (defined inside _build)
         self._build()
 
     def _build(self) -> None:
         from textual.app import App, ComposeResult  # noqa: PLC0415
-        from textual.widgets import Footer, Label, ProgressBar, RichLog, Rule, Static  # noqa: PLC0415
+        from textual.widgets import (  # noqa: PLC0415
+            Label,
+            ProgressBar,
+            RichLog,
+            Rule,
+            Static,
+        )
 
-        EAGLE_ORANGE = "#E8833A"
-        HIEROGLYPH_CYAN = "#3AA8C8"
+        eagle_orange = "#E8833A"
+        hieroglyph_cyan = "#3AA8C8"
+        EAGLE_ORANGE = eagle_orange  # noqa: N806 — used in f-strings for CSS + markup
+        HIEROGLYPH_CYAN = hieroglyph_cyan  # noqa: N806
 
-        class HorusApp(App):  # type: ignore[misc]
+        class HorusApp(App):  # noqa: N801 — defined inside function; inherits from Any-typed App
             CSS = f"""
             Screen {{
                 background: $surface;
@@ -754,7 +737,8 @@ class _TextualHorusApp:
                     f"[dim]parent={short_id}  {total_models} models × "
                     f"{total_invoices} invoices = {total_models * total_invoices} tuples[/]"
                 )
-                self.query_one("#sweep-bar", ProgressBar).update(total=float(total_models * total_invoices))
+                total_t = float(total_models * total_invoices)
+                self.query_one("#sweep-bar", ProgressBar).update(total=total_t)
                 self.query_one("#sweep-label", Label).update(
                     f"[{EAGLE_ORANGE}]Sweep:[/] 0/{total_models * total_invoices}  (0%)"
                 )
@@ -770,13 +754,10 @@ class _TextualHorusApp:
                 )
                 self.query_one("#model-bar", ProgressBar).update(progress=0.0)
 
-            def _on_model_loaded(
-                self, model_idx: int, model_id: str, weights_gb: float
-            ) -> None:
+            def _on_model_loaded(self, model_idx: int, model_id: str, weights_gb: float) -> None:
                 gb_str = f"  {weights_gb:.1f} GB" if weights_gb > 0 else ""
                 self.query_one("#model-label", Label).update(
-                    f"[{HIEROGLYPH_CYAN}]Model {model_idx}:[/] "
-                    f"{_short_model(model_id)}{gb_str}"
+                    f"[{HIEROGLYPH_CYAN}]Model {model_idx}:[/] {_short_model(model_id)}{gb_str}"
                 )
 
             def _on_invoice_start(
@@ -863,12 +844,8 @@ class _TextualHorusApp:
 
             def _on_sweep_complete(self) -> None:
                 log = self.query_one("#log-section", RichLog)
-                log.write(
-                    f"[bold {EAGLE_ORANGE}]🦅 HORUS sweep complete.[/]"
-                )
-                self.query_one("#sweep-label", Label).update(
-                    f"[{EAGLE_ORANGE}]Sweep complete ✔[/]"
-                )
+                log.write(f"[bold {EAGLE_ORANGE}]🦅 HORUS sweep complete.[/]")
+                self.query_one("#sweep-label", Label).update(f"[{EAGLE_ORANGE}]Sweep complete ✔[/]")
 
         self._built_app = HorusApp()
 
@@ -878,38 +855,34 @@ class _TextualHorusApp:
             return False
         return getattr(self._built_app, "is_running", False)
 
-    def call_from_thread(self, fn: object, *args: object) -> None:
+    def call_from_thread(self, fn: Any, *args: Any) -> None:
         if self._built_app is not None:
-            self._built_app.call_from_thread(fn, *args)  # type: ignore[union-attr]
+            self._built_app.call_from_thread(fn, *args)
 
     def suspend(self) -> contextlib.AbstractContextManager[None]:
         if self._built_app is not None and getattr(self._built_app, "is_running", False):
-            return self._built_app.suspend()  # type: ignore[union-attr]
+            return self._built_app.suspend()
         return nullcontext()
 
     async def run_async(self, *, inline: bool = False) -> None:
         if self._built_app is not None:
-            await self._built_app.run_async(inline=inline)  # type: ignore[union-attr]
+            await self._built_app.run_async(inline=inline)
 
-    def exit(self, *args: object) -> None:
+    def exit(self, *args: Any) -> None:
         if self._built_app is not None:
-            self._built_app.exit()  # type: ignore[union-attr]
+            self._built_app.exit()
 
-    def _on_sweep_start(
-        self, parent_run_id: str, total_models: int, total_invoices: int
-    ) -> None:
+    def _on_sweep_start(self, parent_run_id: str, total_models: int, total_invoices: int) -> None:
         if self._built_app is not None:
-            self._built_app._on_sweep_start(parent_run_id, total_models, total_invoices)  # type: ignore[union-attr]
+            self._built_app._on_sweep_start(parent_run_id, total_models, total_invoices)
 
     def _on_model_load_start(self, model_idx: int, model_id: str) -> None:
         if self._built_app is not None:
-            self._built_app._on_model_load_start(model_idx, model_id)  # type: ignore[union-attr]
+            self._built_app._on_model_load_start(model_idx, model_id)
 
-    def _on_model_loaded(
-        self, model_idx: int, model_id: str, weights_gb: float
-    ) -> None:
+    def _on_model_loaded(self, model_idx: int, model_id: str, weights_gb: float) -> None:
         if self._built_app is not None:
-            self._built_app._on_model_loaded(model_idx, model_id, weights_gb)  # type: ignore[union-attr]
+            self._built_app._on_model_loaded(model_idx, model_id, weights_gb)
 
     def _on_invoice_start(
         self,
@@ -921,7 +894,7 @@ class _TextualHorusApp:
         invoice_name: str,
     ) -> None:
         if self._built_app is not None:
-            self._built_app._on_invoice_start(  # type: ignore[union-attr]
+            self._built_app._on_invoice_start(
                 model_id, model_idx, total_models, invoice_idx, total_invoices, invoice_name
             )
 
@@ -939,7 +912,7 @@ class _TextualHorusApp:
         elapsed_s: float,
     ) -> None:
         if self._built_app is not None:
-            self._built_app._on_invoice_complete(  # type: ignore[union-attr]
+            self._built_app._on_invoice_complete(
                 model_id,
                 invoice_idx,
                 total_invoices,
@@ -962,7 +935,7 @@ class _TextualHorusApp:
         total_tuples: int,
     ) -> None:
         if self._built_app is not None:
-            self._built_app._on_invoice_failed(  # type: ignore[union-attr]
+            self._built_app._on_invoice_failed(
                 model_id, invoice_idx, invoice_name, error, completed_tuples, total_tuples
             )
 
@@ -974,11 +947,11 @@ class _TextualHorusApp:
         total_seconds: float,
     ) -> None:
         if self._built_app is not None:
-            self._built_app._on_model_complete(model_idx, model_id, mean_f1, total_seconds)  # type: ignore[union-attr]
+            self._built_app._on_model_complete(model_idx, model_id, mean_f1, total_seconds)
 
     def _on_sweep_complete(self) -> None:
         if self._built_app is not None:
-            self._built_app._on_sweep_complete()  # type: ignore[union-attr]
+            self._built_app._on_sweep_complete()
 
 
 # ---------------------------------------------------------------------------
