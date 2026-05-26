@@ -29,6 +29,12 @@ import json
 import sys
 from pathlib import Path
 
+from rich import box as rbox
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.text import Text
+
 from horus.config import ExperimentConfig
 from horus.eval.ground_truth import FIELDS
 
@@ -63,6 +69,7 @@ def _print_per_run_grid(experiment_id: str, parent_run_id: str) -> list:
     """Print the (model, invoice) → micro_F1 grid; return the list of nested runs."""
     import mlflow  # noqa: PLC0415
 
+    console = Console(highlight=False)
     nested = mlflow.search_runs(
         experiment_ids=[experiment_id],
         filter_string=f"tags.mlflow.parentRunId = '{parent_run_id}'",
@@ -70,7 +77,7 @@ def _print_per_run_grid(experiment_id: str, parent_run_id: str) -> list:
         max_results=1000,
         output_format="list",
     )
-    print(f"nested runs under parent {parent_run_id}: {len(nested)}")
+    console.print(f"nested runs under parent {parent_run_id}: {len(nested)}")
     if not nested:
         return nested
 
@@ -79,9 +86,15 @@ def _print_per_run_grid(experiment_id: str, parent_run_id: str) -> list:
         nested,
         key=lambda r: (r.data.tags.get("model_id", ""), r.data.tags.get("invoice_id", "")),
     )
-    print()
-    print(f"{'model':<55} {'invoice':<48} {'profile':<10} {'pages':>5} {'f1':>8} status")
-    print("-" * 130)
+
+    table = Table(box=rbox.SIMPLE_HEAVY, show_lines=False, highlight=False)
+    table.add_column("model", style="cyan", no_wrap=True)
+    table.add_column("invoice", style="white")
+    table.add_column("profile", style="dim")
+    table.add_column("pages", justify="right")
+    table.add_column("f1", justify="right")
+    table.add_column("status")
+
     for r in nested_sorted:
         m = r.data.tags.get("model_id", "?")
         inv = r.data.tags.get("invoice_id", "?")
@@ -89,8 +102,18 @@ def _print_per_run_grid(experiment_id: str, parent_run_id: str) -> list:
         pages = r.data.tags.get("pages", "-")
         f1 = float(r.data.metrics.get("micro_f1", 0.0))
         status = r.info.status
-        print(f"{m:<55} {inv:<48} {profile:<10} {pages:>5} {f1:>8.3f} {status}")
+        f1_color = "green" if f1 >= 0.5 else ("yellow" if f1 >= 0.3 else "red")
+        status_color = "green" if status == "FINISHED" else "red"
+        table.add_row(
+            m,
+            inv,
+            profile,
+            pages,
+            f"[{f1_color}]{f1:.3f}[/{f1_color}]",
+            f"[{status_color}]{status}[/{status_color}]",
+        )
 
+    console.print(table)
     return nested
 
 
@@ -98,6 +121,7 @@ def _print_per_model_aggregate(nested: list) -> None:
     """Print mean micro_F1 per model across the inspected sweep."""
     from collections import defaultdict  # noqa: PLC0415
 
+    console = Console(highlight=False)
     per_model: dict[str, list[float]] = defaultdict(list)
     for r in nested:
         m = r.data.tags.get("model_id", "?")
@@ -106,14 +130,28 @@ def _print_per_model_aggregate(nested: list) -> None:
         f1 = float(r.data.metrics.get("micro_f1", 0.0))
         per_model[m].append(f1)
 
-    print()
-    print("per-model aggregate (mean micro_F1 across all FINISHED invoices in this sweep):")
-    print(f"{'model':<55} {'n':>5} {'mean_f1':>10}")
-    print("-" * 75)
+    console.print()
+    console.print(
+        Panel(
+            Text(
+                "per-model aggregate (mean micro_F1 across all FINISHED invoices)",
+                justify="center",
+            ),
+            border_style="cyan",
+        )
+    )
+    table = Table(box=rbox.SIMPLE_HEAVY, show_lines=False, highlight=False)
+    table.add_column("model", style="cyan")
+    table.add_column("n", justify="right")
+    table.add_column("mean_f1", justify="right")
+
     ranked = sorted(per_model.items(), key=lambda kv: -sum(kv[1]) / max(len(kv[1]), 1))
     for m, scores in ranked:
         mean = sum(scores) / len(scores) if scores else 0.0
-        print(f"{m:<55} {len(scores):>5} {mean:>10.3f}")
+        f1_color = "green" if mean >= 0.5 else ("yellow" if mean >= 0.3 else "red")
+        table.add_row(m, str(len(scores)), f"[{f1_color}]{mean:.3f}[/{f1_color}]")
+
+    console.print(table)
 
 
 def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
@@ -249,35 +287,41 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
             # FINISHED tuple but no perf.* — pre-#52 nested run.
             n_without_perf += 1
 
-    print()
-    print("per-model perf summary (mean across all FINISHED + perf-equipped tuples):")
+    console = Console(highlight=False)
+    console.print()
+    console.print("per-model perf summary (mean across all FINISHED + perf-equipped tuples):")
 
     if n_with_perf == 0:
-        print(
+        console.print(
             "  no perf.* metrics found on any nested run — this parent run "
             "predates issue #52 instrumentation (run via post-#52 harness "
             "to populate per-tuple perf metrics)"
         )
         if mps_ceiling_gb is not None:
-            print(f"  (MPS ceiling logged at parent: {mps_ceiling_gb:.2f} GB)")
+            console.print(f"  (MPS ceiling logged at parent: {mps_ceiling_gb:.2f} GB)")
         return
 
     if mps_ceiling_gb is not None:
-        print(f"  MPS ceiling (host-constant): {mps_ceiling_gb:.2f} GB")
+        console.print(f"  MPS ceiling (host-constant): {mps_ceiling_gb:.2f} GB")
     else:
-        print("  MPS ceiling: not logged at parent (host without MPS, or pre-#52 run)")
-
-    header = (
-        f"{'model':<55} {'n':>4} {'wall_s':>9} {'decode_tps':>11} {'e2e_tps':>9} "
-        f"{'chars/s':>9} {'gen_tok':>9} {'peak_GB':>9} {'%_max':>7}"
-    )
-    print(header)
-    print("-" * len(header))
+        console.print("  MPS ceiling: not logged at parent (host without MPS, or pre-#52 run)")
 
     def _mean_str(xs: list[float], *, fmt: str = "{:.2f}") -> str:
         if not xs:
             return "—"
         return fmt.format(sum(xs) / len(xs))
+
+    # box=None preserves em-dash test assertions (row.rstrip().endswith("—")).
+    table = Table(box=None, show_lines=False, show_edge=False, pad_edge=False, highlight=False)
+    table.add_column("model", style="cyan", no_wrap=True)
+    table.add_column("n", justify="right")
+    table.add_column("wall_s", justify="right")
+    table.add_column("decode_tps", justify="right")
+    table.add_column("e2e_tps", justify="right")
+    table.add_column("chars/s", justify="right")
+    table.add_column("gen_tok", justify="right")
+    table.add_column("peak_GB", justify="right")
+    table.add_column("%_max", justify="right")
 
     # Sort by mean wall_s ascending (fastest models top).
     all_models = sorted(
@@ -289,8 +333,6 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
         ),
     )
     for m in all_models:
-        # Row count = perf-equipped FINISHED tuples for this model (uses
-        # the always-computable e2e_tps bucket as the canonical counter).
         n = len(per_model_e2e_tps[m])
         wall_s = _mean_str(per_model_wall[m])
         decode_tps = _mean_str(per_model_decode_tps[m])
@@ -303,14 +345,13 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
             pct = f"{(max_peak / mps_ceiling_gb) * 100:.1f}%"
         else:
             pct = "—"
-        print(
-            f"{m:<55} {n:>4} {wall_s:>9} {decode_tps:>11} {e2e_tps:>9} "
-            f"{chars:>9} {tokens:>9} {peak:>9} {pct:>7}"
-        )
+        table.add_row(m, str(n), wall_s, decode_tps, e2e_tps, chars, tokens, peak, pct)
+
+    console.print(table)
 
     if n_without_perf > 0:
-        print()
-        print(
+        console.print()
+        console.print(
             f"  Note: {n_without_perf} tuples lack perf.* metrics (pre-#52 "
             f"logging) — excluded from the per-model means above"
         )
@@ -324,17 +365,21 @@ def _print_probe_1_money_tps(nested: list) -> None:
     """
     import mlflow  # noqa: PLC0415
 
+    console = Console(highlight=False)
     money_fields = MONEY_FIELDS
-    print()
-    print(
-        f"Probe 1 evidence — MONEY-field TPs on EN16931_Einfach "
-        f"(acceptance: ≥3 / {len(money_fields)}):"
+    console.print()
+    console.print(
+        Panel(
+            Text(
+                f"Probe 1 evidence — MONEY-field TPs on EN16931_Einfach "
+                f"(acceptance: ≥3 / {len(money_fields)})",
+                justify="center",
+            ),
+            border_style="yellow",
+        )
     )
-    print(f"{'model':<55} {'money TPs':>10} {'/ MONEY fields':>20}")
-    print("-" * 90)
 
     client = mlflow.MlflowClient()
-    # tuple shape: (model_id, money_tp_or_minus_one_if_err, money_total). -1 sentinel for ERR.
     rows: list[tuple[str, int, int]] = []
     for r in nested:
         if r.data.tags.get("invoice_id") != "EN16931_Einfach":
@@ -342,7 +387,6 @@ def _print_probe_1_money_tps(nested: list) -> None:
         if r.info.status != "FINISHED":
             continue
         m = r.data.tags.get("model_id", "?")
-        # Pull the per_field_scores.json artifact.
         try:
             artifact_path = client.download_artifacts(r.info.run_id, "per_field_scores.json")
             with open(artifact_path, encoding="utf-8") as fh:
@@ -355,19 +399,26 @@ def _print_probe_1_money_tps(nested: list) -> None:
         money_total = sum(1 for fk in money_fields if fk in per_field)
         rows.append((m, money_tp, money_total))
 
+    table = Table(box=rbox.SIMPLE_HEAVY, highlight=False)
+    table.add_column("model", style="cyan")
+    table.add_column("money TPs", justify="right")
+    table.add_column("/ MONEY fields", justify="right")
+
     rows.sort(key=lambda row: -row[1])
     best_tp = 0
     for m, money_tp, money_total in rows:
-        display = "ERR" if money_tp < 0 else str(money_tp)
-        print(f"{m:<55} {display:>10} {f'/  {money_total} fields':>26}")
+        display_val = "[red]ERR[/red]" if money_tp < 0 else str(money_tp)
+        tp_color = "green" if money_tp >= 3 else ("yellow" if money_tp > 0 else "red")
+        table.add_row(m, f"[{tp_color}]{display_val}[/{tp_color}]", f"{money_total} fields")
         if money_tp >= 0:
             best_tp = max(best_tp, money_tp)
 
-    print()
+    console.print(table)
+    console.print()
     if best_tp >= 3:
-        print(f"Probe 1 PASS: best-of-cohort MONEY TPs on EN16931_Einfach = {best_tp} (≥ 3)")
+        console.print(f"[bold green]Probe 1 PASS[/]: best-of-cohort MONEY TPs = {best_tp} (≥ 3)")
     else:
-        print(f"Probe 1 FAIL: best-of-cohort MONEY TPs on EN16931_Einfach = {best_tp} (< 3)")
+        console.print(f"[bold red]Probe 1 FAIL[/]: best-of-cohort MONEY TPs = {best_tp} (< 3)")
 
 
 def _print_probe_2_xrechnung_dates(nested: list) -> None:
@@ -379,12 +430,18 @@ def _print_probe_2_xrechnung_dates(nested: list) -> None:
     """
     import mlflow  # noqa: PLC0415
 
+    console = Console(highlight=False)
     date_fields = sorted(DATE_FIELDS)
-    print()
-    print("Probe 2 evidence — XRECHNUNG_Einfach DATE-field outcomes (factur-x route):")
-    header = f"{'model':<55}" + "".join(f"{fk:<16}" for fk in date_fields)
-    print(header)
-    print("-" * len(header))
+    console.print()
+    console.print(
+        Panel(
+            Text(
+                "Probe 2 evidence — XRECHNUNG_Einfach DATE-field outcomes (factur-x route)",
+                justify="center",
+            ),
+            border_style="yellow",
+        )
+    )
 
     client = mlflow.MlflowClient()
     any_tp = False
@@ -411,20 +468,36 @@ def _print_probe_2_xrechnung_dates(nested: list) -> None:
                 any_tp = True
         rows.append((m, outcomes))
 
-    for m, outcomes in rows:
-        line = f"{m:<55}" + "".join(f"{o:<16}" for o in outcomes)
-        print(line)
+    table = Table(box=rbox.SIMPLE_HEAVY, highlight=False)
+    table.add_column("model", style="cyan")
+    for fk in date_fields:
+        table.add_column(fk, justify="center")
 
-    print()
+    for m, outcomes in rows:
+        colored_outcomes = []
+        for o in outcomes:
+            if o == "TP":
+                colored_outcomes.append("[green]TP[/green]")
+            elif o == "FN":
+                colored_outcomes.append("[red]FN[/red]")
+            elif o == "FP":
+                colored_outcomes.append("[yellow]FP[/yellow]")
+            else:
+                colored_outcomes.append(o)
+        table.add_row(m, *colored_outcomes)
+
+    console.print(table)
+    console.print()
     if any_tp:
-        print(
-            "Probe 2 PASS: ≥1 model has TP on a DATE field of XRECHNUNG_Einfach (factur-x route)."
+        console.print(
+            "[bold green]Probe 2 PASS[/]: ≥1 model has TP on a DATE field of "
+            "XRECHNUNG_Einfach (factur-x route)."
         )
     else:
-        print(
-            "Probe 2 FAIL: 0 models scored TP on any DATE field of XRECHNUNG_Einfach. "
-            "Inspect transcripts to determine whether the failure is route-level "
-            "(sidecar drift) or model-level (model cannot read the date)."
+        console.print(
+            "[bold red]Probe 2 FAIL[/]: 0 models scored TP on any DATE field of "
+            "XRECHNUNG_Einfach. Inspect transcripts to determine whether the failure "
+            "is route-level (sidecar drift) or model-level."
         )
 
 
@@ -465,17 +538,18 @@ def main(argv: list[str]) -> int:
     if cfg.mlflow.tracking_uri:
         mlflow.set_tracking_uri(cfg.mlflow.tracking_uri)
 
+    console = Console(highlight=False)
     exp = mlflow.get_experiment_by_name(cfg.mlflow.experiment_name)
     if exp is None:
         print(f"ERROR: experiment {cfg.mlflow.experiment_name!r} not found.", file=sys.stderr)
         return 1
-    print(f"experiment: {cfg.mlflow.experiment_name!r} (id={exp.experiment_id})")
+    console.print(f"experiment: {cfg.mlflow.experiment_name!r} (id={exp.experiment_id})")
 
     parent = _resolve_parent_run_id(experiment_id=exp.experiment_id, override=args.parent_run_id)
     if parent is None:
         print("ERROR: no parent runs found.", file=sys.stderr)
         return 1
-    print(f"inspecting parent run: {parent}")
+    console.print(f"inspecting parent run: {parent}")
 
     nested = _print_per_run_grid(exp.experiment_id, parent)
     if not nested:
