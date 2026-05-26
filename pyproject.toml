@@ -22,8 +22,12 @@ dependencies = [
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
     "pypdfium2>=4.30,<5",
+    "pyfiglet>=1.0.2",
     "pyyaml>=6.0.3",
+    "rich>=15.0.0",
     "seaborn>=0.13,<0.14",
+    "textual>=0.86.0",
+    "tqdm>=4.67.0",
     "torch>=2.5",
     "torchvision>=0.20",
     "transformers>=5.5.0",
@@ -104,6 +108,12 @@ ignore_missing_imports = true
 # Same override pattern as factur-x / fpdf / mineru / mlx_vlm / mlflow / pypdfium2.
 [[tool.mypy.overrides]]
 module = ["plotly", "plotly.*", "seaborn", "seaborn.*"]
+ignore_missing_imports = true
+
+# ADR-026: pyfiglet ships no py.typed marker. textual 0.86+ and rich 15+ do ship
+# py.typed; tqdm 4.67+ ships py.typed — no overrides needed for those three.
+[[tool.mypy.overrides]]
+module = ["pyfiglet", "pyfiglet.*"]
 ignore_missing_imports = true
 
 # ADR-025: pandas ships no py.typed marker by default; pandas-stubs is the

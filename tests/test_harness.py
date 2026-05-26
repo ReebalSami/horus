@@ -38,6 +38,7 @@ from unittest.mock import patch
 
 import pytest
 
+from horus.cli.dashboard import SilentDisplayAdapter
 from horus.config import CohortConfig, ExperimentConfig, MLflowConfig, RasterizerConfig
 from horus.eval.harness import (
     _PAGE_SEPARATOR_FMT,
@@ -348,7 +349,7 @@ def test_run_cohort_single_model_single_invoice_e2e(tmp_path: Path) -> None:
         return _MockExtractorForHarness(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        result = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
 
     assert isinstance(result, HarnessRunResult)
     assert result.n_models_attempted == 1
@@ -375,7 +376,7 @@ def test_run_cohort_resume_skips_finished_nested_runs(tmp_path: Path) -> None:
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
         # First run.
-        first = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        first = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
         assert first.n_completed == 1
         assert first.n_skipped_resume == 0
 
@@ -387,7 +388,7 @@ def test_run_cohort_resume_skips_finished_nested_runs(tmp_path: Path) -> None:
         # mid-sweep interruption (the more important case), not cross-invocation
         # re-runs. To get cross-invocation resume working would require passing
         # the parent_run_id explicitly; this test pins the documented behavior.
-        second = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        second = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
         # Cross-invocation: re-completes the invoice (parent re-runs are a separate concern).
         assert second.n_completed == 1
 
@@ -421,7 +422,7 @@ def test_run_cohort_xrechnung_uses_facturx_not_sidecar(tmp_path: Path) -> None:
         patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor),
         patch.object(harness_mod, "_extract_groundtruth_via_facturx", side_effect=_wrapped),
     ):
-        run_cohort(cfg, invoice_subset=["XRECHNUNG_Einfach"])
+        run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["XRECHNUNG_Einfach"])
 
     assert len(captured_gt) == 1
     stem, gt = captured_gt[0]
@@ -450,6 +451,7 @@ def test_run_cohort_profile_aggregation(tmp_path: Path) -> None:
         # 2 invoices: 1 EN16931 + 1 XRECHNUNG → both profile splits populated.
         result = run_cohort(
             cfg,
+            display=SilentDisplayAdapter(),
             invoice_subset=["EN16931_Einfach", "XRECHNUNG_Einfach"],
         )
 
@@ -500,7 +502,7 @@ def test_run_cohort_invoice_subset_from_yaml_applied(tmp_path: Path) -> None:
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
         # CLI subset is None → YAML subset wins → 1 invoice scored.
-        result = run_cohort(cfg)
+        result = run_cohort(cfg, display=SilentDisplayAdapter())
 
     assert result.n_invoices_total == 1, (
         "YAML invoice_subset should restrict to 1 invoice even with CLI=None"
@@ -521,7 +523,7 @@ def test_run_cohort_cli_invoice_subset_overrides_yaml(tmp_path: Path) -> None:
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
         # CLI subset = ["EN16931_Einfach"] WINS over YAML's ["XRECHNUNG_Einfach"].
-        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        result = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
 
     assert result.n_invoices_total == 1
     assert result.n_completed == 1
@@ -553,7 +555,7 @@ def test_run_cohort_dev_only_blocks_canonical_experiment(tmp_path: Path) -> None
         invoice_subset=["EN16931_Einfach"],
     )
     with pytest.raises(ValueError, match="dev_only=true.*pilot-13-full"):
-        run_cohort(cfg)
+        run_cohort(cfg, display=SilentDisplayAdapter())
 
 
 @skip_if_no_corpus  # ADR-023: run_cohort reads corpus PDFs
@@ -570,7 +572,7 @@ def test_run_cohort_dev_only_tags_parent_and_nested_runs(tmp_path: Path) -> None
         return _MockExtractorForHarness(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg)
+        result = run_cohort(cfg, display=SilentDisplayAdapter())
 
     assert result.n_completed == 2
 
@@ -715,7 +717,7 @@ def test_run_cohort_logs_perf_metrics_in_nested_run_mlx_backend(tmp_path: Path) 
         return _MockExtractorWithPerf(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        result = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
 
     assert result.n_completed == 1
 
@@ -849,7 +851,7 @@ def test_run_cohort_logs_perf_metrics_in_nested_run_mps_backend(tmp_path: Path) 
         return _MockMPSExtractorWithPerf(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        result = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
 
     assert result.n_completed == 1
 
@@ -951,7 +953,7 @@ def test_run_cohort_regex_adapter_mode_is_default_back_compat(tmp_path: Path) ->
         return _MockExtractorForHarness(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        result = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
 
     assert result.n_completed == 1, "regex baseline should still complete cleanly"
 
@@ -996,7 +998,7 @@ def test_run_cohort_json_adapter_mode_with_full_overrides(tmp_path: Path) -> Non
         return _MockJSONExtractor(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        result = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
 
     assert result.n_completed == 1
     # JSON adapter MUST have parsed the mock's JSON output -> at least one positive
@@ -1047,7 +1049,7 @@ def test_run_cohort_partial_prompt_override_falls_through_to_manifest(tmp_path: 
         return _MockExtractorForHarness(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        result = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
 
     assert result.n_completed == 2, "both models should complete (override is partial)"
 
@@ -1098,7 +1100,7 @@ def test_run_cohort_adapter_mode_tag_propagates_to_nested_runs(tmp_path: Path) -
         return _MockJSONExtractor(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg, invoice_subset=["EN16931_Einfach"])
+        result = run_cohort(cfg, display=SilentDisplayAdapter(), invoice_subset=["EN16931_Einfach"])
 
     assert result.n_completed == 1
 
@@ -1131,7 +1133,7 @@ def test_run_cohort_dev_only_false_tags_runs_as_false(tmp_path: Path) -> None:
         return _MockExtractorForHarness(model_id=model_id)
 
     with patch("horus.eval.harness.get_extractor", side_effect=_fake_get_extractor):
-        result = run_cohort(cfg)
+        result = run_cohort(cfg, display=SilentDisplayAdapter())
 
     import mlflow  # noqa: PLC0415
 
