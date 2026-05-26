@@ -570,7 +570,12 @@ class HorusDashboardApp:
         t.start()
 
         try:
-            asyncio.run(self._app.run_async(inline=True))
+            # inline_no_clear=True keeps the final rendered dashboard visible in
+            # the terminal scrollback after the app exits, instead of clearing
+            # the inline area. Pairs with the post-TUI event-log replay below
+            # so the user sees both the live dashboard's final state AND a
+            # structured replay of all lifecycle events.
+            asyncio.run(self._app.run_async(inline=True, inline_no_clear=True))
         finally:
             t.join(timeout=60.0)
             self._app = None
@@ -625,11 +630,11 @@ class _HorusTUIApp:
         """Block until HorusApp.on_mount has fired — app is mounted and safe to call."""
         return self._ready.wait(timeout=timeout)
 
-    async def run_async(self, *, inline: bool = False) -> None:
+    async def run_async(self, *, inline: bool = False, inline_no_clear: bool = False) -> None:
         """Run the textual app on the calling thread until exit() is called."""
         self.is_running = True
         try:
-            await self._app.run_async(inline=inline)
+            await self._app.run_async(inline=inline, inline_no_clear=inline_no_clear)
         finally:
             self.is_running = False
 
@@ -815,7 +820,7 @@ class _TextualHorusApp:
                 height: 1;
             }}
             #log-section {{
-                height: 1fr;
+                height: 10;
                 border: solid {HIEROGLYPH_CYAN};
                 padding: 0 1;
             }}
@@ -864,6 +869,9 @@ class _TextualHorusApp:
             _inflight: int = 0
             _parent_run_id: str = ""
             _total_tuples: int = 0
+            _cohort_sum_f1: float = 0.0
+            _cohort_n_f1: int = 0
+            _total_invoices: int = 1
 
             def compose(self) -> ComposeResult:
                 yield Static(
@@ -895,13 +903,26 @@ class _TextualHorusApp:
                 pass
 
             def _refresh_summary(self) -> None:
+                # Cumulative cohort μF1 across all completed tuples (rolling mean).
+                if self._cohort_n_f1 > 0:
+                    mean_f1 = self._cohort_sum_f1 / self._cohort_n_f1
+                    if mean_f1 >= 0.5:
+                        f1_color = "green"
+                    elif mean_f1 >= 0.3:
+                        f1_color = "yellow"
+                    else:
+                        f1_color = "red"
+                    f1_str = f"  [dim]•[/]  [dim]cohort μF1:[/] [{f1_color}]{mean_f1:.3f}[/]"
+                else:
+                    f1_str = ""
                 self.query_one("#log-summary", Static).update(
                     f"[dim]▼ Completed  "
                     f"[green]{self._n_ok} ✓[/]  "
                     f"[{'red' if self._n_failed else 'dim'}]{self._n_failed} ⚠[/]"
                     f"  {'[bold ' + HIEROGLYPH_CYAN + ']' if self._inflight else '[dim]'}"
                     f"{self._inflight} in flight"
-                    f"{'[/]' if self._inflight else '[/]'}[/]"
+                    f"{'[/]' if self._inflight else '[/]'}"
+                    f"{f1_str}[/]"
                 )
 
             def _on_sweep_start(
@@ -911,6 +932,9 @@ class _TextualHorusApp:
                     parent_run_id[:8] if len(parent_run_id) >= 8 else parent_run_id
                 )
                 self._total_tuples = total_models * total_invoices
+                self._total_invoices = total_invoices
+                self._cohort_sum_f1 = 0.0
+                self._cohort_n_f1 = 0
                 short_id = self._parent_run_id
                 self.query_one("#title-bar", Static).update(
                     f"[bold {EAGLE_ORANGE}]🦅 HORUS cohort sweep[/]  "
@@ -920,6 +944,11 @@ class _TextualHorusApp:
                 self.query_one("#sweep-bar", ProgressBar).update(total=float(self._total_tuples))
                 self.query_one("#sweep-label", Label).update(
                     f"[{EAGLE_ORANGE}]Sweep:[/] 0/{self._total_tuples}  (0%)"
+                )
+                # Model bar shows per-model invoice progress; total is the same
+                # for every model (the invoice cohort).
+                self.query_one("#model-bar", ProgressBar).update(
+                    total=float(total_invoices), progress=0.0
                 )
                 self.query_one("#sweep-stats", Static).update(f"[dim]parent {short_id}[/]")
                 self._refresh_summary()
@@ -975,6 +1004,8 @@ class _TextualHorusApp:
             ) -> None:
                 self._n_ok += 1
                 self._inflight = max(0, self._inflight - 1)
+                self._cohort_sum_f1 += micro_f1
+                self._cohort_n_f1 += 1
                 self._refresh_summary()
                 log = self.query_one("#log-section", RichLog)
                 if micro_f1 >= 0.5:
@@ -1062,9 +1093,9 @@ class _TextualHorusApp:
             return self._built_app.suspend()
         return nullcontext()
 
-    async def run_async(self, *, inline: bool = False) -> None:
+    async def run_async(self, *, inline: bool = False, inline_no_clear: bool = False) -> None:
         if self._built_app is not None:
-            await self._built_app.run_async(inline=inline)
+            await self._built_app.run_async(inline=inline, inline_no_clear=inline_no_clear)
 
     def exit(self, *args: Any) -> None:
         if self._built_app is not None:
