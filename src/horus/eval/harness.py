@@ -645,6 +645,7 @@ def run_cohort(
     *,
     invoice_subset: list[str] | None = None,
     model_subset: list[str] | None = None,
+    display: object = None,
 ) -> HarnessRunResult:
     """Run the full (cohort × corpus) cross-product → MLflow nested runs → cohort heatmap.
 
@@ -687,6 +688,13 @@ def run_cohort(
         ValueError: if `invoice_subset` or `model_subset` contains unknown entries.
     """
     import mlflow  # noqa: PLC0415
+
+    # Resolve display adapter lazily so the import is deferred and the harness
+    # stays runnable without a TTY (e.g., inside pytest via SilentDisplayAdapter).
+    if display is None:
+        from horus.cli.dashboard import get_display_adapter  # noqa: PLC0415
+
+        display = get_display_adapter()
 
     # ----- 1. Validate config -----
     if cfg.cohort is None:
@@ -799,17 +807,11 @@ def run_cohort(
         except Exception:  # noqa: BLE001 — non-fatal; harness continues
             pass
 
-        print(
-            f"[harness] parent_run_id={parent_run_id} models={len(models)} invoices={len(pairs)}",
-            flush=True,
-        )
+        display.on_sweep_start(parent_run_id, len(models), len(pairs))
 
         # Per-model loop
         for model_idx, model_id in enumerate(models, start=1):
-            print(
-                f"[harness] [model {model_idx}/{len(models)}] loading {model_id} ...",
-                flush=True,
-            )
+            display.on_model_load_start(model_idx, model_id)
 
             manifest_entry = COHORT_MANIFEST[model_id]
             # ADR-018: per-model prompt override map (cohort.prompt_template_override)
@@ -824,15 +826,15 @@ def run_cohort(
             extractor = get_extractor(model_id)
             load_failed = False
             try:
-                extractor.load()
+                with display.suspend():  # A3-suspend: HF tqdm bars stream natively
+                    extractor.load()
                 n_models_loaded += 1
+                # Retrieve weights_gb for the display layer; graceful on absent attr.
+                weights_gb = float(getattr(extractor, "weights_gb", 0.0) or 0.0)
+                display.on_model_loaded(model_idx, model_id, weights_gb)
             except Exception as exc:  # noqa: BLE001 — capture install/load failures
                 load_failed = True
-                print(
-                    f"[harness] [model {model_idx}/{len(models)}] LOAD FAILED: "
-                    f"{type(exc).__name__}: {exc}",
-                    flush=True,
-                )
+                display.on_invoice_failed(model_id, 0, "<load>", f"{type(exc).__name__}: {exc}")
 
             # Per-invoice loop
             for inv_idx, (pdf_path, _cii_path) in enumerate(pairs, start=1):
@@ -849,11 +851,6 @@ def run_cohort(
                     )
                     if existing is not None:
                         n_skipped_resume += 1
-                        print(
-                            f"[harness]   [{inv_idx}/{len(pairs)}] {invoice_stem}: "
-                            f"SKIP (resume; run_id={existing[:8]})",
-                            flush=True,
-                        )
                         continue
 
                 if load_failed:
@@ -895,6 +892,14 @@ def run_cohort(
                     # uses GenerationResult.peak_memory instead).
                     mps_pre_alloc_mb = _snapshot_mps_driver_alloc_mb_or_none(extractor)
 
+                    display.on_invoice_start(
+                        model_id,
+                        model_idx,
+                        len(models),
+                        inv_idx,
+                        len(pairs),
+                        invoice_stem,
+                    )
                     t_start = time.perf_counter()
                     # ADR-018: dispatch adapter module via cohort.adapter_mode
                     # (Literal["regex", "json"]). Binary dispatch — NOT a
@@ -1108,10 +1113,14 @@ def run_cohort(
                         # TP/FP/FN counted; TN/EXCLUDED drop from F1 denominators
 
                     n_completed += 1
-                    print(
-                        f"[harness]   [{inv_idx}/{len(pairs)}] {invoice_stem}: "
-                        f"micro_f1={scores.micro_f1:.3f} pages={len(per_page)} ({elapsed:.1f}s)",
-                        flush=True,
+                    display.on_invoice_complete(
+                        model_id,
+                        inv_idx,
+                        len(pairs),
+                        invoice_stem,
+                        scores.micro_f1,
+                        len(per_page),
+                        elapsed,
                     )
 
                 except Exception as exc:  # noqa: BLE001 — per-invoice errors are non-fatal
@@ -1128,11 +1137,19 @@ def run_cohort(
                         mlflow.set_tag("error_type", type(exc).__name__)
                         mlflow.log_param("error_message", str(exc)[:500])
                         mlflow.end_run(status="FAILED")
-                    print(
-                        f"[harness]   [{inv_idx}/{len(pairs)}] {invoice_stem}: "
-                        f"FAILED: {type(exc).__name__}: {exc}",
-                        flush=True,
+                    display.on_invoice_failed(
+                        model_id,
+                        inv_idx,
+                        invoice_stem,
+                        f"{type(exc).__name__}: {exc}",
                     )
+
+            # Compute per-model mean_f1 for the display layer
+            model_completed = [
+                v for fk_scores in per_field_scores_acc[model_id].values() for v in fk_scores
+            ]
+            model_mean_f1 = sum(model_completed) / len(model_completed) if model_completed else 0.0
+            display.on_model_complete(model_idx, model_id, model_mean_f1, 0.0)
 
             # Unload model between models (OOM accumulation guard).
             try:
@@ -1174,6 +1191,8 @@ def run_cohort(
             )
             fig = _render_cohort_heatmap(aggregate, title=title)
             mlflow.log_figure(fig, "cohort_heatmap.png")
+
+        display.on_sweep_complete()
 
     return HarnessRunResult(
         parent_run_id=parent_run_id,

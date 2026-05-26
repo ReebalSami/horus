@@ -55,6 +55,8 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import TextIO
 
+from horus.cli.banner import print_banner
+from horus.cli.dashboard import DisplayAdapter, get_display_adapter
 from horus.config import ExperimentConfig
 from horus.seeding import set_global_seed
 from horus.tracking import Tracker, get_tracker
@@ -260,6 +262,9 @@ def _run_one(
     model_id: str,
     image_path: Path,
     max_tokens_override: int | None,
+    display: DisplayAdapter | None = None,
+    model_idx: int = 1,
+    total_models: int = 1,
 ) -> ExtractionResult:
     """Run a single cohort model end-to-end (load → extract → unload).
 
@@ -273,11 +278,15 @@ def _run_one(
     )
 
     extractor = get_extractor(model_id)
+    _suspend = display.suspend() if display is not None else nullcontext()
     try:
-        extractor.load()
+        with _suspend:  # A3-suspend: HF tqdm bars stream natively
+            extractor.load()
+        if display is not None:
+            display.on_model_loaded(model_idx, model_id, 0.0)
     except NotImplementedError as exc:
-        # Skeleton extractor (PaddleOCR / GLMOCR) — surface the PR(b) deferral
-        # as a structured error result; don't propagate.
+        if display is not None:
+            display.on_invoice_failed(model_id, 0, "<load>", f"NotImplementedError: {exc}")
         return ExtractionResult(
             model_id=model_id,
             backend_name=extractor.backend_name,
@@ -286,6 +295,8 @@ def _run_one(
     except Exception as exc:  # noqa: BLE001 — capture install failures as transcript evidence
         import traceback as tb
 
+        if display is not None:
+            display.on_invoice_failed(model_id, 0, "<load>", f"{type(exc).__name__}: {exc}")
         return ExtractionResult(
             model_id=model_id,
             backend_name=extractor.backend_name,
@@ -293,8 +304,21 @@ def _run_one(
             traceback_str=tb.format_exc(limit=6),
         )
 
+    if display is not None:
+        display.on_invoice_start(model_id, model_idx, total_models, 1, 1, image_path.stem)
     result = extractor.extract(image_path=image_path, prompt=prompt, max_tokens=max_tokens)
+    if display is not None:
+        if result.is_ok:
+            display.on_invoice_complete(
+                model_id, 1, 1, image_path.stem, 1.0, 1, result.extract_seconds
+            )
+        else:
+            display.on_invoice_failed(
+                model_id, 1, image_path.stem, str(result.error or "extraction error")
+            )
     extractor.unload()
+    if display is not None:
+        display.on_model_complete(model_idx, model_id, 1.0 if result.is_ok else 0.0, 0.0)
     return result
 
 
@@ -362,6 +386,17 @@ def main(argv: list[str]) -> int:
             "current behavior (no tracker) is preserved exactly. Per ADR-011."
         ),
     )
+    parser.add_argument(
+        "--no-tui",
+        action="store_true",
+        default=False,
+        help=(
+            "Disable the textual inline dashboard and fall back to plain line-by-line "
+            "output. Equivalent to setting HORUS_DASHBOARD=plain. Useful when running "
+            "in a terminal that doesn't support inline mode (e.g., basic TTY). "
+            "Per ADR-026."
+        ),
+    )
     args = parser.parse_args(argv[1:])
 
     # Optional MLflow integration (--cfg PATH). Omission preserves current
@@ -381,6 +416,10 @@ def main(argv: list[str]) -> int:
             file=sys.stderr,
             flush=True,
         )
+
+    display = get_display_adapter(force_plain=args.no_tui)
+
+    print_banner()
 
     image_path = Path(args.image).resolve()
     if not image_path.exists():
@@ -421,6 +460,8 @@ def main(argv: list[str]) -> int:
         else nullcontext()
     )
 
+    display.on_sweep_start("cohort-smoke", len(ordered), 1)
+
     try:
         print("=" * 72, file=out_stream)
         print("HORUS cohort smoke — ADR-009 §Decision evidence", file=out_stream)
@@ -450,11 +491,7 @@ def main(argv: list[str]) -> int:
 
             results: list[ExtractionResult] = []
             for idx, model_id in enumerate(ordered, start=1):
-                print(
-                    f"[{idx}/{len(ordered)}] Running {model_id} ...",
-                    file=sys.stderr,
-                    flush=True,
-                )
+                display.on_model_load_start(idx, model_id)
 
                 manifest_entry = COHORT_MANIFEST[model_id]
                 category = manifest_entry["category"]
@@ -473,6 +510,9 @@ def main(argv: list[str]) -> int:
                         model_id=model_id,
                         image_path=image_path,
                         max_tokens_override=args.max_tokens,
+                        display=display,
+                        model_idx=idx,
+                        total_models=len(ordered),
                     )
                     results.append(result)
 
@@ -557,6 +597,7 @@ def main(argv: list[str]) -> int:
                 failed = [r.model_id for r in results if not r.is_ok]
                 print(f"Failed:  {failed}", file=out_stream)
             print("=" * 72, file=out_stream)
+            display.on_sweep_complete()
     finally:
         if args.out is not None:
             out_stream.close()
