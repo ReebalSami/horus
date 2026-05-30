@@ -115,11 +115,15 @@ PR(c) ships:
 
 Step 7 (parent_run_id `df6bce67369c47948d10dfa0d2624490`): **182 / 182 tuples completed, 0 failed**. Pooled cohort micro_F1 = **0.4908** (vs PR(b) ~0.20 page-1-only baseline → **2.45× lift**). Per-model best: MinerU2.5-Pro = 0.710 mean across 26 invoices. Full breakdown + lift table: `docs/retros/m2d.5-pilot-13-cohort-harness.md`.
 
+> **Superseded by ADR-028 (2026-05-30).** The `0.4908` cohort baseline reflected the Layer-2 MONEY-field gap documented below. ADR-028's section-scoped Belegsummen fallback raised the cohort micro_F1 to **0.6729** (same 182 transcripts, offline re-score, no re-inference). The `0.4908` is retained here as the historical PR(c)-close figure per ADR-011 supersession-over-deletion.
+
 Step 8 (threshold ablation): cohort Δ across τ ∈ [0.3, 0.7] = 0.0031 (0.3% absolute). Metric is τ-robust; literature default τ = 0.5 is empirically defensible.
 
 ### Known limitation deferred to a follow-up PR
 
-The Layer 2 MONEY-field heuristics in `to_predicted_dict` (PR(b)'s adapter) were authored against page-1-only inputs. With PR(c)'s multi-page concat feeding the adapter, only `due_payable_amount` (BT-115, "Zahlbetrag") flips FN → TP on MinerU. The other 4 MONEY fields (BT-106, BT-109, BT-110, BT-112) remain FN even though the page-2 totals are visibly present in the archived transcripts (`docs/sources/transcripts-multipage/`). This is a PR(b) adapter heuristic gap, not a PR(c) harness gap — the regression test `tests/test_scorer_integration_multipage.py::test_multipage_money_field_gap_documented` captures the current state as the baseline. When the Layer 2 follow-up flips these to TP, the test will FAIL — the desired "limitation is gone" signal.
+> **Resolved by ADR-028 (2026-05-30).** The Layer-2 follow-up landed: a section-scoped Belegsummen fallback flips all 4 fields FN → TP (cohort per-canonical-label F1 0.000 → 0.68–0.74; cohort micro_F1 0.4908 → 0.6729, zero new false positives). The regression test predicted below was renamed `tests/test_scorer_integration_multipage.py::test_multipage_money_fields_recovered_minero_einfach` and now asserts the recovery. The paragraph is retained as the historical PR(c)-close record.
+
+The Layer 2 MONEY-field heuristics in `to_predicted_dict` (PR(b)'s adapter) were authored against page-1-only inputs. With PR(c)'s multi-page concat feeding the adapter, only `due_payable_amount` (BT-115, "Zahlbetrag") flips FN → TP on MinerU. The other 4 MONEY fields (BT-106, BT-109, BT-110, BT-112) remain FN even though the page-2 totals are visibly present in the archived transcripts (`docs/sources/transcripts-multipage/`). This is a PR(b) adapter heuristic gap, not a PR(c) harness gap — the regression test (since renamed `test_multipage_money_fields_recovered_minero_einfach`) captures the current state as the baseline. When the Layer 2 follow-up flips these to TP, the test will FAIL — the desired "limitation is gone" signal.
 
 ### Out of scope (explicit deferrals)
 

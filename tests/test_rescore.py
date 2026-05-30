@@ -230,7 +230,13 @@ def test_rescore_stability_delta_is_zero_when_candidate_missing(tmp_path: Path) 
 
 @skip_if_no_fixtures
 def test_rescore_baseline_only_matches_legacy_ablation_at_tau_0_5() -> None:
-    """Baseline cohort F1 at τ=0.5 reproduces ADR-014 §Step 7 evidence (~0.49)."""
+    """Baseline cohort F1 at τ=0.5 reproduces the canonical adapter's cohort baseline.
+
+    Post-ADR-028 this is 0.6729 (the section-scoped Belegsummen MONEY fallback
+    lifted it from ADR-014's 0.4908; the latter is superseded — see ADR-028
+    §"Empirical results"). The test pins the rescore harness's reproduction of
+    the *current* canonical adapter, not a fixed historical number.
+    """
     pair = rescore.load_adapter_pair(candidate_path=Path("/no/such/path.py"))
 
     results = rescore.rescore_transcripts(
@@ -243,11 +249,12 @@ def test_rescore_baseline_only_matches_legacy_ablation_at_tau_0_5() -> None:
     pooled_f1 = rescore._aggregate_micro_f1(
         [s for inv_list in results["baseline"][0.5].values() for s in inv_list]
     )
-    # ADR-014 §"Empirical results" cites pooled F1 = 0.4908 at τ=0.5. Allow a
-    # small tolerance for floating-point reproducibility.
-    assert 0.45 < pooled_f1 < 0.55, (
-        f"baseline cohort F1 at τ=0.5 drifted from ADR-014 baseline; "
-        f"got {pooled_f1:.4f}, expected ~0.49"
+    # Post-ADR-028 cohort pooled F1 = 0.6729 at τ=0.5 (superseded ADR-014's
+    # 0.4908). Tolerance window allows float reproducibility while catching
+    # real adapter drift.
+    assert 0.65 < pooled_f1 < 0.70, (
+        f"baseline cohort F1 at τ=0.5 drifted from the ADR-028 baseline; "
+        f"got {pooled_f1:.4f}, expected ~0.67"
     )
 
 

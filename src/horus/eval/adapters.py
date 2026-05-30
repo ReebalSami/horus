@@ -29,10 +29,12 @@ Empirical baseline (per `docs/sources/transcripts/*.txt`):
   - MinerU 2.5 Pro: ~10/16 fields (table-cell markup decodes cleanly)
   - olmOCR-2 / GLM-OCR / PaddleOCR-VL / gemma-4-it: ~5-7/16 fields
   - PaliGemma-2: ~4/16 (repeat-block hallucination)
-  - 5 MONEY fields uniformly absent across the cohort (page-1 rasterization
-    constraint per ADR-013; deferred to PR(c)).
+  - MONEY total fields (BT-106/109/110/112/115) recovered on multi-page
+    transcripts via the section-scoped Belegsummen fallback (ADR-028); the
+    page-1-only transcripts above still show them absent (no totals block).
 
-Refs: ADR-013 (this PR), ADR-009 (cohort manifest), ADR-012 (parent: GT parser),
+Refs: ADR-013 (Layer 1+2 origin), ADR-028 (MONEY Belegsummen fallback),
+      ADR-009 (cohort manifest), ADR-012 (parent: GT parser),
       `docs/sources/transcripts/` (empirical evidence base), `horus-config-discipline`
       (no constants in code — Layer 2 reads `FIELDS` registry from PR(a)).
 """
@@ -560,6 +562,132 @@ def _extract_section_name(text: str, section_start: int, section_end: int) -> st
     return None
 
 
+# ---------------------------------------------------------------------------
+# MONEY-totals fallback — section-scoped Belegsummen recovery (ADR-028)
+# ---------------------------------------------------------------------------
+#
+# The 4 MONEY total fields below carry FORMAL EN16931 `german_label`s that
+# never match the colloquial FeRD "Belegsummen" display labels models emit
+# (only `due_payable_amount` / "Zahlbetrag" matches verbatim). The primary
+# label-anchored regex therefore misses them. This fallback locates the
+# Belegsummen totals block, locally normalizes the 4 totals-emitting transcript
+# shapes (Granite `<fcel>...<nl>` cells / MinerU flattened `label: value` /
+# PaddleOCR label-then-value lines / Gemma markdown table), and recovers each
+# still-missing field via a display-label synonym lookup.
+#
+# Section-scoping is load-bearing twice over:
+#   1. It resolves the "Steuerbetrag" collision — that word is BOTH the VAT
+#      breakdown column header (earlier, with per-rate values) AND the
+#      Belegsummen total row (the value we want). Scoping to the totals block
+#      excludes the header occurrence.
+#   2. It keeps the fallback inert on single-page transcripts — page-1-only
+#      output has no Belegsummen block, so `_find_belegsummen_window` returns
+#      None and no MONEY field is touched (preserves the page-1 guarantee).
+
+# Display-label synonyms per english_key (cross-references FIELDS). The formal
+# `german_label` is kept as a trailing synonym so the fallback stays correct on
+# a corpus that DOES print the formal term. Order = priority (FeRD label first).
+_BELEGSUMMEN_SYNONYMS: dict[str, tuple[str, ...]] = {
+    "line_total_amount": ("Positionssumme", "Summe Nettobeträge"),
+    "tax_basis_total_amount": ("Rechnungssumme ohne USt.", "Steuerlicher Bemessungsbetrag"),
+    "tax_total_amount": ("Steuerbetrag", "Umsatzsteuer gesamt"),
+    "grand_total_amount": ("Bruttosumme", "Bruttobetrag"),
+    "due_payable_amount": ("Zahlbetrag",),
+}
+
+# Anchor for the totals block + its end boundary (the next section, present in
+# every FeRD invoice immediately after the totals). Both case-insensitive.
+_BELEGSUMMEN_ANCHOR_RE = re.compile(r"Belegsummen", re.IGNORECASE)
+_BELEGSUMMEN_END_RE = re.compile(r"Zahlungsbedingung", re.IGNORECASE)
+
+# German monetary decimal: optional minus, thousands-dotted, comma-decimal,
+# exactly 2 fractional digits. Examples: "473,00", "1.234,56", "-0,00".
+_GERMAN_MONEY_RE = re.compile(r"-?\d{1,3}(?:\.\d{3})*,\d{2}")
+
+# Layer-1 structural tokens that may survive into the totals window (Granite
+# leaves <fcel>/<nl> + <section_header_level_1>; Gemma leaves markdown | and *).
+# Normalized LOCALLY inside the window only — never globally, so the text other
+# heuristics extract from is untouched (zero blast radius).
+_BELEGSUMMEN_CELL_TOKEN_RE = re.compile(r"<(?:fcel|ecel|lcel|ched|rhed|srow)>")
+_BELEGSUMMEN_HEADER_TAG_RE = re.compile(r"</?section_header(?:_level_\d+)?>")
+
+
+def _find_belegsummen_window(text: str) -> str | None:
+    """Return the totals-block substring (Belegsummen anchor -> next section / EOF).
+
+    Returns None when `text` has no Belegsummen block — the guard that keeps
+    the MONEY fallback inert on single-page transcripts (no totals on page 1).
+    """
+    anchor = _BELEGSUMMEN_ANCHOR_RE.search(text)
+    if anchor is None:
+        return None
+    end_match = _BELEGSUMMEN_END_RE.search(text, anchor.end())
+    end = end_match.start() if end_match else len(text)
+    return text[anchor.start() : end]
+
+
+def _normalize_belegsummen_window(window: str) -> list[str]:
+    """Flatten the 4 totals shapes into uniform ``label ... value`` lines.
+
+    Converts ``<nl>`` -> newline; cell tokens / DocTags section-header tags /
+    markdown pipes + emphasis -> spaces. After this, Granite's single-physical-
+    line cell stream and Gemma's markdown rows both read as one ``label value``
+    line each; MinerU's ``label: value`` and PaddleOCR's label-then-value lines
+    pass through unchanged.
+    """
+    w = window.replace("<nl>", "\n")
+    w = _BELEGSUMMEN_CELL_TOKEN_RE.sub(" ", w)
+    w = _BELEGSUMMEN_HEADER_TAG_RE.sub(" ", w)
+    w = w.replace("|", " ").replace("*", " ").replace("`", " ")
+    return w.split("\n")
+
+
+def _money_after_label(window_lines: list[str], synonym: str) -> str | None:
+    """First German-decimal value associated with ``synonym`` in the window.
+
+    Looks for the value on the SAME line after the label (MinerU / Granite /
+    Gemma shapes), else on the immediately-following non-empty line (PaddleOCR's
+    label-then-value shape). Returns None when no number is adjacent — a miss is
+    preferable to a wrong value (FN over FP).
+    """
+    syn_re = re.compile(re.escape(synonym), re.IGNORECASE)
+    for idx, line in enumerate(window_lines):
+        hit = syn_re.search(line)
+        if hit is None:
+            continue
+        same_line = _GERMAN_MONEY_RE.search(line[hit.end() :])
+        if same_line is not None:
+            return same_line.group(0)
+        for next_line in window_lines[idx + 1 :]:
+            stripped = next_line.strip()
+            if not stripped:
+                continue
+            next_num = _GERMAN_MONEY_RE.match(stripped)
+            return next_num.group(0) if next_num is not None else None
+    return None
+
+
+def _extract_belegsummen_totals(preprocessed: str, missing_keys: list[str]) -> dict[str, str]:
+    """Recover the still-missing MONEY total fields from the Belegsummen block.
+
+    Returns ``{english_key: german_decimal_string}`` for each key in
+    ``missing_keys`` whose display-label synonym is found with an adjacent
+    value. Empty dict when there is no Belegsummen block (single-page input).
+    """
+    window = _find_belegsummen_window(preprocessed)
+    if window is None:
+        return {}
+    window_lines = _normalize_belegsummen_window(window)
+    recovered: dict[str, str] = {}
+    for key in missing_keys:
+        for synonym in _BELEGSUMMEN_SYNONYMS.get(key, ()):
+            value = _money_after_label(window_lines, synonym)
+            if value is not None:
+                recovered[key] = value
+                break
+    return recovered
+
+
 def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:
     """Convert raw VLM output into the 16-field predicted dict.
 
@@ -675,6 +803,18 @@ def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:
     # Only the primary label-anchored regex extracts buyer_vat_id (because
     # the label "USt-IdNr. (Käufer)" is unambiguous).
 
+    # ---- MONEY fallback: section-scoped Belegsummen totals (ADR-028) ----
+    # Recovers the MONEY total fields whose FeRD display labels differ from
+    # their formal EN16931 german_label. Runs only for still-missing targets;
+    # section-scoping avoids the "Steuerbetrag" VAT-header collision and stays
+    # inert on single-page input (no Belegsummen block -> no-op). Values are
+    # returned as raw German-decimal strings; the scorer's MONEY comparator
+    # normalizes them ("473,00" -> "473.00") before matching ground truth.
+    missing_money = [key for key in _BELEGSUMMEN_SYNONYMS if predicted.get(key) is None]
+    if missing_money:
+        for english_key, value in _extract_belegsummen_totals(preprocessed, missing_money).items():
+            predicted[english_key] = value
+
     return predicted
 
 
@@ -694,8 +834,8 @@ def to_predicted_dict_multipage(
     label-anchored German-label regex finds labels (``Rechnungsnummer:``,
     ``Zahlbetrag:``, etc.) regardless of which page they appear on. The
     pre-existing ``tests/test_scorer_integration_multipage.py`` empirically
-    demonstrates this on the MinerU multi-page transcripts (Step 7 evidence,
-    micro_F1 ≈ 0.75 on EN16931_Einfach via page-2 totals block lift).
+    demonstrates this on the MinerU multi-page transcripts (micro_F1 ≈ 0.93 on
+    EN16931_Einfach post-ADR-028, via the page-2 Belegsummen totals recovery).
 
     Implementation: join per-page texts with ``\\n\\n`` (preserves the
     inter-page blank line that the LEGACY harness path produced via
@@ -703,8 +843,10 @@ def to_predicted_dict_multipage(
     ``===== PAGE N =====`` separator lines but left the surrounding newlines
     intact, yielding ``\\n<p1>\\n\\n<p2>`` shape). Joining with ``\\n\\n``
     here keeps the multipage rewire byte-equivalent to the legacy shape for
-    the regex adapter, preserving the pinned ADR-014 Step 7 F1 baseline at
-    ``tests/test_rescore.py::test_rescore_baseline_only_matches_legacy_ablation_at_tau_0_5``.
+    the regex adapter, keeping the cohort-F1 reproduction at
+    ``tests/test_rescore.py::test_rescore_baseline_only_matches_legacy_ablation_at_tau_0_5``
+    byte-stable (its absolute value rose with ADR-028's MONEY fallback, but the
+    join shape did not).
 
     The single-input ``to_predicted_dict`` (delegated to) calls ``preprocess``
     internally (line 611), so we don't double-preprocess here.

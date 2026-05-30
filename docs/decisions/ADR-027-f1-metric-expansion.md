@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | Proposed |
+| **Status** | Accepted |
 | **Date** | 2026-05-30 |
 | **Milestone** | `experiments-validated` (HND-0 per re-audit plan `~/.windsurf/plans/horus-reaudit-review-d23373.md`) |
 | **Authored by** | Cascade (issue #74 implementation session; plan `~/.windsurf/plans/horus-hnd0-hnd2-metrics-money-adapter-5e032c.md`) |

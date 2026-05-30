@@ -551,6 +551,120 @@ def _print_ab_delta_table(
         )
 
 
+def _cohort_extended_metrics(
+    results_per_tau: dict[float, dict[str, list]],
+    tau: float,
+) -> tuple[float, float, float, dict[str, tuple[int, int, int]]]:
+    """Pool the ADR-027 extended metrics over the whole cohort at one threshold.
+
+    Reuses the SAME public scorer helpers as the per-invoice path and
+    `scripts/inspect_pilot_13.py` (ADR-027 Fork 4) — but sourced from the live
+    re-scored `InvoiceFieldScores` rather than saved MLflow artifacts (which
+    `inspect_pilot_13` reads and which therefore cannot reflect an un-promoted
+    candidate; ADR-028).
+
+    Returns ``(presence_conditional_F1, group_level_F1, spurious_rate,
+    per_label_counts)`` where ``per_label_counts`` maps each canonical label
+    to its pooled ``(TP, FP, FN)``.
+    """
+    from horus.eval.scorer import (  # noqa: PLC0415 — defer heavy import
+        f1_from_counts,
+        group_level_counts,
+        label_outcome_counts,
+        presence_conditional_counts,
+        spurious_emission_counts,
+    )
+
+    inv_scores = [s for inv_list in results_per_tau[tau].values() for s in inv_list]
+    pc = [0, 0, 0]  # presence-conditional TP/FP/FN
+    gl = [0, 0, 0]  # group-level TP/FP/FN
+    sp_fp = 0
+    sp_absent = 0
+    all_field_results: list = []
+    for inv in inv_scores:
+        field_results = list(inv.per_field.values())
+        all_field_results.extend(field_results)
+        pt, pf, pn = presence_conditional_counts(field_results)
+        pc[0] += pt
+        pc[1] += pf
+        pc[2] += pn
+        gt, gf, gn = group_level_counts(field_results)  # per-invoice (KIEval)
+        gl[0] += gt
+        gl[1] += gf
+        gl[2] += gn
+        xfp, xabs = spurious_emission_counts(field_results)
+        sp_fp += xfp
+        sp_absent += xabs
+    presence_f1 = f1_from_counts(pc[0], pc[1], pc[2])[2]
+    group_f1 = f1_from_counts(gl[0], gl[1], gl[2])[2]
+    spurious_rate = sp_fp / sp_absent if sp_absent else 0.0
+    return presence_f1, group_f1, spurious_rate, label_outcome_counts(all_field_results)
+
+
+def _print_extended_metrics_ab(
+    baseline_results: dict[float, dict[str, list]],
+    candidate_results: dict[float, dict[str, list]],
+    thresholds: list[float],
+    *,
+    pair: AdapterPair,
+) -> None:
+    """Print the ADR-027 4-metric cohort summary, baseline vs candidate.
+
+    The reproducible post-fix evidence surface for ADR-028 (`inspect_pilot_13`
+    reads stale saved scores and cannot reflect an un-promoted candidate). The
+    four metrics (ADR-027): per-canonical-label F1, presence-conditional F1,
+    group-level F1 (KIEval), spurious-emission rate. Reported at the primary
+    threshold. In stability mode (candidate == baseline) both columns show the
+    canonical adapter's absolute metrics with Δ = 0.
+    """
+    from horus.eval.scorer import f1_from_counts  # noqa: PLC0415 — defer heavy import
+
+    primary_tau = thresholds[0] if thresholds else 0.5
+    b_presence, b_group, b_spurious, b_labels = _cohort_extended_metrics(
+        baseline_results, primary_tau
+    )
+    c_presence, c_group, c_spurious, c_labels = _cohort_extended_metrics(
+        candidate_results, primary_tau
+    )
+
+    print()
+    print("=" * 110)
+    print(f"ADR-027 extended metrics — cohort A/B at τ={primary_tau:.2f}")
+    print("-" * 110)
+    print(f"{'metric':<32}{'baseline':>12}{'candidate':>12}{'Δ':>12}")
+    print("-" * 68)
+    for name, base_val, cand_val in (
+        ("presence_conditional_F1", b_presence, c_presence),
+        ("group_level_F1 (KIEval)", b_group, c_group),
+        ("spurious_emission_rate", b_spurious, c_spurious),
+    ):
+        delta = cand_val - base_val
+        sign = "+" if delta >= 0 else ""
+        print(f"{name:<32}{base_val:>12.4f}{cand_val:>12.4f}{sign + format(delta, '.4f'):>12}")
+
+    # Per-canonical-label F1 — only labels whose F1 changed (the MONEY recovery
+    # is the headline; unchanged labels are omitted for signal).
+    print()
+    print("per-canonical-label F1 (cohort-pooled) — labels changed baseline→candidate:")
+    print(f"{'field':<28}{'baseline':>12}{'candidate':>12}{'Δ':>10}")
+    print("-" * 62)
+    any_change = False
+    for key in sorted(set(b_labels) | set(c_labels)):
+        b_counts = b_labels.get(key, (0, 0, 0))
+        c_counts = c_labels.get(key, (0, 0, 0))
+        b_f1 = f1_from_counts(b_counts[0], b_counts[1], b_counts[2])[2]
+        c_f1 = f1_from_counts(c_counts[0], c_counts[1], c_counts[2])[2]
+        if abs(c_f1 - b_f1) < 1e-9:
+            continue
+        any_change = True
+        delta = c_f1 - b_f1
+        marker = " ↑" if delta > 0 else " ↓"
+        sign = "+" if delta >= 0 else ""
+        print(f"{key:<28}{b_f1:>12.4f}{c_f1:>12.4f}{sign + format(delta, '.4f'):>10}{marker}")
+    if not any_change:
+        print("  (no per-label F1 change — stability self-check or identical adapters)")
+
+
 def _log_to_mlflow_runs(
     *,
     baseline_results: dict[float, dict[str, list]],
@@ -800,6 +914,8 @@ def main(argv: list[str]) -> int:
         )
 
     _print_ab_delta_table(results["baseline"], results["candidate"], thresholds, pair=pair)
+
+    _print_extended_metrics_ab(results["baseline"], results["candidate"], thresholds, pair=pair)
 
     if args.log_mlflow:
         _log_to_mlflow_runs(

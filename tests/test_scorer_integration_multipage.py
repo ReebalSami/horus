@@ -13,10 +13,11 @@ single architectural change (rasterizer.py + harness multi-page concat).
 Per-test rationale:
 
   - **`test_minero_multipage_lift_einfach`** — MinerU 2.5 Pro on multi-page
-    EN16931_Einfach hits F1 ≥ 0.70 (Step 7 observed: 0.750), vs the PR(b)
-    page-1 baseline of 0.636. The +0.114 lift comes from `due_payable_amount`
-    flipping FN → TP because page 2 of the PDF carries the "Zahlbetrag 529,87"
-    label that PR(b)'s page-1-only scope hid.
+    EN16931_Einfach hits micro_F1 ≈ 0.93 (post-ADR-028), vs the PR(b) page-1
+    baseline of 0.636. The lift comes from all 5 MONEY fields flipping FN → TP:
+    due_payable via the page-2 "Zahlbetrag" label (ADR-014), and line_total /
+    tax_basis / tax_total / grand_total via the section-scoped Belegsummen
+    fallback (ADR-028).
 
   - **`test_multipage_due_payable_tp_minero`** — pins the specific MONEY-field
     flip: MinerU gets due_payable_amount = TP via the page-2 totals block.
@@ -29,16 +30,17 @@ Per-test rationale:
     dates). MinerU outputs 2018-03-05 from the visible PDF; the GT route MUST
     be factur-x so the values match.
 
-  - **`test_multipage_money_field_gap_documented`** — the regression-baseline
-    for the known limitation: 4 of 5 MONEY fields remain FN on MinerU
-    multi-page (line_total_amount, tax_basis_total_amount, tax_total_amount,
-    grand_total_amount). If/when the Layer 2 heuristic follow-up lands and
-    these flip to TP, this test will FAIL — that's the desired regression
-    signal saying "update the baseline because the limitation is gone".
+  - **`test_multipage_money_fields_recovered_minero_einfach`** — the regression
+    guard for the ADR-028 fix: all 5 MONEY fields are TP on MinerU multi-page
+    EN16931_Einfach (line_total / tax_basis / tax_total / grand_total via the
+    section-scoped Belegsummen fallback, plus due_payable). This was the
+    "gap documented" baseline before ADR-028 closed it; it now guards against a
+    regression that would drop any totals field back to FN.
 
-Refs: ADR-014 (this PR's enabling ADR), ADR-013 §"Decision + integration
-thoughts" (parent scorer ADR), ADR-012 §"Probe 5" (sidecar drift mitigation),
-`docs/sources/transcripts-multipage/` (Step 7 saved evidence base).
+Refs: ADR-028 (MONEY Belegsummen fallback — closes the gap this file's test 4
+once documented), ADR-014 (multi-page enabling ADR), ADR-013 §"Decision +
+integration thoughts" (parent scorer ADR), ADR-012 §"Probe 5" (sidecar drift
+mitigation), `docs/sources/transcripts-multipage/` (saved evidence base).
 """
 
 from __future__ import annotations
@@ -142,12 +144,13 @@ def xrechnung_einfach_gt_facturx() -> GroundTruth:
 
 
 def test_minero_multipage_lift_einfach(einfach_gt_facturx: GroundTruth) -> None:
-    """MinerU 2.5 Pro on multi-page EN16931_Einfach: micro_F1 in [0.65, 0.85].
+    """MinerU 2.5 Pro on multi-page EN16931_Einfach: micro_F1 in [0.88, 0.97].
 
-    Step 7 evidence (parent_run_id=df6bce67369c47948d10dfa0d2624490):
-    MinerU EN16931_Einfach micro_F1 = 0.750. PR(b) page-1 baseline was 0.636.
-    Lift of +0.114 captured via `due_payable_amount` flipping FN → TP from
-    the page-2 totals block (Zahlbetrag 529,87 / Bruttosumme 529,87).
+    Post-ADR-028 observed: MinerU EN16931_Einfach micro_F1 = 0.929 (PR(b)
+    page-1 baseline was 0.636; the ADR-014 multi-page run was 0.750 with only
+    due_payable recovered). The further lift to 0.929 comes from the ADR-028
+    section-scoped Belegsummen fallback recovering line_total / tax_basis /
+    tax_total / grand_total (the Belegsummen totals block on page 2).
     """
     scorer_input, model_id = _load_multipage_transcript(
         "opendatalab__mineru2.5-pro-2604-1.2b",
@@ -162,10 +165,10 @@ def test_minero_multipage_lift_einfach(einfach_gt_facturx: GroundTruth) -> None:
         invoice_id="EN16931_Einfach",
         model_id=model_id,
     )
-    assert 0.65 <= result.micro_f1 <= 0.85, (
+    assert 0.88 <= result.micro_f1 <= 0.97, (
         f"MinerU multi-page EN16931_Einfach micro_F1 = {result.micro_f1:.3f} "
-        f"outside [0.65, 0.85]. Step 7 baseline: 0.750. If drift is intentional "
-        f"(adapter improvement / model update), update the range."
+        f"outside [0.88, 0.97]. Post-ADR-028 baseline: 0.929. If drift is "
+        f"intentional (adapter improvement / model update), update the range."
     )
 
 
@@ -182,10 +185,11 @@ def test_multipage_due_payable_tp_minero(einfach_gt_facturx: GroundTruth) -> Non
     PR(b)'s page-1-only rasterization could NEVER see. PR(c) feeds the model
     all pages → MinerU's Layer 2 heuristic finds the label-value pair → TP.
 
-    Note: the other 4 MONEY fields (line_total_amount, tax_basis_total_amount,
-    tax_total_amount, grand_total_amount) remain FN even on multi-page because
-    PR(b)'s Layer 2 heuristics for those labels don't anchor on the concat
-    shape (see `test_multipage_money_field_gap_documented`).
+    Note: post-ADR-028 the other 4 MONEY fields (line_total_amount,
+    tax_basis_total_amount, tax_total_amount, grand_total_amount) are ALSO
+    recovered as TP via the section-scoped Belegsummen fallback (see
+    `test_multipage_money_fields_recovered_minero_einfach`); this test isolates
+    the due_payable signal that the page-2 totals block first enabled (ADR-014).
     """
     scorer_input, model_id = _load_multipage_transcript(
         "opendatalab__mineru2.5-pro-2604-1.2b",
@@ -260,35 +264,26 @@ def test_xrechnung_issue_date_tp_minero_factur_x_route(
 
 
 # ===========================================================================
-# Test 4 — known limitation regression-baseline
+# Test 4 — MONEY-field recovery guard (ADR-028 closed the documented gap)
 # ===========================================================================
 
 
-def test_multipage_money_field_gap_documented(einfach_gt_facturx: GroundTruth) -> None:
-    """4 of 5 MONEY fields remain FN on MinerU multi-page EN16931_Einfach.
+def test_multipage_money_fields_recovered_minero_einfach(einfach_gt_facturx: GroundTruth) -> None:
+    """All 5 MONEY fields are TP on MinerU multi-page EN16931_Einfach (ADR-028).
 
-    Step 7 evidence: PR(c)'s multi-page rasterization feeds page-2 content to
-    the adapter, but PR(b)'s Layer 2 heuristics for line_total_amount /
-    tax_basis_total_amount / tax_total_amount / grand_total_amount don't match
-    the concat shape (`<otsl>` / `<fcel>` table tokens for DocTags-format
-    models; markdown `|` separators for others). Only `due_payable_amount`
-    flips to TP because its "Zahlbetrag" label is unambiguous; the other 4
-    labels collide with line-item subtotals and the heuristic stays
-    conservative (prefer FN over silent FP).
+    Before ADR-028 this test documented the known limitation (4 of 5 MONEY
+    fields FN — line_total / tax_basis / tax_total / grand_total — because their
+    formal EN16931 `german_label`s never matched the FeRD "Belegsummen" display
+    labels Positionssumme / Rechnungssumme ohne USt. / Steuerbetrag /
+    Bruttosumme). ADR-028's section-scoped Belegsummen fallback closes that gap:
+    all 4 now flip FN → TP, joining due_payable (which the page-2 "Zahlbetrag"
+    label already anchored). This test now guards the recovery — if any totals
+    field drops back to FN, the fallback or the transcript archive has regressed.
 
-    This test captures the known limitation as the regression baseline:
-
-      - If a Layer 2 heuristic follow-up lands and these flip TP, this test
-        FAILS — that's the desired "limitation is gone" signal. Update the
-        expected_fn set to whatever still remains FN at that point.
-      - If the multi-page extraction regresses (e.g., page-2 content stops
-        reaching the adapter), this test ALSO fails because
-        due_payable_amount won't be TP — caught upstream by
-        `test_multipage_due_payable_tp_minero`.
-
-    See `test_scorer_integration.py::test_monetary_fields_uniformly_fn_across_cohort`
-    for the parallel page-1 baseline (5/5 FN — no MONEY field lifts on page-1
-    inputs because the totals block is page-2 content).
+    Section-scoping keeps the fallback from over-firing: the page-1 sibling
+    `test_scorer_integration.py::test_monetary_fields_uniformly_fn_across_cohort`
+    still shows 5/5 FN (page-1 transcripts carry no Belegsummen block), proving
+    the fallback is inert without a totals section.
     """
     scorer_input, model_id = _load_multipage_transcript(
         "opendatalab__mineru2.5-pro-2604-1.2b",
@@ -303,31 +298,19 @@ def test_multipage_money_field_gap_documented(einfach_gt_facturx: GroundTruth) -
         invoice_id="EN16931_Einfach",
         model_id=model_id,
     )
-    expected_fn_money = {
+    money_fields = {
         "line_total_amount",
         "tax_basis_total_amount",
         "tax_total_amount",
         "grand_total_amount",
+        "due_payable_amount",
     }
-    expected_tp_money = {"due_payable_amount"}
-    actual_money_outcomes = {
-        fk: result.per_field[fk].outcome for fk in expected_fn_money | expected_tp_money
-    }
-
-    fn_observed = {fk for fk, o in actual_money_outcomes.items() if o == "FN"}
+    actual_money_outcomes = {fk: result.per_field[fk].outcome for fk in money_fields}
     tp_observed = {fk for fk, o in actual_money_outcomes.items() if o == "TP"}
 
-    assert fn_observed == expected_fn_money, (
-        f"MinerU multi-page EN16931_Einfach MONEY FN set drifted from baseline. "
-        f"Expected FN: {expected_fn_money}. Actual FN: {fn_observed}. "
-        f"All MONEY outcomes: {actual_money_outcomes}. "
-        f"If the Layer 2 follow-up landed and these are now TP, update the "
-        f"baseline; if outcomes regressed (TP→FN), investigate adapter or "
-        f"transcript-archival drift."
-    )
-    assert tp_observed == expected_tp_money, (
-        f"MinerU multi-page EN16931_Einfach MONEY TP set drifted from baseline. "
-        f"Expected TP: {expected_tp_money}. Actual TP: {tp_observed}. "
-        f"due_payable_amount must remain TP — it's the canonical page-2 "
-        f"multi-page lift signal."
+    assert tp_observed == money_fields, (
+        f"MinerU multi-page EN16931_Einfach MONEY recovery regressed (ADR-028). "
+        f"Expected all 5 MONEY fields TP. Actual outcomes: {actual_money_outcomes}. "
+        f"If a totals field dropped to FN, investigate the section-scoped "
+        f"Belegsummen fallback in adapters.py or transcript-archival drift."
     )
