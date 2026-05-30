@@ -1,0 +1,52 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  311.67s total
+# Adapter:  json
+# Prompt:   Extract the 16 invoice fields and return ONLY single-line JSON with keys: invoic
+
+===== PAGE 1 =====
+```json
+{
+  "invoice_number": "471102",
+  "issue_date": "05.03.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "05.03.2018",
+  "seller_name": "Lieferantant GmbH",
+  "seller_vat_id": "DE 80333 München",
+  "seller_tax_id": "GE2020211",
+  "seller_gln": "Lieferantenenstraße 20",
+  "buyer_name": "Kunden AG Mitte",
+  "buyer_reference": "Kundenenstraße 15",
+  "buyer_vat_id": "DE 69876 Frankfurt",
+  "line_total_amount": null,
+  "tax_basis_total_amount": null,
+  "tax_total_amount": null,
+  "grand_total_amount": null,
+  "due_payable_amount": null
+}
+```
+===== PAGE 2 =====
+```json
+{
+  "invoice_number": "TB100A4",
+  "issue_date": "04.04.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "15.03.2018",
+  "seller_name": "Joghurt Banane",
+  "seller_vat_id": "4012345001235",
+  "seller_tax_id": "ARNR2",
+  "seller_gln": "4000050986428",
+  "buyer_name": "Trennblätter A4",
+  "buyer_reference": "GTIN",
+  "buyer_vat_id": "null",
+  "line_total_amount": "198,00",
+  "tax_basis_total_amount": "5,5000",
+  "tax_total_amount": "198,00",
+  "grand_total_amount": "529,87",
+  "due_payable_amount": "529,87"
+}
+```

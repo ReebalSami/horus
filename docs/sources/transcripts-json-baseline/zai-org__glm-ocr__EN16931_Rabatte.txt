@@ -1,0 +1,72 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  94.98s total
+# Adapter:  json
+# Prompt:   Recognize all text in the image and extract the 16 invoice fields as a single-li
+
+===== PAGE 1 =====
+```json
+{
+    "invoice_number": "471102",
+    "issue_date": "2018-06-03",
+    "invoice_currency_code": "EUR",
+    "delivery_date": "2018-06-18",
+    "seller_name": "Lieferant GmbH",
+    "seller_vat_id": "",
+    "seller_tax_id": "",
+    "seller_gln": "4000001123452",
+    "buyer_name": "Lieferant GmbH",
+    "buyer_reference": "",
+    "buyer_vat_id": "",
+    "line_total_amount": "",
+    "tax_basis_total_amount": "",
+    "tax_total_amount": "",
+    "grand_total_amount": "",
+    "due_payable_amount": ""
+}
+```
+===== PAGE 2 =====
+```json
+{
+    "invoice_number": "",
+    "issue_date": "",
+    "invoice_currency_code": "",
+    "delivery_date": "",
+    "seller_name": "Umsatzsteuer",
+    "seller_vat_id": "",
+    "seller_tax_id": "",
+    "seller_gln": "",
+    "buyer_name": "Warenwert",
+    "buyer_reference": "",
+    "buyer_vat_id": "",
+    "line_total_amount": "",
+    "tax_basis_total_amount": "",
+    "tax_total_amount": "",
+    "grand_total_amount": ""
+}
+```
+===== PAGE 3 =====
+```json
+{
+    "invoice_number": "",
+    "issue_date": "",
+    "invoice_currency_code": "",
+    "delivery_date": "",
+    "seller_name": "",
+    "seller_vat_id": "",
+    "seller_tax_id": "",
+    "seller_gln": "",
+    "buyer_name": "",
+    "buyer_reference": "",
+    "buyer_vat_id": "",
+    "line_total_amount": "",
+    "tax_basis_total_amount": "",
+    "tax_total_amount": "",
+    "grand_total_amount": "",
+    "due_payable_amount": ""
+}
+```

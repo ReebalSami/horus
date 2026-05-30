@@ -1,0 +1,73 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  XRECHNUNG_Einfach
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  366.10s total
+# Adapter:  json
+# Prompt:   Extract the 16 invoice fields and return ONLY single-line JSON with keys: invoic
+
+===== PAGE 1 =====
+```json
+{
+  "invoice_number": "471102",
+  "issue_date": "05.03.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "05.03.2018",
+  "seller_name": "Lieferantant GmbH",
+  "seller_vat_id": "DE 80333 München",
+  "seller_tax_id": "201/113/40209",
+  "seller_gln": "DE123456789",
+  "buyer_name": "Kunden AG Mitte",
+  "buyer_reference": "H A 123",
+  "buyer_vat_id": "DE 69876 Frankfurt",
+  "line_total_amount": null,
+  "tax_basis_total_amount": null,
+  "tax_total_amount": null,
+  "grand_total_amount": null,
+  "due_payable_amount": null
+}
+```
+===== PAGE 2 =====
+```json
+{
+  "invoice_number": null,
+  "issue_date": null,
+  "invoice_currency_code": null,
+  "delivery_date": null,
+  "seller_name": null,
+  "seller_vat_id": null,
+  "seller_tax_id": null,
+  "seller_gln": null,
+  "buyer_name": null,
+  "buyer_reference": null,
+  "buyer_vat_id": null,
+  "line_total_amount": 198.00,
+  "tax_basis_total_amount": 56.87,
+  "tax_total_amount": -0.00,
+  "grand_total_amount": 529.87,
+  "due_payable_amount": 529.87
+}
+```
+===== PAGE 3 =====
+```json
+{
+  "invoice_number": null,
+  "issue_date": null,
+  "invoice_currency_code": null,
+  "delivery_date": null,
+  "seller_name": null,
+  "seller_vat_id": null,
+  "seller_tax_id": null,
+  "seller_gln": null,
+  "buyer_name": "Kunden AG",
+  "buyer_reference": null,
+  "buyer_vat_id": null,
+  "line_total_amount": null,
+  "tax_basis_total_amount": null,
+  "tax_total_amount": null,
+  "grand_total_amount": null,
+  "due_payable_amount": null
+}
+```

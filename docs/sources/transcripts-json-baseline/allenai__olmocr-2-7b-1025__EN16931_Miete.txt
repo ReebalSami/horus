@@ -1,0 +1,94 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Miete
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  496.71s total
+# Adapter:  json
+# Prompt:   Extract the 16 invoice fields and return ONLY single-line JSON with keys: invoic
+
+===== PAGE 1 =====
+```json
+{
+  "invoice_number": "9314110911/00/M/00/N",
+  "issue_date": "01.10.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "29.09.2018",
+  "seller_name": "MUSTER-KUNDE GMBH",
+  "seller_vat_id": "DE 99199 MUSTERHAUSEN",
+  "seller_tax_id": "DE 136695976",
+  "seller_gln": "DE 40235 DUESSELDORF",
+  "buyer_name": "KUNDENWEG 88",
+  "buyer_reference": "B123456789",
+  "buyer_vat_id": "9314110911",
+  "line_total_amount": null,
+  "tax_basis_total_amount": null,
+  "tax_total_amount": null,
+  "grand_total_amount": null,
+  "due_payable_amount": null
+}
+```
+===== PAGE 2 =====
+```json
+{
+  "invoice_number": "REG",
+  "issue_date": "29.09.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "01.10.2018",
+  "seller_name": "MUSTER-Autovermietung GMBH",
+  "seller_vat_id": "DE136695976",
+  "seller_tax_id": "+49 711-50885524",
+  "seller_gln": "177791",
+  "buyer_name": "Maxima Musterfrau",
+  "buyer_reference": "Frankfurt a. M.",
+  "buyer_vat_id": "Musterstr. 99",
+  "line_total_amount": "18664",
+  "tax_basis_total_amount": "873",
+  "tax_total_amount": "150",
+  "grand_total_amount": "68300",
+  "due_payable_amount": "null"
+}
+```
+===== PAGE 3 =====
+```json
+{
+  "invoice_number": "ZUGFeRD 2.2",
+  "issue_date": "2022",
+  "invoice_currency_code": "EUR",
+  "delivery_date": null,
+  "seller_name": "FeRD",
+  "seller_vat_id": null,
+  "seller_tax_id": null,
+  "seller_gln": null,
+  "buyer_name": null,
+  "buyer_reference": null,
+  "buyer_vat_id": null,
+  "line_total_amount": 865500,
+  "tax_basis_total_amount": 28652,
+  "tax_total_amount": 5444,
+  "grand_total_amount": 17310,
+  "due_payable_amount": 17310
+}
+```
+===== PAGE 4 =====
+```json
+{
+  "invoice_number": "Belegsummen",
+  "issue_date": null,
+  "invoice_currency_code": null,
+  "delivery_date": null,
+  "seller_name": null,
+  "seller_vat_id": null,
+  "seller_tax_id": null,
+  "seller_gln": null,
+  "buyer_name": null,
+  "buyer_reference": null,
+  "buyer_vat_id": null,
+  "line_total_amount": 286.52,
+  "tax_basis_total_amount": 0.00,
+  "tax_total_amount": -0.00,
+  "grand_total_amount": 286.52,
+  "due_payable_amount": 286.52
+}
+```

@@ -1,0 +1,73 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Innergemeinschaftliche_Lieferungen
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  445.23s total
+# Adapter:  json
+# Prompt:   Extract the 16 invoice fields and return ONLY single-line JSON with keys: invoic
+
+===== PAGE 1 =====
+```json
+{
+  "invoice_number": "47110818",
+  "issue_date": "31.10.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "01.10.2018 bis 31.10.2018",
+  "seller_name": "Global Supplies Ltd.",
+  "seller_vat_id": "GB123456789",
+  "seller_tax_id": "DE 12345 Leipzig",
+  "seller_gln": "DE 12345 Leipzig",
+  "buyer_name": "Metallbau Leipzig GmbH & Co. KG",
+  "buyer_reference": "Metallbau Leipzig GmbH & Co. KG",
+  "buyer_vat_id": "DE123456789",
+  "line_total_amount": "75969815",
+  "tax_basis_total_amount": "75969815",
+  "tax_total_amount": "75969815",
+  "grand_total_amount": "75969815",
+  "due_payable_amount": "75969815"
+}
+```
+===== PAGE 2 =====
+```json
+{
+  "invoice_number": "ZUGFeRD 2.2",
+  "issue_date": "2022",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "01.10.2018 bis 31.10.2018",
+  "seller_name": "Toolbox 0815CO-123 /V2A",
+  "seller_vat_id": "DE",
+  "seller_tax_id": "DE",
+  "seller_gln": "DE",
+  "buyer_name": "Stahlcoil",
+  "buyer_reference": "Basismenge: 1 Stk",
+  "buyer_vat_id": "DE",
+  "line_total_amount": "1.000,00",
+  "tax_basis_total_amount": "2.000,00",
+  "tax_total_amount": "0,00",
+  "grand_total_amount": "2.000,00",
+  "due_payable_amount": "2.000,00"
+}
+```
+===== PAGE 3 =====
+```json
+{
+  "invoice_number": null,
+  "issue_date": null,
+  "invoice_currency_code": null,
+  "delivery_date": null,
+  "seller_name": null,
+  "seller_vat_id": null,
+  "seller_tax_id": null,
+  "seller_gln": null,
+  "buyer_name": null,
+  "buyer_reference": null,
+  "buyer_vat_id": null,
+  "line_total_amount": null,
+  "tax_basis_total_amount": null,
+  "tax_total_amount": null,
+  "grand_total_amount": null,
+  "due_payable_amount": null
+}
+```

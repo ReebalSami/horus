@@ -1,0 +1,79 @@
+# json-baseline.yaml — HND-1 clean JSON baseline overlay (issue #54, ADR-029)
+#
+# Re-runs the structured-output (JSON) extraction arm on a >=5-invoice ZUGFeRD
+# subset for the THREE cohort models the ADR-018 probe proved can actually emit
+# JSON (Gemma-4 / olmOCR-2-7B / GLM-OCR). The other 4 cohort models are
+# structurally JSON-incapable per ADR-019/021 (Granite + MinerU emit DocTags;
+# PaddleOCR-VL decoder-collapses; PaliGemma2 is a base VLM that refuses) and are
+# CITED, not re-run (hardware-prohibitive + scientifically redundant per
+# know-your-hardware + ADR-020 model-behavior-vs-extractor-bug rule).
+#
+# This is the "clean JSON baseline" that the HND-3 approach-gate (#76) compares
+# against the free-form pilot-13-full baseline. Arm B prompts (per-model native
+# task prefix + JSON suffix) are reused VERBATIM from the pre-registered probe
+# overlay configs/pilot-13-structured-probe-native-json.yaml (ADR-018
+# §"Pre-registered prompts" §"Arm B"); Arm B dominates Arm A for all 3 models
+# (Gemma A==B, olmOCR A==B, GLM-OCR B 0.5714 >> A 0.0).
+#
+# Composed on top of configs/pilot-13.yaml (NOT pilot-13-dev.yaml — needs the
+# rasterizer/eval/corpus_root/seed from the canonical base). Per ADR-016
+# multi-file deep-merge, list fields REPLACE (working_models: [3] replaces the
+# base 7) and dict fields merge.
+#
+# Invocation:
+#
+#   HORUS_DASHBOARD=plain make pilot-13 \
+#     CFG=configs/pilot-13.yaml,configs/json-baseline.yaml
+#
+# Report (read-only, no VLM):
+#
+#   make inspect-pilot-13 \
+#     CFG=configs/pilot-13.yaml,configs/json-baseline.yaml
+#
+# dev_only=false: this is a REPORTED (though in-sample / diagnostic) baseline
+# comparable to pilot-13-full, NOT a throwaway dev fixture. The new experiment
+# name keeps it off the canonical pilot-13-full experiment (the dev_only guard's
+# only hard target). No-HARKing is satisfied by pre-registering scope (the
+# confirmed plan + this config + ADR-029) BEFORE the run; the in-corpus numbers
+# stay diagnostic until the held-out Belege split (#78) per ADR-028 §A.
+#
+# Refs: ADR-029 (this overlay's ratifying ADR), ADR-018 (Arm B prompts +
+# adapter_mode/prompt_template_override fields), ADR-019/021 (per-model JSON
+# (in)capability evidence), ADR-027 (the 4 metrics the inspector reports),
+# ADR-014 (the harness), ADR-016 (multi-file YAML + dev_only), issue #54.
+
+mlflow:
+  experiment_name: json-baseline
+  run_tags:
+    stage: json-baseline
+    arm: native-json
+    issue: "54"
+    adr: ADR-029
+
+cohort:
+  working_models:
+    - allenai/olmOCR-2-7B-1025
+    - zai-org/GLM-OCR
+    - google/gemma-4-E4B-it
+  invoice_subset:
+    - EN16931_Einfach
+    - EN16931_Gutschrift
+    - EN16931_Miete
+    - EN16931_Rabatte
+    - EN16931_Innergemeinschaftliche_Lieferungen
+    - XRECHNUNG_Einfach
+  parent_run_name: json-baseline
+  transcript_archive_dir: docs/sources/transcripts-json-baseline
+  dev_only: false
+  adapter_mode: json
+  prompt_template_override:
+    allenai/olmOCR-2-7B-1025: |-
+      Extract the 16 invoice fields and return ONLY single-line JSON with keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount. Use null for missing fields. Do not hallucinate.
+    zai-org/GLM-OCR: |-
+      Recognize all text in the image and extract the 16 invoice fields as a single-line JSON object with keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount. Use null for missing fields.
+    google/gemma-4-E4B-it: |-
+      You are reading a German B2B invoice. Extract these fields and return ONLY a single JSON object on one line, no commentary, no markdown fences:
+
+      {"invoice_number": "<BT-1>", "issue_date": "<BT-2 ISO 8601>", "invoice_currency_code": "<BT-5>", "delivery_date": "<BT-72 ISO 8601>", "seller_name": "<BT-27>", "seller_vat_id": "<BT-31>", "seller_tax_id": "<BT-32>", "seller_gln": "<BT-29>", "buyer_name": "<BT-44>", "buyer_reference": "<BT-46>", "buyer_vat_id": "<BT-48>", "line_total_amount": "<BT-106>", "tax_basis_total_amount": "<BT-109>", "tax_total_amount": "<BT-110>", "grand_total_amount": "<BT-112>", "due_payable_amount": "<BT-115>"}
+
+      Use null for any field not present.
