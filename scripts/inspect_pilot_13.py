@@ -501,6 +501,152 @@ def _print_probe_2_xrechnung_dates(nested: list) -> None:
         )
 
 
+def _print_extended_metrics(nested: list) -> None:
+    """ADR-027: presence-conditional F1 + KIEval group-level F1 + spurious-
+    emission rate (per-model + cohort) + per-canonical-label F1 (cohort).
+
+    Re-aggregates the per-field outcomes already saved in each nested run's
+    `per_field_scores.json` — no VLM, no re-run (ADR-020 offline rescore). Uses
+    the SAME scorer metric functions as the per-invoice path (ADR-027 Fork 4).
+    """
+    import dataclasses  # noqa: PLC0415
+    from collections import defaultdict  # noqa: PLC0415
+
+    import mlflow  # noqa: PLC0415
+
+    from horus.eval.scorer import (  # noqa: PLC0415
+        FieldResult,
+        f1_from_counts,
+        group_level_counts,
+        label_outcome_counts,
+        presence_conditional_counts,
+        spurious_emission_counts,
+    )
+
+    console = Console(highlight=False)
+    console.print()
+    console.print(
+        Panel(
+            Text(
+                "ADR-027 extended metrics — presence-conditional F1 + group-level "
+                "F1 (KIEval) + spurious-emission rate + per-label F1",
+                justify="center",
+            ),
+            border_style="magenta",
+        )
+    )
+
+    client = mlflow.MlflowClient()
+    fr_field_names = [f.name for f in dataclasses.fields(FieldResult)]
+    per_model: dict[str, list[list[FieldResult]]] = defaultdict(list)
+    n_err = 0
+    for r in nested:
+        if r.info.status != "FINISHED":
+            continue
+        m = r.data.tags.get("model_id", "?")
+        try:
+            artifact_path = client.download_artifacts(r.info.run_id, "per_field_scores.json")
+            with open(artifact_path, encoding="utf-8") as fh:
+                data = json.load(fh)
+            per_field = data.get("per_field", {})
+            results = [
+                FieldResult(**{k: rec[k] for k in fr_field_names}) for rec in per_field.values()
+            ]
+        except OSError, KeyError, TypeError, ValueError:  # noqa: BLE001 handled below
+            n_err += 1
+            continue
+        per_model[m].append(results)
+
+    if not per_model:
+        console.print(
+            "  no readable per_field_scores.json artifacts on the nested runs — "
+            "cannot compute ADR-027 metrics"
+        )
+        return
+
+    rows: list[tuple[str, int, float, float, float]] = []
+    coh_pc = [0, 0, 0]
+    coh_gl = [0, 0, 0]
+    coh_fp = 0
+    coh_abs = 0
+    for m, invoices in per_model.items():
+        pc_tp = pc_fp = pc_fn = 0
+        gl_tp = gl_fp = gl_fn = 0
+        sp_fp = sp_abs = 0
+        for results in invoices:
+            pt, pf, pn = presence_conditional_counts(results)
+            pc_tp += pt
+            pc_fp += pf
+            pc_fn += pn
+            gt, gf, gn = group_level_counts(results)
+            gl_tp += gt
+            gl_fp += gf
+            gl_fn += gn
+            xfp, xabs = spurious_emission_counts(results)
+            sp_fp += xfp
+            sp_abs += xabs
+        coh_pc[0] += pc_tp
+        coh_pc[1] += pc_fp
+        coh_pc[2] += pc_fn
+        coh_gl[0] += gl_tp
+        coh_gl[1] += gl_fp
+        coh_gl[2] += gl_fn
+        coh_fp += sp_fp
+        coh_abs += sp_abs
+        rows.append(
+            (
+                m,
+                len(invoices),
+                f1_from_counts(pc_tp, pc_fp, pc_fn)[2],
+                f1_from_counts(gl_tp, gl_fp, gl_fn)[2],
+                sp_fp / sp_abs if sp_abs else 0.0,
+            )
+        )
+
+    rows.sort(key=lambda x: -x[2])  # presence-conditional F1 desc
+
+    table = Table(box=rbox.SIMPLE_HEAVY, highlight=False)
+    table.add_column("model", style="cyan")
+    table.add_column("n_inv", justify="right")
+    table.add_column("presence_F1", justify="right")
+    table.add_column("group_F1", justify="right")
+    table.add_column("spurious", justify="right")
+    for m, n_inv, pc_f1, gl_f1, sp_rate in rows:
+        table.add_row(m, str(n_inv), f"{pc_f1:.3f}", f"{gl_f1:.3f}", f"{sp_rate:.3f}")
+    table.add_section()
+    table.add_row(
+        "[bold]COHORT[/bold]",
+        str(sum(n for _, n, _, _, _ in rows)),
+        f"[bold]{f1_from_counts(coh_pc[0], coh_pc[1], coh_pc[2])[2]:.3f}[/bold]",
+        f"[bold]{f1_from_counts(coh_gl[0], coh_gl[1], coh_gl[2])[2]:.3f}[/bold]",
+        f"[bold]{(coh_fp / coh_abs if coh_abs else 0.0):.3f}[/bold]",
+    )
+    console.print(table)
+
+    all_results = [r for invoices in per_model.values() for results in invoices for r in results]
+    label_counts = label_outcome_counts(all_results)
+    console.print()
+    console.print("per-canonical-label F1 (cohort-pooled, hardest first):")
+    ltable = Table(box=rbox.SIMPLE_HEAVY, highlight=False)
+    ltable.add_column("field", style="cyan")
+    ltable.add_column("tp", justify="right")
+    ltable.add_column("fp", justify="right")
+    ltable.add_column("fn", justify="right")
+    ltable.add_column("f1", justify="right")
+    label_rows = []
+    for key, c in label_counts.items():
+        label_rows.append((key, c[0], c[1], c[2], f1_from_counts(c[0], c[1], c[2])[2]))
+    label_rows.sort(key=lambda x: x[4])
+    for key, tp, fp, fn, f1 in label_rows:
+        color = "green" if f1 >= 0.5 else ("yellow" if f1 >= 0.3 else "red")
+        ltable.add_row(key, str(tp), str(fp), str(fn), f"[{color}]{f1:.3f}[/{color}]")
+    console.print(ltable)
+
+    if n_err:
+        console.print()
+        console.print(f"  Note: {n_err} nested runs lacked a readable per_field_scores.json")
+
+
 def _csv(value: str) -> list[str]:
     """Argparse type converter for comma-separated config paths.
 
@@ -559,6 +705,7 @@ def main(argv: list[str]) -> int:
     _print_perf_table(nested, parent_run_id=parent)
     _print_probe_1_money_tps(nested)
     _print_probe_2_xrechnung_dates(nested)
+    _print_extended_metrics(nested)
     return 0
 
 

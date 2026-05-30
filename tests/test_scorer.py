@@ -18,10 +18,13 @@ from __future__ import annotations
 import pytest
 
 from horus.config import EvalConfig
-from horus.eval.ground_truth import GroundTruth, GroundTruthField
+from horus.eval.ground_truth import FieldType, GroundTruth, GroundTruthField
 from horus.eval.scorer import (
+    DOCUMENT_FIELDS,
+    FIELD_GROUPS,
     FieldResult,
     InvoiceFieldScores,
+    Outcome,
     _aggregate_micro_macro,
     _compare_string,
     _compare_typed_exact,
@@ -32,7 +35,15 @@ from horus.eval.scorer import (
     _normalize_predicted_money,
     _normalize_predicted_string,
     _score_one_field,
+    f1_from_counts,
+    group_level_counts,
+    group_level_f1,
+    label_outcome_counts,
+    presence_conditional_counts,
+    presence_conditional_f1,
     score,
+    spurious_emission_counts,
+    spurious_emission_rate,
 )
 
 # ===========================================================================
@@ -609,3 +620,226 @@ def test_score_lower_anls_threshold_accepts_more_string_drift() -> None:
     # At τ=0.2: outcome = TP
     result_lenient = score(predicted, gt, cfg=EvalConfig(anls_threshold=0.2))
     assert result_lenient.per_field["seller_name"].outcome == "TP"
+
+
+# ===========================================================================
+# 7. ADR-027 additive metrics — per-canonical-label F1, presence-conditional
+#    F1, KIEval group-level F1, spurious-emission rate
+# ===========================================================================
+
+
+def _fr(
+    english_key: str,
+    outcome: Outcome,
+    *,
+    gt_present: bool,
+    field_type: FieldType = "CODE",
+) -> FieldResult:
+    """Build a synthetic FieldResult for ADR-027 metric tests."""
+    return FieldResult(
+        english_key=english_key,
+        bt_code="BT-X",
+        field_type=field_type,
+        outcome=outcome,
+        score=1.0 if outcome == "TP" else 0.0,
+        predicted_normalized="x" if outcome in ("TP", "FP") else None,
+        gt_normalized="x" if gt_present else None,
+        gt_present=gt_present,
+    )
+
+
+# ---- partition + public f1 helper ----
+
+
+def test_field_groups_partition_exactly_covers_registry() -> None:
+    """seller ∪ buyer ∪ totals ∪ document == FIELDS, pairwise disjoint (ADR-027)."""
+    from horus.eval.ground_truth import FIELDS
+
+    grouped = frozenset().union(*FIELD_GROUPS.values())
+    assert grouped.isdisjoint(DOCUMENT_FIELDS)
+    assert grouped | DOCUMENT_FIELDS == set(FIELDS)
+    # `totals` is exactly the 5 MONEY fields.
+    money = {k for k, s in FIELDS.items() if s.field_type == "MONEY"}
+    assert FIELD_GROUPS["totals"] == money
+
+
+def test_f1_from_counts_public_matches_private() -> None:
+    """Public wrapper delegates to the private implementation (ADR-027 single-source)."""
+    assert f1_from_counts(3, 1, 1) == _f1_from_counts(3, 1, 1)
+
+
+# ---- label_outcome_counts (per-canonical-label F1 primitive) ----
+
+
+def test_label_outcome_counts_tallies_per_label() -> None:
+    results = [
+        _fr("invoice_number", "TP", gt_present=True),
+        _fr("invoice_number", "FN", gt_present=True),
+        _fr("seller_name", "FP", gt_present=False),
+    ]
+    counts = label_outcome_counts(results)
+    assert counts["invoice_number"] == (1, 0, 1)  # (tp, fp, fn)
+    assert counts["seller_name"] == (0, 1, 0)
+
+
+def test_label_outcome_counts_skips_tn_and_excluded() -> None:
+    results = [
+        _fr("invoice_number", "TN", gt_present=False),
+        _fr("seller_name", "EXCLUDED", gt_present=True),
+    ]
+    assert label_outcome_counts(results) == {}
+
+
+# ---- presence-conditional F1 ----
+
+
+def test_presence_conditional_counts_restricts_to_present() -> None:
+    """Absent-GT fields drop out; present TP/FN are pooled."""
+    results = [
+        _fr("a", "TP", gt_present=True),
+        _fr("b", "FN", gt_present=True),
+        _fr("c", "FP", gt_present=False),  # absent → excluded
+        _fr("d", "TN", gt_present=False),  # absent → excluded
+    ]
+    assert presence_conditional_counts(results) == (1, 0, 1)
+
+
+def test_presence_conditional_f1_is_recall_faithful() -> None:
+    """3 TP + 2 FN over present fields → F1 = 0.75 (precision ≡ 1 by truth table)."""
+    results = [_fr(f"k{i}", "TP", gt_present=True) for i in range(3)]
+    results += [_fr(f"k{i}", "FN", gt_present=True) for i in range(3, 5)]
+    assert presence_conditional_f1(results) == pytest.approx(0.75)
+
+
+def test_presence_conditional_excludes_excluded_present_field() -> None:
+    results = [
+        _fr("a", "TP", gt_present=True),
+        _fr("b", "EXCLUDED", gt_present=True),
+    ]
+    assert presence_conditional_counts(results) == (1, 0, 0)
+
+
+# ---- spurious-emission rate ----
+
+
+def test_spurious_emission_rate_on_absent_fields() -> None:
+    """1 hallucinated FP among 4 absent fields → rate 0.25."""
+    results = [
+        _fr("a", "FP", gt_present=False),
+        _fr("b", "TN", gt_present=False),
+        _fr("c", "TN", gt_present=False),
+        _fr("d", "TN", gt_present=False),
+        _fr("e", "TP", gt_present=True),  # present → not in denominator
+    ]
+    assert spurious_emission_counts(results) == (1, 4)
+    assert spurious_emission_rate(results) == pytest.approx(0.25)
+
+
+def test_spurious_emission_rate_zero_when_no_absent_fields() -> None:
+    results = [_fr("a", "TP", gt_present=True)]
+    assert spurious_emission_rate(results) == 0.0
+
+
+# ---- KIEval group-level F1 (§4.1, all-or-nothing) ----
+
+
+def test_group_level_fully_correct_group_is_tp() -> None:
+    """All seller members TP → seller group scores TP."""
+    results = [
+        _fr("seller_name", "TP", gt_present=True),
+        _fr("seller_vat_id", "TP", gt_present=True),
+        _fr("seller_tax_id", "TP", gt_present=True),
+        _fr("seller_gln", "TP", gt_present=True),
+    ]
+    assert group_level_counts(results) == (1, 0, 0)
+    assert group_level_f1(results) == 1.0
+
+
+def test_group_level_partial_group_is_miss() -> None:
+    """One FN in the seller group → not TP (matched-non-identical → fn + fp)."""
+    results = [
+        _fr("seller_name", "TP", gt_present=True),
+        _fr("seller_vat_id", "FN", gt_present=True),
+    ]
+    assert group_level_counts(results) == (0, 1, 1)
+    assert group_level_f1(results) == 0.0
+
+
+def test_group_level_skips_group_with_no_signal() -> None:
+    """A group whose members are all TN/absent contributes nothing."""
+    results = [
+        _fr("buyer_name", "TN", gt_present=False),
+        _fr("buyer_reference", "TN", gt_present=False),
+        _fr("buyer_vat_id", "TN", gt_present=False),
+    ]
+    assert group_level_counts(results) == (0, 0, 0)
+
+
+def test_group_level_hallucinated_group_is_fp_only() -> None:
+    """A group with only FP members (no GT content) → FP, not FN."""
+    results = [_fr("buyer_name", "FP", gt_present=False)]
+    assert group_level_counts(results) == (0, 1, 0)
+
+
+def test_group_level_f1_multi_group() -> None:
+    """seller TP + buyer TP + totals miss → tp=2, fp=1, fn=1 → F1 = 2/3."""
+    results = [
+        _fr("seller_name", "TP", gt_present=True),
+        _fr("buyer_name", "TP", gt_present=True),
+        _fr("line_total_amount", "TP", gt_present=True, field_type="MONEY"),
+        _fr("tax_basis_total_amount", "TP", gt_present=True, field_type="MONEY"),
+        _fr("tax_total_amount", "TP", gt_present=True, field_type="MONEY"),
+        _fr("grand_total_amount", "TP", gt_present=True, field_type="MONEY"),
+        _fr("due_payable_amount", "FN", gt_present=True, field_type="MONEY"),
+    ]
+    assert group_level_counts(results) == (2, 1, 1)
+    assert group_level_f1(results) == pytest.approx(2 / 3)
+
+
+# ---- score() integration: new metrics populated + additive guarantee ----
+
+
+def test_score_populates_adr027_metrics() -> None:
+    """score() fills presence_conditional_f1 / group_level_f1 / spurious_emission_rate."""
+    from horus.eval.ground_truth import FIELDS
+
+    overrides: dict[str, GroundTruthField] = {}
+    predicted: dict[str, str | None] = {key: None for key in FIELDS}
+    for key, spec in FIELDS.items():
+        if spec.field_type == "MONEY":
+            val = "100.00"
+        elif spec.field_type == "DATE":
+            val = "2018-03-05"
+        else:
+            val = f"value-{key}"
+        overrides[key] = GroundTruthField(
+            bt_code=spec.bt_code,
+            raw_value=val,
+            normalized_value=val,
+            xpath=spec.xpath,
+            is_present=True,
+        )
+        predicted[key] = val
+    gt = _make_full_gt(overrides=overrides)
+    result = score(predicted, gt, cfg=EvalConfig())
+    # Perfect extraction → all new metrics maxed, no hallucination.
+    assert result.presence_conditional_f1 == 1.0
+    assert result.group_level_f1 == 1.0
+    assert result.spurious_emission_rate == 0.0
+    # Additive guarantee: existing micro/macro unchanged.
+    assert result.micro_f1 == 1.0
+    assert result.macro_f1 == 1.0
+
+
+def test_score_adr027_metrics_serialize_through_asdict() -> None:
+    """The 3 new per-invoice metric fields survive `dataclasses.asdict` (MLflow-friendly)."""
+    from dataclasses import asdict
+
+    from horus.eval.ground_truth import FIELDS
+
+    gt = _make_full_gt()
+    predicted: dict[str, str | None] = {key: None for key in FIELDS}
+    d = asdict(score(predicted, gt, cfg=EvalConfig()))
+    assert "presence_conditional_f1" in d
+    assert "group_level_f1" in d
+    assert "spurious_emission_rate" in d

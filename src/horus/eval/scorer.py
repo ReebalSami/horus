@@ -8,6 +8,8 @@ produces an `InvoiceFieldScores` with:
     table from ADR-013 §"Decision + integration thoughts"
   - per-field comparator scores (ANLS\\* for STRING, 0.0 or 1.0 for typed)
   - micro + macro F1, precision, recall
+  - ADR-027 additive metrics: presence-conditional F1, KIEval group-level F1,
+    spurious-emission rate (per-invoice); per-canonical-label F1 (cohort)
 
 Truth table (GT 4-state × Pred 3-state → outcome):
 
@@ -36,6 +38,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal, InvalidOperation
@@ -46,9 +49,19 @@ from horus.eval.anls import anls, nls
 from horus.eval.ground_truth import FIELDS, FieldType, GroundTruth, GroundTruthField
 
 __all__ = [
+    "DOCUMENT_FIELDS",
+    "FIELD_GROUPS",
     "FieldResult",
     "InvoiceFieldScores",
+    "f1_from_counts",
+    "group_level_counts",
+    "group_level_f1",
+    "label_outcome_counts",
+    "presence_conditional_counts",
+    "presence_conditional_f1",
     "score",
+    "spurious_emission_counts",
+    "spurious_emission_rate",
 ]
 
 Outcome = Literal["TP", "FP", "FN", "TN", "EXCLUDED"]
@@ -117,6 +130,14 @@ class InvoiceFieldScores:
             edge case).
         micro_precision: TP / (TP + FP) aggregated across all fields.
         micro_recall: TP / (TP + FN) aggregated across all fields.
+        presence_conditional_f1: F1 over GT-present fields only (ADR-027
+            metric 2). Recall-faithful — HORUS's truth table yields FP only
+            on the absent-GT row, so precision ≡ 1 on the present subset.
+        group_level_f1: KIEval (arXiv 2503.05488 §4.1) all-or-nothing group
+            F1 over ``FIELD_GROUPS`` (seller / buyer / totals); document-level
+            scalars excluded as the non-group G′ (ADR-027 metric 3).
+        spurious_emission_rate: FP / (FP + TN) over genuinely-absent fields —
+            the hallucination rate (ADR-027 metric 4).
     """
 
     invoice_id: str
@@ -126,6 +147,9 @@ class InvoiceFieldScores:
     macro_f1: float = 0.0
     micro_precision: float = 0.0
     micro_recall: float = 0.0
+    presence_conditional_f1: float = 0.0
+    group_level_f1: float = 0.0
+    spurious_emission_rate: float = 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -521,6 +545,16 @@ def _f1_from_counts(tp: int, fp: int, fn: int) -> tuple[float, float, float]:
     return precision, recall, f1
 
 
+def f1_from_counts(tp: int, fp: int, fn: int) -> tuple[float, float, float]:
+    """Public (precision, recall, F1) from TP/FP/FN counts.
+
+    Thin public wrapper over `_f1_from_counts` so cohort-pooling callers
+    (`scripts/inspect_pilot_13.py`) compute F1 from pooled counts via the same
+    zero-division convention as the per-invoice path (ADR-027 single-source).
+    """
+    return _f1_from_counts(tp, fp, fn)
+
+
 def _aggregate_micro_macro(
     per_field: dict[str, FieldResult],
 ) -> tuple[float, float, float, float]:
@@ -558,6 +592,158 @@ def _aggregate_micro_macro(
     macro_f1 = sum(per_field_f1s) / len(per_field_f1s) if per_field_f1s else 0.0
 
     return micro_p, micro_r, micro_f1, macro_f1
+
+
+# ---------------------------------------------------------------------------
+# ADR-027 — additive metric expansion (per-canonical-label F1, presence-
+# conditional F1, KIEval group-level F1, spurious-emission rate).
+#
+# All four re-aggregate the per-field `FieldResult.outcome` data the scorer
+# already produces — no VLM, no re-run. The count-returning helpers accept any
+# `Iterable[FieldResult]`, so the SAME math serves both the per-invoice path
+# (here, via `score`) and the cohort-pooled path (`scripts/inspect_pilot_13.py`
+# reconstructs `FieldResult` from `per_field_scores.json` and pools).
+# ---------------------------------------------------------------------------
+
+# KIEval (§4.1) group partition over the 16-field registry. seller / buyer /
+# totals are EN16931 business groups; the document-level scalars are the
+# non-group entities KIEval folds into the excluded 1st group (G').
+FIELD_GROUPS: dict[str, frozenset[str]] = {
+    "seller": frozenset({"seller_name", "seller_vat_id", "seller_tax_id", "seller_gln"}),
+    "buyer": frozenset({"buyer_name", "buyer_reference", "buyer_vat_id"}),
+    "totals": frozenset(
+        {
+            "line_total_amount",
+            "tax_basis_total_amount",
+            "tax_total_amount",
+            "grand_total_amount",
+            "due_payable_amount",
+        }
+    ),
+}
+
+# G' — non-group document-level scalars, EXCLUDED from group-level F1 (ADR-027).
+DOCUMENT_FIELDS: frozenset[str] = frozenset(
+    {"invoice_number", "issue_date", "invoice_currency_code", "delivery_date"}
+)
+
+# Partition sanity: groups ∪ document-fields must exactly cover FIELDS, with no
+# overlap. Fails fast at import if the registry drifts from this partition.
+_GROUPED_KEYS: frozenset[str] = frozenset().union(*FIELD_GROUPS.values())
+assert _GROUPED_KEYS.isdisjoint(DOCUMENT_FIELDS), "FIELD_GROUPS overlaps DOCUMENT_FIELDS"
+assert _GROUPED_KEYS | DOCUMENT_FIELDS == set(FIELDS), (
+    "FIELD_GROUPS ∪ DOCUMENT_FIELDS must exactly cover FIELDS (ADR-027 partition drift)"
+)
+
+
+def label_outcome_counts(results: Iterable[FieldResult]) -> dict[str, tuple[int, int, int]]:
+    """Per-canonical-label (TP, FP, FN) tally — the per-label pooling primitive.
+
+    Pass one invoice's results for per-invoice counts, or a cohort-wide iterable
+    for pooled per-label counts. TN / EXCLUDED contribute no signal. Returns
+    ``{english_key: (tp, fp, fn)}`` (only keys with ≥1 signal-bearing outcome).
+    """
+    counts: dict[str, list[int]] = {}
+    for r in results:
+        if r.outcome == "TP":
+            idx = 0
+        elif r.outcome == "FP":
+            idx = 1
+        elif r.outcome == "FN":
+            idx = 2
+        else:  # TN / EXCLUDED — no signal
+            continue
+        bucket = counts.setdefault(r.english_key, [0, 0, 0])
+        bucket[idx] += 1
+    return {k: (v[0], v[1], v[2]) for k, v in counts.items()}
+
+
+def presence_conditional_counts(results: Iterable[FieldResult]) -> tuple[int, int, int]:
+    """Pool (TP, FP, FN) over GT-present fields only (ADR-027 metric 2).
+
+    Conditions on ground-truth presence: drops absent-GT fields (and EXCLUDED)
+    so honest nulls on genuinely-missing fields neither help nor hurt. On the
+    present subset HORUS's truth table yields no FP, so the F1 is recall-faithful.
+    """
+    tp = fp = fn = 0
+    for r in results:
+        if not r.gt_present or r.outcome == "EXCLUDED":
+            continue
+        if r.outcome == "TP":
+            tp += 1
+        elif r.outcome == "FP":  # structurally absent on present rows; counted defensively
+            fp += 1
+        elif r.outcome == "FN":
+            fn += 1
+    return tp, fp, fn
+
+
+def presence_conditional_f1(results: Iterable[FieldResult]) -> float:
+    """F1 over GT-present fields (ADR-027 metric 2). See `presence_conditional_counts`."""
+    tp, fp, fn = presence_conditional_counts(results)
+    return _f1_from_counts(tp, fp, fn)[2]
+
+
+def spurious_emission_counts(results: Iterable[FieldResult]) -> tuple[int, int]:
+    """(FP, n_absent) over genuinely-absent fields (ADR-027 metric 4).
+
+    Absent-GT fields resolve to TN (pred None) or FP (pred content); EXCLUDED
+    cannot occur on the absent row. ``n_absent`` is the denominator (FP + TN).
+    """
+    fp = 0
+    n_absent = 0
+    for r in results:
+        if r.gt_present:
+            continue
+        n_absent += 1
+        if r.outcome == "FP":
+            fp += 1
+    return fp, n_absent
+
+
+def spurious_emission_rate(results: Iterable[FieldResult]) -> float:
+    """FP / (FP + TN) hallucination rate on absent fields (ADR-027 metric 4)."""
+    fp, n_absent = spurious_emission_counts(results)
+    return fp / n_absent if n_absent > 0 else 0.0
+
+
+def group_level_counts(results: Iterable[FieldResult]) -> tuple[int, int, int]:
+    """Per-invoice KIEval group (TP, FP, FN) over `FIELD_GROUPS` (ADR-027 metric 3).
+
+    Pass ONE invoice's results. A group is all-or-nothing (KIEval §4.1): TP iff
+    every signal-bearing member is TP (the whole group reproduced identically).
+    A matched-but-non-identical group counts as the remaining GT group (FN) and
+    the remaining predicted group (FP); a purely-hallucinated group (no present
+    members) counts as FP only. Document-level G′ fields are excluded.
+
+    Cohort aggregation = sum these per-invoice counts across invoices, then
+    `_f1_from_counts` — never pool fields across invoices into one group.
+    """
+    by_key = {r.english_key: r for r in results}
+    tp = fp = fn = 0
+    for members in FIELD_GROUPS.values():
+        signal = [
+            by_key[k].outcome
+            for k in members
+            if k in by_key and by_key[k].outcome in ("TP", "FP", "FN")
+        ]
+        if not signal:
+            continue  # group carries no gradable signal this invoice
+        gt_group_exists = any(o in ("TP", "FN") for o in signal)
+        all_correct = all(o == "TP" for o in signal)
+        if all_correct:
+            tp += 1
+        else:
+            if gt_group_exists:
+                fn += 1
+            fp += 1
+    return tp, fp, fn
+
+
+def group_level_f1(results: Iterable[FieldResult]) -> float:
+    """Per-invoice KIEval group-level F1 (ADR-027 metric 3). See `group_level_counts`."""
+    tp, fp, fn = group_level_counts(results)
+    return _f1_from_counts(tp, fp, fn)[2]
 
 
 # ---------------------------------------------------------------------------
@@ -624,6 +810,7 @@ def score(
 
     micro_p, micro_r, micro_f1, macro_f1 = _aggregate_micro_macro(per_field)
 
+    inv_results = list(per_field.values())
     return InvoiceFieldScores(
         invoice_id=invoice_id,
         model_id=model_id,
@@ -632,4 +819,7 @@ def score(
         macro_f1=macro_f1,
         micro_precision=micro_p,
         micro_recall=micro_r,
+        presence_conditional_f1=presence_conditional_f1(inv_results),
+        group_level_f1=group_level_f1(inv_results),
+        spurious_emission_rate=spurious_emission_rate(inv_results),
     )
