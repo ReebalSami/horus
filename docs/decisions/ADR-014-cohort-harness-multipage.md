@@ -115,7 +115,7 @@ PR(c) ships:
 
 Step 7 (parent_run_id `df6bce67369c47948d10dfa0d2624490`): **182 / 182 tuples completed, 0 failed**. Pooled cohort micro_F1 = **0.4908** (vs PR(b) ~0.20 page-1-only baseline → **2.45× lift**). Per-model best: MinerU2.5-Pro = 0.710 mean across 26 invoices. Full breakdown + lift table: `docs/retros/m2d.5-pilot-13-cohort-harness.md`.
 
-> **Superseded by ADR-028 (2026-05-30).** The `0.4908` cohort baseline reflected the Layer-2 MONEY-field gap documented below. ADR-028's section-scoped Belegsummen fallback raised the cohort micro_F1 to **0.6729** (same 182 transcripts, offline re-score, no re-inference). The `0.4908` is retained here as the historical PR(c)-close figure per ADR-011 supersession-over-deletion.
+> **Superseded by ADR-028 (2026-05-30).** The `0.4908` cohort baseline reflected the Layer-2 MONEY-field gap documented below. ADR-028's section-scoped Belegsummen fallback raised the cohort micro_F1 to **0.6729** (same 182 transcripts, offline re-score, no re-inference). The `0.4908` is retained here as the historical PR(c)-close figure per ADR-011 supersession-over-deletion. **Validity caveats** for the post-fix numbers (in-sample/diagnostic scope; reference-invoice vs real-scan external validity; F1-as-exact-match vs colloquial "accuracy"; held-out reporting surface #78) + a real MinerU latency/RAM measurement + two per-field worked examples are in ADR-028 §"Amendment 1".
 
 Step 8 (threshold ablation): cohort Δ across τ ∈ [0.3, 0.7] = 0.0031 (0.3% absolute). Metric is τ-robust; literature default τ = 0.5 is empirically defensible.
 
