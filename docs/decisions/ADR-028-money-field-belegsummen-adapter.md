@@ -215,7 +215,7 @@ Across MinerU's 26 invoices, per-invoice micro-F1 ranges **[0.5556, 1.0000]**, m
 | `grand_total_amount` | BT-112 | TP | `300.00` | `300.00` |
 | `due_payable_amount` | BT-115 | TP | `300.00` | `300.00` |
 
-### D. Deferred to HND-2
+### D. Deferred beyond this fix
 
 | Deferred item | Status | Issue |
 |---|---|---|

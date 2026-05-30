@@ -1,0 +1,16 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    google/gemma-4-E4B-it
+# Invoice:  EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  25.19s total
+# Adapter:  json
+# Prompt:   You are reading a German B2B invoice. Extract these fields and return ONLY a sin
+
+===== PAGE 1 =====
+{"invoice_number": "471102", "issue_date": "2018-05-06", "invoice_currency_code": "EUR", "delivery_date": "2018-03-06", "seller_name": "Lieferant GmbH", "seller_vat_id": null, "seller_tax_id": null, "seller_gln": "4000001123452", "buyer_name": "Kunden AG Mitte", "buyer_reference": null, "buyer_vat_id": null, "line_total_amount": null, "tax_basis_total_amount": null, "tax_total_amount": null, "grand_total_amount": null, "due_payable_amount": null}
+===== PAGE 2 =====
+{"invoice_number": null, "issue_date": null, "invoice_currency_code": null, "delivery_date": null, "seller_name": null, "seller_vat_id": null, "seller_tax_id": null, "seller_gln": null, "buyer_name": null, "buyer_reference": null, "buyer_vat_id": null, "line_total_amount": null, "tax_basis_total_amount": null, "tax_total_amount": null, "grand_total_amount": null, "due_payable_amount": null}
+===== PAGE 3 =====
+{"invoice_number": null, "issue_date": null, "invoice_currency_code": null, "delivery_date": null, "seller_name": null, "seller_vat_id": null, "seller_tax_id": null, "seller_gln": null, "buyer_name": null, "buyer_reference": null, "buyer_vat_id": null, "line_total_amount": null, "tax_basis_total_amount": null, "tax_total_amount": null, "grand_total_amount": "215,07", "due_payable_amount": "165,07"}

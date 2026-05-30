@@ -1,0 +1,51 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  63.99s total
+# Adapter:  json
+# Prompt:   Recognize all text in the image and extract the 16 invoice fields as a single-li
+
+===== PAGE 1 =====
+```json
+{
+    "invoice_number": "471102",
+    "issue_date": "2018-03-05",
+    "invoice_currency_code": "EUR",
+    "delivery_date": "2018-03-05",
+    "seller_name": "Lieferant GmbH",
+    "seller_vat_id": "",
+    "seller_tax_id": "",
+    "seller_gln": "4000001123452",
+    "buyer_name": "Lieferant GmbH",
+    "buyer_reference": "",
+    "buyer_vat_id": "",
+    "line_total_amount": "",
+    "tax_basis_total_amount": "",
+    "tax_total_amount": "",
+    "grand_total_amount": ""
+}
+```
+===== PAGE 2 =====
+```json
+{
+    "invoice_number": "",
+    "issue_date": "",
+    "invoice_currency_code": "",
+    "delivery_date": "",
+    "seller_name": "Art-Nr-Kunde",
+    "seller_vat_id": "",
+    "seller_tax_id": "",
+    "seller_gln": "",
+    "buyer_name": "TB100A4",
+    "buyer_reference": "4012345001235",
+    "buyer_vat_id": "",
+    "line_total_amount": "9,900.00",
+    "tax_basis_total_amount": "19.00",
+    "tax_total_amount": "198.00",
+    "grand_total_amount": "275.00",
+    "due_payable_amount": "198.00"
+}
+```

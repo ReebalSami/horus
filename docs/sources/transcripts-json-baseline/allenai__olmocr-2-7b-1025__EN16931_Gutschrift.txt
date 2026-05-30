@@ -1,0 +1,52 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Gutschrift
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  312.47s total
+# Adapter:  json
+# Prompt:   Extract the 16 invoice fields and return ONLY single-line JSON with keys: invoic
+
+===== PAGE 1 =====
+```json
+{
+  "invoice_number": "471102",
+  "issue_date": "05.03.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "05.03.2018",
+  "seller_name": "Lieferantant GmbH",
+  "seller_vat_id": "DE 80333 München",
+  "seller_tax_id": "DE123456789",
+  "seller_gln": "Lieferantenenstraße 20",
+  "buyer_name": "Kunden AG Mitte",
+  "buyer_reference": "Rechnung gemäß Bestellung vom 01.03.2018.",
+  "buyer_vat_id": "GE2020211",
+  "line_total_amount": null,
+  "tax_basis_total_amount": null,
+  "tax_total_amount": null,
+  "grand_total_amount": null,
+  "due_payable_amount": null
+}
+```
+===== PAGE 2 =====
+```json
+{
+  "invoice_number": "ZUGFeRD 2.2",
+  "issue_date": "2022",
+  "invoice_currency_code": "EUR",
+  "delivery_date": null,
+  "seller_name": "FeRD",
+  "seller_vat_id": null,
+  "seller_tax_id": null,
+  "seller_gln": null,
+  "buyer_name": null,
+  "buyer_reference": null,
+  "buyer_vat_id": null,
+  "line_total_amount": 198.00,
+  "tax_basis_total_amount": 275.00,
+  "tax_total_amount": 56.87,
+  "grand_total_amount": 529.87,
+  "due_payable_amount": 529.87
+}
+```

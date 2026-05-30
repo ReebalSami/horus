@@ -1,0 +1,91 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  EN16931_Miete
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  126.98s total
+# Adapter:  json
+# Prompt:   Recognize all text in the image and extract the 16 invoice fields as a single-li
+
+===== PAGE 1 =====
+```json
+{
+    "invoice_number": "9314110911/00/M/00/N",
+    "issue_date": "29.09.2018",
+    "invoice_currency_code": "EUR",
+    "delivery_date": "29.09.2018",
+    "seller_name": "MUSTER-und Leistungsdatum",
+    "seller_vat_id": "L87654321012345",
+    "seller_gln": "4333741000005 (GLN)",
+    "buyer_name": "Liefer- und Leistungsdatum",
+    "buyer_reference": "L87654321012345",
+    "buyer_vat_id": "L87654321012345",
+    "line_total_amount": "",
+    "tax_basis_total_amount": "",
+    "tax_total_amount": "",
+    "grand_total_amount": ""
+}
+```
+===== PAGE 2 =====
+```json
+{
+    "invoice_number": "",
+    "issue_date": "",
+    "invoice_currency_code": "",
+    "delivery_date": "",
+    "seller_name": "MUSTER-Autovermietung GMBH",
+    "seller_vat_id": "",
+    "seller_tax_id": "",
+    "seller_gln": "4304171000002",
+    "buyer_name": "",
+    "buyer_reference": "",
+    "buyer_vat_id": "",
+    "line_total_amount": "",
+    "tax_basis_total_amount": "",
+    "tax_total_amount": "",
+    "grand_total_amount": ""
+}
+```
+===== PAGE 3 =====
+```json
+{
+    "invoice_number": "",
+    "issue_date": "",
+    "invoice_currency_code": "",
+    "delivery_date": "",
+    "seller_name": "",
+    "seller_vat_id": "",
+    "seller_tax_id": "",
+    "seller_gln": "",
+    "buyer_name": "",
+    "buyer_reference": "",
+    "buyer_vat_id": "",
+    "line_total_amount": "",
+    "tax_basis_total_amount": "",
+    "tax_total_amount": "",
+    "grand_total_amount": "",
+    "due_payable_amount": ""
+}
+```
+===== PAGE 4 =====
+```json
+{
+    "invoice_number": "",
+    "issue_date": "",
+    "invoice_currency_code": "",
+    "delivery_date": "",
+    "seller_name": "",
+    "seller_vat_id": "",
+    "seller_tax_id": "",
+    "seller_gln": "",
+    "buyer_name": "",
+    "buyer_reference": "",
+    "buyer_vat_id": "",
+    "line_total_amount": "",
+    "tax_basis_total_amount": "",
+    "tax_total_amount": "",
+    "grand_total_amount": "",
+    "due_payable_amount": ""
+}
+```

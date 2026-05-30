@@ -1,0 +1,73 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  370.32s total
+# Adapter:  json
+# Prompt:   Extract the 16 invoice fields and return ONLY single-line JSON with keys: invoic
+
+===== PAGE 1 =====
+```json
+{
+  "invoice_number": "471102",
+  "issue_date": "05.06.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "03.06.2018",
+  "seller_name": "Lieferantant GmbH",
+  "seller_vat_id": "DE 80333 München",
+  "seller_tax_id": "201/113/40209",
+  "seller_gln": "4000001123452 (GLN)",
+  "buyer_name": "Kunden AG Mitte",
+  "buyer_reference": "2013-471331",
+  "buyer_vat_id": "DE69876 Frankfurt",
+  "line_total_amount": null,
+  "tax_basis_total_amount": null,
+  "tax_total_amount": null,
+  "grand_total_amount": null,
+  "due_payable_amount": null
+}
+```
+===== PAGE 2 =====
+```json
+{
+  "invoice_number": null,
+  "issue_date": null,
+  "invoice_currency_code": null,
+  "delivery_date": null,
+  "seller_name": null,
+  "seller_vat_id": null,
+  "seller_tax_id": null,
+  "seller_gln": null,
+  "buyer_name": null,
+  "buyer_reference": null,
+  "buyer_vat_id": null,
+  "line_total_amount": null,
+  "tax_basis_total_amount": null,
+  "tax_total_amount": null,
+  "grand_total_amount": null,
+  "due_payable_amount": null
+}
+```
+===== PAGE 3 =====
+```json
+{
+  "invoice_number": "Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022",
+  "issue_date": "04.07.2018",
+  "invoice_currency_code": "EUR",
+  "delivery_date": "15.06.2018",
+  "seller_name": "FeRD",
+  "seller_vat_id": null,
+  "seller_tax_id": null,
+  "seller_gln": null,
+  "buyer_name": null,
+  "buyer_reference": null,
+  "buyer_vat_id": null,
+  "line_total_amount": 202.70,
+  "tax_basis_total_amount": 193.77,
+  "tax_total_amount": 5.80,
+  "grand_total_amount": 215.07,
+  "due_payable_amount": 165.07
+}
+```

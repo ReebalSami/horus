@@ -1,0 +1,107 @@
+uv run python scripts/inspect_pilot_13.py \
+		--cfg "configs/pilot-13.yaml,configs/json-baseline.yaml" \
+		
+experiment: 'json-baseline' (id=11)
+inspecting parent run: 0f934104a6b14dfcb87908bd7e5103fc
+nested runs under parent 0f934104a6b14dfcb87908bd7e5103fc: 18
+                                                                                                                
+  model                      invoice                                      profile     pages      f1   status    
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+  allenai/olmOCR-2-7B-1025   EN16931_Einfach                              EN16931         2   0.667   FINISHED  
+  allenai/olmOCR-2-7B-1025   EN16931_Gutschrift                           EN16931         2   0.720   FINISHED  
+  allenai/olmOCR-2-7B-1025   EN16931_Innergemeinschaftliche_Lieferungen   EN16931         3   0.636   FINISHED  
+  allenai/olmOCR-2-7B-1025   EN16931_Miete                                EN16931         4   0.400   FINISHED  
+  allenai/olmOCR-2-7B-1025   EN16931_Rabatte                              EN16931         3   0.815   FINISHED  
+  allenai/olmOCR-2-7B-1025   XRECHNUNG_Einfach                            XRECHNUNG       3   0.720   FINISHED  
+  google/gemma-4-E4B-it      EN16931_Einfach                              EN16931         2   0.696   FINISHED  
+  google/gemma-4-E4B-it      EN16931_Gutschrift                           EN16931         2   0.667   FINISHED  
+  google/gemma-4-E4B-it      EN16931_Innergemeinschaftliche_Lieferungen   EN16931         3   0.818   FINISHED  
+  google/gemma-4-E4B-it      EN16931_Miete                                EN16931         4   0.727   FINISHED  
+  google/gemma-4-E4B-it      EN16931_Rabatte                              EN16931         3   0.636   FINISHED  
+  google/gemma-4-E4B-it      XRECHNUNG_Einfach                            XRECHNUNG       3   0.696   FINISHED  
+  zai-org/GLM-OCR            EN16931_Einfach                              EN16931         2   0.571   FINISHED  
+  zai-org/GLM-OCR            EN16931_Gutschrift                           EN16931         2   0.545   FINISHED  
+  zai-org/GLM-OCR            EN16931_Innergemeinschaftliche_Lieferungen   EN16931         3   0.476   FINISHED  
+  zai-org/GLM-OCR            EN16931_Miete                                EN16931         4   0.333   FINISHED  
+  zai-org/GLM-OCR            EN16931_Rabatte                              EN16931         3   0.421   FINISHED  
+  zai-org/GLM-OCR            XRECHNUNG_Einfach                            XRECHNUNG       3   0.500   FINISHED  
+                                                                                                                
+
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                     per-model aggregate (mean micro_F1 across all FINISHED invoices)                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                          
+  model                      n   mean_f1  
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+  google/gemma-4-E4B-it      6     0.707  
+  allenai/olmOCR-2-7B-1025   6     0.660  
+  zai-org/GLM-OCR            6     0.475  
+                                          
+
+per-model perf summary (mean across all FINISHED + perf-equipped tuples):
+  MPS ceiling (host-constant): 12.71 GB
+model                     n  wall_s  decode_tps  e2e_tps  chars/s  gen_tok  peak_GB  %_max
+google/gemma-4-E4B-it     6   24.39       30.85    18.36    48.41      448     7.75  61.0%
+zai-org/GLM-OCR           6   90.16      127.11     5.61    15.30      498     3.01  23.7%
+allenai/olmOCR-2-7B-1025  6  383.84       21.00     1.45     3.76      562     8.59  67.9%
+
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                Probe 1 evidence — MONEY-field TPs on EN16931_Einfach (acceptance: ≥3 / 5)                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                         
+  model                      money TPs   / MONEY fields  
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+  allenai/olmOCR-2-7B-1025           2         5 fields  
+  google/gemma-4-E4B-it              2         5 fields  
+  zai-org/GLM-OCR                    0         5 fields  
+                                                         
+
+Probe 1 FAIL: best-of-cohort MONEY TPs = 2 (< 3)
+
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                Probe 2 evidence — XRECHNUNG_Einfach DATE-field outcomes (factur-x route)                                 │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                         
+  model                      delivery_date   issue_date  
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+  allenai/olmOCR-2-7B-1025        TP             TP      
+  zai-org/GLM-OCR                 TP             TP      
+  google/gemma-4-E4B-it           TP             TP      
+                                                         
+
+Probe 2 PASS: ≥1 model has TP on a DATE field of XRECHNUNG_Einfach (factur-x route).
+
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│           ADR-027 extended metrics — presence-conditional F1 + group-level F1 (KIEval) + spurious-emission rate + per-label F1           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                        
+  model                      n_inv   presence_F1   group_F1   spurious  
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+  allenai/olmOCR-2-7B-1025       6         0.706      0.000      0.875  
+  google/gemma-4-E4B-it          6         0.706      0.056      0.000  
+  zai-org/GLM-OCR                6         0.496      0.000      0.500  
+                                                                        
+  COHORT                        18         0.643      0.019      0.458  
+                                                                        
+
+per-canonical-label F1 (cohort-pooled, hardest first):
+                                                 
+  field                    tp   fp   fn      f1  
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+  buyer_reference           0    0   18   0.000  
+  line_total_amount         1    0   17   0.105  
+  buyer_vat_id              1    5    5   0.167  
+  seller_tax_id             2    3   10   0.235  
+  seller_vat_id             3    0   15   0.286  
+  tax_basis_total_amount    3    0   15   0.286  
+  tax_total_amount          4    0   14   0.364  
+  seller_gln                4    2   11   0.381  
+  grand_total_amount        7    0   11   0.560  
+  due_payable_amount       10    0    8   0.714  
+  buyer_name               11    0    7   0.759  
+  delivery_date            13    1    2   0.897  
+  issue_date               15    0    3   0.909  
+  seller_name              16    0    2   0.941  
+  invoice_number           17    0    1   0.971  
+  invoice_currency_code    18    0    0   1.000  
+                                                 
