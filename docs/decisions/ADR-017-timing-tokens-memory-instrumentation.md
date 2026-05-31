@@ -7,7 +7,9 @@
 | **Milestone** | `experiments-validated` (post-pilot-13 follow-ups; Seq 3 per `~/.windsurf/plans/horus-post-pilot13-rethink-46eaaa.md` §5) |
 | **Authored by** | Cascade D (issue #52 implementation session; plan `~/.windsurf/plans/horus-issue-52-timing-inspector-3fe7c5.md`) |
 | **Issue** | [`ReebalSami/horus#52`](https://github.com/ReebalSami/horus/issues/52) |
-| **Supersession trigger** | (1) PyTorch lands `torch.mps.max_memory_allocated()` (or equivalent transient-peak tracker on MPS) — pytorch/pytorch#104188 closes — replace the pre/post snapshot with the native API and supersede this ADR. OR (2) MLX-VLM removes / renames `GenerationResult.peak_memory` / `generation_tokens` / `generation_tps` (e.g., 1.0 release breaking changes) — author a supersession ADR with the migration path. OR (3) The thesis adopts a tiktoken-standardised tokens/sec metric for cross-model H4 comparison — supersession ADR ratifies the metric + its computation point in the harness. OR (4) The inspector outgrows plain-text rendering (e.g., > 15 models, multiple parent-run comparison) and switches to `rich` / `tabulate` / a separate dashboard — supersession ADR ratifies the new dependency + rendering substrate. OR (5) The `perf.*` MLflow namespace conflicts with a future MLflow built-in (e.g., MLflow 4.x reserves `perf.*` for a system-metrics integration) — supersession ADR migrates to a different prefix (`hardware.*` / `latency.*`). |
+| **Supersession trigger** | (1) PyTorch lands `torch.mps.max_memory_allocated()` (or equivalent transient-peak tracker on MPS) — pytorch/pytorch#104188 closes — replace the pre/post snapshot with the native API and supersede this ADR. OR (2) MLX-VLM removes / renames `GenerationResult.peak_memory` / `generation_tokens` / `generation_tps` (e.g., 1.0 release breaking changes) — author a supersession ADR with the migration path. OR (3) The thesis adopts a tiktoken-standardised tokens/sec metric for cross-model H8 efficiency comparison — supersession ADR ratifies the metric + its computation point in the harness. OR (4) The inspector outgrows plain-text rendering (e.g., > 15 models, multiple parent-run comparison) and switches to `rich` / `tabulate` / a separate dashboard — supersession ADR ratifies the new dependency + rendering substrate. OR (5) The `perf.*` MLflow namespace conflicts with a future MLflow built-in (e.g., MLflow 4.x reserves `perf.*` for a system-metrics integration) — supersession ADR migrates to a different prefix (`hardware.*` / `latency.*`). |
+
+> **Erratum (2026-05-31, per ADR-031):** every "H4" in this ADR denotes the **latency-efficiency** hypothesis, now correctly numbered **H8** (pre-registered 2026-05-31 via ADR-031). §6 H4 is the Layer-3 graph-vs-vector hypothesis; §6 contained no efficiency hypothesis. The original "brainstorm v2 §6 H4" attributions (including the §Refs "pre-registered hypothesis" quote) were factually wrong and are corrected throughout. The efficiency *test* has not run (this ADR shipped instrumentation only), so H8 is a genuine pre-registration, dated later than the 2026-05-08 H1–H6 lock.
 
 ## Amendment 1 — TPS metric formula correction (ratified 2026-05-20, mid-PR)
 
@@ -35,7 +37,7 @@ A second bug, orthogonal to the AA claim but discovered in the same review pass:
 - **MLX-VLM path** (`MLXVLMExtractor`): used `GenerationResult.generation_tps` from the library, which IS decode-only per `mlx_vlm/generate.py:375-385` (`generation_tps = generation_tokens / generation_seconds` where `generation_seconds` excludes prompt encoding).
 - **Transformers-MPS path** (`TransformersMPSExtractor`): computed `generation_tps = generation_tokens / extract_seconds`, which is END-TO-END (includes prompt encoding).
 
-Same field name, different semantics → cross-backend H4 comparison would be apples-to-oranges.
+Same field name, different semantics → cross-backend H8 efficiency comparison would be apples-to-oranges.
 
 ### Fix (Amendment 1)
 
@@ -90,7 +92,7 @@ The inspector renders **two columns** (`decode_tps`, `e2e_tps`) instead of the o
 
 #### D. Both metrics are scientifically meaningful
 
-The two metrics answer **different questions** and the H4 hypothesis test (latency-efficiency comparison; brainstorm v2 §6) cites **both**:
+The two metrics answer **different questions** and the H8 efficiency hypothesis test (latency-efficiency comparison; pre-registered 2026-05-31 via ADR-031 — NOT §6, which contains no efficiency hypothesis) cites **both**:
 
 - `decode_tps` answers "how fast does this model decode tokens?" — model-architecture / quantization / hardware-decode-loop benchmark. AA-canonical for cross-backend model-speed claims (when both backends expose it).
 - `inference_tps` answers "what end-to-end throughput does the user perceive?" — full-stack benchmark including prompt encoding overhead. The metric MPS users actually feel.
@@ -99,13 +101,13 @@ Picking one and discarding the other would be intellectually lossy. Keeping both
 
 ### Cross-model standardisation (still deferred)
 
-AA's tiktoken `o200k_base` standardisation is **still deferred to H4** (per the original ADR-017 §"What this ADR does NOT decide"). Adding it now would:
+AA's tiktoken `o200k_base` standardisation is **still deferred to H8** (per the original ADR-017 §"What this ADR does NOT decide"). Adding it now would:
 
 1. Introduce a `tiktoken` dependency (~10 MB) used only at log time.
 2. Re-tokenize every output at log time (overhead per page).
-3. Pre-empt a hypothesis-test design choice (does H4 want decode_tps in native tokens for "what the model emits", or in tiktoken tokens for "comparable units"? Both are valid; the H4 author decides).
+3. Pre-empt a hypothesis-test design choice (does H8 want decode_tps in native tokens for "what the model emits", or in tiktoken tokens for "comparable units"? Both are valid; the H8 author decides).
 
-When H4 lands, a supersession ADR ratifies whether to add `tiktoken` and where to compute the standardised metric (extractor-side vs harness-side vs inspector-side).
+When H8 lands, a supersession ADR ratifies whether to add `tiktoken` and where to compute the standardised metric (extractor-side vs harness-side vs inspector-side).
 
 ### Out of scope for Amendment 1
 
@@ -131,8 +133,8 @@ Amendment 1 is the first **mid-PR** ADR amendment in HORUS (precedent: ADR-009 �
 Pilot #13 ([`ReebalSami/horus#13`](https://github.com/ReebalSami/horus/issues/13), closed via PR #42, ratified by ADR-014) produced **182 saved transcripts** and the canonical thesis-defense F1 evidence base. The cohort harness logs per-tuple accuracy metrics (`micro_f1`, `extract_seconds_total`, per-field outcomes) but does **NOT** log:
 
 - per-tuple **generation token counts** — needed to derive native tokens/sec
-- per-tuple **tokens/sec** — needed for the H4 latency-efficiency comparison (brainstorm v2 §6 H4)
-- per-tuple **peak GPU memory** — needed for the H4 efficiency claim ("does the model fit on a 16 GB MacBook?") and for the `%_max` of-host-ceiling diagnostic
+- per-tuple **tokens/sec** — needed for the H8 latency-efficiency comparison (pre-registered 2026-05-31 via ADR-031)
+- per-tuple **peak GPU memory** — needed for the H8 efficiency claim ("does the model fit on a 16 GB MacBook?") and for the `%_max` of-host-ceiling diagnostic
 
 The retro (`docs/retros/m2d.5-pilot-13-cohort-harness.md` §"Out of scope") and the post-pilot-13 rethink plan (`~/.windsurf/plans/horus-post-pilot13-rethink-46eaaa.md` §5 Seq 3) identified this gap as a Seq-3 follow-up. Issue #52 captures it.
 
@@ -153,7 +155,7 @@ What's missing is **wiring**:
 
 This ADR ratifies the design across all 6 chunks. Authored alongside the implementation across a 7-commit branch (`feat/issue-52-timing-inspector`); the chunks are dependency-ordered: schema → harness aggregation → MPS workaround → inspector → tests → docs → this ADR.
 
-**Critical scope boundary**: this ADR ships the **substrate** for hypothesis H4 (latency-efficiency comparison; brainstorm v2 §6). It does **NOT** run the H4 test. H4 requires a sweep across the full 7-working-model cohort with the perf instrumentation enabled, statistical comparison of the perf-vs-F1 trade-off, and write-up against the pre-registered hypothesis. That work is filed separately.
+**Critical scope boundary**: this ADR ships the **substrate** for the **H8 efficiency** hypothesis (latency-efficiency comparison; pre-registered 2026-05-31 via ADR-031 — §6 contained no efficiency hypothesis). It does **NOT** run the H8 test. H8 requires a sweep across the full 7-working-model cohort with the perf instrumentation enabled, statistical comparison of the perf-vs-F1 trade-off, and write-up against the pre-registered hypothesis. That work is filed separately.
 
 ## Current-state survey (2026-05-20)
 
@@ -215,7 +217,7 @@ The plan (`~/.windsurf/plans/horus-issue-52-timing-inspector-3fe7c5.md` §5) wal
 | Option | Outcome |
 |---|---|
 | **E1** — Native tokens/sec only (per-model tokenizer; non-comparable across models) + chars/sec as tokenizer-agnostic sanity check | **Accepted for #52.** Within-model comparison is valid (same tokenizer, same metric); chars/sec is the cross-model proxy. Honest disclosure in the inspector header that `tps` is NOT cross-model comparable. |
-| **E2** — Tiktoken-standardised tokens/sec — re-tokenize every model's output with `cl100k_base` and compute `standardised_tps = retokenized_count / extract_seconds` | **Rejected for #52, deferred to H4.** Adds `tiktoken` dep + retokenization overhead per page. Cross-model rigor is needed for the H4 hypothesis test, not the substrate. When H4 runs, supersession ADR adopts E2 (or Hugging Face's standardised methodology if it stabilises in the meantime). |
+| **E2** — Tiktoken-standardised tokens/sec — re-tokenize every model's output with `cl100k_base` and compute `standardised_tps = retokenized_count / extract_seconds` | **Rejected for #52, deferred to H8.** Adds `tiktoken` dep + retokenization overhead per page. Cross-model rigor is needed for the H8 efficiency hypothesis test, not the substrate. When H8 runs, supersession ADR adopts E2 (or Hugging Face's standardised methodology if it stabilises in the meantime). |
 | **E3** — Words/sec (tokenizer-free, language-agnostic) | **Rejected.** German invoices have long compound words; English / Korean have entirely different word boundaries; "word" isn't well-defined cross-language. Chars/sec (E1's proxy) is more robust for our multilingual corpus. |
 
 ### Axis 6 — Inspector output format
@@ -263,7 +265,7 @@ The inspector reports:
 - `tps` = `perf.generation_tps_mean` (native, per-model tokenizer; **NOT cross-model comparable** — caveat in the section header).
 - `chars/s` = `perf.chars_per_sec` (tokenizer-agnostic; pairs with `tps` as a sanity check; cross-model comparable for languages with similar character distributions).
 
-Cross-model standardised tokens/sec (via tiktoken or HF benchmark methodology) is **deferred to the H4 hypothesis test**, where the cross-model rigor is required.
+Cross-model standardised tokens/sec (via tiktoken or HF benchmark methodology) is **deferred to the H8 efficiency hypothesis test**, where the cross-model rigor is required.
 
 ### D5 — Tokens/sec aggregation: time-weighted throughput (Axis D1.A)
 
@@ -271,7 +273,7 @@ Cross-model standardised tokens/sec (via tiktoken or HF benchmark methodology) i
 
 ### D6 — Inspector rendering: plain-text, no new dependency (Axis F1)
 
-`_print_perf_table` uses plain `print(...)` with f-string column alignment. Sorts by mean wall-clock ascending (fastest model row top — matches H4 latency narrative reading order). 8 columns: `model`, `n` (count), `wall_s`, `tps`, `chars/s`, `gen_tok`, `peak_GB`, `%_max`. The `_mean_str` helper renders per-column means or `—` for empty lists.
+`_print_perf_table` uses plain `print(...)` with f-string column alignment. Sorts by mean wall-clock ascending (fastest model row top — matches H8 latency narrative reading order). 8 columns: `model`, `n` (count), `wall_s`, `tps`, `chars/s`, `gen_tok`, `peak_GB`, `%_max`. The `_mean_str` helper renders per-column means or `—` for empty lists.
 
 `%_max` shows `(max(per_model_peak) / mps_ceiling_gb) * 100` when both values exist; `—` otherwise (non-MPS hosts; pre-#52 parents without the ceiling logged).
 
@@ -306,9 +308,9 @@ The 7-commit branch `feat/issue-52-timing-inspector` lands the work in dependenc
 
 ## What this ADR does NOT decide
 
-- **The H4 hypothesis test itself.** This ADR ratifies the substrate (instrumentation + inspector). H4 (latency-efficiency comparison across the 7-working-model cohort) requires its own sweep, statistical analysis, and pre-registered-claim verification. Filed separately.
-- **Cross-model standardised tokens/sec via tiktoken.** Deferred to H4 (Axis E2). When H4 runs, a follow-up ADR ratifies the standardisation.
-- **Background-thread MPS peak sampler (Axis B2.B).** Deferred. Adopt only if H4's findings prove B2.A's snapshot misses transient peaks materially for a class of models in the cohort.
+- **The H8 efficiency hypothesis test itself.** This ADR ratifies the substrate (instrumentation + inspector). H8 (latency-efficiency comparison across the 7-working-model cohort) requires its own sweep, statistical analysis, and pre-registered-claim verification. Filed separately.
+- **Cross-model standardised tokens/sec via tiktoken.** Deferred to H8 (Axis E2). When H8 runs, a follow-up ADR ratifies the standardisation.
+- **Background-thread MPS peak sampler (Axis B2.B).** Deferred. Adopt only if H8's findings prove B2.A's snapshot misses transient peaks materially for a class of models in the cohort.
 - **`rich`/`tabulate` inspector output.** Deferred (Axis F2). Plain-text is sufficient for current cohort size.
 - **JSON output for machine consumption (Axis F3).** Deferred until a second consumer (CI gate / dashboard) materialises.
 - **`mlflow.log_text` of the perf table on the parent run (Axis F4).** Worthwhile follow-up enhancement; out of scope for #52 to keep chunks minimal.
@@ -321,4 +323,4 @@ The 7-commit branch `feat/issue-52-timing-inspector` lands the work in dependenc
 - Issue: [`ReebalSami/horus#52`](https://github.com/ReebalSami/horus/issues/52)
 - Predecessor ADRs: ADR-007 (dual-track local VLM), ADR-009 (cohort), ADR-011 (MLflow), ADR-014 (cohort harness), ADR-016 (fast dev config — same Seq pattern)
 - Sister rule: `long-running-foreground` — inspector output streams unbuffered; harness logging streams unbuffered.
-- Pre-registered hypothesis: brainstorm v2 §6 H4 — "MLX-routed VLMs achieve ≥3× tokens/sec compared to Transformers-MPS-routed VLMs at comparable F1 on the ZUGFeRD corpus." This ADR's substrate makes the test possible; the test itself is a separate work item.
+- Hypothesis under test: **H8 (efficiency)** — "MLX-routed VLMs achieve ≥3× tokens/sec compared to Transformers-MPS-routed VLMs at comparable F1 on the ZUGFeRD corpus, and the cohort's local VLMs fit within the M1 Pro / 16 GB envelope." **Correction (2026-05-31, ADR-031):** earlier drafts misattributed this claim to "brainstorm v2 §6 H4"; §6 H4 is the Layer-3 graph-vs-vector hypothesis and §6 contained NO efficiency hypothesis. The efficiency claim was instrumented here but formally pre-registered as **H8** only on 2026-05-31 (test still pending → genuine pre-registration). This ADR's substrate makes the test possible; the test itself is a separate work item.

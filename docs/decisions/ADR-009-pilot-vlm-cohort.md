@@ -18,8 +18,10 @@ The pilot loop (sub-issue #13) needs a locked cohort of single-shot VLM candidat
 
 - which models §11 vertical slices later evaluate
 - which architectures the supervisor sees in the first thesis meeting
-- the data substrate for the H1 / H2 single-shot-vs-orchestrated experiment
+- the data substrate for the **H2** single-shot-vs-orchestrated experiment (the cohort is also the local arm of the **H1** local-vs-cloud comparison)
 - the `src/horus/vlm_extractor.py` Protocol shape that productionises ADR-007's `scripts/inference_smoke.py` dispatcher prototype
+
+> **Erratum (2026-05-31, per ADR-031):** several "H1" labels for the single-shot-vs-orchestrated comparison below were corrected to **H2** (§6 H1 is local-vs-cloud; H2 is the single-shot-vs-orchestrated architecture comparison). The cohort is the local arm of H1 *and* the single-shot arm of H2. See ADR-031.
 
 ### Cohort delta vs brainstorm v2 §8.1 + §9.1 (honest disclosure)
 
@@ -79,7 +81,7 @@ All 10 model identifiers verified against HuggingFace Hub on 2026-05-14:
 
 ### ADR-007 + ADR-008 inheritance
 
-ADR-007 ratified the dual-track inference stack (MLX-VLM 0.5.0 primary + HF Transformers 5.8.0 + PyTorch MPS fallback). This ADR inherits both branches; cohort dispatch routes per-model via the `COHORT_MANIFEST` registry (see §"Decision + integration thoughts" §"Dispatcher architecture"). ADR-008 ratified the orchestrated-baseline pipeline (Docling primary + MinerU pipeline backend cross-check) — that path runs in parallel to this cohort's single-shot extraction; both feed pilot #13's H1 / H2 comparison.
+ADR-007 ratified the dual-track inference stack (MLX-VLM 0.5.0 primary + HF Transformers 5.8.0 + PyTorch MPS fallback). This ADR inherits both branches; cohort dispatch routes per-model via the `COHORT_MANIFEST` registry (see §"Decision + integration thoughts" §"Dispatcher architecture"). ADR-008 ratified the orchestrated-baseline pipeline (Docling primary + MinerU pipeline backend cross-check) — that path runs in parallel to this cohort's single-shot extraction; both feed pilot #13's H2 single-shot-vs-orchestrated comparison.
 
 ### Hardware envelope (per `know-your-hardware`)
 
@@ -93,7 +95,7 @@ M1 Pro / 16 GB unified memory / 14 GPU cores / Metal 4 / no CUDA. Smoke runs pag
 | **5-model cohort** (Cat 1 × 2 + Cat 2 × 1 + Cat 3 × 2) | 5 | Asymmetric | Rejected | Same within-Cat-comparison gap as 3-model cohort; asymmetric coverage smuggles a hypothesis (more Cat 1 + Cat 3 = more evaluation budget on those vs Cat 2) without justifying it; the architectural-lever hypothesis Cat 2 tests is weakened by single-representation |
 | **7-model cohort** (issue #14 original body) | 7 | Pre-3-Cat-framework | Rejected | Predates the 3-Cat methodological re-cut; mixes Cat 1 (Granite-Docling, olmOCR-2, Nanonets-OCR2, MinerU) and Cat 2 (dots.ocr, PaddleOCR-VL) and Cat 3 (Qwen3-VL-8B / 30B) without explicit category bracketing — pilot #13's evaluation matrix would inherit the un-cut shape and lose the architectural-axis interpretability |
 | **Single-Cat focus** (e.g., Cat 1 only — 3 models) | 3 | Single Cat | Rejected | Defensible thesis path (purpose-trained-on-docs hypothesis is narrowest and most rigorous to test) but forfeits Cat 2 (architectural-innovation finding) and Cat 3 (transfer-learning finding) — both are supervisor-relevant per brainstorm v2 §3 D8. Single-Cat focus is sub-issue territory if pilot #13's H2 narrows to one Cat post-bake-off |
-| **Skip zero-shot bake-off** (jump directly to fine-tuning) | 0 | None | Rejected | Forfeits the H1 (single-shot-vs-orchestrated) experimental arm entirely; "we fine-tuned the model that worked best in zero-shot" requires zero-shot to have run; brainstorm §3 D8 + ADR-007's forward-pointer to #14 both require zero-shot evidence first |
+| **Skip zero-shot bake-off** (jump directly to fine-tuning) | 0 | None | Rejected | Forfeits the H2 (single-shot-vs-orchestrated) experimental arm entirely; "we fine-tuned the model that worked best in zero-shot" requires zero-shot to have run; brainstorm §3 D8 + ADR-007's forward-pointer to #14 both require zero-shot evidence first |
 | **No-quantization cohort** (all bf16, with OOM tolerance) | 10 | 3 Cats | Rejected | bf16 7-8 B models exceed 16 GB unified memory ceiling under VLM workload (~2 GB activation footprint atop weights + image-encoder state); ADR-007's smoke evidence at 258 M is not generalizable to 7 B-tier; uniform-bf16-and-fail-on-OOM produces "OOM at load time" as the dominant failure mode and would obscure architectural signal |
 | **Uniform 4-bit cohort** (all MLX 4-bit) | 10 | 3 Cats | Rejected | Cat 1's smallest member (Granite-Docling-258M) has no community 4-bit port (the official IBM port is bf16; quantization to 4-bit at 258M would degrade quality without a memory benefit since bf16-258M = 0.5 GB and fits trivially); MinerU-2.5-Pro-1.2B has no MLX port and forces Transformers + MPS at bf16; uniform-4-bit is operationally infeasible |
 | **10-model 3-Cat cohort with mixed quantization** (chosen) | 10 | 3 Cats × 3-4 models each | **Chosen** | Maximises within-Cat and across-Cat comparison; covers the 3-architectural-lever decomposition (purpose-training / architectural-innovation / general-multimodal); fits the M1 Pro / 16 GB ceiling via mixed quantization (bf16 for ≤2 B; MLX 4-bit for ≥3 B); produces the tooling spine (`COHORT_MANIFEST` + dispatcher) that pilot #13 inherits without re-design |
@@ -109,7 +111,7 @@ M1 Pro / 16 GB unified memory / 14 GPU cores / Metal 4 / no CUDA. Smoke runs pag
 **Rationale**:
 
 - **Granite-Docling-258M** earns the baseline-of-failure slot per ADR-007 §"Decision" finding 3 (4 prompts × 4 distinct failure modes × 0 correct extractions on synthetic invoice). PR(a) §"Smoke evidence" extends ADR-007's evidence to a real German EN16931 invoice (`EN16931_Einfach.pdf`); the failure profile reproduces (hallucinated content + degenerate token loop). Per `docs/sources/tools/granite-docling-258m-mlx.md`.
-- **MinerU-2.5-Pro VLM 1.2B** is the orchestrated-baseline pipeline's VLM-stage backend per ADR-008; its inclusion as a Cat 1 cohort entry adds the purpose-trained mid-tier reading to the architectural matrix (ADR-008 evaluates MinerU as an orchestrated pipeline; ADR-009 evaluates the same VLM backend in single-shot mode — the H1 single-shot-vs-orchestrated comparison the supervisor asks about). Per `docs/sources/tools/mineru-2-5.md`.
+- **MinerU-2.5-Pro VLM 1.2B** is the orchestrated-baseline pipeline's VLM-stage backend per ADR-008; its inclusion as a Cat 1 cohort entry adds the purpose-trained mid-tier reading to the architectural matrix (ADR-008 evaluates MinerU as an orchestrated pipeline; ADR-009 evaluates the same VLM backend in single-shot mode — the H2 single-shot-vs-orchestrated comparison the supervisor asks about). Per `docs/sources/tools/mineru-2-5.md`.
 - **olmOCR-2-7B** is Allen AI's Oct 2025 purpose-trained-on-docs benchmark-leader; the within-lab pair with Molmo-7B-D-0924 (Cat 3) is methodological control — same lab, same `qwen2_5_vl` lineage, one purpose-trained-on-docs and one general-multimodal isolates the purpose-training-on-docs effect from the lab effect. English-only training caveat noted; pilot #13 produces German-substrate evidence. Per `docs/sources/tools/olmocr-2-7b.md` + `docs/sources/papers/poznanski-2025-olmocr2.md`.
 
 ### Decision — Cat 2: Architecturally innovative compression / hybrid
@@ -633,7 +635,7 @@ Per plan §6 A2 escalation lemma. Honest disclosure of the taxonomy:
 
 - **Pilot #13** — single-shot zero-shot bake-off evaluation (this cohort + pilot #13's evaluation harness)
 - **ADR-NNN-validator-loop** — RAG-based field-validator (sibling forward-pointer; consumes this cohort's outputs)
-- **ADR-NNN-layer-1-architecture** — single-shot vs orchestrated comparison decision (sibling; H1 hypothesis)
+- **ADR-NNN-layer-1-architecture** — single-shot vs orchestrated comparison decision (sibling; H2 hypothesis)
 - **ADR-NNN-cloud-baselines** — commercial API comparand (sibling; brainstorm v2 §8.2)
 - **ADR-NNN-layer-2-storage** — graph store decision (sibling; brainstorm v2 §13)
 - **Issue #14** closes on PR(b) merge (cohort completion); ADR-007 + ADR-008 frontmatter forward-pointer notes update with "ADR-009 resolves the cohort ADR #14 forward-pointer"
@@ -696,7 +698,7 @@ End of PR(b) Step 9 = 10/10 cohort transcripts on disk; per-Cat narrative + cros
 - **ADR-003** — strict docs structure (this ADR placed under `docs/decisions/`)
 - **ADR-005** — synthetic ZUGFeRD generator (`scripts/generate_zugferd_smoke.py` produces the rasterized smoke input)
 - **ADR-007** — local-VLM inference framework (dual-track MLX-VLM + Transformers + MPS; this ADR inherits both branches)
-- **ADR-008** — orchestrated-baseline pipeline (Docling + MinerU; this ADR's MinerU-2.5-Pro VLM single-shot evaluation pairs with ADR-008's orchestrated path for pilot #13's H1 comparison)
+- **ADR-008** — orchestrated-baseline pipeline (Docling + MinerU; this ADR's MinerU-2.5-Pro VLM single-shot evaluation pairs with ADR-008's orchestrated path for pilot #13's H2 comparison)
 - **ADR-011** — supersession over deletion (DeepSeek-OCR v1 stub retained alongside v2)
 - **Cascade-system ADR-013** — `/commit` workflow (used for commits in this PR)
 - **Cascade-system ADR-018** — `@release-manager` discipline (PR(a) + PR(b) both land via `@release-manager`; mid-sprint amendment of §"Decision" in PR(b) follows ADR-018 precedent)

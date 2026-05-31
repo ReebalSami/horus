@@ -177,7 +177,7 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
                          public `transformers.generate(...)` API). Native
                          per-model tokenizer — NOT cross-model comparable in
                          absolute terms (re-tokenize with tiktoken o200k_base
-                         for AA-strict cross-model comparison; deferred to H4).
+                         for AA-strict cross-model comparison; deferred to H8).
       - `e2e_tps`      : mean `perf.inference_tps_mean` — END-TO-END
                          tokens-per-second (includes prompt encoding +
                          decode + post-processing). Always computable.
@@ -195,7 +195,8 @@ def _print_perf_table(nested: list, *, parent_run_id: str) -> None:
                          logged `perf.mps_recommended_max_gb`; else `—`
 
     Sort: ascending by mean wall_s — fastest models top, slowest bottom.
-    Eye-friendly for the H4 latency-efficiency story.
+    Eye-friendly for the H8 latency-efficiency story (efficiency hypothesis;
+    pre-registered 2026-05-31 via ADR-031 — not §6 H4, which is graph-vs-vector).
 
     Graceful degradation per ADR-017 §"Decision 3": pre-#52 parent runs
     (no perf.* metrics on any nested run) get a single-line note instead

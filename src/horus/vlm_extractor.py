@@ -534,8 +534,8 @@ class TransformersMPSExtractor:
             #
             # `generation_tokens`: tokens this model emitted, counted via
             # `generated_only.shape[-1]` (model's own tokenizer; NOT
-            # cross-model comparable — see ADR-017 §"Decision 4" +
-            # brainstorm v2 §6 H4 framing).
+            # cross-model comparable — see ADR-017 §"Decision 4" + the
+            # H8 efficiency framing (ADR-031; §6 H4 is graph-vs-vector, NOT efficiency).
             #
             # `generation_tps = 0.0` is INTENTIONAL — decode-only TPS is
             # NOT separable from end-to-end TPS via public

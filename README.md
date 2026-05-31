@@ -128,7 +128,7 @@ Outputs four sections in order:
 
 1. **Per-(model, invoice) F1 grid** — raw scores + wall-clock seconds per tuple.
 2. **Per-model accuracy aggregate** — mean micro-F1, sorted descending (best models top).
-3. **Per-model perf summary** ([ADR-017](docs/decisions/ADR-017-timing-tokens-memory-instrumentation.md), [issue #52](https://github.com/ReebalSami/horus/issues/52)) — wall-clock seconds, native tokens/sec, chars/sec, total generation tokens, peak memory (GB), and `%_max` of the host's MPS memory ceiling. Sorted by mean wall-clock ascending (fastest models top). Pre-#52 parent runs degrade gracefully — the section prints a single-line note instead of a blank table. **Substrate** for the H4 latency-efficiency comparison; the H4 hypothesis test itself is filed separately.
+3. **Per-model perf summary** ([ADR-017](docs/decisions/ADR-017-timing-tokens-memory-instrumentation.md), [issue #52](https://github.com/ReebalSami/horus/issues/52)) — wall-clock seconds, native tokens/sec, chars/sec, total generation tokens, peak memory (GB), and `%_max` of the host's MPS memory ceiling. Sorted by mean wall-clock ascending (fastest models top). Pre-#52 parent runs degrade gracefully — the section prints a single-line note instead of a blank table. **Substrate** for the **H8 efficiency** hypothesis (latency-efficiency comparison; pre-registered 2026-05-31 via ADR-031 — not §6 H4, which is the Layer-3 graph-vs-vector hypothesis); the H8 test itself is filed separately.
 4. **Probes** — Probe 1 (MONEY-field TPs on `EN16931_Einfach`), Probe 2 (XRECHNUNG factur-x route DATE outcomes).
 
 Wraps `scripts/inspect_pilot_13.py`; the script is also runnable directly via `uv run python scripts/inspect_pilot_13.py [--cfg <path>] [--parent-run-id <id>]`.
