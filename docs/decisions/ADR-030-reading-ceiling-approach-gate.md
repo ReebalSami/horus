@@ -8,14 +8,16 @@
 | **Authored by** | Cascade (issue #76 implementation session; plan `~/.windsurf/plans/horus-hnd3-diagnose-first-approach-gate-b4ef56.md`) |
 | **Issue** | [`ReebalSami/horus#76`](https://github.com/ReebalSami/horus/issues/76) |
 
+> **Erratum (2026-05-31, per ADR-031):** references to "H2" below were corrected — #76 (free-form-vs-JSON extraction) is **not** §6 H2 (which is single-shot-vs-orchestrated). #76 is an **exploratory** diagnostic per brainstorm §4.2 branches-on-results; the arXiv 2503.08124 exploratory→confirmatory *continuum* is the methodology stance (kept), not a hypothesis label (dropped). See ADR-031.
+
 ## Context
 
-Issue #76 (HND-3) is the gate that closes the `experiment` phase: it must compare the two Layer-1 extraction approaches — **free-form + Layer-2 adapter** (`adapter_mode="regex"`, hardened by the ADR-028 Belegsummen MONEY fallback) vs **native JSON** (`adapter_mode="json"`, ADR-018/029) — and decide which HORUS carries forward. The issue's own scope already demanded a **per-model + pooled 4-metric comparison** and **"honest reporting even if neither dominates"**, under hypothesis **H2 (exploratory→confirmatory, arXiv 2503.08124)**.
+Issue #76 (HND-3) is the gate that closes the `experiment` phase: it must compare the two Layer-1 extraction approaches — **free-form + Layer-2 adapter** (`adapter_mode="regex"`, hardened by the ADR-028 Belegsummen MONEY fallback) vs **native JSON** (`adapter_mode="json"`, ADR-018/029) — and decide which HORUS carries forward. The issue's own scope already demanded a **per-model + pooled 4-metric comparison** and **"honest reporting even if neither dominates"** — an **exploratory** diagnostic (brainstorm §4.2 branches-on-results; exploratory→confirmatory continuum, arXiv 2503.08124), **not** a §6 hypothesis test (§6 H2 is single-shot-vs-orchestrated; see ADR-031).
 
 Two problems forced a reframe of the gate during the planning Socratic walk (recorded in the plan file):
 
 1. **The comparison is too narrow to *decide the approach*.** Native JSON works on only 3 of the 7 cohort models (ADR-019/021); free-form works on all 7 (incl. the strongest reader, MinerU). A 3-model contest measures "for JSON-capable models, which output style extracts more *right now*" — a useful diagnostic, **not** a basis for choosing HORUS's Layer-1 approach. The user's analogy: racing two differently-sized riders on one bike size.
-2. **Neither approach is at its best.** These are zero-shot numbers, no fine-tuning, the JSON path is bare `json.loads()` (no Pydantic/constrained decoding), the adapter is still maturing. Picking a winner on first-draft numbers would be premature and would violate the exploratory→confirmatory discipline (H2).
+2. **Neither approach is at its best.** These are zero-shot numbers, no fine-tuning, the JSON path is bare `json.loads()` (no Pydantic/constrained decoding), the adapter is still maturing. Picking a winner on first-draft numbers would be premature and would violate the exploratory→confirmatory discipline (arXiv 2503.08124).
 
 A third, decisive constraint is the **ADR-028 landmine**: `make inspect-pilot-13` reads the *stale* `pilot-13-full` MLflow run, where the 4 invoice-total MONEY fields are F1=0.000 (pre-ADR-028). Any comparison sourced from the inspector pits JSON against a **crippled** free-form baseline. The post-ADR-028 free-form numbers exist *only* via live re-score from transcripts.
 
@@ -52,14 +54,14 @@ Dated web survey (`search_web`, trustworthy sources only):
 
 | Option | Why considered | Why not chosen |
 |---|---|---|
-| Pick the Layer-1 winner now | closes #76 with a single decision | premature on zero-shot, un-optimized, 3-model-narrow data; violates H2 |
+| Pick the Layer-1 winner now | closes #76 with a single decision | premature on zero-shot, un-optimized, 3-model-narrow data; violates the exploratory→confirmatory discipline |
 | **Diagnose both + carry forward, staged (chosen)** | honest per #76's "neither dominates" clause; sets up the fine-tuning phase with evidence on *where* each approach's headroom is | defers the final pick — acceptable: #76 closes on a *characterization*, the down-select happens post-fine-tuning |
 
 Both arms (free-form+adapter, native JSON) are internal (ADR-028, ADR-029); the external sources above are cited for framing and archived per `horus-source-archival`.
 
 ## Decision + integration thoughts
 
-**Reframe ratified.** #76 closes the `experiment` phase with a fair **characterization** of both approaches + a **carry-both-forward (staged)** decision; the final Layer-1 pick is deferred to post-fine-tuning (H2). The down-select happens before the expensive full fine-tuning + held-out (#78) run.
+**Reframe ratified.** #76 closes the `experiment` phase with a fair **characterization** of both approaches + a **carry-both-forward (staged)** decision; the final Layer-1 pick is deferred to post-fine-tuning (exploratory→confirmatory; see ADR-031). The down-select happens before the expensive full fine-tuning + held-out (#78) run.
 
 **Instrument shipped** (`scripts/reading_ceiling.py`, `make reading-ceiling`, report at `eval/reading-ceiling-and-approach-comparison.md`):
 
@@ -112,7 +114,7 @@ Three load-bearing observations for the fine-tuning phase (none is a verdict):
 
 - `docs/sources/papers/tam-2024-format-restrictions.md` — **new** stub (Tam et al. 2024, arXiv 2408.02442, "Let Me Speak Freely?").
 - `docs/sources/papers/ibm-2025-granite-docling.md` — existing stub (single-pass / anti-cascade framing).
-- arXiv 2503.08124 (H2 exploratory→confirmatory) — already archived in `docs/sources/papers/neurips-paper-checklist.md` (supporting-reference list).
+- arXiv 2503.08124 (exploratory→confirmatory methodology) — already archived in `docs/sources/papers/neurips-paper-checklist.md` (supporting-reference list).
 - Internal: ADR-027 (4 metrics), ADR-028 (MONEY adapter + landmine), ADR-029 (JSON baseline reproduced), ADR-018/019/021 (JSON-capability evidence), ADR-016/014 (rescore + transcript archive lineage). No external `docs/sources/` stub required for internal ADR cross-references.
 
 ## Supersession trigger

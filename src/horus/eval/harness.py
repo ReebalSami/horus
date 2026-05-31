@@ -1006,7 +1006,7 @@ def run_cohort(
                         # ("how fast does the model decode?" vs "what
                         # end-to-end throughput does the user see?") and
                         # both are scientifically meaningful. The thesis
-                        # H4 latency-efficiency comparison cites the AA-
+                        # H8 latency-efficiency comparison cites the AA-
                         # canonical `decode_tps` for cross-backend model-
                         # speed claims and `inference_tps` for user-facing
                         # latency claims.

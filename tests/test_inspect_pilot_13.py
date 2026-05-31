@@ -331,7 +331,7 @@ def test_print_perf_table_sorts_by_wall_s_ascending(
 ) -> None:
     """Models sort by mean wall_s ascending — fastest first.
 
-    Pins the Chunk 4 sort order. H4 latency-efficiency story reads top-down;
+    Pins the Chunk 4 sort order. H8 latency-efficiency story reads top-down;
     putting the slowest model on top would invert the inspector's intent.
     """
     tracking_uri = f"sqlite:///{tmp_path}/mlflow.db"

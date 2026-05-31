@@ -309,6 +309,42 @@ When the thesis writeup phase opens, Chapter 3 (Methodology) will report this fr
 
 ---
 
+## 13 — Amendment 2026-05-31: Hypothesis-label reconciliation + H8 (efficiency) pre-registration
+
+**Status**: amendment recording (a) a hypothesis-label reconciliation across ADR-008/009/017/030 + scripts + README + INDEX, and (b) the pre-registration of **H8 (efficiency)**. Does **not** change §6 H1–H6 content. Authoritative record: `docs/decisions/ADR-031-hypothesis-label-reconciliation.md`.
+
+**Trigger**: experiment-phase close-out hypothesis-label audit (2026-05-31) cross-checking every per-experiment ADR's `H_i` citation against the verbatim §6 text. Found systematic mislabels — including a **fabricated** "brainstorm v2 §6 H4" efficiency citation in ADR-017 (§6 H4 is graph-vs-vector; §6 contained no efficiency hypothesis).
+
+### Verbatim §6 registry (unchanged)
+
+H1 local-vs-cloud · H2 single-shot-vs-orchestrated · H3 KG-fidelity · H4 graph-vs-vector · H5 query-routing · H6 conditional agentic-retry. **H7** = floated transfer-learning candidate (not locked).
+
+### Corrections applied (per ADR-031)
+
+- **Class A** — architecture comparison mislabeled "H1" → **H2** (ADR-008, ADR-009).
+- **Class B** — latency-efficiency mislabeled "H4" → **H8**; ADR-017's fabricated "§6 H4" quote corrected (ADR-017, README, `inspect_pilot_13.py`, INDEX).
+- **Class C** — #76 free-form-vs-JSON mislabeled "H2" → **exploratory** under §4.2 (arXiv 2503.08124 kept as methodology, not a hypothesis) (ADR-030, `reading_ceiling.py`, INDEX).
+
+### H8 (efficiency) — pre-registered 2026-05-31
+
+> **H8 (Layer 1, efficiency):** MLX-routed VLMs achieve ≥3× decode tokens/sec compared to Transformers-MPS-routed VLMs at comparable F1 on the ZUGFeRD corpus, and the cohort's local document VLMs run within the M1 Pro / 16 GB unified-memory envelope.
+
+- Statement adopted **verbatim from ADR-017's existing wording** (the instrumentation was pre-registered there); the ≥3× threshold is literature-grounded (§7.2 directional ranking), to be confirmed/refined by the cohort sweep.
+- **No-HARKing:** the efficiency *test* has not run (ADR-017 shipped instrumentation only; pilot-13 logged no perf data) → H8 is a **genuine pre-registration**, honestly dated **2026-05-31** (later than the 2026-05-08 H1–H6 lock, never claimed otherwise). Pilot-13 perf numbers, when produced, are *exploratory* for H8; the held-out run (#78) is confirmatory.
+- **Test commitment:** pre-registration ≠ commitment to run every test (H6 is already conditional; Layer-2/3 H3/H4/H5 may not be reached within scope). Untested hypotheses are reported honestly as "not evaluated within thesis scope."
+
+### External-file sync (user action)
+
+The locked §6 lives in the read-only `THESIS_BRAINSTORM_STATE_v2.md` (external research file, never edited by Cascade). **H8 must be synced into §6 there by the user.** Until then, ADR-031 + this §13 are the authoritative in-repo record of H8.
+
+### Going-forward rule (restates §12 line 274 / §4.2)
+
+Every experiment ADR cites a §6 hypothesis (now **H1–H8**) by its verbatim definition, **or** marks the work "exploratory under §4.2 branches-on-results." No §6 number may be attached to work that is not that hypothesis.
+
+**Pattern A vs ADR**: unlike §9–§12 (inline-only), this amendment is backed by **ADR-031** because it corrects factual citations across multiple Accepted ADRs (including a fabricated quote) and pre-registers a new hypothesis — significant enough for a permanent decision record.
+
+---
+
 ## Provenance
 
 - **Input**: `/Users/reebal/Projects/FH-Wedel/SS26/Master-Thesis/research/THESIS_BRAINSTORM_STATE_v2.md` (locked 2026-05-06, revision 2 by Reebal Sami + Claude Opus 4.7)

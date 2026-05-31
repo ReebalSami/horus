@@ -522,8 +522,9 @@ def _render_report(
         "",
         "> **Diagnostic, NOT a verdict.** This characterizes both extraction "
         "approaches on identical cached data to inform — not decide — the Layer-1 "
-        "choice (carried into fine-tuning per #76, hypothesis H2 "
-        "exploratory→confirmatory). No approach is pre-bet.",
+        "choice (carried into fine-tuning per #76; exploratory→confirmatory "
+        "diagnostic, arXiv 2503.08124 — not a §6 hypothesis test, per ADR-031). "
+        "No approach is pre-bet.",
         ">",
         "> **In-sample.** ZUGFeRD synthetic corpus; NO real-world-accuracy claim. "
         "Out-of-sample reporting is deferred to the held-out Belege split (#78) "
