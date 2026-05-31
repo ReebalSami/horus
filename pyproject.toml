@@ -141,6 +141,15 @@ ignore_missing_imports = true
 module = ["PIL", "PIL.*"]
 ignore_missing_imports = true
 
+# Pyright config (consumed by Serena's LSP symbol analysis and editor Pylance;
+# NOT a CI gate — mypy above is the gate). Pin to the project's Python so Pyright
+# targets 3.14 and parses PEP 758 unparenthesized `except A, B:` instead of
+# defaulting to its 3.13 host and flagging those lines as syntax errors.
+[tool.pyright]
+pythonVersion = "3.14"
+venvPath = "."
+venv = ".venv"
+
 [tool.ruff]
 line-length = 100
 target-version = "py314"
