@@ -56,7 +56,6 @@ import dataclasses
 import datetime
 import hashlib
 import importlib.util
-import re
 import sys
 from collections import defaultdict
 from collections.abc import Callable
@@ -65,12 +64,20 @@ from types import ModuleType
 
 from horus.config import EvalConfig
 from horus.eval import adapters as baseline_adapters
-from horus.eval.harness import (
-    _PAGE_SEPARATOR_RE,
-    _extract_groundtruth_via_facturx,
-    _list_paired_invoices,
-)
 from horus.eval.scorer import score
+from horus.eval.transcripts import (
+    build_gt_cache,
+    parse_transcript,
+    split_per_page_texts,
+)
+
+# Backward-compat private aliases: these three helpers used to live in this
+# module; `tests/test_rescore.py` + the call sites below still reference the
+# leading-underscore names. The canonical home is now `horus.eval.transcripts`
+# (shared with `scripts/reading_ceiling.py` per ADR-030).
+_build_gt_cache = build_gt_cache
+_parse_transcript = parse_transcript
+_split_per_page_texts = split_per_page_texts
 
 DEFAULT_TRANSCRIPTS_DIR = Path("docs/sources/transcripts-multipage")
 DEFAULT_CORPUS_ROOT = Path("data/raw/german/zugferd-corpus")
@@ -106,76 +113,6 @@ class AdapterPair:
     diff_sha256: str  # SHA-256 of the candidate file's content; "" if identical
 
 
-# Per-transcript header lines:
-#   # Multi-page transcript (ADR-014 PR(c))
-#   # Model:    <model_id>
-#   # Invoice:  <invoice_stem>
-#   # Pages:    <N>
-#   ...
-#   <blank line>
-#   ===== PAGE 1 =====
-#   ...
-_HEADER_LINE_RE = re.compile(r"^# (Model|Invoice):\s+(.+)$")
-
-
-def _parse_transcript(path: Path) -> tuple[str, str, str]:
-    """Parse a saved transcript file.
-
-    Returns:
-        ``(model_id, invoice_stem, body)`` where ``body`` is the multi-page
-        concat text *with* `===== PAGE N =====` separators (caller splits
-        per-page via :func:`_split_per_page_texts` before passing to the
-        multipage adapter API per ADR-019 W3.1).
-    """
-    text = path.read_text(encoding="utf-8")
-    lines = text.splitlines(keepends=False)
-    model_id: str | None = None
-    invoice_stem: str | None = None
-    body_start: int | None = None
-    for i, line in enumerate(lines):
-        m = _HEADER_LINE_RE.match(line)
-        if m:
-            key, val = m.group(1), m.group(2).strip()
-            if key == "Model":
-                model_id = val
-            elif key == "Invoice":
-                invoice_stem = val
-        # Body starts at the first non-comment, non-empty line.
-        if not line.startswith("#") and line.strip() != "" and body_start is None:
-            body_start = i
-            break
-    if model_id is None or invoice_stem is None or body_start is None:
-        raise ValueError(f"Transcript {path} missing Model:/Invoice: header or body")
-    body = "\n".join(lines[body_start:])
-    return model_id, invoice_stem, body
-
-
-def _split_per_page_texts(body: str) -> list[str]:
-    """Split a saved transcript body into per-page texts.
-
-    Inverse of :func:`harness._extract_and_concat`'s concatenation step.
-    Splits on the canonical ``===== PAGE N =====`` separator line (matched
-    via :data:`harness._PAGE_SEPARATOR_RE`), strips leading/trailing
-    whitespace from each chunk, and drops empty leading/trailing chunks
-    (the body typically starts with a separator line, producing an empty
-    leading split element).
-
-    Used by :func:`rescore_transcripts` to feed the multipage adapter API
-    (``adapter.to_predicted_dict_multipage(per_page_texts, model_id)``) per
-    ADR-019 W3.1.
-
-    Args:
-        body: the saved transcript body (the multi-page concat as returned
-            by :func:`_parse_transcript`'s third tuple element).
-
-    Returns:
-        list of per-page text strings (preserved in source order; stripped
-        of leading/trailing whitespace; empty pages excluded).
-    """
-    chunks = _PAGE_SEPARATOR_RE.split(body)
-    return [c.strip() for c in chunks if c.strip()]
-
-
 def _aggregate_micro_f1(per_invoice_scores: list) -> float:
     """Pool TP / FP / FN across invoices → micro F1.
 
@@ -200,24 +137,6 @@ def _aggregate_micro_f1(per_invoice_scores: list) -> float:
     if precision + recall == 0.0:
         return 0.0
     return 2.0 * precision * recall / (precision + recall)
-
-
-def _build_gt_cache(corpus_root: Path) -> dict:
-    """One-shot: extract GT for every invoice via factur-x.
-
-    Cached so the τ-sweep doesn't re-parse the same XML 3 times per invoice.
-    """
-    cache: dict = {}
-    pairs = _list_paired_invoices(corpus_root)
-    print(f"Building GT cache from {len(pairs)} paired invoices...", flush=True)
-    for pdf_path, _cii_sidecar in pairs:
-        gt = _extract_groundtruth_via_facturx(pdf_path)
-        if gt is None:
-            print(f"  WARN: {pdf_path.stem} has no factur-x GT; skipping", flush=True)
-            continue
-        cache[pdf_path.stem] = gt
-    print(f"  GT cache: {len(cache)} invoices loaded.", flush=True)
-    return cache
 
 
 def load_adapter_pair(

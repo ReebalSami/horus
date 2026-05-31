@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui inspect-pilot-13 clean
+.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui inspect-pilot-13 reading-ceiling clean
 
 # Default target — list available commands.
 help:
@@ -21,6 +21,7 @@ help:
 	@echo "  adapter-iterate fast (~5-15s) adapter A/B re-scoring on cached transcripts (ADR-016; CFG=...,pilot-13-dev.yaml required; THRESHOLDS / ADAPTER / LOG_MLFLOW optional)"
 	@echo "  mlflow-ui       browse pilot-13 + adapter-iterate + cohort-smoke runs in MLflow's local UI (ADR-015; MLFLOW_UI_PORT=<n> to override default 8080)"
 	@echo "  inspect-pilot-13  print per-model accuracy + perf summary table for the latest pilot-13 parent run (ADR-017, #52; CFG=configs/...yaml; PARENT_RUN_ID=<id> optional)"
+	@echo "  reading-ceiling   read-quality ceiling + parser-loss + same-tuple free-form-vs-JSON 4-metric diagnostic (ADR-030, #76; offline, writes eval/ report)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -358,6 +359,25 @@ inspect-pilot-13:
 	uv run python scripts/inspect_pilot_13.py \
 		$(if $(CFG),--cfg "$(CFG)") \
 		$(if $(PARENT_RUN_ID),--parent-run-id "$(PARENT_RUN_ID)")
+
+# Read-quality + approach-comparison diagnostic — ADR-030 (HND-3 gate, #76).
+# Offline (NO VLM). Re-scores BOTH arms from cached transcripts through the
+# current adapters + ADR-027 scorer and writes the markdown report:
+#   1. reading ceiling + parser-loss-vs-read-miss per model (native arm)
+#   2. same-tuple 4-metric free-form-vs-JSON comparison (3 models x 6 invoices)
+#   3. determinism cross-check vs docs/sources/json-baseline-metrics.txt
+# Defuses the ADR-028 stale-MLflow landmine: free-form is re-scored LIVE from
+# transcripts, never read from saved scores. Honors `long-running-foreground`.
+#
+# Usage:
+#   make reading-ceiling                       (canonical: pre-registered configs)
+#   make reading-ceiling OUT=eval/custom.md
+#   make reading-ceiling FREEFORM_CFG=... JSON_CFG=...
+reading-ceiling:
+	uv run python scripts/reading_ceiling.py \
+		$(if $(FREEFORM_CFG),--freeform-cfg "$(FREEFORM_CFG)") \
+		$(if $(JSON_CFG),--json-cfg "$(JSON_CFG)") \
+		$(if $(OUT),--out "$(OUT)")
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist
