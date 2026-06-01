@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | Proposed |
+| **Status** | Accepted (2026-05-19 — PR #42 merged, #13 closed) |
 | **Date** | 2026-05-19 |
 | **Milestone** | `experiments-validated` (pilot #13's harness sub-issue; PR(c) of the locked 3-PR split) |
 | **Authored by** | Cascade D (issue #13 implementation session; plan `~/.windsurf/plans/kickoff-cascade-d-horus-362eef.md` §6 PR(c)) |

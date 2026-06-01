@@ -521,13 +521,13 @@ print(f"  ALL 7 datasets in scope: {LICENSE_TIER['dataset'].tolist()}")
 #
 # **Context**: chapter @sec-zugferd §9 surfaced that the current
 # `parse_cii_xml` parser does not handle the ZUGFeRDv1 namespace
-# (urn:ferd:CrossIndustryDocument:invoice:1p0). 25 of the 151
+# (urn:ferd:CrossIndustryDocument:invoice:1p0). 24 of the 151
 # ZUGFeRD invoices use the v1 schema and are currently parser-
 # incompatible.
 #
 # **Decision needed (future ADR)**: extend `parse_cii_xml` to
 # handle v1 namespace OR explicitly scope the held-out evaluation
-# to ZUGFeRDv2+ only? Scoping out v1 reduces the substrate by 17%;
+# to ZUGFeRDv2+ only? Scoping out v1 reduces the substrate by ~16% (24 of 151);
 # extending the parser is non-trivial because v1's schema differs
 # from v2 in field semantics, not just namespace.
 
