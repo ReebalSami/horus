@@ -498,6 +498,14 @@ print(f"JPEG payload (KB): min={sizes_kb.min():.1f}  "
 #    - LoRA target: 2,000 examples → fatura2 alone is **5×** above.
 #    - Eval-min for thesis-defendable F1: 100 examples → fatura2 test
 #      split (1,400 examples) alone is **14×** above.
+#    - **Caveat (HND-8)**: these count multiples measure *quantity, not
+#      fit*. Calling fatura2 a "fine-tuning pool" undersells the
+#      synthetic-EN → real-DE domain gap — fatura2 is synthetic English
+#      (template-faithful content, no real OCR noise; see §5.5), while the
+#      HORUS target population is real German `Belege`. The *effective*
+#      fine-tuning contribution toward the thesis target is far below the
+#      raw 50×/5× headline; treat fatura2 as a methodology-validation /
+#      cross-language-transfer substrate, not a drop-in DE training pool.
 # 2. **Cross-language transfer test bed**: fatura2 is English-only;
 #    the HORUS thesis target population is German-speaking
 #    `Steuerberater` / `Wirtschaftsprüfer`. A model fine-tuned on
