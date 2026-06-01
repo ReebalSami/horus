@@ -761,6 +761,27 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
             "ADR-009 §3.9 reconciliation). 315 M total params; en-only."
         ),
     },
+    "ibm-granite/granite-docling-258M": {
+        "extractor_class": TransformersMPSExtractor,
+        "category": 1,
+        "prompt_template": "Convert this page to docling.",
+        "max_tokens": 1536,
+        "quant_target": "bf16",
+        "alt_model_id": None,
+        "license": "apache-2.0",
+        "needs_trust_remote_code": False,
+        "note": (
+            "ADR-032 (#77) H8 controlled backend pair — NOT an ADR-009 "
+            "evaluation-cohort member. The SAME 258M idefics3 granite-docling "
+            "model as `ibm-granite/granite-docling-258M-mlx`, run through "
+            "Transformers-MPS instead of MLX at the SAME bf16 precision. This "
+            "is the one quant-matched, model-matched MLX-vs-MPS end-to-end "
+            "(inference_tps) comparison the cohort can otherwise never give "
+            "(every other model is bound to a single backend). transformers-"
+            "native (AutoModelForImageTextToText, idefics3). Excluded from "
+            "pilot-13.yaml working_models; used only by configs/h8-efficiency.yaml."
+        ),
+    },
     "opendatalab/MinerU2.5-Pro-2604-1.2B": {
         "extractor_class": TransformersMPSExtractor,
         "category": 1,

@@ -89,18 +89,37 @@ def test_concrete_extractors_satisfy_protocol() -> None:
         assert callable(instance.unload)
 
 
-def test_cohort_manifest_has_ten_entries() -> None:
-    """`COHORT_MANIFEST` has exactly 10 entries per ADR-009 §3.1."""
+# The ADR-032 (#77) H8 controlled-pair MPS variant of granite-docling — the
+# SAME model as the granite-MLX Cat-1 entry, registered separately so the H8
+# sweep can run it through Transformers-MPS. NOT an ADR-009 evaluation-cohort
+# member (pilot-13.yaml working_models excludes it).
+_ADR_032_CONTROLLED_PAIR_MPS = "ibm-granite/granite-docling-258M"
+
+
+def test_cohort_manifest_membership() -> None:
+    """10 ADR-009 §3.1 cohort models + 1 ADR-032 H8 controlled-pair MPS variant."""
     from horus.vlm_extractor import COHORT_MANIFEST
 
-    assert len(COHORT_MANIFEST) == 10
+    assert _ADR_032_CONTROLLED_PAIR_MPS in COHORT_MANIFEST
+    adr009_cohort = set(COHORT_MANIFEST) - {_ADR_032_CONTROLLED_PAIR_MPS}
+    assert len(adr009_cohort) == 10, "ADR-009 §3.1 defines exactly 10 cohort models"
+    assert len(COHORT_MANIFEST) == 11, "10 ADR-009 cohort + 1 ADR-032 controlled-pair"
 
 
 def test_cohort_manifest_category_distribution() -> None:
-    """3 models in Cat 1, 3 in Cat 2, 4 in Cat 3 per ADR-009 §3.1."""
+    """The 10 ADR-009 §3.1 cohort models: 3 in Cat 1, 3 in Cat 2, 4 in Cat 3.
+
+    The ADR-032 H8 controlled-pair MPS variant is excluded from the count — it
+    is the same model as the granite-MLX Cat-1 entry, registered only for the
+    MLX-vs-MPS backend comparison, not an ADR-009 cohort member.
+    """
     from horus.vlm_extractor import COHORT_MANIFEST
 
-    categories = [entry["category"] for entry in COHORT_MANIFEST.values()]
+    categories = [
+        entry["category"]
+        for model_id, entry in COHORT_MANIFEST.items()
+        if model_id != _ADR_032_CONTROLLED_PAIR_MPS
+    ]
     assert categories.count(1) == 3, "Cat 1 (End-to-end doc-VLMs) must have 3 models"
     assert categories.count(2) == 3, "Cat 2 (Architecturally innovative) must have 3 models"
     assert categories.count(3) == 4, "Cat 3 (General multimodal VLMs) must have 4 models"
