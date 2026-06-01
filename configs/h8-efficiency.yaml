@@ -1,0 +1,84 @@
+# h8-efficiency.yaml — ADR-032 (#77) H8 efficiency sweep
+#
+# Produces the per-model efficiency substrate for the H8 hypothesis
+# (pre-registered 2026-05-31 via ADR-031): decode_tps / inference_tps /
+# peak_memory_gb / %_max, via the ADR-017 (#52) instrumentation. The
+# pilot-13-full run predates #52 and logged NO perf metrics, so this is a
+# dedicated re-run (not a resume — fresh experiment_name + resume off).
+#
+# Invoked via:
+#   make pilot-13 CFG=configs/h8-efficiency.yaml
+#
+# Scope (deliberate, per the #77 plan):
+#   - 1 invoice (EN16931_Einfach) — efficiency metrics (tps, peak memory) are
+#     ~invoice-stable, so n=1 gives valid point estimates for the QUALITATIVE
+#     H8 verdict (memory-fit: which models swap vs fit 16 GB) + the throughput
+#     reframe. n=1 caps MinerU (the known 16 GB swapper, ~22 min/page) to one
+#     run. Multi-invoice variance bars are a documented follow-up.
+#   - 8 models: the 7 ADR-009 working cohort + the ADR-032 controlled-pair MPS
+#     twin of granite-docling (`ibm-granite/granite-docling-258M`, bf16) — the
+#     one quant-matched, model-matched MLX-vs-MPS end-to-end comparison.
+#
+# `dev_only: true` keeps this OUT of the canonical `pilot-13-full` MLflow
+# experiment (it is a perf-substrate run, NOT the thesis F1 lineage) and tags
+# every nested run `dev_only=true`. The decode_tps/peak_memory metrics are
+# valid regardless (dev_only is an F1-HARKing safeguard, orthogonal to perf).
+#
+# Refs: ADR-032 (this config's ratifying ADR — forthcoming), ADR-031 (H8
+# pre-registration), ADR-017 (perf instrumentation), ADR-014 (cohort harness),
+# ADR-011 (MLflow), horus-config-discipline.md.
+
+seed: 42
+
+mlflow:
+  experiment_name: h8-efficiency
+  run_tags:
+    stage: h8-efficiency
+    corpus: zugferd-subset-1inv
+    cohort: adr-009-cohort-plus-granite-mps-pair
+    rasterizer: pypdfium2
+    dpi: "300"
+    anls_threshold: "0.5"
+    xml_route: facturx
+    issue: "77"
+    adr: ADR-032
+    hypothesis: H8
+  tracking_uri: null
+
+eval:
+  anls_threshold: 0.5
+  money_tolerance_cents: 0
+  date_tolerance_days: 0
+  string_normalize_nfc: true
+  log_excluded_to_dict: true
+
+rasterizer:
+  dpi: 300
+  cache_dir: data/raw/smoke/multipage
+  image_format: png
+
+cohort:
+  # 7 ADR-009 working models + the ADR-032 controlled-pair MPS twin.
+  # Execution order is deliberate (resilience): the controlled pair + fast MLX
+  # models run FIRST so a late failure can't cost their data; MinerU (the known
+  # 16 GB swapper, ~22 min/page) runs LAST.
+  working_models:
+    - ibm-granite/granite-docling-258M-mlx    # Cat 1 — MLXVLM (bf16) — controlled-pair MLX side
+    - ibm-granite/granite-docling-258M        # ADR-032 controlled-pair MPS side (bf16, same model)
+    - google/gemma-4-E4B-it                   # Cat 3 — MLXVLM (4-bit) — fastest (~24s/inv)
+    - zai-org/GLM-OCR                         # Cat 2 — MLXVLM (4-bit)
+    - PaddlePaddle/PaddleOCR-VL               # Cat 2 — MLXVLM (4-bit)
+    - allenai/olmOCR-2-7B-1025                # Cat 1 — MLXVLM (4-bit) — ~6 min/inv
+    - google/paligemma2-3b-mix-448            # Cat 3 — TransformersMPS (bf16)
+    - opendatalab/MinerU2.5-Pro-2604-1.2B     # Cat 1 — TransformersMPS — LAST (16 GB swapper, ~22 min)
+  corpus_root: data/raw/german/zugferd-corpus
+  parent_run_name: h8-efficiency
+  # Gitignored (perf-run byproduct; NOT the canonical transcript archive).
+  transcript_archive_dir: docs/sources/transcripts-multipage-h8
+  # Fresh experiment → no finished runs to resume; false forces live inference
+  # (perf metrics are captured only when inference actually runs).
+  resume_on_existing_run: false
+  invoice_subset:
+    - EN16931_Einfach
+  # Perf-substrate run, NOT the thesis F1 lineage (keeps it out of pilot-13-full).
+  dev_only: true

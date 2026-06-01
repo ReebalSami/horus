@@ -117,6 +117,8 @@ src/horus/eval/adapters_candidate.py
 docs/sources/transcripts-multipage-dev/
 docs/sources/transcripts-multipage-dev-mlx/
 docs/sources/transcripts-multipage-dev-2x2/
+# ADR-032 (#77) H8 efficiency-sweep transcripts — perf-run byproduct, dev_only.
+docs/sources/transcripts-multipage-h8/
 
 # Serena MCP tool — manages its own cache via .serena/.gitignore
 .serena/
