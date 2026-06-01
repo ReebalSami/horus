@@ -530,6 +530,13 @@ print(f"  ALL 7 datasets in scope: {LICENSE_TIER['dataset'].tolist()}")
 # to ZUGFeRDv2+ only? Scoping out v1 reduces the substrate by 17%;
 # extending the parser is non-trivial because v1's schema differs
 # from v2 in field semantics, not just namespace.
+#
+# **RESOLVED (ADR-033, #75)**: `parse_cii_xml` now auto-detects the CII
+# schema by root element and parses BOTH v2 (`CrossIndustryInvoice`) and v1
+# (`CrossIndustryDocument`). The v1 PDFs are now GT-parseable. The
+# "field semantics differ" worry above was disproven empirically — v1 and v2
+# differ ONLY in 4 namespace URNs + 7 container element names; the 16 EN16931
+# leaf paths are byte-identical (verified against a real FeRD v1 invoice).
 
 # %% [markdown]
 # ## DR-2 — Cross-dataset label-schema bridging

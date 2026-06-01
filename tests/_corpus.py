@@ -56,6 +56,14 @@ EINFACH_PDF = ZUGFERD_FX_DIR / "EN16931_Einfach.pdf"
 EINFACH_CII = ZUGFERD_CII_DIR / "EN16931_Einfach.cii.xml"
 HETZNER_PDF = ZUGFERD_UNSTRUCTURED_DIR / "RE-E-974-Hetzner_2016-01-19_R0005532486.pdf"
 
+# ZUGFeRD v1 (FeRD 2014, `CrossIndustryDocument`) corpus — gitignored like the
+# rest of the corpus. The COMFORT "Einfach" example is the canonical v1
+# rendering of the same FeRD example invoice as the v2 `EN16931_Einfach`
+# fixture (per ADR-033 / #75). v1 PDFs embed `ZUGFeRD-invoice.xml`; factur-x
+# extracts it transparently (verified at #75 impl time).
+ZUGFERD_V1_DIR = ZUGFERD_CORPUS_DIR / "ZUGFeRDv1"
+V1_COMFORT_PDF = ZUGFERD_V1_DIR / "correct" / "Intarsys" / "ZUGFeRD_1p0_COMFORT_Einfach.pdf"
+
 # Transcript archive (ADR-014 Step 7 evidence) — git-tracked.
 TRANSCRIPTS_DIR = REPO_ROOT / "docs" / "sources" / "transcripts-multipage"
 
@@ -66,6 +74,7 @@ TRANSCRIPTS_DIR = REPO_ROOT / "docs" / "sources" / "transcripts-multipage"
 _HAS_CORPUS = ZUGFERD_FX_DIR.is_dir() and any(ZUGFERD_FX_DIR.glob("*.pdf"))
 _HAS_TRANSCRIPTS = TRANSCRIPTS_DIR.is_dir() and any(TRANSCRIPTS_DIR.glob("*.txt"))
 _HAS_FIXTURES = _HAS_CORPUS and _HAS_TRANSCRIPTS
+_HAS_V1_CORPUS = ZUGFERD_V1_DIR.is_dir() and any(ZUGFERD_V1_DIR.rglob("*.pdf"))
 
 # ---------------------------------------------------------------------------
 # Skipif decorators — the public surface
@@ -89,5 +98,15 @@ skip_if_no_fixtures = pytest.mark.skipif(
         "evidence — git-tracked) AND data/raw/german/zugferd-corpus/"
         "XML-Rechnung/FX/*.pdf (gitignored content). Skips automatically "
         "when either input is absent. Per ADR-023."
+    ),
+)
+
+skip_if_no_v1_corpus = pytest.mark.skipif(
+    not _HAS_V1_CORPUS,
+    reason=(
+        "Requires ZUGFeRD v1 corpus content at "
+        "data/raw/german/zugferd-corpus/ZUGFeRDv1/**/*.pdf (gitignored). "
+        "Skips automatically on CI and on clones without the v1 corpus. "
+        "Per ADR-023 / #75 / ADR-033."
     ),
 )

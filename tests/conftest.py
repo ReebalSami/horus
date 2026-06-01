@@ -44,10 +44,12 @@ from tests._corpus import (
     EINFACH_PDF,
     HETZNER_PDF,
     REPO_ROOT,
+    V1_COMFORT_PDF,
     ZUGFERD_CII_DIR,
     ZUGFERD_CORPUS_DIR,
     ZUGFERD_FX_DIR,
     ZUGFERD_UNSTRUCTURED_DIR,
+    ZUGFERD_V1_DIR,
 )
 
 __all__ = [
@@ -55,10 +57,12 @@ __all__ = [
     "EINFACH_PDF",
     "HETZNER_PDF",
     "REPO_ROOT",
+    "V1_COMFORT_PDF",
     "ZUGFERD_CII_DIR",
     "ZUGFERD_CORPUS_DIR",
     "ZUGFERD_FX_DIR",
     "ZUGFERD_UNSTRUCTURED_DIR",
+    "ZUGFERD_V1_DIR",
     "corpus_cii_xmls",
     "corpus_fx_pdfs",
     "en16931_paired_invoice",
