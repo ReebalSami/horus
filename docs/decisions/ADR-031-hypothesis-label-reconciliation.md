@@ -83,7 +83,7 @@ All remaining bare "H4" tokens in `ADR-017` + `scripts/inspect_pilot_13.py:198` 
 ## Consequences
 
 - **Corrected surfaces:** `ADR-008`, `ADR-009` (Class A); `ADR-017`, `README.md`, `scripts/inspect_pilot_13.py`, `INDEX.md` (Class B); `ADR-030`, `scripts/reading_ceiling.py`, regenerated `eval/reading-ceiling-and-approach-comparison.md`, `INDEX.md` (Class C). `docs/prompts/stages/02-brainstorm.md` gets a §13 pointer recording H8 in the registry's in-repo home.
-- **External §6 file is read-only to Cascade.** H8 must be synced into `THESIS_BRAINSTORM_STATE_v2.md` §6 by the user. **Flagged as a user action.** Until synced, ADR-031 + `02-brainstorm.md` §13 are the authoritative in-repo record of H8.
+- **This ADR is the authoritative record of H8 and the reconciled labels.** The external `THESIS_BRAINSTORM_STATE_v2.md` is a brainstorm artifact (read-only to Cascade), **not** the project plan; `ADR-031` + `02-brainstorm.md` §13 are the canonical in-repo home of H8. Syncing H8 back into that brainstorm file is **optional, not required** (user decision, 2026-06-01).
 - **GitHub issues** citing the old labels (e.g. #77 "H4 latency-efficiency") are not rewritten by this ADR; they are reconciled during board triage with a reference here.
 - **Scientific-record integrity restored:** the fabricated "§6 H4" citation is the most serious finding; correcting it removes a false pre-registration claim from the canonical ADR trail.
 

@@ -333,9 +333,9 @@ H1 local-vs-cloud · H2 single-shot-vs-orchestrated · H3 KG-fidelity · H4 grap
 - **No-HARKing:** the efficiency *test* has not run (ADR-017 shipped instrumentation only; pilot-13 logged no perf data) → H8 is a **genuine pre-registration**, honestly dated **2026-05-31** (later than the 2026-05-08 H1–H6 lock, never claimed otherwise). Pilot-13 perf numbers, when produced, are *exploratory* for H8; the held-out run (#78) is confirmatory.
 - **Test commitment:** pre-registration ≠ commitment to run every test (H6 is already conditional; Layer-2/3 H3/H4/H5 may not be reached within scope). Untested hypotheses are reported honestly as "not evaluated within thesis scope."
 
-### External-file sync (user action)
+### Authoritative record (external brainstorm sync optional)
 
-The locked §6 lives in the read-only `THESIS_BRAINSTORM_STATE_v2.md` (external research file, never edited by Cascade). **H8 must be synced into §6 there by the user.** Until then, ADR-031 + this §13 are the authoritative in-repo record of H8.
+The hypothesis registry's canonical home is now **`ADR-031` + this §13** (in-repo, committed to `main`). The external `THESIS_BRAINSTORM_STATE_v2.md` is a brainstorm artifact (read-only to Cascade), **not** the project plan — so syncing H8 back into its §6 is **optional, not required** (user decision, 2026-06-01).
 
 ### Going-forward rule (restates §12 line 274 / §4.2)
 
