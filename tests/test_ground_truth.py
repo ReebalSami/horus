@@ -37,16 +37,19 @@ from horus.eval import (
     parse_cii_xml,
 )
 from horus.eval.ground_truth import (
+    CII_NAMESPACES_V1,
+    FIELDS_V1,
     _normalize_date,
     _normalize_money,
     _normalize_string,
     _passthrough,
 )
-from tests._corpus import skip_if_no_corpus
+from tests._corpus import skip_if_no_corpus, skip_if_no_v1_corpus
 from tests.conftest import (
     EINFACH_CII,
     EINFACH_PDF,
     REPO_ROOT,
+    V1_COMFORT_PDF,
     ZUGFERD_CII_DIR,
 )
 
@@ -695,3 +698,116 @@ def test_tristate_semantics_present_with_value() -> None:
     assert rec.is_present is True
     assert rec.raw_value == "TEST-001"
     assert rec.normalized_value == "TEST-001"
+
+
+# ---------------------------------------------------------------------------
+# 12. ZUGFeRD v1 (CrossIndustryDocument) support — #75 / ADR-033
+# ---------------------------------------------------------------------------
+#
+# ZUGFeRD 1.0 (FeRD 2014) uses the older `CrossIndustryDocument` root + the
+# :12 / :15 ram/udt namespaces. `parse_cii_xml` auto-detects the schema by
+# root element and selects `FIELDS_V1` / `CII_NAMESPACES_V1`. The 16 EN16931
+# leaf paths are identical to v2; only 7 container element names + the
+# namespace URNs differ.
+#
+# Expected values verified by extracting the embedded `ZUGFeRD-invoice.xml`
+# from the real v1 COMFORT fixture — the v1 rendering of the SAME canonical
+# FeRD example invoice as `EN16931_Einfach` (v2). Note the 2013 dates (the
+# 2014-era v1.0 sample) vs the v2 fixture's 2018 dates.
+V1_COMFORT_EXPECTED: dict[str, tuple[str, str]] = {
+    "invoice_number": ("471102", "471102"),
+    "issue_date": ("20130305", "2013-03-05"),
+    "invoice_currency_code": ("EUR", "EUR"),
+    "delivery_date": ("20130305", "2013-03-05"),
+    "seller_name": ("Lieferant GmbH", "Lieferant GmbH"),
+    "seller_vat_id": ("DE123456789", "DE123456789"),
+    "seller_tax_id": ("201/113/40209", "201/113/40209"),
+    "seller_gln": ("4000001123452", "4000001123452"),
+    "buyer_name": ("Kunden AG Mitte", "Kunden AG Mitte"),
+    "buyer_reference": ("GE2020211", "GE2020211"),
+    # buyer_vat_id deliberately absent (no BT-48) — asserted separately below.
+    "line_total_amount": ("473.00", "473.00"),
+    "tax_basis_total_amount": ("473.00", "473.00"),
+    "tax_total_amount": ("56.87", "56.87"),
+    "grand_total_amount": ("529.87", "529.87"),
+    "due_payable_amount": ("529.87", "529.87"),
+}
+
+
+@skip_if_no_v1_corpus
+def test_parse_v1_comfort_real_fixture() -> None:
+    """Real ZUGFeRD v1 PDF → factur-x extract → parse_cii_xml → 16-field dict.
+
+    Exercises the v1 (`CrossIndustryDocument`) branch end-to-end on a real
+    fixture via the SAME factur-x extraction route the cohort harness uses
+    (`_extract_groundtruth_via_facturx`). Proves the 24 v1 corpus PDFs are now
+    usable ground truth (#75). `check_xsd/schematron=False` because factur-x
+    ships v2 schemas; v1 schema validation is out of scope (extract + parse is
+    what the harness needs).
+    """
+    import facturx  # noqa: PLC0415 — lazy: only this test needs it
+
+    assert V1_COMFORT_PDF.exists(), f"v1 fixture missing: {V1_COMFORT_PDF}"
+    name, xml_bytes = facturx.get_xml_from_pdf(
+        V1_COMFORT_PDF.read_bytes(), check_xsd=False, check_schematron=False
+    )
+    assert name == "ZUGFeRD-invoice.xml", (
+        f"Expected the v1 attachment name ZUGFeRD-invoice.xml, got {name!r}"
+    )
+
+    gt = parse_cii_xml(xml_bytes)
+
+    assert isinstance(gt, GroundTruth)
+    assert set(gt.header.keys()) == set(FIELDS.keys()), (
+        "v1 parse must yield the same 16-key header as v2 (route-invariant shape)"
+    )
+    # buyer_vat_id is genuinely absent in this invoice → tristate "absent".
+    assert gt.header["buyer_vat_id"].is_present is False
+
+    for key, (raw, norm) in V1_COMFORT_EXPECTED.items():
+        rec = gt.header[key]
+        assert rec.is_present is True, f"{key}: expected present in v1 COMFORT fixture"
+        assert rec.raw_value == raw, f"{key}: raw {rec.raw_value!r} != expected {raw!r}"
+        assert rec.normalized_value == norm, (
+            f"{key}: normalized {rec.normalized_value!r} != expected {norm!r}"
+        )
+
+
+def test_v1_fields_registry_xpath_executable() -> None:
+    """Every `FIELDS_V1` XPath compiles + resolves against `CII_NAMESPACES_V1`.
+
+    Corpus-independent structural check (mirrors the v2
+    `test_fields_registry_xpath_executable`): builds an empty v1-root document
+    and confirms each derived v1 XPath executes (returns []) without raising,
+    and that the derivation actually retargeted the root to the v1
+    `CrossIndustryDocument` (guards against a silent v2-passthrough bug).
+    """
+    assert set(FIELDS_V1.keys()) == set(FIELDS.keys()), (
+        "FIELDS_V1 must cover exactly the same 16 business terms as FIELDS"
+    )
+    empty_v1_doc = etree.fromstring(
+        b'<rsm:CrossIndustryDocument xmlns:rsm="urn:ferd:CrossIndustryDocument:invoice:1p0"/>'
+    )
+    for english_key, spec in FIELDS_V1.items():
+        result = empty_v1_doc.xpath(spec.xpath, namespaces=CII_NAMESPACES_V1)
+        assert result == [], (
+            f"{english_key}: v1 XPath unexpectedly matched on an empty doc: {spec.xpath}"
+        )
+        assert "/rsm:CrossIndustryDocument" in spec.xpath, (
+            f"{english_key}: v1 XPath should target the v1 root, got {spec.xpath!r}"
+        )
+        assert "CrossIndustryInvoice" not in spec.xpath, (
+            f"{english_key}: v1 XPath still references the v2 root: {spec.xpath!r}"
+        )
+
+
+def test_parse_cii_xml_unrecognized_root_raises() -> None:
+    """`parse_cii_xml` raises ValueError on a non-CII root element.
+
+    Corpus-independent. Covers the `_select_schema` guard: anything that is
+    neither `CrossIndustryInvoice` (v2) nor `CrossIndustryDocument` (v1) is
+    rejected loudly rather than silently producing an all-absent dict.
+    """
+    not_cii = b'<foo:Bar xmlns:foo="urn:example:not-an-invoice"/>'
+    with pytest.raises(ValueError, match="Unrecognized CII root element"):
+        parse_cii_xml(not_cii)

@@ -344,26 +344,25 @@ def test_parse_one_gt_returns_none_for_none_input() -> None:
     assert parse_one_gt(None) is None
 
 
-def test_parse_one_gt_returns_empty_gt_for_non_cii_xml() -> None:
-    """Non-CII XML parses cleanly into an EMPTY GroundTruth (not None).
+def test_parse_one_gt_returns_none_for_non_cii_xml() -> None:
+    """Non-CII (non-invoice) XML → None (parse_cii_xml raises; parse_one_gt catches).
 
-    `parse_cii_xml` is graceful with non-matching XPaths — it returns a
-    GroundTruth with all 16 fields present-as-absent (`is_present=False`,
-    `normalized_value=None`). Callers distinguish this from a real GT via
-    `gt_has_any_field()` rather than checking for None.
+    Post-#75 / ADR-033, `parse_cii_xml` auto-detects the CII schema by root
+    element and raises `ValueError` on a root that is neither
+    `CrossIndustryInvoice` (v2) nor `CrossIndustryDocument` (v1) — fail-fast on
+    genuinely-non-invoice input rather than silently returning a misleading
+    all-absent GroundTruth. `parse_one_gt` catches it and returns None, which
+    the EDA corpus-scan treats as "no usable GT" (identical downstream effect
+    to the pre-#75 empty-GT behaviour, via `gt_has_any_field`).
 
-    `parse_one_gt` returns None ONLY on actual exceptions (e.g.,
-    well-formed XML that triggers a parser bug). The intentional design
-    is that ZUGFeRDv1-namespace inputs (which DO parse but match 0 v2
-    XPaths) flow through the same code path as malformed XML.
+    NOTE: v1-namespace inputs are NO LONGER conflated with malformed XML —
+    they now parse correctly (see
+    `test_parse_one_gt_yields_meaningful_gt_for_einfach_pdf` and the v1 tests
+    in `tests/test_ground_truth.py`).
     """
-    from horus.eda.zugferd_loader import gt_has_any_field, parse_one_gt
+    from horus.eda.zugferd_loader import parse_one_gt
 
-    gt = parse_one_gt(b"<not-cii/>")
-    # Returns a GroundTruth, not None.
-    assert gt is not None
-    # But the GT is empty (no field has a non-None normalized_value).
-    assert gt_has_any_field(gt) is False
+    assert parse_one_gt(b"<not-cii/>") is None
 
 
 def test_parse_one_gt_returns_none_for_malformed_xml_bytes() -> None:

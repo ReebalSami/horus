@@ -21,7 +21,10 @@ Public surface (re-exported by `horus.eval`):
   - `GroundTruth`      — frozen dataclass; top-level container with `header` dict
                          (future amendments may add `line_items` as an additional
                          optional field; see ADR-012 §"What this ADR does NOT decide")
-  - `parse_cii_xml`    — entry point: `bytes` → `GroundTruth`
+  - `parse_cii_xml`    — entry point: `bytes` → `GroundTruth` (auto-detects v1/v2)
+  - `CII_NAMESPACES_V1` / `FIELDS_V1` — ZUGFeRD v1 (`CrossIndustryDocument`)
+                         counterparts of the v2 table/registry; `parse_cii_xml`
+                         selects automatically by root element (see ADR-033)
 
 Tristate value semantics (load-bearing for PR(b)'s scorer):
   - field absent → `is_present=False`, `raw_value=None`, `normalized_value=None`
@@ -41,7 +44,7 @@ from __future__ import annotations
 import logging
 import unicodedata
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from decimal import Decimal, InvalidOperation
 from typing import Final, Literal
 
@@ -59,6 +62,20 @@ CII_NAMESPACES: Final[dict[str, str]] = {
     "ram": "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100",
     "udt": "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100",
     "qdt": "urn:un:unece:uncefact:data:standard:QualifiedDataType:100",
+    "xs": "http://www.w3.org/2001/XMLSchema",
+}
+
+# ZUGFeRD v1 (FeRD 2014, `CrossIndustryDocument`) namespace map. ZUGFeRD 1.0
+# predates the EN16931-aligned v2 (Factur-X / ZUGFeRD 2.x): it uses the older
+# `urn:ferd:...:1p0` root namespace plus the :12 / :15 ram/udt revisions (vs
+# v2's :100). The 16 in-scope EN16931 leaf elements are byte-identical across
+# both schemas; only the namespace URNs + 7 container element names differ
+# (see `_V2_TO_V1_XPATH_SUBSTITUTIONS` + docs/decisions/ADR-033). Verified by
+# extracting a real v1 COMFORT invoice and diffing against the v2 fixture.
+CII_NAMESPACES_V1: Final[dict[str, str]] = {
+    "rsm": "urn:ferd:CrossIndustryDocument:invoice:1p0",
+    "ram": "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12",
+    "udt": "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:15",
     "xs": "http://www.w3.org/2001/XMLSchema",
 }
 
@@ -415,6 +432,54 @@ FIELDS: Final[dict[str, FieldSpec]] = {
 
 
 # ---------------------------------------------------------------------------
+# 4b. ZUGFeRD v1 field registry — derived from FIELDS via container substitution
+# ---------------------------------------------------------------------------
+#
+# The 16 in-scope EN16931 business terms exist in ZUGFeRD v1 with byte-IDENTICAL
+# leaf element names + structure as v2; only the 7 *container* element names and
+# the rsm/ram/udt namespace URNs differ. Rather than duplicate the 16-row
+# registry (drift risk), `FIELDS_V1` is derived from `FIELDS` by rewriting each
+# XPath's container fragments. The namespace-URN difference is handled separately
+# by resolving the (unchanged) rsm/ram/udt prefixes against `CII_NAMESPACES_V1`
+# at parse time. See docs/decisions/ADR-033.
+#
+# The substitution fragments are mutually disjoint (no fragment is a substring of
+# another), so application order is irrelevant.
+_V2_TO_V1_XPATH_SUBSTITUTIONS: Final[dict[str, str]] = {
+    "/rsm:CrossIndustryInvoice": "/rsm:CrossIndustryDocument",
+    "/rsm:ExchangedDocument": "/rsm:HeaderExchangedDocument",
+    "/rsm:SupplyChainTradeTransaction": "/rsm:SpecifiedSupplyChainTradeTransaction",
+    "ram:ApplicableHeaderTradeAgreement": "ram:ApplicableSupplyChainTradeAgreement",
+    "ram:ApplicableHeaderTradeDelivery": "ram:ApplicableSupplyChainTradeDelivery",
+    "ram:ApplicableHeaderTradeSettlement": "ram:ApplicableSupplyChainTradeSettlement",
+    "ram:SpecifiedTradeSettlementHeaderMonetarySummation": (
+        "ram:SpecifiedTradeSettlementMonetarySummation"
+    ),
+}
+
+
+def _to_v1_xpath(v2_xpath: str) -> str:
+    """Rewrite a v2 (`CrossIndustryInvoice`) XPath to its v1 (`CrossIndustryDocument`) form.
+
+    Applies the 7 fixed container-element substitutions in
+    `_V2_TO_V1_XPATH_SUBSTITUTIONS`. Leaf element names + `schemeID` predicates
+    are version-invariant and pass through unchanged; the rsm/ram/udt prefixes
+    are unchanged here (the namespace-URN difference is resolved against
+    `CII_NAMESPACES_V1` at parse time).
+    """
+    out = v2_xpath
+    for v2_fragment, v1_fragment in _V2_TO_V1_XPATH_SUBSTITUTIONS.items():
+        out = out.replace(v2_fragment, v1_fragment)
+    return out
+
+
+FIELDS_V1: Final[dict[str, FieldSpec]] = {
+    english_key: replace(spec, xpath=_to_v1_xpath(spec.xpath))
+    for english_key, spec in FIELDS.items()
+}
+
+
+# ---------------------------------------------------------------------------
 # 5. GroundTruthField — one extracted-and-normalized field record
 # ---------------------------------------------------------------------------
 
@@ -484,6 +549,36 @@ class GroundTruth:
 
 
 # ---------------------------------------------------------------------------
+# 6b. Schema detection — v1 (CrossIndustryDocument) vs v2 (CrossIndustryInvoice)
+# ---------------------------------------------------------------------------
+
+
+def _select_schema(
+    tree: etree._Element,
+) -> tuple[dict[str, FieldSpec], dict[str, str]]:
+    """Return the (FIELDS, namespaces) pair matching the document's CII schema.
+
+    ZUGFeRD / Factur-X v2 uses the `CrossIndustryInvoice` root; ZUGFeRD v1
+    (FeRD 2014) uses the older `CrossIndustryDocument` root. Detection is by
+    root local-name — the robust, sufficient discriminator (the namespace URN
+    is version-correlated but the local-name alone disambiguates). See ADR-033.
+
+    Raises:
+        ValueError: if the root is neither recognized CII root element.
+    """
+    root_local = etree.QName(tree.tag).localname
+    if root_local == "CrossIndustryInvoice":
+        return FIELDS, CII_NAMESPACES
+    if root_local == "CrossIndustryDocument":
+        return FIELDS_V1, CII_NAMESPACES_V1
+    raise ValueError(
+        f"Unrecognized CII root element {root_local!r}; expected "
+        f"'CrossIndustryInvoice' (ZUGFeRD/Factur-X v2) or 'CrossIndustryDocument' "
+        f"(ZUGFeRD v1)."
+    )
+
+
+# ---------------------------------------------------------------------------
 # 7. parse_cii_xml — main entry point
 # ---------------------------------------------------------------------------
 
@@ -491,7 +586,10 @@ class GroundTruth:
 def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
     """Parse one CII XML byte string into a `GroundTruth` dict of 16 header fields.
 
-    Iterates the `FIELDS` registry, executes each `FieldSpec.xpath` against
+    Auto-detects the CII schema version from the root element — ZUGFeRD /
+    Factur-X v2 (`CrossIndustryInvoice`) or ZUGFeRD v1 (`CrossIndustryDocument`,
+    FeRD 2014) — then iterates the matching field registry (`FIELDS` for v2,
+    `FIELDS_V1` for v1), executes each `FieldSpec.xpath` against
     the parsed XML tree, applies `FieldSpec.normalize` to the raw element
     text if present, and assembles one `GroundTruthField` record per entry.
     The output `GroundTruth.header` always has all 16 keys; presence of the
@@ -521,12 +619,16 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
 
     Raises:
         `lxml.etree.XMLSyntaxError`: if `xml_bytes` is malformed XML.
+        `ValueError`: if the root element is neither `CrossIndustryInvoice`
+            (v2) nor `CrossIndustryDocument` (v1) — i.e., not a recognized
+            ZUGFeRD / Factur-X invoice XML.
     """
     tree = etree.fromstring(xml_bytes)
+    fields, namespaces = _select_schema(tree)
     header: dict[str, GroundTruthField] = {}
 
-    for english_key, spec in FIELDS.items():
-        elements = tree.xpath(spec.xpath, namespaces=CII_NAMESPACES)
+    for english_key, spec in fields.items():
+        elements = tree.xpath(spec.xpath, namespaces=namespaces)
 
         if not elements:
             # XPath matched 0 elements — field absent from this XML.

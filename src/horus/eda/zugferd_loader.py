@@ -18,10 +18,11 @@ Public surface:
   - :func:`extract_xml_and_level` — factur-x extracts (xml_bytes, flavor,
     level) from a Factur-X-attached PDF; suppresses verbose schema noise.
   - :func:`parse_one_gt` — wraps :func:`horus.eval.ground_truth.parse_cii_xml`
-    with `None`-safe handling for unparseable XMLs.
-  - :func:`gt_has_any_field` — predicate distinguishing
-    "GT-parseable but empty" (ZUGFeRDv1 silent-empty namespace artifact)
-    from "GT-meaningful" (≥1 field with non-None normalized value).
+    with `None`-safe handling (None input, malformed XML, or non-CII root all
+    → None). The shared parser handles BOTH ZUGFeRD v2 and v1 since ADR-033.
+  - :func:`gt_has_any_field` — predicate distinguishing "GT-parseable but
+    empty" from "GT-meaningful" (≥1 field with non-None normalized value).
+    (Pre-ADR-033 the main empty-GT source was the v1 namespace; v1 now parses.)
   - :func:`field_value_present` — IS_GT predicate per ADR-013 truth table.
   - :func:`gt_field_values` — extracts non-None normalized values for one
     field key across an iterable of GroundTruths.
@@ -57,9 +58,12 @@ from horus.eda.corpus_walk import walk as _shared_walk
 from horus.eval.ground_truth import GroundTruth, parse_cii_xml
 
 # ---------------------------------------------------------------------------
-# CII namespaces (ZUGFeRDv2 / Factur-X). v1 uses different URIs and is
-# deliberately NOT supported here; v1 PDFs surface as "GT-parseable but empty"
-# in §9 Anomalies (parser-scope artifact, not a corpus issue).
+# CII namespaces (ZUGFeRDv2 / Factur-X) — LOCAL to this loader, used only by
+# `line_item_count` below. The GROUND-TRUTH parser (`horus.eval.ground_truth`)
+# handles both v2 and v1 since ADR-033 (#75); this local v2-only map means v1
+# line-item COUNTING here still returns 0 (a separate, documented limitation —
+# see `line_item_count`). NOT used by `parse_one_gt`, which delegates to the
+# v1-aware shared parser.
 # ---------------------------------------------------------------------------
 CII_NAMESPACES: dict[str, str] = {
     "rsm": "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100",
@@ -269,9 +273,12 @@ def parse_one_gt(xml_bytes: bytes | None) -> GroundTruth | None:
     """Parse a single CII XML to a :class:`GroundTruth`; None on failure.
 
     Wraps :func:`horus.eval.ground_truth.parse_cii_xml` with `None`-safe
-    handling. Note: v1-namespace XMLs parse cleanly into an EMPTY
-    GroundTruth (parser uses v2 XPaths exclusively); use
-    :func:`gt_has_any_field` to filter for "parser-meaningful" subset.
+    handling. Returns None for: None input, malformed XML
+    (`lxml.etree.XMLSyntaxError`), or a non-CII root (`ValueError` — neither
+    `CrossIndustryInvoice` v2 nor `CrossIndustryDocument` v1). Since ADR-033
+    (#75) the shared parser handles BOTH v2 AND v1, so v1 XMLs now yield a
+    populated GroundTruth (they no longer silently parse to empty); use
+    :func:`gt_has_any_field` to filter the "parser-meaningful" subset.
     """
     if xml_bytes is None:
         return None
@@ -284,14 +291,15 @@ def parse_one_gt(xml_bytes: bytes | None) -> GroundTruth | None:
 def gt_has_any_field(gt: GroundTruth | None) -> bool:
     """True iff the parsed GT has at least 1 field with a non-None normalized value.
 
-    The "parser-meaningful" predicate. ZUGFeRDv1-namespace PDFs parse
-    cleanly into an empty GroundTruth (no exception, no fields)
-    because :func:`parse_cii_xml` uses v2 XPaths exclusively
-    (`/rsm:CrossIndustryInvoice/...`); v1 uses different namespace URIs.
-    Without this filter, the §5 mandatory-field presence rates would be
-    artificially capped at ~84% (the parser-scope artifact).
+    The "parser-meaningful" predicate — distinguishes a populated GroundTruth
+    from `None` (parse failure) or an all-absent GroundTruth.
 
-    Refs: ADR-025 §"Context" (v1-silent finding from 2026-05-25 audit).
+    HISTORICAL NOTE: pre-ADR-033, ZUGFeRDv1-namespace PDFs parsed into an empty
+    GroundTruth (the shared parser was v2-XPath-only), artificially capping the
+    §5 mandatory-field presence rates at ~84% (the v1-silent finding from the
+    2026-05-25 audit, ADR-025 §"Context"). Since ADR-033 (#75) v1 parses
+    correctly, so that cap is lifted and the v1 corpus PDFs now contribute real
+    fields. The predicate remains the canonical meaningful-vs-empty filter.
     """
     if gt is None:
         return False
@@ -338,10 +346,13 @@ def gt_field_values(gts: Iterable[GroundTruth], field_key: str) -> list[object]:
 def line_item_count(xml_bytes: bytes | None) -> int | None:
     """Count `IncludedSupplyChainTradeLineItem` elements in a CII XML.
 
-    Returns None for unparseable XML or v1-namespace XML (the v2 XPath
-    matches 0 elements; same parser-scope limitation as
-    :func:`gt_has_any_field`). Callers use this for the §7 complexity-
-    tier denominator.
+    Returns None for unparseable XML. NOTE: this counter uses the LOCAL
+    v2-only :data:`CII_NAMESPACES`, so a v1-namespace XML matches 0 elements
+    and returns 0 (NOT a meaningful count). This is now a SEPARATE limitation
+    from the GT parser, which handles v1 since ADR-033 (#75) — v1 line-item
+    counting here is intentionally left v2-scoped (out of #75's GT-path scope;
+    a follow-up could make it version-aware). Callers use this for the §7
+    complexity-tier denominator.
     """
     if xml_bytes is None:
         return None
