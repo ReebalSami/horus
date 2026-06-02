@@ -69,6 +69,7 @@ Handoff context: `cascade-system/docs/handoffs/cascade-d-master-thesis.md`.
 - `make cohort-smoke MODEL=<id>` — per-model VLM smoke against the cohort manifest (ADR-009); add `CFG=configs/cohort-smoke.yaml` to enable MLflow tracking (ADR-011)
 - `make pilot-13 CFG=configs/pilot-13.yaml` — full (cohort × ZUGFeRD-corpus) sweep with parent/nested MLflow runs (ADR-014; resume-safe via `mlflow.search_runs`)
 - `make mlflow-ui` — browse pilot-13 + cohort-smoke runs in MLflow's local UI at `http://127.0.0.1:8080` (ADR-015; `MLFLOW_UI_PORT=<n>` to override)
+- `make app` — Streamlit observability dashboard: read-only research/eval UI over the local MLflow runs + saved transcripts + CII ground truth, with three surfaces (Overview / Invoice Explorer / Approach Comparison). No model inference in the UI. Entry `app/Home.py`; pages in `app/views/`; read-only data layer in `app/data/` (ADR-036, #103; `APP_PORT=<n>` to override 8501)
 
 ## Pre-loaded thesis context (read-only)
 

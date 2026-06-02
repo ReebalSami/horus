@@ -130,3 +130,10 @@ docs/sources/transcripts-arm-a-dev/
 
 /.quarto/
 **/*.quarto_ipynb
+
+# ADR-036 (#103): Streamlit observability app brand assets. The raw logo
+# inspiration/source images live under app/assets/brand/sources/ and are
+# local-only (originals downloaded for the logo treatment). The PRODUCED,
+# background-removed brand PNGs at app/assets/brand/*.png ARE tracked (the
+# running app loads them at runtime).
+app/assets/brand/sources/
