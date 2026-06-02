@@ -119,6 +119,11 @@ docs/sources/transcripts-multipage-dev-mlx/
 docs/sources/transcripts-multipage-dev-2x2/
 # ADR-032 (#77) H8 efficiency-sweep transcripts — perf-run byproduct, dev_only.
 docs/sources/transcripts-multipage-h8/
+# ADR-038 (#91) extraction-arms dev-run transcripts (Granite reads + Gemma
+# structured outputs) — dev_only configs; regenerable via `make` (see ADR-038
+# §Dev-run validation). Never contaminate the canonical archive.
+docs/sources/transcripts-arms-dev/
+docs/sources/transcripts-arm-a-dev/
 
 # Serena MCP tool — manages its own cache via .serena/.gitignore
 .serena/
