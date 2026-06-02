@@ -1,0 +1,49 @@
+# baseline-regex.yaml — extraction-arms comparison: the regex baseline (ADR-038)
+#
+# The one-shot brittleness baseline + auditable no-hallucination reference for the
+# extraction-arms comparison (ADR-034): the reader (Granite) reads each invoice
+# image and the existing German-regex adapter (adapters.py) parses its output.
+# Scored at the FULL 19 fields (ADR-037; the 3 ADR-035 fields come back null —
+# honest, the regex adapter never targeted them).
+#
+# This run ALSO produces the cached Granite transcripts that Arm B's structuring
+# pass consumes (it writes them to `transcript_archive_dir` below, which arm-b.yaml
+# points at). So the sequence is: run THIS first, then `make arm-b`.
+#
+# Composed on configs/pilot-13.yaml (inherits seed / eval / rasterizer /
+# corpus_root). Invoked via:
+#
+#   make pilot-13 CFG=configs/pilot-13.yaml,configs/baseline-regex.yaml
+#
+# dev_only=true: dev-surface iteration only (ADR-034 dev/frozen guardrail); the
+# frozen held-out measurement (#78) is separate and once-per-approach.
+#
+# Refs: ADR-038 (arms mechanism), ADR-034 (the two arms + baseline), ADR-037
+# (19-field scoring), ADR-013/028 (the regex adapter), ADR-014 (harness).
+
+mlflow:
+  experiment_name: baseline-regex-dev
+  run_tags:
+    stage: extraction-arms
+    approach: baseline-regex
+    issue: "91"
+    adr: ADR-038
+
+cohort:
+  # The reader. Its raw output is parsed by the German-regex adapter (default
+  # adapter_mode=regex). This run writes Granite transcripts to the shared dir
+  # below, which arm-b.yaml reads from.
+  working_models:
+    - ibm-granite/granite-docling-258M-mlx
+  adapter_mode: regex
+  invoice_subset:
+    - EN16931_Einfach
+    - EN16931_Gutschrift
+    - EN16931_Miete
+    - EN16931_Rabatte
+    - EN16931_Innergemeinschaftliche_Lieferungen
+    - XRECHNUNG_Einfach
+  parent_run_name: baseline-regex-dev
+  # Shared with arm-b.yaml: Arm B reads `<this dir>/<granite-slug>__<stem>.txt`.
+  transcript_archive_dir: docs/sources/transcripts-arms-dev
+  dev_only: true

@@ -1,0 +1,51 @@
+# arm-a.yaml — extraction-arms comparison: Arm A, single-shot (ADR-038)
+#
+# Arm A (single-shot): image -> Gemma -> JSON -> structurer. Gemma reads each
+# invoice page image directly and emits reasoning-then-strict-JSON; the structurer
+# (src/horus/eval/structurer.py) routes that through InvoiceFields +
+# validate_and_repair into the 19-field scored dict. Runs through the cohort
+# harness with adapter_mode="structurer".
+#
+# Composed on configs/pilot-13.yaml. Invoked via:
+#
+#   make pilot-13 CFG=configs/pilot-13.yaml,configs/arm-a.yaml
+#
+# Honesty guardrail (ADR-034): the strict "extract only what is present, else
+# null" instruction + post-hoc validation + the spurious_emission metric keep a
+# generative structurer safe for the tax domain. dev_only=true (dev-surface only).
+#
+# Refs: ADR-038 (arms mechanism + structurer adapter_mode), ADR-034 (the two
+# arms), ADR-035 (InvoiceFields / validate_and_repair), ADR-037 (19-field scope).
+
+mlflow:
+  experiment_name: arm-a-dev
+  run_tags:
+    stage: extraction-arms
+    approach: arm-a-single-shot
+    issue: "91"
+    adr: ADR-038
+
+cohort:
+  working_models:
+    - google/gemma-4-E4B-it
+  adapter_mode: structurer
+  invoice_subset:
+    - EN16931_Einfach
+    - EN16931_Gutschrift
+    - EN16931_Miete
+    - EN16931_Rabatte
+    - EN16931_Innergemeinschaftliche_Lieferungen
+    - XRECHNUNG_Einfach
+  parent_run_name: arm-a-dev
+  transcript_archive_dir: docs/sources/transcripts-arm-a-dev
+  dev_only: true
+  prompt_template_override:
+    google/gemma-4-E4B-it: |-
+      You are a meticulous accountant reading ONE page of a German B2B invoice. First reason briefly about where each value is, then output ONE JSON object on the final line.
+
+      Rules:
+      - Extract ONLY values actually present on this page. If a field is not on this page, use null. NEVER invent a value (an honest null is correct and expected — pages often carry only some fields).
+      - Money values exactly as printed (digits + separators). Dates as printed. tax_rate is the VAT percentage (e.g. "19").
+      - Addresses: the full postal address as printed (street, postcode, city, country).
+      - Return EXACTLY these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount, tax_rate, seller_address, buyer_address, purpose_summary.
+      - purpose_summary: one short sentence describing what the invoice is for.

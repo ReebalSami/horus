@@ -181,6 +181,24 @@ class VLMExtractor(Protocol):
 # ---------------------------------------------------------------------------
 
 
+def _unpack_mlx_generation(output: Any) -> tuple[str, int, float, float]:
+    """Unpack mlx-vlm's `generate` return into `(text, gen_tokens, gen_tps, peak_gb)`.
+
+    mlx-vlm's `generate` returns a `GenerationResult` (>= 0.5.0; `.text` +
+    `.generation_tokens` + `.generation_tps` + `.peak_memory`) or, on older /
+    future API drift, a bare `str` (perf fields -> 0). Shared by both the
+    image-in `extract` and the text-only `extract_text` (ADR-038) so the
+    output-parsing contract lives in one place.
+    """
+    if isinstance(output, str):
+        return output, 0, 0.0, 0.0
+    text = getattr(output, "text", str(output))
+    gen_tokens = int(getattr(output, "generation_tokens", 0) or 0)
+    gen_tps = float(getattr(output, "generation_tps", 0.0) or 0.0)
+    peak_mem_gb = float(getattr(output, "peak_memory", 0.0) or 0.0)
+    return text, gen_tokens, gen_tps, peak_mem_gb
+
+
 class MLXVLMExtractor:
     """MLX-VLM backend extractor.
 
@@ -297,22 +315,78 @@ class MLXVLMExtractor:
             extract_seconds = time.perf_counter() - gen_start
 
             # mlx-vlm's `generate` may return str OR a GenerationResult
-            # object depending on version. The current pinned mlx-vlm
-            # (>= 0.5.0 per pyproject.toml) returns GenerationResult with
-            # `.text` + `.generation_tokens` + `.generation_tps` +
-            # `.peak_memory` (verified at `mlx_vlm/generate.py:375-385`).
-            # Older versions (or future API drift) returning bare str fall
-            # back to perf fields = 0 (back-compat).
-            if isinstance(output, str):
-                text = output
-                gen_tokens = 0
-                gen_tps = 0.0
-                peak_mem_gb = 0.0
-            else:
-                text = getattr(output, "text", str(output))
-                gen_tokens = int(getattr(output, "generation_tokens", 0) or 0)
-                gen_tps = float(getattr(output, "generation_tps", 0.0) or 0.0)
-                peak_mem_gb = float(getattr(output, "peak_memory", 0.0) or 0.0)
+            # object depending on version (verified at `mlx_vlm/generate.py`);
+            # `_unpack_mlx_generation` normalizes both (perf fields -> 0 on the
+            # bare-str back-compat path).
+            text, gen_tokens, gen_tps, peak_mem_gb = _unpack_mlx_generation(output)
+
+            return ExtractionResult(
+                model_id=self.model_id,
+                backend_name=self.backend_name,
+                text=text,
+                load_seconds=self._load_seconds,
+                extract_seconds=extract_seconds,
+                output_len_chars=len(text),
+                generation_tokens=gen_tokens,
+                generation_tps=gen_tps,
+                peak_memory_gb=peak_mem_gb,
+            )
+        except Exception as exc:  # noqa: BLE001 — capture all backend failures
+            return ExtractionResult(
+                model_id=self.model_id,
+                backend_name=self.backend_name,
+                load_seconds=self._load_seconds,
+                error=f"{type(exc).__name__}: {exc}",
+                traceback_str=traceback.format_exc(limit=6),
+            )
+
+    def extract_text(
+        self,
+        prompt: str,
+        max_tokens: int = DEFAULT_MAX_TOKENS,
+    ) -> ExtractionResult:
+        """Run a TEXT-ONLY generation (no image) — the structurer path for Arm B (ADR-038).
+
+        Mirrors `extract` but feeds the model plain text instead of an image:
+        `apply_chat_template(..., num_images=0)` (the prompt-format layer omits
+        the image token when `num_images == 0`) + `mlx_vlm.generate(..., image=
+        None, ...)`. Used by the orchestrated arm, where the structuring model
+        (Gemma) consumes the reader's (Granite's) transcript text. Feasibility +
+        honesty verified in `experiments/arm-b-structurer-probe.py`.
+
+        Same error contract as `extract`: never raises past this method;
+        backend failures land in `ExtractionResult.error` + `traceback_str`.
+        """
+        if not self._loaded:
+            return ExtractionResult(
+                model_id=self.model_id,
+                backend_name=self.backend_name,
+                error="extractor not loaded — call load() before extract_text()",
+            )
+        try:
+            from mlx_vlm import generate as mlx_generate
+            from mlx_vlm.prompt_utils import apply_chat_template
+
+            # num_images=0 -> text-only formatted prompt (no image token).
+            formatted_prompt = apply_chat_template(
+                self._processor,
+                self._model.config,
+                prompt,
+                num_images=0,
+            )
+
+            gen_start = time.perf_counter()
+            output = mlx_generate(
+                self._model,
+                self._processor,
+                formatted_prompt,
+                image=None,
+                max_tokens=max_tokens,
+                verbose=False,
+            )
+            extract_seconds = time.perf_counter() - gen_start
+
+            text, gen_tokens, gen_tps, peak_mem_gb = _unpack_mlx_generation(output)
 
             return ExtractionResult(
                 model_id=self.model_id,

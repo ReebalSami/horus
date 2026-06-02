@@ -558,11 +558,42 @@ def test_cohort_config_prompt_override_unknown_key_rejected() -> None:
 
 
 def test_cohort_config_adapter_mode_rejects_unknown_value() -> None:
-    """`adapter_mode` outside {regex, json} Literal → ValidationError."""
+    """`adapter_mode` outside {regex, json, structurer} Literal → ValidationError."""
     with pytest.raises(ValidationError, match="adapter_mode"):
         CohortConfig.model_validate(
             {"working_models": ["m"], "adapter_mode": "xml"}  # not in Literal
         )
+
+
+def test_cohort_config_adapter_mode_structurer_requires_prompt_override() -> None:
+    """`adapter_mode='structurer'` without `prompt_template_override` → ValidationError
+    (Arm A's structurer also needs a JSON-eliciting prompt; the manifest OCR
+    defaults would yield F1=0 — ADR-038 extends ADR-018 Invariant 1)."""
+    with pytest.raises(ValidationError, match="prompt_template_override"):
+        CohortConfig(working_models=["m"], adapter_mode="structurer")
+
+
+def test_cohort_config_adapter_mode_structurer_accepts_override() -> None:
+    """`adapter_mode='structurer'` with a prompt override parses cleanly (ADR-038)."""
+    cfg = CohortConfig(
+        working_models=["m"],
+        adapter_mode="structurer",
+        prompt_template_override={"m": "STRUCTURE-PROMPT"},
+    )
+    assert cfg.adapter_mode == "structurer"
+    assert cfg.prompt_template_override == {"m": "STRUCTURE-PROMPT"}
+
+
+def test_cohort_config_reader_model_id_defaults_to_none() -> None:
+    """`reader_model_id` is None by default — a normal non-orchestrated cohort (ADR-038)."""
+    cfg = CohortConfig(working_models=["m"])
+    assert cfg.reader_model_id is None
+
+
+def test_cohort_config_reader_model_id_accepts_value() -> None:
+    """`reader_model_id` carries the Arm-B reader id when set (ADR-038)."""
+    cfg = CohortConfig(working_models=["structurer-model"], reader_model_id="reader-model")
+    assert cfg.reader_model_id == "reader-model"
 
 
 def test_loads_real_pilot_13_structured_probe_uniform_composition() -> None:

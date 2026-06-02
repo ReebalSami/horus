@@ -1,0 +1,63 @@
+# arm-b.yaml — extraction-arms comparison: Arm B, orchestrated (ADR-038)
+#
+# Arm B (orchestrated / read-then-structure): image -> Granite (reader) -> text
+# -> Gemma (structurer) -> JSON -> structurer. The structurer (Gemma) is held
+# IDENTICAL to Arm A, so the only variable is whether a specialist reader
+# (Granite) precedes it — this isolates the value of specialist reading (ADR-034).
+#
+# Two-pass design (ADR-038): the reader pass is the baseline-regex.yaml run (it
+# writes Granite transcripts to the shared `transcript_archive_dir` below). This
+# config drives ONLY the structuring pass (`src/horus/eval/arm_b.py::run_arm_b`),
+# which reads those cached transcripts and structures each with Gemma text-only —
+# so the structurer prompt can be iterated WITHOUT re-running the reader.
+#
+# Sequence:
+#   1. make pilot-13 CFG=configs/pilot-13.yaml,configs/baseline-regex.yaml   # reader pass
+#   2. make arm-b    CFG=configs/pilot-13.yaml,configs/arm-b.yaml            # structuring pass
+#
+# `reader_model_id` selects the reader whose transcripts are consumed;
+# `working_models` is the single structurer; `prompt_template_override` carries
+# the structuring instruction (the reader text is appended by run_arm_b).
+# dev_only=true (dev-surface only; ADR-034 guardrail).
+#
+# Refs: ADR-038 (arms mechanism + two-pass Arm B), ADR-034 (the two arms),
+# ADR-035 (validate_and_repair), ADR-037 (19-field scope), ADR-030 (transcripts).
+
+mlflow:
+  experiment_name: arm-b-dev
+  run_tags:
+    stage: extraction-arms
+    approach: arm-b-orchestrated
+    issue: "91"
+    adr: ADR-038
+
+cohort:
+  # The structurer (held identical to Arm A — the controlled variable).
+  working_models:
+    - google/gemma-4-E4B-it
+  # The reader whose cached transcripts the structurer consumes (Arm B).
+  reader_model_id: ibm-granite/granite-docling-258M-mlx
+  adapter_mode: structurer
+  invoice_subset:
+    - EN16931_Einfach
+    - EN16931_Gutschrift
+    - EN16931_Miete
+    - EN16931_Rabatte
+    - EN16931_Innergemeinschaftliche_Lieferungen
+    - XRECHNUNG_Einfach
+  parent_run_name: arm-b-dev
+  # MUST match baseline-regex.yaml's transcript_archive_dir — Arm B reads the
+  # Granite transcripts written there by the reader pass, and writes its own
+  # Gemma structured outputs alongside (distinct model slug).
+  transcript_archive_dir: docs/sources/transcripts-arms-dev
+  dev_only: true
+  prompt_template_override:
+    google/gemma-4-E4B-it: |-
+      You are a meticulous accountant extracting fields from a German B2B invoice. The text below was produced by a document-reading model and may contain layout markup or tables. First reason briefly about where each value is, then output ONE JSON object on the final line.
+
+      Rules:
+      - Extract ONLY values actually present in the text. If a field is not present, use null. NEVER invent a value (an honest null is correct for the tax domain).
+      - Money values exactly as printed (digits + separators). Dates as printed. tax_rate is the VAT percentage (e.g. "19").
+      - Addresses: the full postal address as printed (street, postcode, city, country).
+      - Return EXACTLY these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount, tax_rate, seller_address, buyer_address, purpose_summary.
+      - purpose_summary: one short sentence describing what the invoice is for.

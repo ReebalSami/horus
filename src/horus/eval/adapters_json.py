@@ -241,6 +241,19 @@ def to_predicted_dict_multipage(
 _JSON_PARSE_SENTINEL = object()
 
 
+def recover_json_object(text: str) -> dict[str, Any] | None:
+    """Public entry point for the permissive JSON-object recovery ladder.
+
+    Shared with the structurer (``src/horus/eval/structurer.py``, ADR-038) so a
+    structuring model's reasoning-then-strict-JSON output is recovered by the
+    SAME ladder the JSON adapter uses — markdown fences, prose-around-JSON,
+    concatenated dicts (decoder loops), and trailing commas all handled. See
+    :func:`_try_parse_json` for the full ladder. Returns the first recovered
+    top-level dict, or ``None`` if no JSON object could be recovered.
+    """
+    return _try_parse_json(text)
+
+
 def _try_parse_json(text: str) -> dict[str, Any] | None:
     """Permissive JSON-to-dict ladder.
 

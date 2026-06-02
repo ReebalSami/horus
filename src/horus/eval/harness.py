@@ -17,7 +17,7 @@ Architecture (single-orchestrator design):
   ├── Nested: <model_id=B, invoice_id=I1>
   └── …
   Parent artifacts:
-    - cohort_heatmap.png         (rows = working_models, cols = 16 FIELDS, cells = mean ANLS*)
+    - cohort_heatmap.png         (rows = working_models, cols = 19 FIELDS, cells = mean ANLS*)
     - cohort_summary.json        (per-profile + pooled micro/macro F1 table)
 
 Multi-page strategy (α per ADR-014 §5.2 — the model-agnostic baseline):
@@ -73,11 +73,12 @@ import re
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
+from types import ModuleType
 from typing import TYPE_CHECKING, Any
 
 from horus.config import ExperimentConfig
 from horus.eval import adapters as adapters_regex
-from horus.eval import adapters_json
+from horus.eval import adapters_json, structurer
 from horus.eval.ground_truth import FIELDS, GroundTruth, parse_cii_xml
 from horus.eval.rasterize import rasterize_pdf
 from horus.eval.scorer import InvoiceFieldScores, score
@@ -387,7 +388,12 @@ def _score_single_invoice(
     # transcript came from. Single-line replacement of newlines / tabs prevents
     # multi-line prompts from breaking the comment shape.
     prompt_preview = prompt.replace("\n", " ").replace("\t", " ")[:80]
-    adapter_mode_tag = "json" if adapter_module is adapters_json else "regex"
+    if adapter_module is adapters_json:
+        adapter_mode_tag = "json"
+    elif adapter_module is structurer:
+        adapter_mode_tag = "structurer"
+    else:
+        adapter_mode_tag = "regex"
     transcript_header = (
         f"# Multi-page transcript (ADR-014 PR(c))\n"
         f"# Model:    {model_id}\n"
@@ -444,7 +450,7 @@ def _render_cohort_heatmap(
     """Render per-(model, field) ANLS-mean heatmap as a matplotlib Figure.
 
     Rows: model_ids in `aggregate.keys()` order (caller passes ordered dict).
-    Cols: 16 FIELDS in canonical FieldType-clustered order (STRING → CODE → DATE → MONEY).
+    Cols: the 19 FIELDS in declaration order (`list(FIELDS.keys())`).
     Cells: mean ANLS* score across all invoices for that (model, field). NaN cells
     (model produced 0 valid scores for a field) render as the colormap's "bad" color.
 
@@ -911,13 +917,18 @@ def run_cohort(
                         invoice_stem,
                     )
                     t_start = time.perf_counter()
-                    # ADR-018: dispatch adapter module via cohort.adapter_mode
-                    # (Literal["regex", "json"]). Binary dispatch — NOT a
-                    # pluggable framework. At exactly 2 variants this stays under
-                    # ADR-016 supersession trigger #3 ("past 2 variants").
-                    adapter_module = (
-                        adapters_json if cohort_cfg.adapter_mode == "json" else adapters_regex
-                    )
+                    # Dispatch the Layer-2 adapter module via cohort.adapter_mode
+                    # (Literal["regex", "json", "structurer"]; ADR-018 + ADR-038).
+                    # Closed-enum dispatch — NOT a pluggable framework; the growth
+                    # past the original binary {regex, json} is acknowledged and
+                    # bounded in ADR-038 (ADR-016 supersession trigger #3).
+                    adapter_module: ModuleType
+                    if cohort_cfg.adapter_mode == "json":
+                        adapter_module = adapters_json
+                    elif cohort_cfg.adapter_mode == "structurer":
+                        adapter_module = structurer
+                    else:
+                        adapter_module = adapters_regex
                     scores, _transcript, per_page = _score_single_invoice(
                         model_id=model_id,
                         pdf_path=pdf_path,
@@ -1197,7 +1208,8 @@ def run_cohort(
         # Cohort heatmap — only render if there's data (resume-only runs may have 0 completed).
         if any(per_field_scores_acc[m] for m in models):
             title = (
-                f"{cohort_cfg.parent_run_name} — per-field ANLS* (rows = models, cols = 16 fields)"
+                f"{cohort_cfg.parent_run_name} — per-field ANLS* "
+                f"(rows = models, cols = {len(FIELDS)} fields)"
             )
             fig = _render_cohort_heatmap(aggregate, title=title)
             mlflow.log_figure(fig, "cohort_heatmap.png")

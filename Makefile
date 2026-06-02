@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate mlflow-ui inspect-pilot-13 reading-ceiling clean
+.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling clean
 
 # Default target — list available commands.
 help:
@@ -19,6 +19,7 @@ help:
 	@echo "  data-manifest   generate MANIFEST.md + sha256.txt for a downloaded dataset corpus"
 	@echo "  pilot-13        full (cohort × ZUGFeRD-corpus) sweep with parent/nested MLflow runs (ADR-014; CFG=configs/pilot-13.yaml[,overlay.yaml] required)"
 	@echo "  adapter-iterate fast (~5-15s) adapter A/B re-scoring on cached transcripts (ADR-016; CFG=...,pilot-13-dev.yaml required; THRESHOLDS / ADAPTER / LOG_MLFLOW optional)"
+	@echo "  arm-b           Arm B (orchestrated) structuring pass over cached reader transcripts (ADR-038; CFG=...,arm-b.yaml required; run the reader/baseline pass first)"
 	@echo "  mlflow-ui       browse pilot-13 + adapter-iterate + cohort-smoke runs in MLflow's local UI (ADR-015; MLFLOW_UI_PORT=<n> to override default 8080)"
 	@echo "  inspect-pilot-13  print per-model accuracy + perf summary table for the latest pilot-13 parent run (ADR-017, #52; CFG=configs/...yaml; PARENT_RUN_ID=<id> optional)"
 	@echo "  reading-ceiling   read-quality ceiling + parser-loss + same-tuple free-form-vs-JSON 4-metric diagnostic (ADR-030, #76; offline, writes eval/ report)"
@@ -305,6 +306,28 @@ adapter-iterate:
 		$(if $(THRESHOLDS),--thresholds "$(THRESHOLDS)") \
 		$(if $(ADAPTER),--adapter-candidate-path "$(ADAPTER)") \
 		$(if $(LOG_MLFLOW),--log-mlflow)
+
+# Arm B (orchestrated) structuring pass (ADR-038). Reads the cached reader
+# (Granite) transcripts produced by a prior reader cohort run (the regex
+# baseline) and structures each with the Gemma structurer text-only -> the
+# validated 19-field dict -> the ADR-027 metric surface (incl. spurious_emission)
+# per invoice to MLflow. The structurer loads once and loops invoices; the reader
+# is NOT loaded here (it ran in the reader pass), so peak memory is the structurer
+# alone (~7.75 GB for Gemma).
+#
+# Run the reader pass FIRST (writes the transcripts this consumes):
+#   make pilot-13 CFG=configs/pilot-13.yaml,configs/baseline-regex.yaml
+# Then the structuring pass:
+#   make arm-b CFG=configs/pilot-13.yaml,configs/arm-b.yaml
+#
+# Foreground + streaming (long-running-foreground).
+arm-b:
+	@if [ -z "$(CFG)" ]; then \
+		echo "Usage: make arm-b CFG=configs/pilot-13.yaml,configs/arm-b.yaml [MAX_TOKENS=1024]"; \
+		exit 1; \
+	fi
+	uv run python scripts/run_arm_b.py --cfg "$(CFG)" \
+		$(if $(MAX_TOKENS),--max-tokens $(MAX_TOKENS))
 
 # MLflow UI for browsing pilot-13 + adapter-iterate + cohort-smoke runs (ADR-015).
 # Wraps `mlflow server --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1
