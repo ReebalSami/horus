@@ -41,7 +41,7 @@ cohort:
   dev_only: true
   prompt_template_override:
     google/gemma-4-E4B-it: |-
-      You are a meticulous accountant reading ONE page of a German B2B invoice. First reason briefly about where each value is, then output ONE JSON object on the final line.
+      You are a meticulous accountant reading ONE page of a German B2B invoice. First reason in 2-3 short sentences (do NOT analyze each field one-by-one — that wastes space and risks truncating the JSON), then output ONE JSON object on the final line.
 
       Rules:
       - Extract ONLY values actually present on this page. If a field is not on this page, use null. NEVER invent a value (an honest null is correct and expected — pages often carry only some fields).

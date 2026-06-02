@@ -56,10 +56,13 @@ __all__ = ["run_arm_b"]
 
 _LOGGER = logging.getLogger(__name__)
 
-# Default decode budget for the structuring generation. Reasoning-then-strict-JSON
-# over 19 fields fits comfortably (the Phase-0 probe used 713 tokens); 1024 leaves
-# headroom without inviting runaway generation on a degenerate input.
-_DEFAULT_STRUCTURE_MAX_TOKENS = 1024
+# Default decode budget for the structuring generation. Matches the cohort
+# manifest default (Gemma's 2048) — the dev run surfaced that 1024 truncates the
+# JSON mid-object when the model emits a verbose per-field reasoning block before
+# the JSON (EN16931_Einfach: every emitted value correct, but the object was cut
+# off -> unparseable -> all-null). 2048 fits reasoning + the full 20-key object;
+# generations that close the JSON early stop at EOS well under the budget.
+_DEFAULT_STRUCTURE_MAX_TOKENS = 2048
 
 
 def _build_structuring_input(structuring_prompt: str, reader_text: str) -> str:

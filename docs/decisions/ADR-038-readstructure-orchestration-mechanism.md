@@ -90,3 +90,26 @@ Superseded if **any** of:
 - The orchestration mechanism is documented before code lands, satisfying `horus-decision-discipline` and #91's "an ADR is required" note; #50 is partially activated (mechanism) while its confirmatory + validator-loop scope stays open.
 - The Phase-0 probe is preserved as re-runnable evidence; the build phase refines the structurer prompt on dev (the probe's honest misses — `seller_tax_id`, `line_total_amount`, `tax_rate` — are prompt-tuning targets, not blockers).
 - Zero impact on closed-milestone numbers (ADR-037 freeze) or the harness's default `regex`/`json` callers.
+
+## Dev-run validation (exploratory — dev surface, NOT the reported numbers)
+
+The mechanism was exercised end-to-end on the 6-invoice dev subset (ZUGFeRD v2: `EN16931_{Einfach,Gutschrift,Miete,Rabatte,Innergemeinschaftliche_Lieferungen}` + `XRECHNUNG_Einfach`), full 19-field scoring, ANLS* τ=0.5. These are **dev-surface** numbers for prompt/mechanism iteration; the confirmatory single-shot-vs-orchestrated verdict comes from the frozen held-out split (#78) per supersession trigger #1.
+
+| Metric (cohort-pooled) | Baseline (Granite+regex) | Arm A (single-shot) | Arm B (orchestrated) |
+|---|---|---|---|
+| micro-F1 | 0.675 | 0.809 | **0.935** |
+| presence-conditional F1 | 0.675 | 0.809 | **0.935** |
+| group-level F1 (KIEval) | 0.278 | 0.222 | **0.667** |
+| spurious-emission rate | 0.000 | 0.000 | 0.000 |
+| wall/invoice · peak RAM | 11.7 s · 1.5 GB | 42.4 s · 7.8 GB | ~24 s (+read) · 7.8 GB |
+
+1. **Ordering Arm B > Arm A > baseline.** Orchestration (specialist read → structure) leads; both VLM arms beat the regex baseline on micro-F1.
+2. **Honesty holds for the generative structurer — `spurious_emission` = 0.000 across all three approaches** (12 VLM invoices, zero invented values). The strict "extract-only-what-is-present, else null" prompt + post-hoc `validate_and_repair` keep Gemma as honest as deterministic regex — the central ADR-034 tax-domain concern, answered at dev scale.
+3. **Arm B's edge over Arm A is largest on group-level F1** (0.667 vs 0.222): Granite's reading yields a cleaner structuring substrate than Gemma's direct image read.
+4. **Honest counter-finding — regex beats both VLM arms on `seller_tax_id`** (1.000 vs 0.000/0.000): the field the regex is hand-tuned for (German "St.-Nr."), both VLM arms miss entirely (4 FN each). The VLM arms are *not* strictly dominant — the probe's flagged miss (Consequence 4) persists past prompt tuning; tracked as a structurer-prompt follow-up.
+5. **`tax_rate` hard for all three** (0.000 / 0.286 / 0.286): the BT-119 multi-rate selection + "19 %" formatting — systematic, not arm-specific.
+6. **Mechanism finding (build):** `max_tokens=1024` truncated the structurer JSON mid-object when the model emitted a verbose per-field reasoning block (`EN16931_Einfach`: every emitted value correct, object cut off → unparseable → all-null → 0.000). Fixed by the cohort-default 2048 budget + a terser-reasoning prompt; Arm B pooled rose 0.866 → 0.935. The all-null-on-unparseable contract degraded safely (no crash, no hallucination) in the interim.
+
+Reproduce: `make pilot-13 CFG=configs/pilot-13.yaml,configs/baseline-regex.yaml` (reader pass) → `make arm-b CFG=configs/pilot-13.yaml,configs/arm-b.yaml` → `make pilot-13 CFG=configs/pilot-13.yaml,configs/arm-a.yaml`; surface each via `make inspect-pilot-13 CFG=configs/pilot-13.yaml,<approach>.yaml`.
+
+Corpus-scope caveat: the harness discovers only the 26 ZUGFeRD-v2 pairs under `XML-Rechnung/{FX,CII}`; `ZUGFeRDv1/` + synthetic invoices exist on disk but are not in the discovery path (a corpus-discovery extension, tracked separately — not this record's scope).

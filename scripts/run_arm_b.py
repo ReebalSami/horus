@@ -52,9 +52,9 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--max-tokens",
         type=int,
-        default=1024,
+        default=2048,
         metavar="N",
-        help="Decode budget for each structuring generation (default 1024).",
+        help="Decode budget for each structuring generation (default 2048).",
     )
     return parser
 
