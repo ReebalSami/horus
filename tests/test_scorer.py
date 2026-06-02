@@ -487,7 +487,7 @@ def test_aggregate_macro_handles_pure_tn_field() -> None:
 def _make_full_gt(
     overrides: dict[str, GroundTruthField] | None = None,
 ) -> GroundTruth:
-    """Build a 16-key GroundTruth filled with 'absent' fields, with selective overrides."""
+    """Build a 19-key GroundTruth filled with 'absent' fields, with selective overrides."""
     from horus.eval.ground_truth import FIELDS
 
     header: dict[str, GroundTruthField] = {}
@@ -506,7 +506,7 @@ def _make_full_gt(
 
 
 def test_score_returns_invoice_field_scores_with_all_16_keys() -> None:
-    """The result has a `per_field` dict with all 16 FIELDS keys."""
+    """The result has a `per_field` dict with all 19 FIELDS keys."""
     from horus.eval.ground_truth import FIELDS
 
     gt = _make_full_gt()
@@ -517,20 +517,20 @@ def test_score_returns_invoice_field_scores_with_all_16_keys() -> None:
 
 
 def test_score_all_absent_gt_all_none_pred_is_all_tn() -> None:
-    """When GT is empty + pred is empty → all 16 are TN; F1=0 (no signal)."""
+    """When GT is empty + pred is empty → all 19 are TN; F1=0 (no signal)."""
     from horus.eval.ground_truth import FIELDS
 
     gt = _make_full_gt()
     predicted: dict[str, str | None] = {key: None for key in FIELDS}
     result = score(predicted, gt, cfg=EvalConfig())
     tn_count = sum(1 for r in result.per_field.values() if r.outcome == "TN")
-    assert tn_count == 16
+    assert tn_count == 19
     # No TP/FP/FN → F1 = 0
     assert result.micro_f1 == 0.0
 
 
 def test_score_perfect_extraction_yields_micro_f1_1_0() -> None:
-    """When all 16 fields match → micro_f1 = 1.0."""
+    """When all 19 fields match → micro_f1 = 1.0."""
     from horus.eval.ground_truth import FIELDS
 
     # Build a GT where every field is present_content with a canonical value
@@ -542,6 +542,8 @@ def test_score_perfect_extraction_yields_micro_f1_1_0() -> None:
             val = "100.00"
         elif spec.field_type == "DATE":
             val = "2018-03-05"
+        elif spec.field_type == "RATE":
+            val = "19"
         else:
             val = f"value-{key}"
         overrides[key] = GroundTruthField(
@@ -556,7 +558,7 @@ def test_score_perfect_extraction_yields_micro_f1_1_0() -> None:
     gt = _make_full_gt(overrides=overrides)
     result = score(predicted, gt, cfg=EvalConfig())
     tp_count = sum(1 for r in result.per_field.values() if r.outcome == "TP")
-    assert tp_count == 16
+    assert tp_count == 19
     assert result.micro_f1 == 1.0
 
 
@@ -810,6 +812,8 @@ def test_score_populates_adr027_metrics() -> None:
             val = "100.00"
         elif spec.field_type == "DATE":
             val = "2018-03-05"
+        elif spec.field_type == "RATE":
+            val = "19"
         else:
             val = f"value-{key}"
         overrides[key] = GroundTruthField(

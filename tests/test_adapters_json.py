@@ -70,12 +70,12 @@ def test_preprocess_nfc_normalizes_decomposed_diacritics() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_to_predicted_dict_returns_all_16_canonical_keys() -> None:
-    """Result always contains exactly the 16 canonical FIELDS keys (no extras, no missing)."""
+def test_to_predicted_dict_returns_all_19_canonical_keys() -> None:
+    """Result always contains exactly the 19 canonical FIELDS keys (no extras, no missing)."""
     raw = '{"invoice_number": "INV-001"}'
     result = to_predicted_dict(raw, model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
-    assert len(result) == 16
+    assert len(result) == 19
 
 
 def test_to_predicted_dict_full_canonical_json_roundtrips() -> None:
@@ -499,11 +499,11 @@ def test_multipage_all_pages_unparseable_yields_all_none() -> None:
     assert all(v is None for v in result.values())
 
 
-def test_multipage_returns_all_16_canonical_keys() -> None:
-    """Result dict always contains exactly the 16 canonical FIELDS keys."""
+def test_multipage_returns_all_19_canonical_keys() -> None:
+    """Result dict always contains exactly the 19 canonical FIELDS keys."""
     result = to_predicted_dict_multipage(['{"invoice_number": "X"}'], model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
-    assert len(result) == 16
+    assert len(result) == 19
 
 
 def test_multipage_german_diacritics_preserved_across_pages() -> None:

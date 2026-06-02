@@ -435,14 +435,14 @@ def test_normalization_passthrough() -> None:
 
 
 def test_fields_registry_consistency() -> None:
-    """All 16 FIELDS rows: unique BT codes, unique english_keys, well-formed metadata."""
-    assert len(FIELDS) == 16, f"Expected 16 fields, found {len(FIELDS)}"
+    """All 19 FIELDS rows: unique BT codes, unique english_keys, well-formed metadata."""
+    assert len(FIELDS) == 19, f"Expected 19 fields, found {len(FIELDS)}"
 
     english_keys = list(FIELDS.keys())
-    assert len(set(english_keys)) == 16, "Duplicate english_keys in FIELDS"
+    assert len(set(english_keys)) == 19, "Duplicate english_keys in FIELDS"
 
     bt_codes = [spec.bt_code for spec in FIELDS.values()]
-    assert len(set(bt_codes)) == 16, f"Duplicate BT codes in FIELDS: {bt_codes}"
+    assert len(set(bt_codes)) == 19, f"Duplicate BT codes in FIELDS: {bt_codes}"
 
     for english_key, spec in FIELDS.items():
         # Internal consistency: dict key matches FieldSpec.english_key
@@ -450,8 +450,9 @@ def test_fields_registry_consistency() -> None:
             f"FIELDS[{english_key!r}] has mismatched english_key={spec.english_key!r}"
         )
         assert spec.bt_code, f"FIELDS[{english_key!r}].bt_code is empty"
-        assert spec.bt_code.startswith("BT-"), (
-            f"FIELDS[{english_key!r}].bt_code does not start with 'BT-': {spec.bt_code!r}"
+        # BT- for business terms; BG- for the ADR-035 address business groups (BG-5/BG-8).
+        assert spec.bt_code.startswith(("BT-", "BG-")), (
+            f"FIELDS[{english_key!r}].bt_code does not start with 'BT-'/'BG-': {spec.bt_code!r}"
         )
         assert spec.german_label, f"FIELDS[{english_key!r}].german_label is empty"
         assert spec.xpath, f"FIELDS[{english_key!r}].xpath is empty"
@@ -468,9 +469,9 @@ def test_fields_registry_consistency() -> None:
         # field_type added per ADR-013 (PR(b) scorer dispatch). Every row must
         # tag its comparator-dispatch type explicitly — no default; the
         # `FieldType` Literal in ground_truth.py is the closed taxonomy.
-        assert spec.field_type in ("STRING", "MONEY", "DATE", "CODE"), (
+        assert spec.field_type in ("STRING", "MONEY", "DATE", "CODE", "RATE"), (
             f"FIELDS[{english_key!r}].field_type={spec.field_type!r} is not one of "
-            f"STRING/MONEY/DATE/CODE (the closed FieldType taxonomy)"
+            f"STRING/MONEY/DATE/CODE/RATE (the closed FieldType taxonomy)"
         )
 
 
@@ -482,7 +483,7 @@ def test_fields_registry_field_type_consistency() -> None:
     forgotten tag is a construction-time TypeError, not a silent fallthrough.
     """
     for english_key, spec in FIELDS.items():
-        assert spec.field_type in ("STRING", "MONEY", "DATE", "CODE"), (
+        assert spec.field_type in ("STRING", "MONEY", "DATE", "CODE", "RATE"), (
             f"FIELDS[{english_key!r}].field_type={spec.field_type!r} is outside the closed taxonomy"
         )
 
@@ -527,7 +528,7 @@ def test_date_fields_are_exactly_issue_and_delivery() -> None:
     )
 
 
-def test_string_fields_are_exactly_seller_and_buyer_names() -> None:
+def test_string_fields_are_names_and_addresses() -> None:
     """`field_type='STRING'` ↔ exactly `seller_name` (BT-27) + `buyer_name` (BT-44).
 
     These are the only fields where ANLS\\* tolerance applies — names tolerate
@@ -536,9 +537,9 @@ def test_string_fields_are_exactly_seller_and_buyer_names() -> None:
     others use exact-on-normalized.
     """
     string_keys = {k for k, spec in FIELDS.items() if spec.field_type == "STRING"}
-    expected = {"seller_name", "buyer_name"}
+    expected = {"seller_name", "buyer_name", "seller_address", "buyer_address"}
     assert string_keys == expected, (
-        f"STRING fields drifted from expected (seller_name, buyer_name). "
+        f"STRING fields drifted from expected names + addresses. "
         f"Got {sorted(string_keys)}, expected {sorted(expected)}."
     )
 
@@ -566,13 +567,13 @@ def test_code_fields_cover_the_remaining_seven() -> None:
         f"expected {sorted(expected)}."
     )
 
-    # Closure: STRING(2) + MONEY(5) + DATE(2) + CODE(7) = 16
-    by_type: dict[str, int] = {"STRING": 0, "MONEY": 0, "DATE": 0, "CODE": 0}
+    # Closure: STRING(4) + MONEY(5) + DATE(2) + CODE(7) + RATE(1) = 19 (ADR-035)
+    by_type: dict[str, int] = {"STRING": 0, "MONEY": 0, "DATE": 0, "CODE": 0, "RATE": 0}
     for spec in FIELDS.values():
         by_type[spec.field_type] += 1
-    assert by_type == {"STRING": 2, "MONEY": 5, "DATE": 2, "CODE": 7}, (
-        f"FieldType partition drift: {by_type}. Expected STRING=2, MONEY=5, "
-        f"DATE=2, CODE=7 (total 16)."
+    assert by_type == {"STRING": 4, "MONEY": 5, "DATE": 2, "CODE": 7, "RATE": 1}, (
+        f"FieldType partition drift: {by_type}. Expected STRING=4, MONEY=5, "
+        f"DATE=2, CODE=7, RATE=1 (total 19)."
     )
 
 
@@ -627,7 +628,7 @@ def test_ground_truth_dataclass_forward_compat() -> None:
     parsed = parse_cii_xml(EINFACH_CII.read_bytes())
     assert isinstance(parsed, GroundTruth)
     assert parsed.header is not None
-    assert len(parsed.header) == 16
+    assert len(parsed.header) == 19
 
     # Equality semantics work: two parses of the same XML produce equal dicts
     parsed_again = parse_cii_xml(EINFACH_CII.read_bytes())
@@ -783,7 +784,7 @@ def test_v1_fields_registry_xpath_executable() -> None:
     `CrossIndustryDocument` (guards against a silent v2-passthrough bug).
     """
     assert set(FIELDS_V1.keys()) == set(FIELDS.keys()), (
-        "FIELDS_V1 must cover exactly the same 16 business terms as FIELDS"
+        "FIELDS_V1 must cover exactly the same 19 business terms as FIELDS"
     )
     empty_v1_doc = etree.fromstring(
         b'<rsm:CrossIndustryDocument xmlns:rsm="urn:ferd:CrossIndustryDocument:invoice:1p0"/>'

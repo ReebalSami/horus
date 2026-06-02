@@ -40,6 +40,7 @@ import pytest
 # ADR-022: `scripts/` is a Python package; `from scripts import rescore` resolves
 # natively via pytest's `pythonpath = ["."]` ini config (no per-file sys.path
 # manipulation needed).
+from horus.eval.ground_truth import LEGACY_EXPERIMENT_FIELDS
 from scripts import rescore
 
 # ADR-023: `skip_if_no_fixtures` (= transcripts-multipage AND corpus PDFs) lives
@@ -236,6 +237,13 @@ def test_rescore_baseline_only_matches_legacy_ablation_at_tau_0_5() -> None:
     lifted it from ADR-014's 0.4908; the latter is superseded — see ADR-028
     §"Empirical results"). The test pins the rescore harness's reproduction of
     the *current* canonical adapter, not a fixed historical number.
+
+    ADR-037: scores the frozen 16-field `LEGACY_EXPERIMENT_FIELDS` — this is a
+    CLOSED-milestone (ADR-028) in-sample reproduction. The ADR-035 schema
+    extension (16 → 19) does NOT shift this 0.6729: the regex adapter never
+    targeted tax_rate / addresses, so rescoring against them would be a
+    meaningless hybrid. The 3 new fields are evaluated on the structurer arms
+    going forward, not retroactively against this baseline.
     """
     pair = rescore.load_adapter_pair(candidate_path=Path("/no/such/path.py"))
 
@@ -244,6 +252,7 @@ def test_rescore_baseline_only_matches_legacy_ablation_at_tau_0_5() -> None:
         corpus_root=CORPUS_ROOT,
         thresholds=[0.5],
         adapters_pair=pair,
+        fields=LEGACY_EXPERIMENT_FIELDS,
     )
 
     pooled_f1 = rescore._aggregate_micro_f1(
