@@ -10,6 +10,8 @@
 
 > **This is the master record of the post-experiment Layer-1 pivot.** ADR-035 (schema) and ADR-036 (Streamlit app) are cross-linked sub-decisions. Read this first to understand why the cohort sweep narrowed to two models and how the board was reconciled.
 
+> **Erratum (2026-06-02, apparatus-build session):** the §"Pre-registration" dev-surface line originally read *"the 26 ZUGFeRD + Aoschu + synthetic corpus."* **Aoschu was never acquired** — `docs/retros/m2d.5-step3-dataset-acquisition.md` records it as `skipped` (n<1K, unclear license) and it is absent from `data/`, configs, and code. The dev surface is corrected below to *"ZUGFeRD (v1+v2) + synthetic"*, with **FATURA2** (English, `data/raw/english/`, examined in `experiments/02-fatura2.py`) available for the non-German robustness probe (#104), and the multilingual probe realized as a synthetic English-content ZUGFeRD invoice (in-schema CII GT). This is a factual correction to a pre-registration line, not a decision reversal — recorded inline per the ADR-011 retention discipline. User-confirmed 2026-06-02.
+
 ## Context
 
 The `experiment` phase closed with ADR-030 (reading-ceiling diagnostic) + ADR-032 (H8 efficiency) + ADR-031 (hypothesis-label reconciliation). Those left an explicit, pre-registered hand-off: the final Layer-1 approach pick is *deferred to the held-out Belege split (#78)*, decided with out-of-sample evidence (ADR-030 supersession trigger 1+2).
@@ -84,7 +86,7 @@ This isolates the value of specialist reading (Granite) from the value of the st
 
 ## Pre-registration (locked before any frozen-set number exists)
 
-- **Reporting surface:** the frozen Belege held-out set (#78). **Dev surface:** the 26 ZUGFeRD + Aoschu + synthetic corpus.
+- **Reporting surface:** the frozen Belege held-out set (#78). **Dev surface:** the ZUGFeRD (v1+v2) + synthetic corpus (FATURA2 English available for the non-German robustness probe; see Erratum above).
 - **Hard rule:** prompts, schema, and fine-tuning are iterated on **dev only**. The frozen set is measured **once per approach** (Arm A, Arm B, regex baseline, post-fine-tune, cloud). "Best local" is judged on dev; the freeze is touched only for the final measurement. This is the no-HARKing / no-test-contamination spine.
 - **Metrics:** the ADR-027 four-metric surface (micro/macro F1, presence-conditional F1, group-level F1, spurious-emission) + per-canonical-label F1. The honesty axis (`spurious_emission`) is a hard selection criterion for the tax domain.
 - **Arms measured:** Arm A (Gemma single-shot), Arm B (Granite→Gemma), regex baseline; later fine-tuned Granite/Gemma; later cloud.

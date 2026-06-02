@@ -17,7 +17,7 @@ import pytest
 
 from horus.config import EvalConfig, ExperimentConfig
 from horus.eval import adapters_json
-from horus.eval.ground_truth import FIELDS, GroundTruth, GroundTruthField
+from horus.eval.ground_truth import FIELDS, LEGACY_EXPERIMENT_FIELDS, GroundTruth, GroundTruthField
 from horus.eval.scorer import score
 from horus.eval.transcripts import build_gt_cache
 
@@ -235,12 +235,24 @@ def test_extended_metrics_perfect_extraction() -> None:
 
 @skip_if_no_corpus
 def test_json_arm_reproduces_baseline_metrics() -> None:
-    """The JSON arm MUST reproduce docs/sources/json-baseline-metrics.txt exactly."""
+    """The JSON arm MUST reproduce docs/sources/json-baseline-metrics.txt exactly.
+
+    ADR-037: scores the frozen 16-field `LEGACY_EXPERIMENT_FIELDS`. The committed
+    `json-baseline-metrics.txt` is the ADR-029 milestone archive (16-field); the
+    ADR-035 schema extension (16 → 19) must NOT shift it — the JSON-baseline
+    transcripts were produced by models prompted for 16 fields, so scoring them
+    against the 3 new fields would be a meaningless hybrid. The new fields are
+    evaluated on the structurer arms going forward, not retroactively here.
+    """
     cfg = ExperimentConfig.from_yaml(["configs/pilot-13.yaml", "configs/json-baseline.yaml"])
     assert cfg.cohort is not None
     gt_cache = build_gt_cache(cfg.cohort.corpus_root)
     results = rc._process_dir(
-        JSON_TRANSCRIPTS_DIR, adapters_json, gt_cache, cfg.eval or EvalConfig()
+        JSON_TRANSCRIPTS_DIR,
+        adapters_json,
+        gt_cache,
+        cfg.eval or EvalConfig(),
+        fields=LEGACY_EXPERIMENT_FIELDS,
     )
     assert len(results) == 18, "3 JSON-capable models × 6 invoices = 18 tuples"
     ok, lines = rc._determinism_check(results)

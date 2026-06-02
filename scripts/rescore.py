@@ -58,12 +58,13 @@ import hashlib
 import importlib.util
 import sys
 from collections import defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from pathlib import Path
 from types import ModuleType
 
 from horus.config import EvalConfig
 from horus.eval import adapters as baseline_adapters
+from horus.eval.ground_truth import FieldSpec
 from horus.eval.scorer import score
 from horus.eval.transcripts import (
     build_gt_cache,
@@ -262,6 +263,7 @@ def rescore_transcripts(
     corpus_root: Path,
     thresholds: list[float],
     adapters_pair: AdapterPair,
+    fields: Mapping[str, FieldSpec] | None = None,
 ) -> dict[str, dict[float, dict[str, list]]]:
     """Re-score all transcripts with both baseline and candidate adapters, at each threshold.
 
@@ -271,6 +273,11 @@ def rescore_transcripts(
 
     If `adapters_pair.is_identical` is True, the "candidate" key holds the same
     scores as "baseline" (the run is a stability self-check; Δ should be 0).
+
+    `fields` optionally restricts scoring to a subset of ``FIELDS`` (passed
+    through to ``score``); defaults to all 19. Pass
+    ``ground_truth.LEGACY_EXPERIMENT_FIELDS`` to reproduce a closed milestone's
+    16-field in-sample baseline without the ADR-035 fields shifting it (ADR-037).
 
     Performance: preprocess + to_predicted_dict run TWICE per transcript (once
     per adapter), once each — the scorer then runs `n_thresholds` times against
@@ -332,6 +339,7 @@ def rescore_transcripts(
                     cfg=eval_cfg,
                     invoice_id=invoice_stem,
                     model_id=model_id,
+                    fields=fields,
                 )
                 results[adapter_label][tau][model_id].append(inv_scores)
 

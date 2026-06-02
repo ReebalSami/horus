@@ -59,6 +59,7 @@ import argparse
 import re
 import sys
 import unicodedata
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import fmean
@@ -66,7 +67,7 @@ from types import ModuleType
 
 from horus.config import EvalConfig, ExperimentConfig
 from horus.eval import adapters, adapters_json
-from horus.eval.ground_truth import FIELDS, FieldType, GroundTruth, GroundTruthField
+from horus.eval.ground_truth import FIELDS, FieldSpec, FieldType, GroundTruth, GroundTruthField
 from horus.eval.scorer import (
     FieldResult,
     InvoiceFieldScores,
@@ -276,12 +277,18 @@ def _process_dir(
     adapter_module: ModuleType,
     gt_cache: dict[str, GroundTruth],
     eval_cfg: EvalConfig,
+    fields: Mapping[str, FieldSpec] | None = None,
 ) -> list[TupleResult]:
     """Score every transcript in a dir + diagnose its reading ceiling.
 
     Mirrors the harness/rescore transcript→adapter→scorer path EXACTLY (the
     multipage adapter API per ADR-019 W3.1) so the JSON arm reproduces the
     canonical `json-baseline` numbers (the determinism cross-check).
+
+    `fields` optionally restricts scoring to a subset of ``FIELDS`` (passed
+    through to ``score``); defaults to all 19. The determinism cross-check
+    passes ``ground_truth.LEGACY_EXPERIMENT_FIELDS`` so the ADR-029 16-field
+    `json-baseline-metrics.txt` archive reproduces unchanged (ADR-037).
     """
     if not transcripts_dir.is_dir():
         raise FileNotFoundError(f"Transcripts dir not found: {transcripts_dir}")
@@ -299,7 +306,9 @@ def _process_dir(
             continue
         per_page = split_per_page_texts(body)
         predicted = adapter_module.to_predicted_dict_multipage(per_page, model_id)
-        inv = score(predicted, gt, cfg=eval_cfg, invoice_id=invoice_stem, model_id=model_id)
+        inv = score(
+            predicted, gt, cfg=eval_cfg, invoice_id=invoice_stem, model_id=model_id, fields=fields
+        )
         diags = _field_diags(inv, gt, "\n".join(per_page))
         results.append(TupleResult(model_id, invoice_stem, inv, diags))
     return results

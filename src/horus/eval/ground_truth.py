@@ -160,12 +160,33 @@ def _passthrough(raw: str) -> str:
     return raw.strip()
 
 
+def _normalize_rate(raw: str) -> str:
+    """Parse a CII VAT-rate percentage and return a canonical numeric string.
+
+    BT-119 ``RateApplicablePercent`` ships as e.g. ``"19.00"`` / ``"7.00"`` /
+    ``"0.00"`` in valid CII XML. Canonicalizes via ``Decimal`` with trailing
+    zeros stripped (``19.00`` → ``"19"``, ``7.50`` → ``"7.5"``) so the value is
+    a stable exact-match target. The prediction side
+    (``normalizers._normalize_predicted_rate``) produces the byte-identical
+    canonical from messier model output (``"19 %"`` / ``"19,00"``) — locked by
+    a cross-check test. Per ADR-035 (tax_rate = "CODE-like exact-on-normalized").
+
+    Raises ``ValueError`` on inputs that don't parse as ``Decimal``.
+    """
+    s = raw.strip()
+    try:
+        d = Decimal(s)
+    except InvalidOperation as exc:
+        raise ValueError(f"Rate string is not parseable as Decimal: {raw!r}") from exc
+    return format(d.normalize(), "f")
+
+
 # ---------------------------------------------------------------------------
 # 3. FieldSpec — static catalog row per EN16931 business term
 # ---------------------------------------------------------------------------
 
 
-FieldType = Literal["STRING", "MONEY", "DATE", "CODE"]
+FieldType = Literal["STRING", "MONEY", "DATE", "CODE", "RATE"]
 r"""Discriminator for the per-field-type comparator dispatch in PR(b)'s scorer.
 
 Additive ADR-012 amendment per ADR-013 — every `FieldSpec` row in `FIELDS`
@@ -182,6 +203,12 @@ this discriminator:
   - ``CODE``   → exact match on whitespace-stripped NFC; invoice numbers,
     VAT IDs, GLN, currency codes — typos invalidate the legal record so no
     OCR tolerance is granted.
+  - ``RATE``   → exact match on numeric-normalized VAT rate (ADR-035 tax_rate /
+    BT-119). ``_normalize_rate`` (GT) + ``normalizers._normalize_predicted_rate``
+    (pred) both strip trailing zeros + percent signs to a canonical decimal
+    string (``19.00`` → ``"19"``), so exact match survives locale variance
+    (``"19 %"`` / ``"19,00"``). Distinct from CODE because CODE's normalizer
+    only NFC-strips and cannot numerically canonicalize.
 """
 
 
@@ -218,6 +245,14 @@ class FieldSpec:
             choice explicitly. Open/closed at the registry boundary (mirrors
             the `normalize` design): adding a new field is a 1-line FIELDS
             entry, no edit to the scorer's dispatch cascade.
+        composite_leaves: optional tuple of child element local-names (no
+            namespace prefix; resolved against the same ``ram:`` namespace as
+            the parent) to concatenate into the field value when ``xpath``
+            points at a COMPOSITE container element whose own ``.text`` is
+            empty — e.g. ``PostalTradeAddress`` (BG-5/BG-8). ``None`` (default)
+            = read the matched element's own ``.text`` (every scalar leaf
+            field). Present children are joined with ``", "`` in declaration
+            order; absent/empty children are skipped. Per ADR-035.
     """
 
     english_key: str
@@ -226,6 +261,7 @@ class FieldSpec:
     xpath: str
     normalize: Callable[[str], str]
     field_type: FieldType
+    composite_leaves: tuple[str, ...] | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -254,6 +290,20 @@ _HEADER_SETTLEMENT = (
     "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement"
 )
 _SETTLEMENT_TOTALS = f"{_HEADER_SETTLEMENT}/ram:SpecifiedTradeSettlementHeaderMonetarySummation"
+
+# EN16931 PostalTradeAddress (BG-5/BG-8) child leaves, in canonical render
+# order. The seller/buyer address XPaths point at the composite
+# PostalTradeAddress element (whose own .text is empty); `parse_cii_xml`
+# concatenates these present children with ", ". CountryID is the ISO 3166-1
+# alpha-2 code (e.g. "DE"). Byte-identical across ZUGFeRD v1/v2 (ADR-033).
+_ADDRESS_LEAVES: Final[tuple[str, ...]] = (
+    "LineOne",
+    "LineTwo",
+    "LineThree",
+    "PostcodeCode",
+    "CityName",
+    "CountryID",
+)
 
 
 FIELDS: Final[dict[str, FieldSpec]] = {
@@ -428,6 +478,41 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         normalize=_normalize_money,
         field_type="MONEY",
     ),
+    # 17. Applied VAT rate (BG-23 / BT-119) — ADR-035 schema extension. Takes
+    # the first ApplicableTradeTax/RateApplicablePercent in document order (the
+    # standard rate for single-rate invoices; the multi-rate full breakdown is
+    # deferred per ADR-035 §A). RATE field_type → numeric exact-match.
+    "tax_rate": FieldSpec(
+        english_key="tax_rate",
+        bt_code="BT-119",
+        german_label="Umsatzsteuersatz",
+        xpath=f"{_HEADER_SETTLEMENT}/ram:ApplicableTradeTax/ram:RateApplicablePercent",
+        normalize=_normalize_rate,
+        field_type="RATE",
+    ),
+    # 18. Seller postal address (BG-5) — ADR-035 schema extension. Composite:
+    # the PostalTradeAddress element's own .text is empty, so child leaves are
+    # concatenated via `composite_leaves`. STRING field_type → ANLS*.
+    "seller_address": FieldSpec(
+        english_key="seller_address",
+        bt_code="BG-5",
+        german_label="Anschrift (Verkäufer)",
+        xpath=f"{_HEADER_AGREEMENT}/ram:SellerTradeParty/ram:PostalTradeAddress",
+        normalize=_normalize_string,
+        field_type="STRING",
+        composite_leaves=_ADDRESS_LEAVES,
+    ),
+    # 19. Buyer postal address (BG-8) — ADR-035 schema extension. Composite,
+    # same handling as seller_address.
+    "buyer_address": FieldSpec(
+        english_key="buyer_address",
+        bt_code="BG-8",
+        german_label="Anschrift (Käufer)",
+        xpath=f"{_HEADER_AGREEMENT}/ram:BuyerTradeParty/ram:PostalTradeAddress",
+        normalize=_normalize_string,
+        field_type="STRING",
+        composite_leaves=_ADDRESS_LEAVES,
+    ),
 }
 
 
@@ -477,6 +562,30 @@ FIELDS_V1: Final[dict[str, FieldSpec]] = {
     english_key: replace(spec, xpath=_to_v1_xpath(spec.xpath))
     for english_key, spec in FIELDS.items()
 }
+
+
+# The 3 fields ADR-035 added to the canonical schema (16 → 19): tax-rate
+# (BT-119) + seller/buyer postal addresses (BG-5 / BG-8).
+_ADR035_ADDED_FIELD_KEYS: Final[frozenset[str]] = frozenset(
+    {"tax_rate", "seller_address", "buyer_address"}
+)
+
+# The frozen 16-field set the CLOSED experiment milestone measured
+# (ADR-012/013/014/027/028/029/030). The reproduction tests for those in-sample
+# diagnostic baselines pin to this subset via `score(fields=...)` so their
+# PUBLISHED numbers never shift when the schema grows. New work (the structurer
+# arms + the held-out eval) always scores the full 19-field `FIELDS`. Scoring a
+# 16-field-targeted system against 19 fields is a meaningless hybrid — it
+# penalizes a system for not extracting fields it was never asked for; the
+# milestone's honest measurement is 16-field. See ADR-037 (+ ADR-035 §Integration).
+LEGACY_EXPERIMENT_FIELDS: Final[dict[str, FieldSpec]] = {
+    english_key: spec
+    for english_key, spec in FIELDS.items()
+    if english_key not in _ADR035_ADDED_FIELD_KEYS
+}
+assert len(LEGACY_EXPERIMENT_FIELDS) == 16, (
+    "LEGACY_EXPERIMENT_FIELDS must be exactly the 16 pre-ADR-035 fields"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -652,13 +761,28 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
             )
 
         # `tree.xpath` returns lxml `_Element` instances (not text nodes) when
-        # the XPath does not end in `/text()`. Read `.text` for the element's
-        # direct text content; `None` means no text (e.g., self-closing `<X/>`
-        # or empty element `<X></X>`); we collapse that to `""` so the
-        # tristate contract distinguishes "absent" (raw_value=None) from
-        # "present-but-empty" (raw_value="").
+        # the XPath does not end in `/text()`.
         el = elements[0]
-        raw_str = el.text if el.text is not None else ""
+        if spec.composite_leaves is not None:
+            # Composite container (e.g. PostalTradeAddress, BG-5/BG-8): the
+            # element's own .text is empty; concatenate present child leaves in
+            # declaration order with ", " (ADR-035). Children resolve against
+            # the same `ram:` namespace as the parent element.
+            parts: list[str] = []
+            for leaf in spec.composite_leaves:
+                child_els = el.xpath(f"ram:{leaf}", namespaces=namespaces)
+                if child_els:
+                    child_text = child_els[0].text
+                    if child_text and child_text.strip():
+                        parts.append(child_text.strip())
+            raw_str = ", ".join(parts)
+        else:
+            # Scalar leaf: read `.text` for the element's direct text content;
+            # `None` means no text (e.g., self-closing `<X/>` or empty element
+            # `<X></X>`); we collapse that to `""` so the tristate contract
+            # distinguishes "absent" (raw_value=None) from "present-but-empty"
+            # (raw_value="").
+            raw_str = el.text if el.text is not None else ""
 
         # Apply normalizer ONLY when there's content to normalize; empty
         # raw_str short-circuits to empty normalized_str (avoids `ValueError`

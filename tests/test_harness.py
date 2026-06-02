@@ -236,10 +236,10 @@ def test_render_cohort_heatmap_shape() -> None:
     # Figure has exactly 1 main axes (heatmap) + 1 colorbar axes.
     assert len(fig.axes) == 2
     main_ax = fig.axes[0]
-    # Rows = models, cols = full FIELDS list (16 entries) regardless of which the
+    # Rows = models, cols = full FIELDS list (19 entries) regardless of which the
     # aggregate populates (sparse cells render as NaN/grey).
     assert len(main_ax.get_yticklabels()) == 2  # 2 models
-    assert len(main_ax.get_xticklabels()) == 16  # 16 canonical fields
+    assert len(main_ax.get_xticklabels()) == 19  # 19 canonical fields
 
 
 # ===========================================================================

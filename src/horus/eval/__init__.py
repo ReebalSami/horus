@@ -34,6 +34,7 @@ from horus.eval.ground_truth import (
 )
 from horus.eval.harness import HarnessRunResult, run_cohort
 from horus.eval.rasterize import rasterize_pdf
+from horus.eval.schema import InvoiceFields, validate_and_repair
 from horus.eval.scorer import FieldResult, InvoiceFieldScores, score
 
 __all__ = [
@@ -45,6 +46,7 @@ __all__ = [
     "GroundTruth",
     "GroundTruthField",
     "HarnessRunResult",
+    "InvoiceFields",
     "InvoiceFieldScores",
     "anls",
     "extract_transcript_body",
@@ -55,4 +57,5 @@ __all__ = [
     "run_cohort",
     "score",
     "to_predicted_dict",
+    "validate_and_repair",
 ]

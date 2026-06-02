@@ -52,7 +52,7 @@ import pytest
 
 from horus.config import EvalConfig
 from horus.eval.adapters import preprocess, to_predicted_dict
-from horus.eval.ground_truth import GroundTruth
+from horus.eval.ground_truth import LEGACY_EXPERIMENT_FIELDS, GroundTruth
 from horus.eval.harness import _extract_groundtruth_via_facturx, _strip_page_separators
 from horus.eval.scorer import score
 from tests._corpus import skip_if_no_corpus
@@ -151,6 +151,13 @@ def test_minero_multipage_lift_einfach(einfach_gt_facturx: GroundTruth) -> None:
     due_payable recovered). The further lift to 0.929 comes from the ADR-028
     section-scoped Belegsummen fallback recovering line_total / tax_basis /
     tax_total / grand_total (the Belegsummen totals block on page 2).
+
+    ADR-037: this is a CLOSED-milestone (ADR-014/028) in-sample reproduction, so
+    it scores the frozen 16-field `LEGACY_EXPERIMENT_FIELDS`. The ADR-035 schema
+    extension (16 → 19; tax_rate + addresses) does NOT shift this published 0.929
+    — the regex adapter never targeted those 3 fields, so rescoring against them
+    would be a meaningless hybrid. The new fields are evaluated on the structurer
+    arms going forward, not retroactively here.
     """
     scorer_input, model_id = _load_multipage_transcript(
         "opendatalab__mineru2.5-pro-2604-1.2b",
@@ -164,6 +171,7 @@ def test_minero_multipage_lift_einfach(einfach_gt_facturx: GroundTruth) -> None:
         cfg=EvalConfig(),
         invoice_id="EN16931_Einfach",
         model_id=model_id,
+        fields=LEGACY_EXPERIMENT_FIELDS,
     )
     assert 0.88 <= result.micro_f1 <= 0.97, (
         f"MinerU multi-page EN16931_Einfach micro_F1 = {result.micro_f1:.3f} "
