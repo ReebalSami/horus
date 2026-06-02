@@ -333,20 +333,38 @@ class CohortConfig(BaseModel):
             "COHORT_MANIFEST defaults unchanged (back-compat preserved)."
         ),
     )
-    adapter_mode: Literal["regex", "json"] = Field(
+    adapter_mode: Literal["regex", "json", "structurer"] = Field(
         default="regex",
         description=(
-            "Layer-2 adapter dispatch mode (ADR-018). 'regex' (default) uses "
-            "`src/horus/eval/adapters.py` — the canonical German-label-anchored "
-            "regex extractor that consumes raw OCR / DocTags / markdown VLM "
-            "output and produces the 16-field predicted dict (per ADR-013). "
-            "'json' uses `src/horus/eval/adapters_json.py` — the sibling "
-            "JSON parser that expects single-line JSON output from a model "
-            "prompted via `prompt_template_override`. Binary dispatch (NOT a "
-            "pluggable framework) — at exactly 2 variants this stays under "
-            "ADR-016 supersession trigger #3 (which fires past 2 variants). "
-            "Setting `adapter_mode='json'` requires `prompt_template_override` "
-            "to be set (validated at boot — fail-fast per `horus-config-discipline`)."
+            "Layer-2 adapter dispatch mode (ADR-018, extended ADR-038). 'regex' "
+            "(default) uses `src/horus/eval/adapters.py` — the canonical German-"
+            "label-anchored regex extractor that consumes raw OCR / DocTags / "
+            "markdown VLM output and produces the predicted dict (per ADR-013). "
+            "'json' uses `src/horus/eval/adapters_json.py` — the bare JSON parser "
+            "(ADR-029). 'structurer' uses `src/horus/eval/structurer.py` — the "
+            "typed Arm-A path that routes the model's reasoning-then-strict-JSON "
+            "output through `InvoiceFields` + `validate_and_repair` (ADR-035): "
+            "locale coercion, honest null, 19-field scored dict. Both 'json' and "
+            "'structurer' require `prompt_template_override` to be set (validated "
+            "at boot — fail-fast per `horus-config-discipline`). This closed enum "
+            "dispatch grows past ADR-016/018's binary {regex, json}; the ADR-016 "
+            "supersession trigger #3 ('past 2 variants') is acknowledged + bounded "
+            "in ADR-038 (still a closed enum, NOT a pluggable framework)."
+        ),
+    )
+    reader_model_id: str | None = Field(
+        default=None,
+        description=(
+            "Orchestrated-arm reader model (Arm B, ADR-038) whose cached "
+            "transcripts the structurer consumes. When set, `run_arm_b` reads "
+            "`<transcript_archive_dir>/<reader_slug>__<stem>.txt` (written by a "
+            "prior cohort reading run of this model — e.g. the regex baseline's "
+            "Granite run) and structures each with the single model in "
+            "`working_models` (the structurer, e.g. Gemma). None (default) = a "
+            "normal single-model cohort run with no orchestration. Validated "
+            "against `COHORT_MANIFEST` at `run_arm_b` boot (not here, to keep "
+            "config import-light — mirrors how `working_models` is checked at "
+            "harness boot)."
         ),
     )
 
@@ -354,10 +372,10 @@ class CohortConfig(BaseModel):
     def _validate_prompt_override_invariants(self) -> CohortConfig:
         """Two cross-field invariants for ADR-018 (catches typos + misuse at boot).
 
-        Invariant 1: if `adapter_mode == "json"`, `prompt_template_override` MUST
-        be set. The JSON adapter expects JSON-formatted output; relying on
-        per-model COHORT_MANIFEST defaults (which produce regular OCR / DocTags /
-        markdown) would yield F1=0 across the board.
+        Invariant 1: if `adapter_mode` is `"json"` or `"structurer"`,
+        `prompt_template_override` MUST be set. Both expect JSON-formatted model
+        output; relying on per-model COHORT_MANIFEST defaults (which produce
+        regular OCR / DocTags / markdown) would yield F1=0 across the board.
 
         Invariant 2: keys in `prompt_template_override` MUST be a subset of
         `working_models`. Catches YAML typos at boot (e.g.,
@@ -368,14 +386,15 @@ class CohortConfig(BaseModel):
         and the cohort.working_models cross-check pattern from
         `tests/test_config_pilot_13.py::test_pilot_13_working_models_match_canonical_evidence_base`.
         """
-        if self.adapter_mode == "json" and self.prompt_template_override is None:
+        if self.adapter_mode in ("json", "structurer") and self.prompt_template_override is None:
             raise ValueError(
-                "cohort.adapter_mode='json' requires cohort.prompt_template_override "
-                "to be set (per ADR-018 §Decision + integration thoughts). The JSON "
-                "adapter expects single-line JSON output from the model; relying on "
-                "the per-model COHORT_MANIFEST defaults (regular OCR / DocTags / "
-                "markdown) would yield F1=0 across the board. Either set "
-                "prompt_template_override or use adapter_mode='regex' (default)."
+                f"cohort.adapter_mode={self.adapter_mode!r} requires "
+                "cohort.prompt_template_override to be set (per ADR-018 / ADR-038). "
+                "Both the JSON adapter and the structurer expect JSON-formatted "
+                "output from the model; relying on the per-model COHORT_MANIFEST "
+                "defaults (regular OCR / DocTags / markdown) would yield F1=0 "
+                "across the board. Either set prompt_template_override or use "
+                "adapter_mode='regex' (default)."
             )
         if self.prompt_template_override is not None:
             unknown = set(self.prompt_template_override) - set(self.working_models)
