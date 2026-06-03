@@ -143,10 +143,17 @@ def _render_headline_narrative(
 
 
 _overview = st.Page(render_overview, title="Overview", icon="\U0001f3e0", default=True)
+_extract = st.Page("views/live_extraction.py", title="Extract an Invoice", icon="\u2728")
 _explorer = st.Page("views/invoice_explorer.py", title="Invoice Explorer", icon="\U0001f50d")
 _comparison = st.Page(
     "views/approach_comparison.py", title="Approach Comparison", icon="\u2696\ufe0f"
 )
 
-_navigation = st.navigation({"HORUS": [_overview], "Evaluation": [_explorer, _comparison]})
+_navigation = st.navigation(
+    {
+        "HORUS": [_overview],
+        "Try it": [_extract],
+        "Evaluation": [_explorer, _comparison],
+    }
+)
 _navigation.run()

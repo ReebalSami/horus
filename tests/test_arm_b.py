@@ -14,7 +14,8 @@ from pathlib import Path
 import pytest
 
 from horus.config import CohortConfig, ExperimentConfig, MLflowConfig
-from horus.eval.arm_b import _build_structuring_input, run_arm_b
+from horus.eval.arm_b import run_arm_b
+from horus.eval.structurer import build_structuring_input
 
 _GEMMA = "google/gemma-4-E4B-it"
 _GRANITE = "ibm-granite/granite-docling-258M-mlx"
@@ -46,7 +47,7 @@ def _cfg(
 
 def test_build_structuring_input_embeds_prompt_and_reader_text() -> None:
     """The composed input carries the instruction + the reader text under a delimiter."""
-    out = _build_structuring_input("EXTRACT THE FIELDS", "Rechnung Nr. 471102")
+    out = build_structuring_input("EXTRACT THE FIELDS", "Rechnung Nr. 471102")
     assert "EXTRACT THE FIELDS" in out
     assert "Rechnung Nr. 471102" in out
     assert "<<<" in out and ">>>" in out

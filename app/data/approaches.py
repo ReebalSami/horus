@@ -61,6 +61,11 @@ class Approach:
     corpus_root: Path
     raster_dpi: int
     raster_cache_dir: Path
+    # The working model's prompt override from the arm's config
+    # (`cohort.prompt_template_override[model_id]`), or None when the arm relies
+    # on the COHORT_MANIFEST default (the regex baseline). Used by the live demo
+    # page (ADR-039) so it reads the prompt from config, never hard-coded.
+    prompt: str | None
 
 
 _SPECS: tuple[_Spec, ...] = (
@@ -128,6 +133,8 @@ def load_approaches() -> tuple[Approach, ...]:
         cohort = cfg.cohort
         if cohort is None or not cohort.working_models:
             raise ValueError(f"approach {spec.key!r}: config is missing a cohort/working_models")
+        model_id = cohort.working_models[0]
+        overrides = cohort.prompt_template_override or {}
         approaches.append(
             Approach(
                 key=spec.key,
@@ -138,12 +145,13 @@ def load_approaches() -> tuple[Approach, ...]:
                 accent_hex=spec.accent_hex,
                 model_label=spec.model_label,
                 experiment_name=cfg.mlflow.experiment_name,
-                model_id=cohort.working_models[0],
+                model_id=model_id,
                 reader_model_id=cohort.reader_model_id,
                 transcript_dir=_resolve(cohort.transcript_archive_dir),
                 corpus_root=_resolve(cohort.corpus_root),
                 raster_dpi=_PREVIEW_DPI,
                 raster_cache_dir=_PREVIEW_CACHE,
+                prompt=overrides.get(model_id),
             )
         )
     return tuple(approaches)

@@ -45,10 +45,30 @@ from horus.eval.ground_truth import FIELDS
 from horus.eval.schema import InvoiceFields, validate_and_repair
 
 __all__ = [
+    "build_structuring_input",
     "to_full_dict",
     "to_predicted_dict",
     "to_predicted_dict_multipage",
 ]
+
+
+def build_structuring_input(structuring_prompt: str, reader_text: str) -> str:
+    """Compose the structurer's text input: the instruction + the reader transcript.
+
+    The YAML ``prompt_template_override`` carries only the *instruction* (what to
+    extract, the honesty rule, the key list); the reader's transcript text is
+    appended here under a clear delimiter so the prompt stays readable in config
+    and the text-injection lives in one place. Shared by the offline Arm-B runner
+    (``arm_b.run_arm_b``) and the live demo page (``live.run_read_then_structure``)
+    so the two paths compose the structuring prompt identically (ADR-038/ADR-039).
+    """
+    return (
+        f"{structuring_prompt}\n\n"
+        "Invoice text (read by a specialist document model):\n"
+        "<<<\n"
+        f"{reader_text}\n"
+        ">>>\n"
+    )
 
 
 def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:  # noqa: ARG001

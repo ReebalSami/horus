@@ -65,23 +65,6 @@ _LOGGER = logging.getLogger(__name__)
 _DEFAULT_STRUCTURE_MAX_TOKENS = 2048
 
 
-def _build_structuring_input(structuring_prompt: str, reader_text: str) -> str:
-    """Compose the structurer's text input: the instruction + the reader transcript.
-
-    The YAML `prompt_template_override` carries only the *instruction* (what to
-    extract, the honesty rule, the key list); the reader's transcript text is
-    appended here under a clear delimiter so the prompt stays readable in config
-    and the text-injection lives in one place.
-    """
-    return (
-        f"{structuring_prompt}\n\n"
-        "Invoice text (read by a specialist document model):\n"
-        "<<<\n"
-        f"{reader_text}\n"
-        ">>>\n"
-    )
-
-
 def run_arm_b(
     cfg: ExperimentConfig,
     *,
@@ -230,7 +213,9 @@ def run_arm_b(
 
                     _read_model, _read_stem, body = parse_transcript(reader_path)
                     reader_text = "\n\n".join(split_per_page_texts(body))
-                    full_prompt = _build_structuring_input(structuring_prompt, reader_text)
+                    full_prompt = structurer.build_structuring_input(
+                        structuring_prompt, reader_text
+                    )
 
                     result = extractor.extract_text(full_prompt, max_tokens=max_tokens)
                     if not result.is_ok:

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import pytest
 
-from app.components import charts
+from app.components import charts, field_table
 from app.data import approaches as approach_data
 from app.data import fields as field_meta
 from app.data import invoices, metrics, mlflow_store, results
@@ -129,6 +129,18 @@ def test_tracking_uri_is_absolute() -> None:
 def test_grouped_metric_bar_builds() -> None:
     figure = charts.grouped_metric_bar(["Overall", "Presence"], [("A", "#0E4D45", [0.5, 0.6])])
     assert figure.data  # at least one trace was added
+
+
+def test_build_value_dataframe_is_unscored_field_value_view() -> None:
+    """The live value table covers the 19 scored fields (not purpose_summary), no verdict."""
+    frame = field_table.build_value_dataframe(
+        {"invoice_number": "R-1", "purpose_summary": "shown elsewhere, not a row"}
+    )
+    assert len(frame) == len(field_meta.FIELD_ORDER)  # 19 scored fields; summary is not a row
+    assert list(frame.columns) == ["Field", "Extracted value", "German"]  # no GT/verdict/score
+    values = frame["Extracted value"].tolist()
+    assert "R-1" in values  # the extracted value is shown
+    assert "—" in values  # missing fields render as an em dash, not blank/None
 
 
 @skip_if_no_store
