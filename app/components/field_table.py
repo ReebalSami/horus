@@ -127,3 +127,41 @@ def render_comparison_matrix(
             axis=0,
         )
     st.dataframe(styler, hide_index=True, use_container_width=True, height=_fit_height(len(frame)))
+
+
+def build_value_dataframe(fields: dict[str, str | None]) -> pd.DataFrame:
+    """Build the plain field → value frame for the live (un-scored) extraction view.
+
+    There is no ground truth for an uploaded invoice, so there is no verdict, no
+    score, and no colour here — just what the model extracted, in the same field
+    order + English/German labels the scored explorer uses (visual consistency).
+    `fields` is the full dict (incl. `purpose_summary`); only the 19 scored keys are
+    tabulated (the summary is surfaced separately by the page).
+    """
+    rows: list[dict[str, object]] = []
+    for key in field_meta.FIELD_ORDER:
+        value = fields.get(key)
+        rows.append(
+            {
+                "Field": field_meta.label(key),
+                "Extracted value": value if value else "—",
+                "German": field_meta.german_label(key),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def render_value_table(fields: dict[str, str | None]) -> None:
+    """Render the plain field → value table for a live extraction (no scoring, no GT)."""
+    frame = build_value_dataframe(fields)
+    st.dataframe(
+        frame,
+        hide_index=True,
+        use_container_width=True,
+        height=_fit_height(len(frame)),
+        column_config={
+            "Field": st.column_config.TextColumn("Field", width="medium"),
+            "Extracted value": st.column_config.TextColumn("Extracted value", width="large"),
+            "German": st.column_config.TextColumn("German", width="small"),
+        },
+    )
