@@ -8,6 +8,7 @@
 | **Authored by** | Cascade (held-out-evaluation strategy session; plan `~/.windsurf/plans/horus-heldout-eval-strategy-d8c53c.md`) |
 | **Issue** | NEW "Streamlit observability app" epic (filed during the ADR-034 board reconciliation); relates to #82 (end-user prototype). |
 | **Relationship** | Sub-decision of **ADR-034**; supersedes the **ADR-026** TUI as the *analysis* surface; introduces a new top-level `app/` dir (ratified here per `clean-project-structure`). |
+| **Amendments** | 2026-06-03 — directory renamed `app/pages/` → `app/views/` (Streamlit `st.navigation` vs. legacy multipage conflict; see § Amendment). PR [#107](https://github.com/ReebalSami/horus/pull/107). |
 
 ## Context
 
@@ -18,6 +19,20 @@ The user's recurring blocker: *"I can't see how it works — there's no frontend
 - The reading-ceiling report (ADR-030) is **static markdown**.
 
 The user's requirement (verbatim intent): a **Streamlit** app that is "very good and very scalable from the beginning to cover all the areas of this project," **modular** ("every time we do something we add it easily"), and **professional** ("no amateur stuff"). This ADR ratifies the framework, placement, and architecture; the build is handed to a coding session.
+
+## Amendment — 2026-06-03 (`app/pages/` → `app/views/`)
+
+The dashboard pages live in `app/views/`, not `app/pages/` as this ADR originally specified. The body has been updated in-place to reflect the rename; this section records the reason.
+
+**Why.** Streamlit auto-discovers any directory literally named `pages/` adjacent to the entry script as part of its **legacy** multipage mode. That auto-discovery activates *in addition to* `st.navigation` — and on cold deep-links to a sub-page (e.g., `http://localhost:8501/invoice_explorer`), the legacy router runs the target page module directly, bypassing `app/Home.py`'s import-path bootstrap (`sys.path.insert(0, ...)`). Result: `ModuleNotFoundError: No module named 'app'` on every cold deep-link, even though warm-started navigation worked.
+
+**Resolution.** Rename `app/pages/` → `app/views/`. Streamlit's legacy auto-discovery triggers on the literal name `pages/` only, so the rename makes `st.navigation` (declared in `app/Home.py`) the sole router. Deep-links work; the entry-script bootstrap runs on every load.
+
+**Scope.** Directory-name correction only. The framework (Streamlit), top-level `app/` placement, modular multipage architecture, read-only data access, and § Supersession triggers all stand unchanged — this is not a re-decision. Status remains **Accepted**.
+
+**Affected text.** § Options considered §B (placement parenthetical), § Decision §2 (paths), § Decision §3 (registration phrasing) — all updated in-place.
+
+**Cross-link.** PR [#107](https://github.com/ReebalSami/horus/pull/107) — the merge that landed the dashboard at `app/views/`.
 
 ## Current-state survey (2026-06-02)
 
@@ -44,7 +59,7 @@ The user's requirement (verbatim intent): a **Streamlit** app that is "very good
 
 | Option | Why considered | Why not / why chosen |
 |---|---|---|
-| **Top-level `app/` (chosen)** | Streamlit convention (entry script + `pages/`); keeps UI out of the importable `src/horus/` package | a new top-level dir — ratified here per `clean-project-structure` (new top-level path requires an ADR) |
+| **Top-level `app/` (chosen)** | Streamlit convention (entry script + a sibling pages directory, renamed to `views/` per § Amendment); keeps UI out of the importable `src/horus/` package | a new top-level dir — ratified here per `clean-project-structure` (new top-level path requires an ADR) |
 | `src/horus/app/` | inside the package | conflates the library with its UI; awkward for `streamlit run` entrypoint discovery |
 
 **C — Relationship to #82:** the observability app is built **now** (research need); the #82 FastAPI+Docker **end-user** prototype folds in **later** as a page within the same app → one unified, modular app "covering all areas," as requested. Rejected: two separate Streamlit apps (duplication, divergent design).
@@ -54,8 +69,8 @@ The user's requirement (verbatim intent): a **Streamlit** app that is "very good
 ## Decision + integration thoughts
 
 1. **Adopt Streamlit** (`streamlit` dep added by the coding session per `uv-discipline`; source stub `docs/sources/tools/streamlit.md`).
-2. **Top-level `app/`**: entry-point `app/Home.py` (calls `st.navigation`), pages under `app/pages/`, reusable widgets under `app/components/`, a read-only data-access layer under `app/data/` (wraps MLflow `search_runs` + transcript/GT loaders from `src/horus/eval`).
-3. **Modular multipage** via the verified API: `st.Page(...)` per surface, grouped into `st.navigation({section: [pages]})`; adding a surface = drop a `pages/<x>.py` + register it. First increment:
+2. **Top-level `app/`**: entry-point `app/Home.py` (calls `st.navigation`), pages under `app/views/` (originally specified as `app/pages/`; renamed per § Amendment), reusable widgets under `app/components/`, a read-only data-access layer under `app/data/` (wraps MLflow `search_runs` + transcript/GT loaders from `src/horus/eval`).
+3. **Modular multipage** via the verified API: `st.Page(...)` per surface, grouped into `st.navigation({section: [pages]})`; adding a surface = drop a `views/<x>.py` + register it (the directory is named `views/` rather than `pages/` to avoid Streamlit's legacy multipage auto-discovery — see § Amendment). First increment:
    - **Invoice Explorer** — pick model/arm/invoice → page image + transcript + extracted JSON + GT + colour-coded per-field score (TP/FP/FN).
    - **Approach Comparison** — Arm A vs Arm B vs regex baseline; reading-ceiling + parser-loss tables (ADR-030), 4-metric surface (ADR-027).
 4. **Professional look**: Streamlit theming (`.streamlit/config.toml`) + a consistent layout system + a curated palette (align with the ADR-024 editorial aesthetic); no default-gray blandness.
