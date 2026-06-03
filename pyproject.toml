@@ -31,6 +31,7 @@ dependencies = [
     "torch>=2.5",
     "torchvision>=0.20",
     "transformers>=5.5.0",
+    "streamlit>=1.58.0",
 ]
 
 [dependency-groups]
@@ -172,6 +173,11 @@ select = [
     "B",   # flake8-bugbear
 ]
 ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+# Streamlit's multipage entry script uses a capitalised filename by convention
+# (it renders as "Home" in the sidebar navigation); exempt only it from N999.
+"app/Home.py" = ["N999"]
 
 [tool.ruff.format]
 quote-style = "double"

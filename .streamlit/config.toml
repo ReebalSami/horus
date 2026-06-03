@@ -1,0 +1,33 @@
+# HORUS observability dashboard — theme (ADR-036, #103).
+#
+# Modern data-product look with a subtle HORUS signature: warm off-white canvas,
+# antique-gold accent + deep-teal links (lifted from the Eye-of-Horus brand mark),
+# and a branded dark teal-ink sidebar that the gold/teal logo sits on cleanly.
+#
+# Fonts are left as Streamlit's bundled sans (no external Google-Fonts fetch) to
+# honour the privacy-first, runs-inside-the-firm posture (AGENTS.md). The palette
+# is the single source of truth for chrome; data-encoding colours (the colour-blind
+# -safe TP/FP/FN palette) live in app/components/theme.py so figures and the theme
+# stay in sync.
+
+[theme]
+base = "light"
+primaryColor = "#C9A227"             # antique gold — primary actions, focus, the "winner" accent
+backgroundColor = "#FBFAF7"          # warm off-white canvas (not stark white)
+secondaryBackgroundColor = "#F2EEE4" # warm panel — cards, inputs, dataframe headers
+textColor = "#1A1A1A"                # ink
+linkColor = "#0E4D45"                # deep teal
+codeBackgroundColor = "#F2EEE4"
+borderColor = "#E6DFCE"              # soft warm hairline
+showWidgetBorder = true
+baseRadius = "0.6rem"                # rounded, contemporary
+font = "sans-serif"
+headingFont = "sans-serif"
+codeFont = "monospace"
+
+[theme.sidebar]
+backgroundColor = "#13201D"          # deep teal-ink — the gold/teal eye mark reads on this
+secondaryBackgroundColor = "#1B2B27"
+textColor = "#EFEADD"
+primaryColor = "#D8B23E"             # slightly brighter gold for contrast on the dark sidebar
+borderColor = "#26342F"

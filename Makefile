@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling clean
+.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app clean
 
 # Default target — list available commands.
 help:
@@ -23,6 +23,7 @@ help:
 	@echo "  mlflow-ui       browse pilot-13 + adapter-iterate + cohort-smoke runs in MLflow's local UI (ADR-015; MLFLOW_UI_PORT=<n> to override default 8080)"
 	@echo "  inspect-pilot-13  print per-model accuracy + perf summary table for the latest pilot-13 parent run (ADR-017, #52; CFG=configs/...yaml; PARENT_RUN_ID=<id> optional)"
 	@echo "  reading-ceiling   read-quality ceiling + parser-loss + same-tuple free-form-vs-JSON 4-metric diagnostic (ADR-030, #76; offline, writes eval/ report)"
+	@echo "  app             Streamlit observability dashboard (ADR-036, #103; read-only; APP_PORT=<n> overrides 8501)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -32,15 +33,15 @@ test:
 	uv run pytest
 
 lint:
-	uv run ruff check src tests scripts
-	uv run ruff format --check src tests scripts
+	uv run ruff check src tests scripts app
+	uv run ruff format --check src tests scripts app
 
 format:
-	uv run ruff format src tests scripts
-	uv run ruff check --fix src tests scripts
+	uv run ruff format src tests scripts app
+	uv run ruff check --fix src tests scripts app
 
 typecheck:
-	uv run mypy src tests scripts
+	uv run mypy src tests scripts app
 
 # Jupytext-paired experiment runner (B2=A notebook discipline + horus-config-discipline).
 # Usage: make experiment NB=experiments/<name>.py CFG=configs/<name>.yaml
@@ -401,6 +402,18 @@ reading-ceiling:
 		$(if $(FREEFORM_CFG),--freeform-cfg "$(FREEFORM_CFG)") \
 		$(if $(JSON_CFG),--json-cfg "$(JSON_CFG)") \
 		$(if $(OUT),--out "$(OUT)")
+
+# Streamlit observability dashboard (ADR-036, #103). Read-only research/eval UI
+# over the local MLflow store (mlflow.db + mlruns/), saved transcripts, and the
+# CII ground truth — NO model inference in the UI. Runs from the repo root so
+# sqlite:///mlflow.db, mlruns/, the ZUGFeRD corpus, and the transcript archives
+# all resolve. Bound to localhost (privacy posture, matching mlflow-ui); usage
+# telemetry disabled. Override the port via APP_PORT=<n>.
+APP_PORT ?= 8501
+
+app:
+	@echo "HORUS dashboard: http://localhost:$(APP_PORT) (local-only; Ctrl+C to stop)"
+	uv run streamlit run app/Home.py --server.address localhost --server.port $(APP_PORT) --server.headless true --browser.gatherUsageStats false
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist
