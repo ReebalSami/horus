@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app clean
+.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet clean
 
 # Default target — list available commands.
 help:
@@ -24,6 +24,8 @@ help:
 	@echo "  inspect-pilot-13  print per-model accuracy + perf summary table for the latest pilot-13 parent run (ADR-017, #52; CFG=configs/...yaml; PARENT_RUN_ID=<id> optional)"
 	@echo "  reading-ceiling   read-quality ceiling + parser-loss + same-tuple free-form-vs-JSON 4-metric diagnostic (ADR-030, #76; offline, writes eval/ report)"
 	@echo "  app             Streamlit observability dashboard (ADR-036, #103; read-only; APP_PORT=<n> overrides 8501)"
+	@echo "  heldout-index   (re)write data/self-collected/index.json for the held-out Belege set (ADR-040; LOCAL-ONLY)"
+	@echo "  heldout-datasheet  write the SANITIZED tracked datasheet for the held-out set (ADR-040; OUT=path to override)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -414,6 +416,22 @@ APP_PORT ?= 8501
 app:
 	@echo "HORUS dashboard: http://localhost:$(APP_PORT) (local-only; Ctrl+C to stop)"
 	uv run streamlit run app/Home.py --server.address localhost --server.port $(APP_PORT) --server.headless true --browser.gatherUsageStats false
+
+# Held-out Belege test set (ADR-040, #78). The invoices + their ground truth live
+# under the git-ignored data/self-collected/** tree and are NEVER committed.
+#
+# `heldout-index` scans data/self-collected/<language>/<channel>/*.pdf, assigns
+# stable sanitized ids (belege-<de|en>-<email|scan>-NNN), computes sha256 + page
+# counts, extracts any .eml PDF attachment, and (re)writes index.json LOCALLY.
+#
+# `heldout-datasheet` reads the index + verified GT and writes the SANITIZED,
+# git-trackable datasheet (counts + per-field presence + id<->sha256 freeze table;
+# no filenames, no field values). OUT=<path> overrides the default docs/ location.
+heldout-index:
+	uv run python scripts/heldout_manifest.py index
+
+heldout-datasheet:
+	uv run python scripts/heldout_manifest.py datasheet $(if $(OUT),--out "$(OUT)")
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist

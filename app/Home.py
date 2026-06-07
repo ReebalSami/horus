@@ -148,12 +148,14 @@ _explorer = st.Page("views/invoice_explorer.py", title="Invoice Explorer", icon=
 _comparison = st.Page(
     "views/approach_comparison.py", title="Approach Comparison", icon="\u2696\ufe0f"
 )
+_review = st.Page("views/heldout_review.py", title="Ground Truth Review", icon="\U0001f4dd")
 
 _navigation = st.navigation(
     {
         "HORUS": [_overview],
         "Try it": [_extract],
         "Evaluation": [_explorer, _comparison],
+        "Held-out set": [_review],
     }
 )
 _navigation.run()

@@ -96,6 +96,13 @@ data/raw/multilingual/*/*
 !data/raw/korean/*/MANIFEST.md
 !data/raw/multilingual/*/MANIFEST.md
 
+# HND-5 (#78 / ADR-040): the self-collected REAL-invoice held-out set is PRIVATE.
+# `data/*` already ignores it; this explicit rule is belt-and-braces and must NEVER
+# be countermanded by a `!` un-ignore. NOTHING under data/self-collected is ever
+# committed — invoices, ground-truth JSON, index.json, rasterized page caches. The
+# only tracked artifact is the sanitized datasheet under docs/ (ids + hashes only).
+data/self-collected/
+
 # M2D.5 issue #9 (ADR-005): tools/ at repo root holds downloaded Java tools
 # (Mustang JAR). JAR fetched + checksum-verified via `make mustang-jar`.
 # Never committed. Anchored with leading slash so it doesn't shadow nested
