@@ -32,6 +32,18 @@
 > coerce from model JSON today, but are **not yet in the flat scored dict** (they enter
 > scoring via ADR-042). All flat fields (1a) ARE fully scored now. 820 tests green; ruff +
 > mypy clean at both commits.
+>
+> **Step 2 complete (2026-06-13).** All three deferred items shipped on the same branch:
+> the line-item table (BG-25) data model; the unified repeating-group **scorer**
+> (greedy row alignment + per-cell F1 folded into a new headline `overall_micro_f1`,
+> ADR-042); the hand-draft **capture** path (JSON round-trip + three review-grid
+> editors); the structurer **prompt** now requests all 34 flat fields + the three
+> groups; and the eval threads `predicted_groups` through the harness + Arm-B into
+> MLflow (`overall_micro_f1` + per-group F1). **Live-validated**: a 3-invoice Gemma
+> single-shot smoke on the ZUGFeRD corpus extracted + scored the new fields end-to-end
+> (e.g. EN16931_Einfach flat μF1 0.58, whole-schema 0.67, line-items F1 0.92) and the
+> dashboard's Invoice Explorer renders the whole-schema + per-group accuracy. 835 tests
+> green; ruff + mypy clean.
 
 ## Context
 
