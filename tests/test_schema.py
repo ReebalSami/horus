@@ -251,7 +251,7 @@ def test_model_scored_fields_match_registry() -> None:
     groups vat_breakdown / skonto (scored via ADR-042, not the flat dict).
     """
     model_fields = set(InvoiceFields.model_fields)
-    non_scored = {PURPOSE_SUMMARY_KEY, "vat_breakdown", "skonto"}
+    non_scored = {PURPOSE_SUMMARY_KEY, "vat_breakdown", "skonto", "line_items"}
     assert non_scored <= model_fields
     assert model_fields - non_scored == set(FIELDS)
 
@@ -561,3 +561,101 @@ def test_invoice_fields_repeating_absent_is_none() -> None:
     model = InvoiceFields.model_validate({"invoice_number": "X"})
     assert model.vat_breakdown is None
     assert model.skonto is None
+    assert model.line_items is None
+
+
+# ===========================================================================
+# 8. ADR-042 Step 2 — line items (BG-25), GT side + prediction side
+# ===========================================================================
+
+
+def _v2_with_lines(lines_xml: str) -> bytes:
+    """A CII v2 invoice carrying the given line-item rows under the transaction."""
+    return (
+        f"<rsm:CrossIndustryInvoice {_V2_NS}>"
+        "<rsm:SupplyChainTradeTransaction>"
+        f"{lines_xml}"
+        "<ram:ApplicableHeaderTradeSettlement></ram:ApplicableHeaderTradeSettlement>"
+        "</rsm:SupplyChainTradeTransaction>"
+        "</rsm:CrossIndustryInvoice>"
+    ).encode()
+
+
+def test_parse_line_items_multi_row() -> None:
+    """A 2-line invoice yields a 2-row line_items list; per-row cells parse + normalize."""
+    lines = (
+        "<ram:IncludedSupplyChainTradeLineItem>"
+        "<ram:AssociatedDocumentLineDocument><ram:LineID>1</ram:LineID>"
+        "</ram:AssociatedDocumentLineDocument>"
+        "<ram:SpecifiedTradeProduct>"
+        "<ram:SellerAssignedID>ART-1</ram:SellerAssignedID>"
+        "<ram:Name>Beratungsleistung</ram:Name>"
+        "</ram:SpecifiedTradeProduct>"
+        "<ram:SpecifiedLineTradeAgreement>"
+        "<ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount>"
+        "</ram:NetPriceProductTradePrice>"
+        "</ram:SpecifiedLineTradeAgreement>"
+        "<ram:SpecifiedLineTradeDelivery>"
+        "<ram:BilledQuantity unitCode='HUR'>2.0000</ram:BilledQuantity>"
+        "</ram:SpecifiedLineTradeDelivery>"
+        "<ram:SpecifiedLineTradeSettlement>"
+        "<ram:ApplicableTradeTax><ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+        "<ram:SpecifiedTradeSettlementLineMonetarySummation>"
+        "<ram:LineTotalAmount>200.00</ram:LineTotalAmount>"
+        "</ram:SpecifiedTradeSettlementLineMonetarySummation>"
+        "</ram:SpecifiedLineTradeSettlement>"
+        "</ram:IncludedSupplyChainTradeLineItem>"
+        "<ram:IncludedSupplyChainTradeLineItem>"
+        "<ram:AssociatedDocumentLineDocument><ram:LineID>2</ram:LineID>"
+        "</ram:AssociatedDocumentLineDocument>"
+        "<ram:SpecifiedTradeProduct><ram:Name>Material</ram:Name></ram:SpecifiedTradeProduct>"
+        "<ram:SpecifiedLineTradeSettlement>"
+        "<ram:SpecifiedTradeSettlementLineMonetarySummation>"
+        "<ram:LineTotalAmount>50.00</ram:LineTotalAmount>"
+        "</ram:SpecifiedTradeSettlementLineMonetarySummation>"
+        "</ram:SpecifiedLineTradeSettlement>"
+        "</ram:IncludedSupplyChainTradeLineItem>"
+    )
+    gt = parse_cii_xml(_v2_with_lines(lines))
+    assert gt.line_items is not None
+    assert len(gt.line_items) == 2
+    r0, r1 = gt.line_items
+    assert r0["line_id"].normalized_value == "1"
+    assert r0["name"].normalized_value == "Beratungsleistung"
+    assert r0["seller_assigned_id"].normalized_value == "ART-1"
+    assert r0["net_price"].normalized_value == "100.00"
+    assert r0["vat_rate"].normalized_value == "19"
+    assert r0["line_amount"].normalized_value == "200.00"
+    assert r0["quantity"].raw_value == "2.0000"
+    assert r0["quantity"].is_present is True
+    # Row 2 carries only name + line_amount; the rest are honest-absent.
+    assert r1["name"].normalized_value == "Material"
+    assert r1["line_amount"].normalized_value == "50.00"
+    assert r1["seller_assigned_id"].is_present is False
+    assert r1["line_id"].normalized_value == "2"
+
+
+def test_invoice_fields_coerces_line_items() -> None:
+    """The structurer's nested line_items rows are locale-coerced per cell."""
+    model = InvoiceFields.model_validate(
+        {
+            "line_items": [
+                {
+                    "line_id": "1",
+                    "name": "Beratung",
+                    "seller_assigned_id": "ART-1",
+                    "net_price": "100,00",
+                    "quantity": "2",
+                    "vat_rate": "19 %",
+                    "line_amount": "200,00",
+                },
+            ],
+        }
+    )
+    full = model.to_full_dict()
+    assert full["line_items"][0]["net_price"] == "100.00"
+    assert full["line_items"][0]["vat_rate"] == "19"
+    assert full["line_items"][0]["line_amount"] == "200.00"
+    assert full["line_items"][0]["name"] == "Beratung"
+    assert "line_items" not in model.to_scored_dict()

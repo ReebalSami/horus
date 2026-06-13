@@ -36,13 +36,20 @@ Refs: ADR-013 (this), ADR-012 (parent: GT parser), Biten+ ICCV'19 (ANLS metric),
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Literal
 
 from horus.config import EvalConfig
 from horus.eval.anls import anls, nls
-from horus.eval.ground_truth import FIELDS, FieldSpec, FieldType, GroundTruth, GroundTruthField
+from horus.eval.ground_truth import (
+    FIELDS,
+    REPEATING_GROUPS,
+    FieldSpec,
+    FieldType,
+    GroundTruth,
+    GroundTruthField,
+)
 from horus.eval.normalizers import (
     _normalize_predicted_code,
     _normalize_predicted_date,
@@ -56,6 +63,7 @@ __all__ = [
     "FIELD_GROUPS",
     "FieldResult",
     "InvoiceFieldScores",
+    "RepeatingGroupResult",
     "f1_from_counts",
     "group_level_counts",
     "group_level_f1",
@@ -63,6 +71,7 @@ __all__ = [
     "presence_conditional_counts",
     "presence_conditional_f1",
     "score",
+    "score_repeating_group",
     "spurious_emission_counts",
     "spurious_emission_rate",
 ]
@@ -111,6 +120,29 @@ class FieldResult:
 
 
 @dataclass(frozen=True)
+class RepeatingGroupResult:
+    """Scored result for one repeating group (ADR-042).
+
+    Covers the VAT breakdown (BG-23), Skonto tiers, and the line-item table
+    (BG-25). Predicted rows are aligned to GT rows by greedy maximum-similarity
+    bipartite matching; each aligned cell is then scored with the SAME truth-table
+    + comparator dispatch as a flat field. `cell_results` is the flattened
+    per-cell `FieldResult` list (each keyed ``<group>[<pair>].<sub_field>``); the
+    group P/R/F1 pools their TP/FP/FN. Matched/missed/spurious row counts are kept
+    for diagnostics.
+    """
+
+    group_key: str
+    cell_results: list[FieldResult] = field(default_factory=list)
+    precision: float = 0.0
+    recall: float = 0.0
+    f1: float = 0.0
+    n_gt_rows: int = 0
+    n_pred_rows: int = 0
+    n_matched_rows: int = 0
+
+
+@dataclass(frozen=True)
 class InvoiceFieldScores:
     """Scored results for one (invoice, model) pair.
 
@@ -153,6 +185,12 @@ class InvoiceFieldScores:
     presence_conditional_f1: float = 0.0
     group_level_f1: float = 0.0
     spurious_emission_rate: float = 0.0
+    # ADR-042 repeating groups. Populated ONLY when `score(predicted_groups=...)`
+    # is given; otherwise empty + the overall_* fields equal the flat micro_*.
+    repeating: dict[str, RepeatingGroupResult] = field(default_factory=dict)
+    overall_micro_f1: float = 0.0
+    overall_micro_precision: float = 0.0
+    overall_micro_recall: float = 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -227,8 +265,25 @@ def _score_one_field(
     *,
     cfg: EvalConfig,
 ) -> FieldResult:
-    """Score one field against its GT — full truth-table + comparator dispatch."""
-    spec = FIELDS[english_key]
+    """Score one flat field against its GT (spec read from `FIELDS`)."""
+    return _score_against_spec(english_key, FIELDS[english_key], predicted, gt_field, cfg=cfg)
+
+
+def _score_against_spec(
+    english_key: str,
+    spec: FieldSpec,
+    predicted: str | None,
+    gt_field: GroundTruthField,
+    *,
+    cfg: EvalConfig,
+) -> FieldResult:
+    """Score one (predicted, gt_field) pair against an explicit `FieldSpec`.
+
+    The spec-explicit core shared by flat fields (`_score_one_field`, spec from
+    `FIELDS`) and repeating-group cells (spec from a sub-field registry; ADR-042).
+    Full truth-table + comparator dispatch. `english_key` is the label stamped on
+    the returned `FieldResult` (a flat key, or ``<group>[<pair>].<sub_field>``).
+    """
     state = _gt_state(gt_field)
 
     # ---- EXCLUDED row: GT was rejected by normalizer (corpus anomaly) ----
@@ -611,6 +666,143 @@ def group_level_f1(results: Iterable[FieldResult]) -> float:
 
 
 # ---------------------------------------------------------------------------
+# ADR-042 — repeating-group scoring (VAT breakdown / Skonto / line items)
+# ---------------------------------------------------------------------------
+#
+# Repeating groups are lists of rows. Predicted rows are aligned to GT rows by
+# greedy maximum-similarity bipartite matching (similarity = fraction of the GT
+# row's gradable cells the prediction reproduces); every aligned cell is then
+# scored with the SAME `_score_against_spec` dispatch as a flat field. Unmatched
+# GT rows contribute their gradable cells as FN (missed); unmatched predicted
+# rows contribute their content cells as FP (spurious). The group F1 pools the
+# cell TP/FP/FN; `score` folds all cells into the headline `overall_micro_f1`.
+#
+# Greedy (not optimal Hungarian) matching is the pragmatic line-item-eval
+# standard (DocILE) and is exact at the row counts German invoices carry. The
+# matching is deterministic: candidates sorted by (-similarity, pred_idx, gt_idx).
+
+
+def _absent_gt_field(spec: FieldSpec) -> GroundTruthField:
+    """A synthetic ``is_present=False`` GT field for an unmatched predicted row."""
+    return GroundTruthField(
+        bt_code=spec.bt_code,
+        raw_value=None,
+        normalized_value=None,
+        xpath=spec.xpath,
+        is_present=False,
+    )
+
+
+def _row_similarity(
+    sub_fields: Mapping[str, FieldSpec],
+    pred_row: Mapping[str, str | None],
+    gt_row: Mapping[str, GroundTruthField],
+    *,
+    cfg: EvalConfig,
+) -> float:
+    """Fraction of the GT row's gradable (present_content) cells the prediction matches.
+
+    Returns 0.0 if the GT row has no gradable cell (it cannot be matched on
+    content), which excludes it from greedy matching.
+    """
+    gradable = 0
+    matched = 0
+    for sub_key, spec in sub_fields.items():
+        gt_field = gt_row.get(sub_key)
+        if gt_field is None or _gt_state(gt_field) != "present_content":
+            continue
+        gradable += 1
+        result = _score_against_spec(sub_key, spec, pred_row.get(sub_key), gt_field, cfg=cfg)
+        if result.outcome == "TP":
+            matched += 1
+    return matched / gradable if gradable > 0 else 0.0
+
+
+def _align_rows(
+    sub_fields: Mapping[str, FieldSpec],
+    pred_rows: Sequence[Mapping[str, str | None]],
+    gt_rows: Sequence[Mapping[str, GroundTruthField]],
+    *,
+    cfg: EvalConfig,
+) -> list[tuple[int | None, int | None]]:
+    """Greedy maximum-similarity bipartite matching of predicted↔GT rows (ADR-042).
+
+    Returns aligned ``(pred_idx, gt_idx)`` pairs; an unmatched row appears as
+    ``(pred_idx, None)`` (spurious) or ``(None, gt_idx)`` (missed). Deterministic.
+    """
+    candidates: list[tuple[float, int, int]] = []
+    for i, pred_row in enumerate(pred_rows):
+        for j, gt_row in enumerate(gt_rows):
+            sim = _row_similarity(sub_fields, pred_row, gt_row, cfg=cfg)
+            if sim > 0.0:
+                candidates.append((sim, i, j))
+    candidates.sort(key=lambda c: (-c[0], c[1], c[2]))
+    matched_pred: set[int] = set()
+    matched_gt: set[int] = set()
+    pairs: list[tuple[int | None, int | None]] = []
+    for _sim, i, j in candidates:
+        if i in matched_pred or j in matched_gt:
+            continue
+        matched_pred.add(i)
+        matched_gt.add(j)
+        pairs.append((i, j))
+    for i in range(len(pred_rows)):
+        if i not in matched_pred:
+            pairs.append((i, None))
+    for j in range(len(gt_rows)):
+        if j not in matched_gt:
+            pairs.append((None, j))
+    return pairs
+
+
+def score_repeating_group(
+    group_key: str,
+    pred_rows: Sequence[Mapping[str, str | None]],
+    gt_rows: Sequence[Mapping[str, GroundTruthField]],
+    *,
+    cfg: EvalConfig | None = None,
+) -> RepeatingGroupResult:
+    """Score one repeating group: align rows, then score every aligned cell (ADR-042).
+
+    `group_key` selects the sub-field registry from `REPEATING_GROUPS`. `pred_rows`
+    are coerced row dicts (``InvoiceFields.to_full_dict()[group_key]``); `gt_rows`
+    are parsed GT rows (``getattr(GroundTruth, group_key)``). Each cell is scored
+    with the same comparator dispatch as a flat field.
+    """
+    if cfg is None:
+        cfg = EvalConfig()
+    sub_fields = REPEATING_GROUPS[group_key][1]
+    pairs = _align_rows(sub_fields, pred_rows, gt_rows, cfg=cfg)
+    cell_results: list[FieldResult] = []
+    for pair_idx, (i, j) in enumerate(pairs):
+        pred_row: Mapping[str, str | None] = pred_rows[i] if i is not None else {}
+        gt_row = gt_rows[j] if j is not None else None
+        for sub_key, spec in sub_fields.items():
+            gt_field = gt_row.get(sub_key) if gt_row is not None else None
+            if gt_field is None:
+                gt_field = _absent_gt_field(spec)
+            cell_key = f"{group_key}[{pair_idx}].{sub_key}"
+            cell_results.append(
+                _score_against_spec(cell_key, spec, pred_row.get(sub_key), gt_field, cfg=cfg)
+            )
+    tp = sum(1 for r in cell_results if r.outcome == "TP")
+    fp = sum(1 for r in cell_results if r.outcome == "FP")
+    fn = sum(1 for r in cell_results if r.outcome == "FN")
+    precision, recall, f1 = _f1_from_counts(tp, fp, fn)
+    n_matched = sum(1 for i, j in pairs if i is not None and j is not None)
+    return RepeatingGroupResult(
+        group_key=group_key,
+        cell_results=cell_results,
+        precision=precision,
+        recall=recall,
+        f1=f1,
+        n_gt_rows=len(gt_rows),
+        n_pred_rows=len(pred_rows),
+        n_matched_rows=n_matched,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Public surface — `score`
 # ---------------------------------------------------------------------------
 
@@ -623,6 +815,7 @@ def score(
     invoice_id: str = "<unknown>",
     model_id: str = "<unknown>",
     fields: Mapping[str, FieldSpec] | None = None,
+    predicted_groups: Mapping[str, Sequence[Mapping[str, str | None]]] | None = None,
 ) -> InvoiceFieldScores:
     """Score a predicted dict against the parsed CII ground truth.
 
@@ -683,6 +876,32 @@ def score(
     micro_p, micro_r, micro_f1, macro_f1 = _aggregate_micro_macro(per_field)
 
     inv_results = list(per_field.values())
+
+    # Repeating groups (ADR-042). Opt-in: scored ONLY when the caller passes
+    # `predicted_groups`. The headline `overall_micro_*` pools the flat field
+    # TP/FP/FN with every repeating-group cell so the single number covers the
+    # whole schema; when no groups are passed it equals the flat micro_*.
+    repeating: dict[str, RepeatingGroupResult] = {}
+    overall_tp = sum(1 for r in inv_results if r.outcome == "TP")
+    overall_fp = sum(1 for r in inv_results if r.outcome == "FP")
+    overall_fn = sum(1 for r in inv_results if r.outcome == "FN")
+    if predicted_groups is not None:
+        for group_key in REPEATING_GROUPS:
+            gt_rows = getattr(gt, group_key) or []
+            pred_rows = list(predicted_groups.get(group_key) or [])
+            if not gt_rows and not pred_rows:
+                continue
+            grp = score_repeating_group(group_key, pred_rows, gt_rows, cfg=cfg)
+            repeating[group_key] = grp
+            for r in grp.cell_results:
+                if r.outcome == "TP":
+                    overall_tp += 1
+                elif r.outcome == "FP":
+                    overall_fp += 1
+                elif r.outcome == "FN":
+                    overall_fn += 1
+    overall_p, overall_r, overall_f1 = _f1_from_counts(overall_tp, overall_fp, overall_fn)
+
     return InvoiceFieldScores(
         invoice_id=invoice_id,
         model_id=model_id,
@@ -694,4 +913,8 @@ def score(
         presence_conditional_f1=presence_conditional_f1(inv_results),
         group_level_f1=group_level_f1(inv_results),
         spurious_emission_rate=spurious_emission_rate(inv_results),
+        repeating=repeating,
+        overall_micro_f1=overall_f1,
+        overall_micro_precision=overall_p,
+        overall_micro_recall=overall_r,
     )

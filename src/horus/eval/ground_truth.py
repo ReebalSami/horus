@@ -325,6 +325,7 @@ _HEADER_SETTLEMENT = (
 _SETTLEMENT_TOTALS = f"{_HEADER_SETTLEMENT}/ram:SpecifiedTradeSettlementHeaderMonetarySummation"
 _SETTLEMENT_PAYMENT_MEANS = f"{_HEADER_SETTLEMENT}/ram:SpecifiedTradeSettlementPaymentMeans"
 _PAYMENT_TERMS = f"{_HEADER_SETTLEMENT}/ram:SpecifiedTradePaymentTerms"
+_TRANSACTION = "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction"
 
 # EN16931 PostalTradeAddress (BG-5/BG-8) child leaves, in canonical render
 # order. The seller/buyer address XPaths point at the composite
@@ -719,6 +720,12 @@ _V2_TO_V1_XPATH_SUBSTITUTIONS: Final[dict[str, str]] = {
     "ram:SpecifiedTradeSettlementHeaderMonetarySummation": (
         "ram:SpecifiedTradeSettlementMonetarySummation"
     ),
+    # Line-level containers (ADR-042 line items): v1 (ZUGFeRD 1.0) renamed the
+    # per-line agreement / delivery / settlement wrappers. Leaf names are
+    # invariant. Applied to relative sub-field xpaths by `_parse_repeating_group`.
+    "ram:SpecifiedLineTradeAgreement": "ram:SpecifiedSupplyChainTradeAgreement",
+    "ram:SpecifiedLineTradeDelivery": "ram:SpecifiedSupplyChainTradeDelivery",
+    "ram:SpecifiedLineTradeSettlement": "ram:SpecifiedSupplyChainTradeSettlement",
 }
 
 
@@ -864,11 +871,79 @@ SKONTO_FIELDS: Final[dict[str, FieldSpec]] = {
     ),
 }
 
+# Line items (BG-25; ADR-042 Step 2). The line table lives under the transaction
+# element (NOT the header settlement). Sub-field xpaths are relative to each
+# `ram:IncludedSupplyChainTradeLineItem` row; the intermediate line-level
+# containers get v1-substituted by `_parse_repeating_group` when `is_v1`.
+_LINE_ITEM_ROW_XPATH: Final[str] = f"{_TRANSACTION}/ram:IncludedSupplyChainTradeLineItem"
+LINE_ITEM_FIELDS: Final[dict[str, FieldSpec]] = {
+    "line_id": FieldSpec(
+        english_key="line_id",
+        bt_code="BT-126",
+        german_label="Positionsnummer",
+        xpath="ram:AssociatedDocumentLineDocument/ram:LineID",
+        normalize=_normalize_string,
+        field_type="CODE",
+    ),
+    "name": FieldSpec(
+        english_key="name",
+        bt_code="BT-153",
+        german_label="Artikelbezeichnung",
+        xpath="ram:SpecifiedTradeProduct/ram:Name",
+        normalize=_normalize_string,
+        field_type="STRING",
+    ),
+    "seller_assigned_id": FieldSpec(
+        english_key="seller_assigned_id",
+        bt_code="BT-155",
+        german_label="Artikelnummer (Verkäufer)",
+        xpath="ram:SpecifiedTradeProduct/ram:SellerAssignedID",
+        normalize=_normalize_string,
+        field_type="CODE",
+    ),
+    "net_price": FieldSpec(
+        english_key="net_price",
+        bt_code="BT-146",
+        german_label="Einzelpreis (netto)",
+        xpath="ram:SpecifiedLineTradeAgreement/ram:NetPriceProductTradePrice/ram:ChargeAmount",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+    "quantity": FieldSpec(
+        english_key="quantity",
+        bt_code="BT-129",
+        german_label="Menge",
+        xpath="ram:SpecifiedLineTradeDelivery/ram:BilledQuantity",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+    "vat_rate": FieldSpec(
+        english_key="vat_rate",
+        bt_code="BT-152",
+        german_label="USt-Satz (Position)",
+        xpath="ram:SpecifiedLineTradeSettlement/ram:ApplicableTradeTax/ram:RateApplicablePercent",
+        normalize=_normalize_rate,
+        field_type="RATE",
+    ),
+    "line_amount": FieldSpec(
+        english_key="line_amount",
+        bt_code="BT-131",
+        german_label="Positionsbetrag (netto)",
+        xpath=(
+            "ram:SpecifiedLineTradeSettlement"
+            "/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount"
+        ),
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+}
+
 # Group key -> (v2 row-element xpath, sub-field registry). `parse_cii_xml`
 # iterates this; the held-out hand-draft route + the review grid mirror it.
 REPEATING_GROUPS: Final[dict[str, tuple[str, dict[str, FieldSpec]]]] = {
     "vat_breakdown": (_VAT_BREAKDOWN_ROW_XPATH, VAT_BREAKDOWN_FIELDS),
     "skonto": (_SKONTO_ROW_XPATH, SKONTO_FIELDS),
+    "line_items": (_LINE_ITEM_ROW_XPATH, LINE_ITEM_FIELDS),
 }
 
 
@@ -877,6 +952,8 @@ def _parse_repeating_group(
     namespaces: dict[str, str],
     row_xpath: str,
     sub_fields: dict[str, FieldSpec],
+    *,
+    is_v1: bool = False,
 ) -> list[dict[str, GroundTruthField]] | None:
     """Parse a repeating CII group into a list of per-row sub-field records.
 
@@ -894,7 +971,8 @@ def _parse_repeating_group(
     for row_el in rows:
         record: dict[str, GroundTruthField] = {}
         for sub_key, spec in sub_fields.items():
-            leaves = row_el.xpath(spec.xpath, namespaces=namespaces)
+            sub_xpath = _to_v1_xpath(spec.xpath) if is_v1 else spec.xpath
+            leaves = row_el.xpath(sub_xpath, namespaces=namespaces)
             if not leaves:
                 record[sub_key] = GroundTruthField(
                     bt_code=spec.bt_code,
@@ -1170,10 +1248,13 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
     repeating: dict[str, list[dict[str, GroundTruthField]] | None] = {}
     for group_key, (v2_row_xpath, sub_fields) in REPEATING_GROUPS.items():
         row_xpath = _to_v1_xpath(v2_row_xpath) if is_v1 else v2_row_xpath
-        repeating[group_key] = _parse_repeating_group(tree, namespaces, row_xpath, sub_fields)
+        repeating[group_key] = _parse_repeating_group(
+            tree, namespaces, row_xpath, sub_fields, is_v1=is_v1
+        )
 
     return GroundTruth(
         header=header,
         vat_breakdown=repeating["vat_breakdown"],
         skonto=repeating["skonto"],
+        line_items=repeating["line_items"],
     )

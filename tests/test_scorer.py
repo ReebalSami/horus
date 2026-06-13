@@ -42,6 +42,7 @@ from horus.eval.scorer import (
     presence_conditional_counts,
     presence_conditional_f1,
     score,
+    score_repeating_group,
     spurious_emission_counts,
     spurious_emission_rate,
 )
@@ -847,3 +848,121 @@ def test_score_adr027_metrics_serialize_through_asdict() -> None:
     assert "presence_conditional_f1" in d
     assert "group_level_f1" in d
     assert "spurious_emission_rate" in d
+
+
+# ===========================================================================
+# ADR-042 — repeating-group scoring (row alignment + per-cell F1)
+# ===========================================================================
+
+
+def _vat_gt_row(category: str, rate: str, basis: str, tax: str) -> dict[str, GroundTruthField]:
+    """A VAT-breakdown GT row with all four cells present_content (canonical values)."""
+
+    def cell(value: str) -> GroundTruthField:
+        return GroundTruthField(
+            bt_code="BT", raw_value=value, normalized_value=value, xpath="x", is_present=True
+        )
+
+    return {
+        "category_code": cell(category),
+        "rate_percent": cell(rate),
+        "taxable_amount": cell(basis),
+        "tax_amount": cell(tax),
+    }
+
+
+def _vat_pred_row(category: str, rate: str, basis: str, tax: str) -> dict[str, str | None]:
+    return {
+        "category_code": category,
+        "rate_percent": rate,
+        "taxable_amount": basis,
+        "tax_amount": tax,
+    }
+
+
+def test_score_repeating_group_perfect_match() -> None:
+    """Every cell matches in both rows → group F1 = 1.0, both rows matched."""
+    gt = [_vat_gt_row("S", "19", "100.00", "19.00"), _vat_gt_row("S", "7", "50.00", "3.50")]
+    pred = [_vat_pred_row("S", "19", "100.00", "19.00"), _vat_pred_row("S", "7", "50.00", "3.50")]
+    result = score_repeating_group("vat_breakdown", pred, gt)
+    assert result.f1 == 1.0
+    assert result.n_matched_rows == 2
+    assert all(r.outcome == "TP" for r in result.cell_results)
+
+
+def test_score_repeating_group_aligns_out_of_order() -> None:
+    """Greedy similarity matching aligns rows regardless of emission order."""
+    gt = [_vat_gt_row("S", "19", "100.00", "19.00"), _vat_gt_row("S", "7", "50.00", "3.50")]
+    pred = [_vat_pred_row("S", "7", "50.00", "3.50"), _vat_pred_row("S", "19", "100.00", "19.00")]
+    result = score_repeating_group("vat_breakdown", pred, gt)
+    assert result.f1 == 1.0
+    assert result.n_matched_rows == 2
+
+
+def test_score_repeating_group_missed_row_is_fn() -> None:
+    """A GT row the prediction omits → its gradable cells are FN; precision stays 1.0."""
+    gt = [_vat_gt_row("S", "19", "100.00", "19.00"), _vat_gt_row("S", "7", "50.00", "3.50")]
+    pred = [_vat_pred_row("S", "19", "100.00", "19.00")]
+    result = score_repeating_group("vat_breakdown", pred, gt)
+    assert result.n_matched_rows == 1
+    assert result.n_gt_rows == 2
+    assert result.n_pred_rows == 1
+    assert sum(1 for r in result.cell_results if r.outcome == "FN") == 4
+    assert result.precision == 1.0
+    assert result.recall < 1.0
+
+
+def test_score_repeating_group_spurious_row_is_fp() -> None:
+    """A predicted row with no GT match → its content cells are FP; recall stays 1.0."""
+    gt = [_vat_gt_row("S", "19", "100.00", "19.00")]
+    pred = [_vat_pred_row("S", "19", "100.00", "19.00"), _vat_pred_row("S", "7", "50.00", "3.50")]
+    result = score_repeating_group("vat_breakdown", pred, gt)
+    assert result.n_matched_rows == 1
+    assert sum(1 for r in result.cell_results if r.outcome == "FP") == 4
+    assert result.precision < 1.0
+    assert result.recall == 1.0
+
+
+def test_score_overall_equals_flat_when_no_groups() -> None:
+    """Without predicted_groups, overall_micro_* equals the flat micro_* (backward-compat)."""
+    from horus.eval.ground_truth import FIELDS
+
+    gt = _make_full_gt()
+    predicted: dict[str, str | None] = {key: None for key in FIELDS}
+    result = score(predicted, gt)
+    assert result.repeating == {}
+    assert result.overall_micro_f1 == result.micro_f1
+    assert result.overall_micro_precision == result.micro_precision
+    assert result.overall_micro_recall == result.micro_recall
+
+
+def test_score_folds_repeating_cells_into_overall() -> None:
+    """Repeating-group cells join the headline overall_micro_f1 (covers the whole schema)."""
+    from horus.eval.ground_truth import FIELDS
+
+    header = _make_full_gt().header  # all flat fields absent
+    gt = GroundTruth(header=header, vat_breakdown=[_vat_gt_row("S", "19", "100.00", "19.00")])
+    predicted: dict[str, str | None] = {key: None for key in FIELDS}
+    pred_groups = {"vat_breakdown": [_vat_pred_row("S", "19", "100.00", "19.00")]}
+    result = score(predicted, gt, predicted_groups=pred_groups)
+    # Flat side is all-TN → micro_f1 = 0; the 4 VAT cells are TP → overall = 1.0.
+    assert result.micro_f1 == 0.0
+    assert result.overall_micro_f1 == 1.0
+    assert "vat_breakdown" in result.repeating
+    assert result.repeating["vat_breakdown"].f1 == 1.0
+
+
+def test_score_repeating_serializes_through_asdict() -> None:
+    """repeating + overall_* survive dataclasses.asdict (MLflow-friendly)."""
+    from dataclasses import asdict
+
+    from horus.eval.ground_truth import FIELDS
+
+    header = _make_full_gt().header
+    gt = GroundTruth(header=header, vat_breakdown=[_vat_gt_row("S", "19", "100.00", "19.00")])
+    predicted: dict[str, str | None] = {key: None for key in FIELDS}
+    pred_groups = {"vat_breakdown": [_vat_pred_row("S", "19", "100.00", "19.00")]}
+    d = asdict(score(predicted, gt, predicted_groups=pred_groups))
+    assert d["overall_micro_f1"] == 1.0
+    assert d["repeating"]["vat_breakdown"]["f1"] == 1.0
+    assert len(d["repeating"]["vat_breakdown"]["cell_results"]) == 4

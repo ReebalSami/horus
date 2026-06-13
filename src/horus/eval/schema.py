@@ -46,7 +46,12 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, model_validator
 
-from horus.eval.ground_truth import FIELDS, SKONTO_FIELDS, VAT_BREAKDOWN_FIELDS
+from horus.eval.ground_truth import (
+    FIELDS,
+    LINE_ITEM_FIELDS,
+    SKONTO_FIELDS,
+    VAT_BREAKDOWN_FIELDS,
+)
 from horus.eval.normalizers import (
     _normalize_predicted_code,
     _normalize_predicted_date,
@@ -101,6 +106,7 @@ def _coerce_one(canonical_key: str, raw_value: Any) -> str | None:
 _REPEATING_SUBFIELDS = {
     "vat_breakdown": VAT_BREAKDOWN_FIELDS,
     "skonto": SKONTO_FIELDS,
+    "line_items": LINE_ITEM_FIELDS,
 }
 
 
@@ -149,6 +155,19 @@ class SkontoLine(BaseModel):
     percent: str | None = None
     days: str | None = None
     basis_amount: str | None = None
+
+
+class LineItemLine(BaseModel):
+    """One invoice line-item row (BG-25) as canonical strings (ADR-042)."""
+
+    model_config = ConfigDict(extra="ignore")
+    line_id: str | None = None
+    name: str | None = None
+    seller_assigned_id: str | None = None
+    net_price: str | None = None
+    quantity: str | None = None
+    vat_rate: str | None = None
+    line_amount: str | None = None
 
 
 class InvoiceFields(BaseModel):
@@ -213,6 +232,9 @@ class InvoiceFields(BaseModel):
     #     via the unified repeating-group metric in ADR-042) ---
     vat_breakdown: list[VatBreakdownLine] | None = None
     skonto: list[SkontoLine] | None = None
+    # --- ADR-042 Step 2 line-item table (BG-25; scored via the unified
+    #     repeating-group metric, NOT the flat scored dict) ---
+    line_items: list[LineItemLine] | None = None
     # --- ADR-035 addition (NON-scored; Streamlit display only) ---
     purpose_summary: str | None = None
 
