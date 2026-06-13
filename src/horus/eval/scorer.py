@@ -436,11 +436,15 @@ def _aggregate_micro_macro(
 # reconstructs `FieldResult` from `per_field_scores.json` and pools).
 # ---------------------------------------------------------------------------
 
-# KIEval (§4.1) group partition over the 19-field registry. seller / buyer /
-# totals are EN16931 business groups; the document-level scalars are the
-# non-group entities KIEval folds into the excluded 1st group (G'). The
+# KIEval (§4.1) group partition over the `FIELDS` registry. seller / buyer /
+# totals / payment are EN16931 business groups; the document-level scalars are
+# the non-group entities KIEval folds into the excluded 1st group (G'). The
 # ADR-035 address fields join their party groups (seller_address → seller,
 # buyer_address → buyer); tax_rate is a document-level scalar (→ DOCUMENT_FIELDS).
+# ADR-041 Step 1a adds the `payment` business group (due date / means / bank
+# details / reference), grows `totals` with the prepaid/allowance/charge/
+# rounding amounts, and adds document_type / order ref / billing period as
+# document-level scalars.
 FIELD_GROUPS: dict[str, frozenset[str]] = {
     "seller": frozenset(
         {"seller_name", "seller_vat_id", "seller_tax_id", "seller_gln", "seller_address"}
@@ -453,13 +457,38 @@ FIELD_GROUPS: dict[str, frozenset[str]] = {
             "tax_total_amount",
             "grand_total_amount",
             "due_payable_amount",
+            "prepaid_amount",
+            "allowance_total_amount",
+            "charge_total_amount",
+            "rounding_amount",
+        }
+    ),
+    "payment": frozenset(
+        {
+            "payment_due_date",
+            "payment_means_code",
+            "payment_means_text",
+            "seller_iban",
+            "seller_bic",
+            "seller_account_name",
+            "payment_reference",
         }
     ),
 }
 
 # G' — non-group document-level scalars, EXCLUDED from group-level F1 (ADR-027).
 DOCUMENT_FIELDS: frozenset[str] = frozenset(
-    {"invoice_number", "issue_date", "invoice_currency_code", "delivery_date", "tax_rate"}
+    {
+        "invoice_number",
+        "issue_date",
+        "invoice_currency_code",
+        "delivery_date",
+        "tax_rate",
+        "document_type",
+        "buyer_order_reference",
+        "billing_period_start",
+        "billing_period_end",
+    }
 )
 
 # Partition sanity: groups ∪ document-fields must exactly cover FIELDS, with no

@@ -35,6 +35,22 @@ LABELS: dict[str, str] = {
     "tax_total_amount": "Tax total (VAT)",
     "grand_total_amount": "Grand total (gross)",
     "due_payable_amount": "Amount due",
+    # --- ADR-041 Step 1a additions ---
+    "document_type": "Document type",
+    "buyer_order_reference": "Order reference",
+    "billing_period_start": "Billing period start",
+    "billing_period_end": "Billing period end",
+    "payment_due_date": "Payment due date",
+    "payment_means_code": "Payment means (code)",
+    "payment_means_text": "Payment means",
+    "seller_iban": "IBAN",
+    "seller_bic": "BIC",
+    "seller_account_name": "Account holder",
+    "payment_reference": "Payment reference",
+    "prepaid_amount": "Prepaid amount",
+    "allowance_total_amount": "Allowances total",
+    "charge_total_amount": "Charges total",
+    "rounding_amount": "Rounding",
 }
 
 # Stable display order: document identity first, then the parties, then the money.
@@ -58,12 +74,29 @@ FIELD_ORDER: tuple[str, ...] = (
     "tax_total_amount",
     "grand_total_amount",
     "due_payable_amount",
+    # --- ADR-041 Step 1a additions ---
+    "document_type",
+    "buyer_order_reference",
+    "billing_period_start",
+    "billing_period_end",
+    "payment_due_date",
+    "payment_means_code",
+    "payment_means_text",
+    "seller_iban",
+    "seller_bic",
+    "seller_account_name",
+    "payment_reference",
+    "prepaid_amount",
+    "allowance_total_amount",
+    "charge_total_amount",
+    "rounding_amount",
 )
 
 GROUP_DISPLAY: dict[str, str] = {
     "document": "Document",
     "seller": "Seller",
     "buyer": "Buyer",
+    "payment": "Payment",
     "totals": "Totals",
 }
 

@@ -524,7 +524,7 @@ def test_score_all_absent_gt_all_none_pred_is_all_tn() -> None:
     predicted: dict[str, str | None] = {key: None for key in FIELDS}
     result = score(predicted, gt, cfg=EvalConfig())
     tn_count = sum(1 for r in result.per_field.values() if r.outcome == "TN")
-    assert tn_count == 19
+    assert tn_count == 34
     # No TP/FP/FN → F1 = 0
     assert result.micro_f1 == 0.0
 
@@ -558,7 +558,7 @@ def test_score_perfect_extraction_yields_micro_f1_1_0() -> None:
     gt = _make_full_gt(overrides=overrides)
     result = score(predicted, gt, cfg=EvalConfig())
     tp_count = sum(1 for r in result.per_field.values() if r.outcome == "TP")
-    assert tp_count == 19
+    assert tp_count == 34
     assert result.micro_f1 == 1.0
 
 

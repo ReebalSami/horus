@@ -24,6 +24,7 @@ _GROUPS: tuple[tuple[str, str], ...] = (
     ("document", "Document"),
     ("seller", "Seller"),
     ("buyer", "Buyer"),
+    ("payment", "Payment"),
     ("totals", "Totals"),
 )
 

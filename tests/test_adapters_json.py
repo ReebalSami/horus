@@ -75,7 +75,7 @@ def test_to_predicted_dict_returns_all_19_canonical_keys() -> None:
     raw = '{"invoice_number": "INV-001"}'
     result = to_predicted_dict(raw, model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
-    assert len(result) == 19
+    assert len(result) == 34
 
 
 def test_to_predicted_dict_full_canonical_json_roundtrips() -> None:
@@ -503,7 +503,7 @@ def test_multipage_returns_all_19_canonical_keys() -> None:
     """Result dict always contains exactly the 19 canonical FIELDS keys."""
     result = to_predicted_dict_multipage(['{"invoice_number": "X"}'], model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
-    assert len(result) == 19
+    assert len(result) == 34
 
 
 def test_multipage_german_diacritics_preserved_across_pages() -> None:

@@ -130,6 +130,24 @@ class InvoiceFields(BaseModel):
     tax_rate: str | None = None
     seller_address: str | None = None
     buyer_address: str | None = None
+    # --- ADR-041 Step 1a additions (scored) — document identity ---
+    document_type: str | None = None
+    buyer_order_reference: str | None = None
+    billing_period_start: str | None = None
+    billing_period_end: str | None = None
+    # --- ADR-041 Step 1a additions (scored) — payment ---
+    payment_due_date: str | None = None
+    payment_means_code: str | None = None
+    payment_means_text: str | None = None
+    seller_iban: str | None = None
+    seller_bic: str | None = None
+    seller_account_name: str | None = None
+    payment_reference: str | None = None
+    # --- ADR-041 Step 1a additions (scored) — totals ---
+    prepaid_amount: str | None = None
+    allowance_total_amount: str | None = None
+    charge_total_amount: str | None = None
+    rounding_amount: str | None = None
     # --- ADR-035 addition (NON-scored; Streamlit display only) ---
     purpose_summary: str | None = None
 

@@ -342,7 +342,7 @@ def test_per_field_outcome_counts_sum_to_16(einfach_gt: GroundTruth) -> None:
             model_id=model_id,
         )
         outcomes = [r.outcome for r in result.per_field.values()]
-        assert len(outcomes) == 19
+        assert len(outcomes) == 34
         # Tally across categories
         from collections import Counter
 
@@ -402,8 +402,8 @@ def test_cohort_heatmap_row_format(einfach_gt: GroundTruth) -> None:
             key: (1.0 if r.outcome == "TP" else 0.0) for key, r in result.per_field.items()
         }
 
-    # Shape sanity: 7 working cohort models, 19 fields each
+    # Shape sanity: 7 working cohort models, 34 fields each
     assert len(heatmap) == 7
     for model_row in heatmap.values():
-        assert len(model_row) == 19
+        assert len(model_row) == 34
         assert all(v in (0.0, 1.0) for v in model_row.values())

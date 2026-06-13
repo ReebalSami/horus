@@ -233,10 +233,10 @@ def test_parse_multi_rate_takes_first_in_document_order() -> None:
 
 
 def test_parse_header_has_19_keys() -> None:
-    """Parsed header always carries all 19 canonical keys (corpus-independent)."""
+    """Parsed header always carries all 34 canonical keys (corpus-independent)."""
     gt = parse_cii_xml(_v2_invoice())
     assert set(gt.header.keys()) == set(FIELDS.keys())
-    assert len(gt.header) == 19
+    assert len(gt.header) == 34
 
 
 # ===========================================================================
@@ -345,3 +345,118 @@ def test_rate_scoring_false_negative_on_mismatch() -> None:
     predicted["tax_rate"] = "7%"
     result = score(predicted, gt, cfg=EvalConfig())
     assert result.per_field["tax_rate"].outcome == "FN"
+
+
+# ===========================================================================
+# 6. ADR-041 Step 1a — full-coverage flat fields (corpus-independent)
+# ===========================================================================
+
+
+def _v2_full_settlement_invoice() -> bytes:
+    """A CII v2 invoice exercising every ADR-041 Step 1a flat field."""
+    return (
+        f"<rsm:CrossIndustryInvoice {_V2_NS}>"
+        "<rsm:ExchangedDocument><ram:TypeCode>380</ram:TypeCode></rsm:ExchangedDocument>"
+        "<rsm:SupplyChainTradeTransaction>"
+        "<ram:ApplicableHeaderTradeAgreement>"
+        "<ram:BuyerOrderReferencedDocument>"
+        "<ram:IssuerAssignedID>PO-4711</ram:IssuerAssignedID>"
+        "</ram:BuyerOrderReferencedDocument>"
+        "</ram:ApplicableHeaderTradeAgreement>"
+        "<ram:ApplicableHeaderTradeSettlement>"
+        "<ram:PaymentReference>RF18-1234</ram:PaymentReference>"
+        "<ram:SpecifiedTradeSettlementPaymentMeans>"
+        "<ram:TypeCode>58</ram:TypeCode>"
+        "<ram:Information>SEPA-Überweisung</ram:Information>"
+        "<ram:PayeePartyCreditorFinancialAccount>"
+        "<ram:IBANID>DE89370400440532013000</ram:IBANID>"
+        "<ram:AccountName>Lieferant GmbH</ram:AccountName>"
+        "</ram:PayeePartyCreditorFinancialAccount>"
+        "<ram:PayeeSpecifiedCreditorFinancialInstitution>"
+        "<ram:BICID>COBADEFFXXX</ram:BICID>"
+        "</ram:PayeeSpecifiedCreditorFinancialInstitution>"
+        "</ram:SpecifiedTradeSettlementPaymentMeans>"
+        "<ram:BillingSpecifiedPeriod>"
+        "<ram:StartDateTime><udt:DateTimeString>20240101</udt:DateTimeString></ram:StartDateTime>"
+        "<ram:EndDateTime><udt:DateTimeString>20240131</udt:DateTimeString></ram:EndDateTime>"
+        "</ram:BillingSpecifiedPeriod>"
+        "<ram:SpecifiedTradePaymentTerms>"
+        "<ram:DueDateDateTime><udt:DateTimeString>20240215</udt:DateTimeString></ram:DueDateDateTime>"
+        "</ram:SpecifiedTradePaymentTerms>"
+        "<ram:SpecifiedTradeSettlementHeaderMonetarySummation>"
+        "<ram:AllowanceTotalAmount>10.00</ram:AllowanceTotalAmount>"
+        "<ram:ChargeTotalAmount>5.00</ram:ChargeTotalAmount>"
+        "<ram:RoundingAmount>0.01</ram:RoundingAmount>"
+        "<ram:TotalPrepaidAmount>100.00</ram:TotalPrepaidAmount>"
+        "</ram:SpecifiedTradeSettlementHeaderMonetarySummation>"
+        "</ram:ApplicableHeaderTradeSettlement>"
+        "</rsm:SupplyChainTradeTransaction>"
+        "</rsm:CrossIndustryInvoice>"
+    ).encode()
+
+
+def test_parse_adr041_flat_fields() -> None:
+    """Every ADR-041 Step 1a flat field parses + normalizes from a synthetic CII."""
+    h = parse_cii_xml(_v2_full_settlement_invoice()).header
+    expected = {
+        "document_type": "invoice",  # BT-3 code 380 → token
+        "buyer_order_reference": "PO-4711",
+        "payment_reference": "RF18-1234",
+        "payment_means_code": "58",
+        "payment_means_text": "SEPA-Überweisung",
+        "seller_iban": "DE89370400440532013000",
+        "seller_bic": "COBADEFFXXX",
+        "seller_account_name": "Lieferant GmbH",
+        "billing_period_start": "2024-01-01",
+        "billing_period_end": "2024-01-31",
+        "payment_due_date": "2024-02-15",
+        "allowance_total_amount": "10.00",
+        "charge_total_amount": "5.00",
+        "rounding_amount": "0.01",
+        "prepaid_amount": "100.00",
+    }
+    for key, value in expected.items():
+        assert h[key].is_present, f"{key} should be present"
+        assert h[key].normalized_value == value, (
+            f"{key}: expected {value!r}, got {h[key].normalized_value!r}"
+        )
+
+
+@pytest.mark.parametrize(
+    ("code", "token"),
+    [("380", "invoice"), ("389", "invoice"), ("381", "credit_note"), ("384", "correction")],
+)
+def test_document_type_code_maps_to_token(code: str, token: str) -> None:
+    """BT-3 UNTDID-1001 codes map to canonical HORUS document-type tokens."""
+    xml = (
+        f"<rsm:CrossIndustryInvoice {_V2_NS}>"
+        f"<rsm:ExchangedDocument><ram:TypeCode>{code}</ram:TypeCode></rsm:ExchangedDocument>"
+        "<rsm:SupplyChainTradeTransaction></rsm:SupplyChainTradeTransaction>"
+        "</rsm:CrossIndustryInvoice>"
+    ).encode()
+    gt = parse_cii_xml(xml)
+    assert gt.header["document_type"].normalized_value == token
+
+
+def test_adr041_fields_absent_are_honest_null() -> None:
+    """Absent ADR-041 fields → is_present=False, normalized None (honest null)."""
+    gt = parse_cii_xml(_v2_invoice())
+    for key in ("seller_iban", "payment_due_date", "prepaid_amount", "document_type"):
+        assert gt.header[key].is_present is False
+        assert gt.header[key].normalized_value is None
+
+
+def test_validate_and_repair_adr041_locale_coercion() -> None:
+    """Prediction-side coercion of the new fields (German money, spaced IBAN, DE date)."""
+    out = validate_and_repair(
+        {
+            "seller_iban": "DE89 3704 0044 0532 0130 00",
+            "prepaid_amount": "100,00",
+            "payment_due_date": "15.02.2024",
+            "document_type": "invoice",
+        }
+    )
+    assert out["seller_iban"] == "DE89370400440532013000"
+    assert out["prepaid_amount"] == "100.00"
+    assert out["payment_due_date"] == "2024-02-15"
+    assert out["document_type"] == "invoice"

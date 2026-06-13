@@ -79,6 +79,6 @@ def test_build_gt_cache_loads_known_invoices() -> None:
     assert cache, "GT cache should be non-empty when the corpus is present"
     assert "EN16931_Einfach" in cache, "the canonical smoke invoice must be present"
     gt = cache["EN16931_Einfach"]
-    # All 19 canonical fields are present on the parsed GroundTruth header.
-    assert len(gt.header) == 19
+    # All 34 canonical fields are present on the parsed GroundTruth header.
+    assert len(gt.header) == 34
     assert gt.header["invoice_number"].is_present

@@ -181,6 +181,39 @@ def _normalize_rate(raw: str) -> str:
     return format(d.normalize(), "f")
 
 
+# EN16931 BT-3 (UNTDID 1001) document-type codes → canonical HORUS token. The
+# in-scope invoice family (ADR-041): commercial invoice / credit note /
+# correction. The prediction side emits the token directly (the structurer
+# prompt constrains output to {invoice, credit_note, correction}), so CODE
+# exact-match works against the GT token mapped from the BT-3 code here.
+_DOCTYPE_CODE_TO_TOKEN: Final[dict[str, str]] = {
+    "380": "invoice",  # Commercial invoice
+    "389": "invoice",  # Self-billed invoice (still an invoice for our scope)
+    "381": "credit_note",  # Credit note
+    "384": "correction",  # Corrected invoice
+}
+_DOCTYPE_TOKENS: Final[frozenset[str]] = frozenset({"invoice", "credit_note", "correction"})
+
+
+def _normalize_doctype(raw: str) -> str:
+    """Map a BT-3 document-type code (or an already-canonical token) to a token.
+
+    Maps the EN16931 / UNTDID-1001 codes of the in-scope invoice family
+    (380/389 → ``invoice``, 381 → ``credit_note``, 384 → ``correction``) to a
+    canonical HORUS token. Input that is already a canonical token passes through
+    (case-folded); any other value is returned stripped (honest: present-but-
+    unmapped rather than silently dropped). Never raises (the parse loop already
+    short-circuits empty input).
+    """
+    s = raw.strip()
+    if s in _DOCTYPE_CODE_TO_TOKEN:
+        return _DOCTYPE_CODE_TO_TOKEN[s]
+    lowered = s.lower()
+    if lowered in _DOCTYPE_TOKENS:
+        return lowered
+    return s
+
+
 # ---------------------------------------------------------------------------
 # 3. FieldSpec — static catalog row per EN16931 business term
 # ---------------------------------------------------------------------------
@@ -290,6 +323,8 @@ _HEADER_SETTLEMENT = (
     "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement"
 )
 _SETTLEMENT_TOTALS = f"{_HEADER_SETTLEMENT}/ram:SpecifiedTradeSettlementHeaderMonetarySummation"
+_SETTLEMENT_PAYMENT_MEANS = f"{_HEADER_SETTLEMENT}/ram:SpecifiedTradeSettlementPaymentMeans"
+_PAYMENT_TERMS = f"{_HEADER_SETTLEMENT}/ram:SpecifiedTradePaymentTerms"
 
 # EN16931 PostalTradeAddress (BG-5/BG-8) child leaves, in canonical render
 # order. The seller/buyer address XPaths point at the composite
@@ -513,6 +548,150 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         field_type="STRING",
         composite_leaves=_ADDRESS_LEAVES,
     ),
+    # =====================================================================
+    # ADR-041 Step 1a — full-coverage flat fields (existing comparison types)
+    # =====================================================================
+    # 20. Document type (BT-3) — invoice / credit_note / correction. The GT
+    # normalizer maps the UNTDID-1001 code; the structurer emits the token.
+    "document_type": FieldSpec(
+        english_key="document_type",
+        bt_code="BT-3",
+        german_label="Belegart",
+        xpath="/rsm:CrossIndustryInvoice/rsm:ExchangedDocument/ram:TypeCode",
+        normalize=_normalize_doctype,
+        field_type="CODE",
+    ),
+    # 21. Buyer order / purchase-order reference (BT-13).
+    "buyer_order_reference": FieldSpec(
+        english_key="buyer_order_reference",
+        bt_code="BT-13",
+        german_label="Bestellnummer",
+        xpath=f"{_HEADER_AGREEMENT}/ram:BuyerOrderReferencedDocument/ram:IssuerAssignedID",
+        normalize=_normalize_string,
+        field_type="CODE",
+    ),
+    # 22. Billing period start (BT-73).
+    "billing_period_start": FieldSpec(
+        english_key="billing_period_start",
+        bt_code="BT-73",
+        german_label="Abrechnungszeitraum Beginn",
+        xpath=f"{_HEADER_SETTLEMENT}/ram:BillingSpecifiedPeriod/ram:StartDateTime/udt:DateTimeString",
+        normalize=_normalize_date,
+        field_type="DATE",
+    ),
+    # 23. Billing period end (BT-74).
+    "billing_period_end": FieldSpec(
+        english_key="billing_period_end",
+        bt_code="BT-74",
+        german_label="Abrechnungszeitraum Ende",
+        xpath=f"{_HEADER_SETTLEMENT}/ram:BillingSpecifiedPeriod/ram:EndDateTime/udt:DateTimeString",
+        normalize=_normalize_date,
+        field_type="DATE",
+    ),
+    # 24. Payment due date / Zahlungsziel (BT-9).
+    "payment_due_date": FieldSpec(
+        english_key="payment_due_date",
+        bt_code="BT-9",
+        german_label="Fälligkeitsdatum (Zahlungsziel)",
+        xpath=f"{_PAYMENT_TERMS}/ram:DueDateDateTime/udt:DateTimeString",
+        normalize=_normalize_date,
+        field_type="DATE",
+    ),
+    # 25. Payment means type code (BT-81) — UN/ECE 4461 (58 SEPA CT, 59 SEPA DD,
+    # 30 credit transfer, 48 card, 10 cash, …).
+    "payment_means_code": FieldSpec(
+        english_key="payment_means_code",
+        bt_code="BT-81",
+        german_label="Zahlungsart (Code)",
+        xpath=f"{_SETTLEMENT_PAYMENT_MEANS}/ram:TypeCode",
+        normalize=_normalize_string,
+        field_type="CODE",
+    ),
+    # 26. Payment means free text (BT-82) — captures "PayPal"/"Überweisung" etc.
+    "payment_means_text": FieldSpec(
+        english_key="payment_means_text",
+        bt_code="BT-82",
+        german_label="Zahlungsart",
+        xpath=f"{_SETTLEMENT_PAYMENT_MEANS}/ram:Information",
+        normalize=_normalize_string,
+        field_type="STRING",
+    ),
+    # 27. Payee bank account IBAN (BT-84).
+    "seller_iban": FieldSpec(
+        english_key="seller_iban",
+        bt_code="BT-84",
+        german_label="IBAN (Zahlungsempfänger)",
+        xpath=(f"{_SETTLEMENT_PAYMENT_MEANS}/ram:PayeePartyCreditorFinancialAccount/ram:IBANID"),
+        normalize=_normalize_string,
+        field_type="CODE",
+    ),
+    # 28. Payee bank BIC (BT-86).
+    "seller_bic": FieldSpec(
+        english_key="seller_bic",
+        bt_code="BT-86",
+        german_label="BIC",
+        xpath=(
+            f"{_SETTLEMENT_PAYMENT_MEANS}/ram:PayeeSpecifiedCreditorFinancialInstitution/ram:BICID"
+        ),
+        normalize=_normalize_string,
+        field_type="CODE",
+    ),
+    # 29. Payee account holder name (BT-85).
+    "seller_account_name": FieldSpec(
+        english_key="seller_account_name",
+        bt_code="BT-85",
+        german_label="Kontoinhaber",
+        xpath=(
+            f"{_SETTLEMENT_PAYMENT_MEANS}/ram:PayeePartyCreditorFinancialAccount/ram:AccountName"
+        ),
+        normalize=_normalize_string,
+        field_type="STRING",
+    ),
+    # 30. Remittance information / Verwendungszweck (BT-83).
+    "payment_reference": FieldSpec(
+        english_key="payment_reference",
+        bt_code="BT-83",
+        german_label="Verwendungszweck",
+        xpath=f"{_HEADER_SETTLEMENT}/ram:PaymentReference",
+        normalize=_normalize_string,
+        field_type="STRING",
+    ),
+    # 31. Paid (prepaid) amount (BT-113).
+    "prepaid_amount": FieldSpec(
+        english_key="prepaid_amount",
+        bt_code="BT-113",
+        german_label="Bereits gezahlt",
+        xpath=f"{_SETTLEMENT_TOTALS}/ram:TotalPrepaidAmount",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+    # 32. Sum of document-level allowances (BT-107).
+    "allowance_total_amount": FieldSpec(
+        english_key="allowance_total_amount",
+        bt_code="BT-107",
+        german_label="Summe Nachlässe",
+        xpath=f"{_SETTLEMENT_TOTALS}/ram:AllowanceTotalAmount",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+    # 33. Sum of document-level charges (BT-108).
+    "charge_total_amount": FieldSpec(
+        english_key="charge_total_amount",
+        bt_code="BT-108",
+        german_label="Summe Zuschläge",
+        xpath=f"{_SETTLEMENT_TOTALS}/ram:ChargeTotalAmount",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+    # 34. Rounding amount (BT-114).
+    "rounding_amount": FieldSpec(
+        english_key="rounding_amount",
+        bt_code="BT-114",
+        german_label="Rundungsbetrag",
+        xpath=f"{_SETTLEMENT_TOTALS}/ram:RoundingAmount",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
 }
 
 
@@ -564,24 +743,39 @@ FIELDS_V1: Final[dict[str, FieldSpec]] = {
 }
 
 
-# The 3 fields ADR-035 added to the canonical schema (16 → 19): tax-rate
-# (BT-119) + seller/buyer postal addresses (BG-5 / BG-8).
-_ADR035_ADDED_FIELD_KEYS: Final[frozenset[str]] = frozenset(
-    {"tax_rate", "seller_address", "buyer_address"}
-)
-
 # The frozen 16-field set the CLOSED experiment milestone measured
-# (ADR-012/013/014/027/028/029/030). The reproduction tests for those in-sample
-# diagnostic baselines pin to this subset via `score(fields=...)` so their
-# PUBLISHED numbers never shift when the schema grows. New work (the structurer
-# arms + the held-out eval) always scores the full 19-field `FIELDS`. Scoring a
-# 16-field-targeted system against 19 fields is a meaningless hybrid — it
-# penalizes a system for not extracting fields it was never asked for; the
-# milestone's honest measurement is 16-field. See ADR-037 (+ ADR-035 §Integration).
+# (ADR-012/013/014/027/028/029/030). Defined as an EXPLICIT positive list
+# (ADR-041) so it stays exactly the original 16 as `FIELDS` grows with new
+# coverage — the earlier subtractive definition (FIELDS minus the 3 ADR-035
+# keys) broke the moment any field beyond those 3 was added. The reproduction
+# tests for those in-sample diagnostic baselines pin to this subset via
+# `score(fields=...)` so their PUBLISHED numbers never shift. New work (the
+# structurer arms + the held-out eval) always scores the full `FIELDS`. Scoring
+# a 16-field-targeted system against the larger schema is a meaningless hybrid
+# — it penalizes a system for fields it was never asked to extract; the
+# milestone's honest measurement is 16-field. See ADR-037 + ADR-041.
+_LEGACY_16_KEYS: Final[frozenset[str]] = frozenset(
+    {
+        "invoice_number",
+        "issue_date",
+        "invoice_currency_code",
+        "delivery_date",
+        "seller_name",
+        "seller_vat_id",
+        "seller_tax_id",
+        "seller_gln",
+        "buyer_name",
+        "buyer_reference",
+        "buyer_vat_id",
+        "line_total_amount",
+        "tax_basis_total_amount",
+        "tax_total_amount",
+        "grand_total_amount",
+        "due_payable_amount",
+    }
+)
 LEGACY_EXPERIMENT_FIELDS: Final[dict[str, FieldSpec]] = {
-    english_key: spec
-    for english_key, spec in FIELDS.items()
-    if english_key not in _ADR035_ADDED_FIELD_KEYS
+    english_key: FIELDS[english_key] for english_key in FIELDS if english_key in _LEGACY_16_KEYS
 }
 assert len(LEGACY_EXPERIMENT_FIELDS) == 16, (
     "LEGACY_EXPERIMENT_FIELDS must be exactly the 16 pre-ADR-035 fields"
