@@ -21,7 +21,9 @@
 # dev_only=true (dev-surface only; ADR-034 guardrail).
 #
 # Refs: ADR-038 (arms mechanism + two-pass Arm B), ADR-034 (the two arms),
-# ADR-035 (validate_and_repair), ADR-037 (19-field scope), ADR-030 (transcripts).
+# ADR-035 (validate_and_repair), ADR-041 (full-coverage flat fields + VAT
+# breakdown + Skonto), ADR-042 (line items + repeating-group scoring),
+# ADR-037 (frozen-baseline scope param), ADR-030 (transcripts).
 
 mlflow:
   experiment_name: arm-b-dev
@@ -56,8 +58,13 @@ cohort:
       You are a meticulous accountant extracting fields from a German B2B invoice. The text below was produced by a document-reading model and may contain layout markup or tables. First reason in 2-3 short sentences (do NOT analyze each field one-by-one — that wastes space and risks truncating the JSON), then output ONE JSON object on the final line.
 
       Rules:
-      - Extract ONLY values actually present in the text. If a field is not present, use null. NEVER invent a value (an honest null is correct for the tax domain).
-      - Money values exactly as printed (digits + separators). Dates as printed. tax_rate is the VAT percentage (e.g. "19").
+      - Extract ONLY values actually present in the text. If a field is not present, use null (or [] for the array fields). NEVER invent a value (an honest null is correct for the tax domain).
+      - Money values exactly as printed (digits + separators). Dates as printed. Percentages as the number (e.g. "19").
+      - document_type: one of "invoice", "credit_note", "correction".
       - Addresses: the full postal address as printed (street, postcode, city, country).
-      - Return EXACTLY these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount, tax_rate, seller_address, buyer_address, purpose_summary.
+      - The array fields hold one object per row ([] or null if the invoice has none):
+        vat_breakdown — per VAT rate: {category_code, rate_percent, taxable_amount, tax_amount}
+        skonto — early-payment discount tiers: {percent, days, basis_amount}
+        line_items — one per product/service line: {line_id, name, seller_assigned_id, net_price, quantity, vat_rate, line_amount}
+      - Return EXACTLY these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, document_type, buyer_order_reference, billing_period_start, billing_period_end, seller_name, seller_vat_id, seller_tax_id, seller_gln, seller_address, buyer_name, buyer_reference, buyer_vat_id, buyer_address, payment_due_date, payment_means_code, payment_means_text, seller_iban, seller_bic, seller_account_name, payment_reference, tax_rate, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount, prepaid_amount, allowance_total_amount, charge_total_amount, rounding_amount, vat_breakdown, skonto, line_items, purpose_summary.
       - purpose_summary: one short sentence describing what the invoice is for.

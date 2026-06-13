@@ -425,6 +425,14 @@ def _score_single_invoice(
     per_page_texts = [r.text for r in per_page_results]
     predicted_dict = adapter_module.to_predicted_dict_multipage(per_page_texts, model_id)
 
+    # ADR-042: the structurer adapter also emits the repeating groups
+    # (vat_breakdown / skonto / line_items); fold them into the score's
+    # overall_micro_* so the headline covers the whole schema. The regex/json
+    # adapters don't emit groups, so they stay flat-only (predicted_groups=None).
+    predicted_groups = None
+    if adapter_module is structurer:
+        predicted_groups = structurer.to_predicted_groups_multipage(per_page_texts, model_id)
+
     # 5. Score.
     scores = score(
         predicted_dict,
@@ -432,6 +440,7 @@ def _score_single_invoice(
         cfg=eval_cfg,
         invoice_id=invoice_stem,
         model_id=model_id,
+        predicted_groups=predicted_groups,
     )
 
     return scores, concatenated, per_page_results
@@ -970,6 +979,13 @@ def run_cohort(
                         mlflow.log_metric("macro_f1", scores.macro_f1)
                         mlflow.log_metric("micro_precision", scores.micro_precision)
                         mlflow.log_metric("micro_recall", scores.micro_recall)
+                        # ADR-042 — whole-schema headline (flat + repeating-group
+                        # cells) + per-group F1. Equals micro_* when no groups scored.
+                        mlflow.log_metric("overall_micro_f1", scores.overall_micro_f1)
+                        mlflow.log_metric("overall_micro_precision", scores.overall_micro_precision)
+                        mlflow.log_metric("overall_micro_recall", scores.overall_micro_recall)
+                        for group_key, group_result in scores.repeating.items():
+                            mlflow.log_metric(f"group_{group_key}_f1", group_result.f1)
                         mlflow.log_metric("extract_seconds_total", elapsed)
                         extract_seconds_pages_total = sum(r.extract_seconds for r in per_page)
                         mlflow.log_metric(

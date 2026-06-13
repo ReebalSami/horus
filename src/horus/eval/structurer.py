@@ -40,8 +40,10 @@ ADR-034 (the two arms + honesty guardrail).
 
 from __future__ import annotations
 
+from typing import Any
+
 from horus.eval.adapters_json import recover_json_object
-from horus.eval.ground_truth import FIELDS
+from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS
 from horus.eval.schema import InvoiceFields, validate_and_repair
 
 __all__ = [
@@ -49,6 +51,8 @@ __all__ = [
     "to_full_dict",
     "to_predicted_dict",
     "to_predicted_dict_multipage",
+    "to_predicted_groups",
+    "to_predicted_groups_multipage",
 ]
 
 
@@ -113,13 +117,51 @@ def to_predicted_dict_multipage(
     return merged
 
 
-def to_full_dict(raw_text: str) -> dict[str, str | None]:
-    """Parse one structuring-model output into the FULL 20-key dict (incl. purpose_summary).
+def to_predicted_groups(raw_text: str) -> dict[str, list[dict[str, str | None]]]:
+    """Parse one structuring output into the repeating-group rows (ADR-042).
+
+    Returns ``{group_key: [row dicts]}`` for vat_breakdown / skonto / line_items
+    (empty list when the model emitted none) — the shape `scorer.score`'s
+    ``predicted_groups`` consumes. Cells are already locale-coerced by
+    ``InvoiceFields`` (same repair as the flat path). Unrecoverable JSON yields
+    all-empty groups (honest; the model extracted no rows).
+    """
+    full = to_full_dict(raw_text)
+    groups: dict[str, list[dict[str, str | None]]] = {}
+    for group_key in REPEATING_GROUPS:
+        rows = full.get(group_key)
+        groups[group_key] = [dict(row) for row in rows] if isinstance(rows, list) else []
+    return groups
+
+
+def to_predicted_groups_multipage(
+    per_page_texts: list[str],
+    model_id: str,  # noqa: ARG001
+) -> dict[str, list[dict[str, str | None]]]:
+    """Merge per-page repeating groups: the first page with a non-empty group wins.
+
+    Mirrors the flat first-non-None-wins merge (page 1 dominant; ADR-019 W3.1). A
+    cross-page line-item concatenation is a documented follow-up; for the
+    single-page synthetic corpus + typical short invoices this is exact.
+    ``model_id`` is signature-parity-only (unused).
+    """
+    merged: dict[str, list[dict[str, str | None]]] = {key: [] for key in REPEATING_GROUPS}
+    for page_text in per_page_texts:
+        page_groups = to_predicted_groups(page_text)
+        for group_key, rows in page_groups.items():
+            if not merged[group_key] and rows:
+                merged[group_key] = rows
+    return merged
+
+
+def to_full_dict(raw_text: str) -> dict[str, Any]:
+    """Parse one structuring-model output into the FULL dict (flat + groups + summary).
 
     Same recovery + validate/repair as :func:`to_predicted_dict`, but returns
-    ``InvoiceFields.to_full_dict()`` — the 19 scored fields PLUS the non-scored
-    ``purpose_summary`` (for the Streamlit demo per ADR-035/036). The scorer
-    never sees this; use :func:`to_predicted_dict` on the scoring path.
+    ``InvoiceFields.to_full_dict()`` — the 34 scored flat fields PLUS the non-scored
+    ``purpose_summary`` and the repeating-group lists (vat_breakdown / skonto /
+    line_items; for the Streamlit demo + `to_predicted_groups`). The flat scorer
+    never sees this; use :func:`to_predicted_dict` on the flat scoring path.
     """
     parsed = recover_json_object(raw_text)
     if parsed is None:

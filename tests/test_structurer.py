@@ -128,3 +128,38 @@ def test_public_surface_signature_parity_with_adapters() -> None:
             f"structurer.{fn_name} params {structurer_params} must match "
             f"adapters.{fn_name} params {regex_params} for harness swappability"
         )
+
+
+# ---------------------------------------------------------------------------
+# ADR-042 — repeating-group extraction (vat_breakdown / skonto / line_items)
+# ---------------------------------------------------------------------------
+
+
+def test_to_predicted_groups_parses_arrays() -> None:
+    """JSON arrays parse to per-row coerced dicts; absent groups are empty lists."""
+    raw = json.dumps(
+        {
+            "vat_breakdown": [{"rate_percent": "19 %", "tax_amount": "19,00"}],
+            "line_items": [{"name": "Beratung", "line_amount": "100,00"}],
+        }
+    )
+    groups = structurer.to_predicted_groups(raw)
+    assert groups["vat_breakdown"][0]["rate_percent"] == "19"
+    assert groups["vat_breakdown"][0]["tax_amount"] == "19.00"
+    assert groups["line_items"][0]["name"] == "Beratung"
+    assert groups["line_items"][0]["line_amount"] == "100.00"
+    assert groups["skonto"] == []
+
+
+def test_to_predicted_groups_multipage_first_nonempty_wins() -> None:
+    """Per-page group merge keeps the first page that carries a non-empty group."""
+    page1 = json.dumps({"vat_breakdown": []})
+    page2 = json.dumps({"vat_breakdown": [{"rate_percent": "7"}]})
+    groups = structurer.to_predicted_groups_multipage([page1, page2], _MODEL)
+    assert groups["vat_breakdown"][0]["rate_percent"] == "7"
+
+
+def test_to_predicted_groups_unrecoverable_is_empty() -> None:
+    """Garbage output → all groups empty (honest; the model emitted no rows)."""
+    groups = structurer.to_predicted_groups("not json at all <eos>")
+    assert groups == {"vat_breakdown": [], "skonto": [], "line_items": []}
