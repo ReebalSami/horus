@@ -783,6 +783,155 @@ assert len(LEGACY_EXPERIMENT_FIELDS) == 16, (
 
 
 # ---------------------------------------------------------------------------
+# 4c. Repeating-group sub-field registries (ADR-041 Step 1b)
+# ---------------------------------------------------------------------------
+#
+# Repeating groups (per-VAT-rate breakdown BG-23; Skonto tiers) are LISTS of
+# rows, not flat `FIELDS` entries, so they live outside the partition asserts.
+# Each sub-field is a `FieldSpec` whose `xpath` is RELATIVE to the row element
+# (resolved against the same `ram:` namespace as the row). The row-element xpath
+# is absolute in v2 form; `_to_v1_xpath` derives the v1 form (the leaf names are
+# version-invariant per ADR-033). SCORING of these groups (row alignment +
+# per-cell F1) is unified with line-item scoring in ADR-042 (Step 2); this
+# Step 1b ships representation + CII parsing + hand-draft capture only.
+
+_VAT_BREAKDOWN_ROW_XPATH: Final[str] = f"{_HEADER_SETTLEMENT}/ram:ApplicableTradeTax"
+VAT_BREAKDOWN_FIELDS: Final[dict[str, FieldSpec]] = {
+    "category_code": FieldSpec(
+        english_key="category_code",
+        bt_code="BT-118",
+        german_label="Steuerkategorie",
+        xpath="ram:CategoryCode",
+        normalize=_normalize_string,
+        field_type="CODE",
+    ),
+    "rate_percent": FieldSpec(
+        english_key="rate_percent",
+        bt_code="BT-119",
+        german_label="Steuersatz",
+        xpath="ram:RateApplicablePercent",
+        normalize=_normalize_rate,
+        field_type="RATE",
+    ),
+    "taxable_amount": FieldSpec(
+        english_key="taxable_amount",
+        bt_code="BT-116",
+        german_label="Bemessungsgrundlage",
+        xpath="ram:BasisAmount",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+    "tax_amount": FieldSpec(
+        english_key="tax_amount",
+        bt_code="BT-117",
+        german_label="Steuerbetrag",
+        xpath="ram:CalculatedAmount",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+}
+
+# Skonto (early-payment discount). EN16931 does not fully model Skonto; ZUGFeRD
+# carries it in `ApplicableTradePaymentDiscountTerms` (structured) OR as a FeRD
+# structured-text convention inside the payment-terms Description. Step 1b parses
+# the structured element; the structured-text fallback + multi-tier text parsing
+# is a documented follow-up (hand-draft + the review grid cover it meanwhile).
+_SKONTO_ROW_XPATH: Final[str] = f"{_PAYMENT_TERMS}/ram:ApplicableTradePaymentDiscountTerms"
+SKONTO_FIELDS: Final[dict[str, FieldSpec]] = {
+    "percent": FieldSpec(
+        english_key="percent",
+        bt_code="BT-DE-skonto-percent",
+        german_label="Skonto-Prozentsatz",
+        xpath="ram:CalculationPercent",
+        normalize=_normalize_rate,
+        field_type="RATE",
+    ),
+    "days": FieldSpec(
+        english_key="days",
+        bt_code="BT-DE-skonto-days",
+        german_label="Skonto-Tage",
+        xpath="ram:BasisPeriodMeasure",
+        normalize=_normalize_string,
+        field_type="CODE",
+    ),
+    "basis_amount": FieldSpec(
+        english_key="basis_amount",
+        bt_code="BT-DE-skonto-basis",
+        german_label="Skonto-Basisbetrag",
+        xpath="ram:BasisAmount",
+        normalize=_normalize_money,
+        field_type="MONEY",
+    ),
+}
+
+# Group key -> (v2 row-element xpath, sub-field registry). `parse_cii_xml`
+# iterates this; the held-out hand-draft route + the review grid mirror it.
+REPEATING_GROUPS: Final[dict[str, tuple[str, dict[str, FieldSpec]]]] = {
+    "vat_breakdown": (_VAT_BREAKDOWN_ROW_XPATH, VAT_BREAKDOWN_FIELDS),
+    "skonto": (_SKONTO_ROW_XPATH, SKONTO_FIELDS),
+}
+
+
+def _parse_repeating_group(
+    tree: etree._Element,
+    namespaces: dict[str, str],
+    row_xpath: str,
+    sub_fields: dict[str, FieldSpec],
+) -> list[dict[str, GroundTruthField]] | None:
+    """Parse a repeating CII group into a list of per-row sub-field records.
+
+    Returns ``None`` when the group is absent (no row elements) so the
+    `GroundTruth` field stays honestly null; otherwise one
+    ``dict[sub_key, GroundTruthField]`` per row, in document order. Each sub-field
+    follows the same tristate + normalizer-failure semantics as the header parse
+    loop (absent leaf -> ``is_present=False``; present-but-empty -> ``""``;
+    normalizer ``ValueError`` -> ``normalized_value=None`` + WARNING).
+    """
+    rows = tree.xpath(row_xpath, namespaces=namespaces)
+    if not rows:
+        return None
+    parsed: list[dict[str, GroundTruthField]] = []
+    for row_el in rows:
+        record: dict[str, GroundTruthField] = {}
+        for sub_key, spec in sub_fields.items():
+            leaves = row_el.xpath(spec.xpath, namespaces=namespaces)
+            if not leaves:
+                record[sub_key] = GroundTruthField(
+                    bt_code=spec.bt_code,
+                    raw_value=None,
+                    normalized_value=None,
+                    xpath=spec.xpath,
+                    is_present=False,
+                )
+                continue
+            raw_str = leaves[0].text if leaves[0].text is not None else ""
+            normalized: str | None
+            if raw_str:
+                try:
+                    normalized = spec.normalize(raw_str)
+                except ValueError as exc:
+                    logger.warning(
+                        "Repeating sub-field %s (%s) normalizer rejected %r: %s",
+                        sub_key,
+                        spec.bt_code,
+                        raw_str,
+                        exc,
+                    )
+                    normalized = None
+            else:
+                normalized = ""
+            record[sub_key] = GroundTruthField(
+                bt_code=spec.bt_code,
+                raw_value=raw_str,
+                normalized_value=normalized,
+                xpath=spec.xpath,
+                is_present=True,
+            )
+        parsed.append(record)
+    return parsed
+
+
+# ---------------------------------------------------------------------------
 # 5. GroundTruthField — one extracted-and-normalized field record
 # ---------------------------------------------------------------------------
 
@@ -846,9 +995,18 @@ class GroundTruth:
             The result always has all 16 keys present; absence of the field
             in the XML is signaled by `is_present=False` on the record, NOT
             by missing dict entries.
+        vat_breakdown: per-VAT-rate breakdown rows (BG-23), or `None` if absent.
+            Each row is a `dict[sub_key, GroundTruthField]` over `VAT_BREAKDOWN_FIELDS`.
+        skonto: early-payment-discount tiers, or `None` if absent. Each row is a
+            `dict[sub_key, GroundTruthField]` over `SKONTO_FIELDS`.
+        line_items: RESERVED for Step 2 (BG-25 line-item table; ADR-042).
+            `None` until that work lands.
     """
 
     header: dict[str, GroundTruthField]
+    vat_breakdown: list[dict[str, GroundTruthField]] | None = None
+    skonto: list[dict[str, GroundTruthField]] | None = None
+    line_items: list[dict[str, GroundTruthField]] | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -1006,4 +1164,16 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
             is_present=True,
         )
 
-    return GroundTruth(header=header)
+    # Repeating groups (ADR-041 Step 1b). Row xpaths are version-correct: the
+    # v1 schema uses the substituted container names (leaf names are invariant).
+    is_v1 = namespaces is CII_NAMESPACES_V1
+    repeating: dict[str, list[dict[str, GroundTruthField]] | None] = {}
+    for group_key, (v2_row_xpath, sub_fields) in REPEATING_GROUPS.items():
+        row_xpath = _to_v1_xpath(v2_row_xpath) if is_v1 else v2_row_xpath
+        repeating[group_key] = _parse_repeating_group(tree, namespaces, row_xpath, sub_fields)
+
+    return GroundTruth(
+        header=header,
+        vat_breakdown=repeating["vat_breakdown"],
+        skonto=repeating["skonto"],
+    )

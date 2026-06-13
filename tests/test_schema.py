@@ -245,10 +245,15 @@ def test_parse_header_has_19_keys() -> None:
 
 
 def test_model_scored_fields_match_registry() -> None:
-    """InvoiceFields scored fields (minus purpose_summary) == FIELDS exactly (no drift)."""
+    """InvoiceFields flat scored fields == FIELDS exactly (excluding non-scored fields).
+
+    Non-scored model fields: purpose_summary (display) + the ADR-041 repeating
+    groups vat_breakdown / skonto (scored via ADR-042, not the flat dict).
+    """
     model_fields = set(InvoiceFields.model_fields)
-    assert PURPOSE_SUMMARY_KEY in model_fields
-    assert model_fields - {PURPOSE_SUMMARY_KEY} == set(FIELDS)
+    non_scored = {PURPOSE_SUMMARY_KEY, "vat_breakdown", "skonto"}
+    assert non_scored <= model_fields
+    assert model_fields - non_scored == set(FIELDS)
 
 
 def test_to_scored_dict_excludes_purpose_summary() -> None:
@@ -460,3 +465,99 @@ def test_validate_and_repair_adr041_locale_coercion() -> None:
     assert out["prepaid_amount"] == "100.00"
     assert out["payment_due_date"] == "2024-02-15"
     assert out["document_type"] == "invoice"
+
+
+# ===========================================================================
+# 7. ADR-041 Step 1b — repeating groups (VAT breakdown + Skonto), GT side
+# ===========================================================================
+
+
+def test_parse_vat_breakdown_multi_rate() -> None:
+    """A 19% + 7% invoice yields a 2-row vat_breakdown with per-row cells parsed."""
+    tax = (
+        "<ram:ApplicableTradeTax>"
+        "<ram:CalculatedAmount>19.00</ram:CalculatedAmount>"
+        "<ram:BasisAmount>100.00</ram:BasisAmount>"
+        "<ram:CategoryCode>S</ram:CategoryCode>"
+        "<ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+        "<ram:ApplicableTradeTax>"
+        "<ram:CalculatedAmount>3.50</ram:CalculatedAmount>"
+        "<ram:BasisAmount>50.00</ram:BasisAmount>"
+        "<ram:CategoryCode>S</ram:CategoryCode>"
+        "<ram:RateApplicablePercent>7.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+    )
+    gt = parse_cii_xml(_v2_invoice(tax=tax))
+    assert gt.vat_breakdown is not None
+    assert len(gt.vat_breakdown) == 2
+    r0, r1 = gt.vat_breakdown
+    assert r0["rate_percent"].normalized_value == "19"
+    assert r0["taxable_amount"].normalized_value == "100.00"
+    assert r0["tax_amount"].normalized_value == "19.00"
+    assert r0["category_code"].normalized_value == "S"
+    assert r1["rate_percent"].normalized_value == "7"
+    assert r1["tax_amount"].normalized_value == "3.50"
+    # The flat single-rate tax_rate still takes the first rate (unchanged).
+    assert gt.header["tax_rate"].normalized_value == "19"
+
+
+def test_parse_skonto_from_discount_terms() -> None:
+    """Structured Skonto (ApplicableTradePaymentDiscountTerms) parses to one tier."""
+    settlement = (
+        "<ram:SpecifiedTradePaymentTerms>"
+        "<ram:ApplicableTradePaymentDiscountTerms>"
+        "<ram:BasisPeriodMeasure>14</ram:BasisPeriodMeasure>"
+        "<ram:BasisAmount>119.00</ram:BasisAmount>"
+        "<ram:CalculationPercent>2.00</ram:CalculationPercent>"
+        "</ram:ApplicableTradePaymentDiscountTerms>"
+        "</ram:SpecifiedTradePaymentTerms>"
+    )
+    gt = parse_cii_xml(_v2_invoice(tax=settlement))
+    assert gt.skonto is not None
+    assert len(gt.skonto) == 1
+    assert gt.skonto[0]["percent"].normalized_value == "2"
+    assert gt.skonto[0]["days"].normalized_value == "14"
+    assert gt.skonto[0]["basis_amount"].normalized_value == "119.00"
+
+
+def test_repeating_groups_absent_are_none() -> None:
+    """Absent repeating groups → None (honest null); line_items reserved for Step 2."""
+    gt = parse_cii_xml(_v2_invoice())
+    assert gt.vat_breakdown is None
+    assert gt.skonto is None
+    assert gt.line_items is None
+
+
+def test_invoice_fields_coerces_repeating_groups() -> None:
+    """The structurer's nested vat_breakdown / skonto rows are locale-coerced per cell."""
+    model = InvoiceFields.model_validate(
+        {
+            "vat_breakdown": [
+                {
+                    "rate_percent": "19 %",
+                    "taxable_amount": "100,00",
+                    "tax_amount": "19,00",
+                    "category_code": "S",
+                },
+                {"rate_percent": "7%", "taxable_amount": "50,00", "tax_amount": "3,50"},
+            ],
+            "skonto": [{"percent": "2,00", "days": "14", "basis_amount": "119,00"}],
+        }
+    )
+    full = model.to_full_dict()
+    assert full["vat_breakdown"][0]["rate_percent"] == "19"
+    assert full["vat_breakdown"][0]["taxable_amount"] == "100.00"
+    assert full["vat_breakdown"][1]["rate_percent"] == "7"
+    assert full["skonto"][0]["percent"] == "2"
+    assert full["skonto"][0]["basis_amount"] == "119.00"
+    # Repeating groups are NOT part of the flat scored dict (scored via ADR-042).
+    assert "vat_breakdown" not in model.to_scored_dict()
+    assert "skonto" not in model.to_scored_dict()
+
+
+def test_invoice_fields_repeating_absent_is_none() -> None:
+    """No repeating-group keys in the input → None (honest absence)."""
+    model = InvoiceFields.model_validate({"invoice_number": "X"})
+    assert model.vat_breakdown is None
+    assert model.skonto is None
