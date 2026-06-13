@@ -13,6 +13,26 @@
 > `docs/architecture/invoice-field-model.md`; this record carries the *decision and its
 > rationale*. Line-item scoring is deferred to ADR-042 (Step 2).
 
+> **Delivery note (2026-06-13).** Step 1 shipped in two verified waves on branch
+> `feat/schema-step1`:
+> - **1a — 15 flat fields** (document type, payment block, bank details, extra totals,
+>   order ref, billing period) + the frozen-16 positive-list rework. Commit `ec4a861`.
+> - **1b — the two repeating groups** (per-VAT-rate breakdown BG-23, Skonto tiers):
+>   GroundTruth **representation** + CII **parsing** + prediction-side **coercion**
+>   (`VatBreakdownLine` / `SkontoLine` submodels). Commit `9647a5a`.
+>
+> Three things were deliberately **unified into Step 2 / ADR-042** rather than built
+> piecemeal in 1b, because they are most coherent (and DRY) when done once for *all*
+> repeating structures (VAT breakdown, Skonto, **and** line items): (1) repeating-group
+> **scoring** (row alignment + per-cell F1 + how it folds into the headline metric);
+> (2) the hand-draft **capture** path (the `gt_document` JSON shape + the variable-length
+> review-grid widget); (3) the structurer **prompt** extension that requests the new
+> fields. The held-out GT is drafted once, after Step 2, so this sequencing preserves the
+> no-double-pass goal. Repeating groups therefore exist in the schema + parse from CII +
+> coerce from model JSON today, but are **not yet in the flat scored dict** (they enter
+> scoring via ADR-042). All flat fields (1a) ARE fully scored now. 820 tests green; ruff +
+> mypy clean at both commits.
+
 ## Context
 
 The scored schema is **19 fields** (ADR-012's 16 + ADR-035's tax-rate + two addresses).
