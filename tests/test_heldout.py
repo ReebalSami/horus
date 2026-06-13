@@ -127,6 +127,64 @@ def test_json_round_trip_full_document(tmp_path: Path) -> None:
     assert from_file == from_mapping
 
 
+def test_json_round_trip_carries_repeating_groups(tmp_path: Path) -> None:
+    """vat_breakdown / skonto / line_items round-trip through the JSON document.
+
+    Hand-typed German/locale cell values canonicalize via the SAME repair the
+    prediction side uses (ADR-042), so the held-out GT carries repeating groups
+    byte-identically to a correct model prediction.
+    """
+    doc = gt_document(
+        invoice_id="belege-de-email-009",
+        language="german",
+        channel="email",
+        fields={"invoice_number": "R-9"},
+        vat_breakdown=[
+            {
+                "category_code": "S",
+                "rate_percent": "19 %",
+                "taxable_amount": "100,00",
+                "tax_amount": "19,00",
+            }
+        ],
+        skonto=[{"percent": "2,00", "days": "14", "basis_amount": "119,00"}],
+        line_items=[
+            {
+                "line_id": "1",
+                "name": "Beratung",
+                "net_price": "100,00",
+                "quantity": "1",
+                "vat_rate": "19 %",
+                "line_amount": "100,00",
+            }
+        ],
+    )
+    path = tmp_path / "belege-de-email-009.gt.json"
+    path.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
+    gt = build_groundtruth_from_json(path)
+
+    assert gt.vat_breakdown is not None
+    assert len(gt.vat_breakdown) == 1
+    assert gt.vat_breakdown[0]["rate_percent"].normalized_value == "19"
+    assert gt.vat_breakdown[0]["taxable_amount"].normalized_value == "100.00"
+    assert gt.skonto is not None
+    assert gt.skonto[0]["percent"].normalized_value == "2"
+    assert gt.line_items is not None
+    assert len(gt.line_items) == 1
+    assert gt.line_items[0]["name"].normalized_value == "Beratung"
+    assert gt.line_items[0]["line_amount"].normalized_value == "100.00"
+
+
+def test_gt_document_repeating_absent_is_none() -> None:
+    """Without repeating-group args, gt_document emits null for each group."""
+    doc = gt_document(
+        invoice_id="x", language="german", channel="email", fields={"invoice_number": "A"}
+    )
+    assert doc["vat_breakdown"] is None
+    assert doc["skonto"] is None
+    assert doc["line_items"] is None
+
+
 def test_json_accepts_bare_field_mapping(tmp_path: Path) -> None:
     """A file containing a bare field object (no 'fields' wrapper) is accepted."""
     path = tmp_path / "bare.gt.json"

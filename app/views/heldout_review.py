@@ -28,6 +28,14 @@ _GROUPS: tuple[tuple[str, str], ...] = (
     ("totals", "Totals"),
 )
 
+# Repeating groups (ADR-041/042) — rendered as variable-length grids below the
+# flat fields. One row per VAT rate / Skonto tier / line item.
+_REPEATING: tuple[tuple[str, str], ...] = (
+    ("vat_breakdown", "VAT breakdown — one row per rate"),
+    ("skonto", "Skonto — one row per discount tier"),
+    ("line_items", "Line items — one row per position"),
+)
+
 st.title("Ground Truth Review")
 st.caption("Verify the held-out test-set answer keys, field by field, against each invoice.")
 
@@ -44,16 +52,26 @@ st.markdown(
 )
 
 
-def _draft_fields(item: HeldoutItem) -> tuple[dict[str, str], bool, str]:
-    """Return (field values as strings, verified flag, notes) for the draft."""
-    doc = heldout_data.load_draft(item)
+def _flat_values(doc: dict[str, object]) -> dict[str, str]:
+    """Flat field values as edit-ready strings (None → ""), in display order."""
     raw_fields = doc.get("fields", {})
     fields = raw_fields if isinstance(raw_fields, dict) else {}
-    values = {
+    return {
         key: ("" if fields.get(key) is None else str(fields.get(key)))
         for key in field_meta.FIELD_ORDER
     }
-    return values, bool(doc.get("verified", False)), str(doc.get("notes", "") or "")
+
+
+def _repeating_seed(doc: dict[str, object], group_key: str) -> list[dict[str, str]]:
+    """Edit-ready rows for one repeating group; one blank row if empty (so columns show)."""
+    sub_keys = heldout_data.repeating_subkeys(group_key)
+    raw_rows = doc.get(group_key) or []
+    seed: list[dict[str, str]] = []
+    if isinstance(raw_rows, list):
+        for row in raw_rows:
+            if isinstance(row, dict):
+                seed.append({k: ("" if row.get(k) is None else str(row.get(k))) for k in sub_keys})
+    return seed or [dict.fromkeys(sub_keys, "")]
 
 
 def _render_pages(item: HeldoutItem) -> None:
@@ -71,7 +89,10 @@ def _render_pages(item: HeldoutItem) -> None:
 
 
 def _render_form(item: HeldoutItem) -> None:
-    values, verified, notes = _draft_fields(item)
+    doc = heldout_data.load_draft(item)
+    values = _flat_values(doc)
+    verified = bool(doc.get("verified", False))
+    notes = str(doc.get("notes", "") or "")
     cards.section_heading(
         "Answer key", "Correct any field, then tick Verified and Save (blank = not on invoice)"
     )
@@ -85,6 +106,21 @@ def _render_form(item: HeldoutItem) -> None:
                 german = field_meta.german_label(key)
                 label = f"{field_meta.label(key)}" + (f"  ·  {german}" if german else "")
                 edited[key] = st.text_input(label, value=values[key], key=f"f-{item.id}-{key}")
+
+        st.divider()
+        st.markdown("**Repeating groups** — add/remove rows; leave a row blank to drop it")
+        edited_groups: dict[str, list[dict[str, str]]] = {}
+        for group_key, group_label in _REPEATING:
+            st.caption(group_label)
+            edited_groups[group_key] = list(
+                st.data_editor(
+                    _repeating_seed(doc, group_key),
+                    num_rows="dynamic",
+                    use_container_width=True,
+                    key=f"grid-{item.id}-{group_key}",
+                )
+            )
+
         new_notes = st.text_area("Notes (optional)", value=notes, key=f"notes-{item.id}")
         new_verified = st.checkbox(
             "Verified — I checked every field against the invoice",
@@ -94,7 +130,15 @@ def _render_form(item: HeldoutItem) -> None:
         submitted = st.form_submit_button("Save answer key", type="primary")
 
     if submitted:
-        heldout_data.save_draft(item, fields=edited, verified=new_verified, notes=new_notes)
+        heldout_data.save_draft(
+            item,
+            fields=edited,
+            verified=new_verified,
+            notes=new_notes,
+            vat_breakdown=edited_groups["vat_breakdown"],
+            skonto=edited_groups["skonto"],
+            line_items=edited_groups["line_items"],
+        )
         state = "verified" if new_verified else "saved (unverified)"
         st.success(f"Answer key for `{item.id}` {state}.")
         st.rerun()

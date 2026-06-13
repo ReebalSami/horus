@@ -15,9 +15,11 @@ datasheet stay in sync without a separate re-index run.
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
+from horus.eval.ground_truth import REPEATING_GROUPS
 from horus.eval.heldout import (
     INDEX_FILENAME,
     HeldoutItem,
@@ -40,6 +42,30 @@ EVAL_DPI = 300
 def corpus_root() -> Path:
     """Absolute path to the held-out corpus root."""
     return CORPUS_ROOT
+
+
+def repeating_subkeys(group_key: str) -> list[str]:
+    """Ordered sub-field keys for a repeating group (the review grid's columns)."""
+    return list(REPEATING_GROUPS[group_key][1].keys())
+
+
+def _clean_rows(
+    rows: Sequence[Mapping[str, object]] | None,
+) -> list[dict[str, str | None]] | None:
+    """Strip + null-blank each cell; drop fully-empty rows; `None` if nothing remains."""
+    if not rows:
+        return None
+    cleaned: list[dict[str, str | None]] = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        cells: dict[str, str | None] = {
+            str(key): (str(value).strip() if value is not None and str(value).strip() else None)
+            for key, value in row.items()
+        }
+        if any(value is not None for value in cells.values()):
+            cleaned.append(cells)
+    return cleaned or None
 
 
 def list_items() -> list[HeldoutItem]:
@@ -75,12 +101,16 @@ def save_draft(
     verified: bool,
     notes: str = "",
     drafted_by: str = "cascade",
+    vat_breakdown: Sequence[Mapping[str, object]] | None = None,
+    skonto: Sequence[Mapping[str, object]] | None = None,
+    line_items: Sequence[Mapping[str, object]] | None = None,
 ) -> Path:
     """Write the (verified) answer key for one invoice + refresh the index flag.
 
-    Empty/whitespace-only field values are stored as `None` (honest absence). The
-    GT file's `verified` is authoritative; `index.json`'s cached flag is updated to
-    match so the loader + datasheet need no separate re-index.
+    Empty/whitespace-only field values are stored as `None` (honest absence); the
+    same applies per-cell to the repeating-group rows, and fully-empty rows are
+    dropped. The GT file's `verified` is authoritative; `index.json`'s cached flag
+    is updated to match so the loader + datasheet need no separate re-index.
     """
     cleaned: dict[str, str | None] = {
         key: (value.strip() if isinstance(value, str) and value.strip() else None)
@@ -91,6 +121,9 @@ def save_draft(
         language=item.language,
         channel=item.channel,
         fields=cleaned,
+        vat_breakdown=_clean_rows(vat_breakdown),
+        skonto=_clean_rows(skonto),
+        line_items=_clean_rows(line_items),
         drafted_by=drafted_by,
         verified=verified,
         verified_date=datetime.now(UTC).strftime("%Y-%m-%d") if verified else None,

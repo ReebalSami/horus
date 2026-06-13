@@ -42,7 +42,11 @@ GT JSON document shape (one file per invoice, under `<corpus_root>/gt/<id>.gt.js
       "verified": true,                # author confirmed every field vs. source
       "verified_date": "2026-06-07",
       "notes": "",
-      "fields": { <the 19 FIELDS keys>: "<as printed>" | null }
+      "fields": { <the 34 FIELDS keys>: "<as printed>" | null },
+      "vat_breakdown": [ {category_code, rate_percent, taxable_amount, tax_amount} ] | null,
+      "skonto": [ {percent, days, basis_amount} ] | null,
+      "line_items": [ {line_id, name, seller_assigned_id, net_price,
+                       quantity, vat_rate, line_amount} ] | null
     }
 
 `null` (or a missing key / empty string) means the field is **absent** on the
@@ -59,13 +63,13 @@ eval strategy this set serves).
 from __future__ import annotations
 
 import json
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from horus.eval.ground_truth import FIELDS, GroundTruth, GroundTruthField
-from horus.eval.schema import validate_and_repair
+from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS, GroundTruth, GroundTruthField
+from horus.eval.schema import _coerce_repeating, validate_and_repair
 
 __all__ = [
     "GT_DIRNAME",
@@ -112,6 +116,9 @@ def gt_document(
     language: str,
     channel: str,
     fields: Mapping[str, str | None],
+    vat_breakdown: Sequence[Mapping[str, str | None]] | None = None,
+    skonto: Sequence[Mapping[str, str | None]] | None = None,
+    line_items: Sequence[Mapping[str, str | None]] | None = None,
     drafted_by: str = "cascade",
     verified: bool = False,
     verified_date: str | None = None,
@@ -136,10 +143,64 @@ def gt_document(
         "verified_date": verified_date,
         "notes": notes,
         "fields": merged,
+        "vat_breakdown": [dict(row) for row in vat_breakdown] if vat_breakdown else None,
+        "skonto": [dict(row) for row in skonto] if skonto else None,
+        "line_items": [dict(row) for row in line_items] if line_items else None,
     }
 
 
-def build_groundtruth_from_mapping(fields: Mapping[str, Any]) -> GroundTruth:
+def _repeating_records_from_rows(
+    group_key: str,
+    raw_rows: Sequence[Mapping[str, Any]] | None,
+) -> list[dict[str, GroundTruthField]] | None:
+    """Build a repeating group's GT records from hand-authored row dicts (or None).
+
+    Mirrors the header path: each cell's `normalized_value` comes from the SAME
+    locale repair the prediction side uses (`schema._coerce_repeating`), so a
+    hand-typed German ``1.234,56`` / ``19 %`` canonicalizes byte-identically to a
+    correct model prediction. Absent/empty cells stay honest nulls; unknown row
+    keys are dropped; non-mapping rows are skipped.
+    """
+    if not raw_rows:
+        return None
+    mapping_rows = [row for row in raw_rows if isinstance(row, Mapping)]
+    if not mapping_rows:
+        return None
+    sub_fields = REPEATING_GROUPS[group_key][1]
+    coerced_rows = _coerce_repeating(group_key, mapping_rows) or []
+    records: list[dict[str, GroundTruthField]] = []
+    for raw_row, coerced_row in zip(mapping_rows, coerced_rows, strict=False):
+        lower_to_original = {str(key).lower(): key for key in raw_row}
+        record: dict[str, GroundTruthField] = {}
+        for sub_key, spec in sub_fields.items():
+            original = lower_to_original.get(sub_key.lower())
+            raw_obj = raw_row[original] if original is not None else None
+            if raw_obj is None:
+                is_present = False
+                raw_value: str | None = None
+            else:
+                raw_value = raw_obj if isinstance(raw_obj, str) else str(raw_obj)
+                is_present = raw_value.strip() != ""
+                if not is_present:
+                    raw_value = None
+            record[sub_key] = GroundTruthField(
+                bt_code=spec.bt_code,
+                raw_value=raw_value,
+                normalized_value=coerced_row.get(sub_key) if is_present else None,
+                xpath=_MANUAL_GT_PROVENANCE,
+                is_present=is_present,
+            )
+        records.append(record)
+    return records
+
+
+def build_groundtruth_from_mapping(
+    fields: Mapping[str, Any],
+    *,
+    vat_breakdown: Sequence[Mapping[str, Any]] | None = None,
+    skonto: Sequence[Mapping[str, Any]] | None = None,
+    line_items: Sequence[Mapping[str, Any]] | None = None,
+) -> GroundTruth:
     """Build a `GroundTruth` from a hand-authored field mapping (the JSON GT route).
 
     Produces the same `GroundTruth(header={english_key: GroundTruthField})` shape as
@@ -181,7 +242,12 @@ def build_groundtruth_from_mapping(fields: Mapping[str, Any]) -> GroundTruth:
             xpath=_MANUAL_GT_PROVENANCE,
             is_present=is_present,
         )
-    return GroundTruth(header=header)
+    return GroundTruth(
+        header=header,
+        vat_breakdown=_repeating_records_from_rows("vat_breakdown", vat_breakdown),
+        skonto=_repeating_records_from_rows("skonto", skonto),
+        line_items=_repeating_records_from_rows("line_items", line_items),
+    )
 
 
 def build_groundtruth_from_json(path: Path) -> GroundTruth:
@@ -197,7 +263,12 @@ def build_groundtruth_from_json(path: Path) -> GroundTruth:
     fields = data.get("fields", data)
     if not isinstance(fields, Mapping):
         raise ValueError(f"GT file {path} 'fields' must be a JSON object.")
-    return build_groundtruth_from_mapping(fields)
+    return build_groundtruth_from_mapping(
+        fields,
+        vat_breakdown=data.get("vat_breakdown"),
+        skonto=data.get("skonto"),
+        line_items=data.get("line_items"),
+    )
 
 
 @dataclass(frozen=True)
