@@ -84,9 +84,9 @@ def _render_header(method_name: str, model_label: str, run: InvoiceRun) -> None:
     cards.render_kpi_row(
         [
             {
-                "label": "Field accuracy",
+                "label": "Flat-field accuracy",
                 "value": f"{run.micro_f1:.2f}",
-                "sub": f"{method_name} · {run.profile or 'invoice'}",
+                "sub": f"34 single-value fields · {method_name}",
                 "accent": theme.GOLD,
             },
             {
@@ -108,6 +108,17 @@ def _render_header(method_name: str, model_label: str, run: InvoiceRun) -> None:
                 "accent": theme.outcome_style("FN").color,
             },
         ]
+    )
+    group_summary = (
+        "  ·  ".join(
+            f"{key.replace('_', ' ')} {f1:.2f}" for key, f1 in sorted(run.group_f1.items())
+        )
+        if run.group_f1
+        else "no repeating groups scored"
+    )
+    st.caption(
+        f"Whole-schema accuracy (flat + VAT breakdown / Skonto / line items): "
+        f"**{run.overall_micro_f1:.2f}**  ·  {group_summary}"
     )
     st.caption(f"Model: `{model_label}` · run `{run.run_id[:10]}` · status {run.status}")
 

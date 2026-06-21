@@ -240,12 +240,16 @@ def run_arm_b(
                     )
 
                     predicted = structurer.to_predicted_dict(structured_text, structurer_model)
+                    # ADR-042: also fold the repeating groups (vat_breakdown /
+                    # skonto / line_items) into the score's overall_micro_*.
+                    predicted_groups = structurer.to_predicted_groups(structured_text)
                     scores = score(
                         predicted,
                         gt,
                         cfg=eval_cfg,
                         invoice_id=stem,
                         model_id=structurer_model,
+                        predicted_groups=predicted_groups,
                     )
 
                     with mlflow.start_run(
@@ -264,6 +268,12 @@ def run_arm_b(
                         mlflow.log_metric("macro_f1", scores.macro_f1)
                         mlflow.log_metric("micro_precision", scores.micro_precision)
                         mlflow.log_metric("micro_recall", scores.micro_recall)
+                        # ADR-042 — whole-schema headline (flat + repeating groups) + per-group F1.
+                        mlflow.log_metric("overall_micro_f1", scores.overall_micro_f1)
+                        mlflow.log_metric("overall_micro_precision", scores.overall_micro_precision)
+                        mlflow.log_metric("overall_micro_recall", scores.overall_micro_recall)
+                        for group_key, group_result in scores.repeating.items():
+                            mlflow.log_metric(f"group_{group_key}_f1", group_result.f1)
                         # ADR-027 surface incl. the honesty axis — logged as
                         # first-class metrics here (Arm B) for convenience, on top
                         # of the per_field_scores.json the inspector pools.

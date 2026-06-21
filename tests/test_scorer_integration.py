@@ -342,17 +342,22 @@ def test_per_field_outcome_counts_sum_to_16(einfach_gt: GroundTruth) -> None:
             model_id=model_id,
         )
         outcomes = [r.outcome for r in result.per_field.values()]
-        assert len(outcomes) == 19
+        assert len(outcomes) == 34
         # Tally across categories
         from collections import Counter
 
         counts = Counter(outcomes)
         # All outcomes ∈ allowed set
         assert set(counts.keys()) <= {"TP", "FP", "FN", "TN", "EXCLUDED"}
-        # No EXCLUDED on EN16931_Einfach (no normalizer-rejected GT in this corpus)
-        assert counts.get("EXCLUDED", 0) == 0, (
-            f"{transcript_name}: unexpected EXCLUDED outcomes={counts['EXCLUDED']}"
+        # ADR-045: EN16931_Einfach carries two distinct header VAT rates (7% +
+        # 19%), so the flat tax_rate is EXCLUDED (an ill-posed single-valued
+        # field on a multi-rate invoice; the per-rate truth lives in
+        # vat_breakdown). Exactly one EXCLUDED outcome is expected here.
+        assert counts.get("EXCLUDED", 0) == 1, (
+            f"{transcript_name}: expected exactly 1 EXCLUDED (multi-rate tax_rate), "
+            f"got {counts.get('EXCLUDED', 0)}"
         )
+        assert result.per_field["tax_rate"].outcome == "EXCLUDED"
 
 
 def test_micro_f1_consistent_with_macro_f1(einfach_gt: GroundTruth) -> None:
@@ -402,8 +407,8 @@ def test_cohort_heatmap_row_format(einfach_gt: GroundTruth) -> None:
             key: (1.0 if r.outcome == "TP" else 0.0) for key, r in result.per_field.items()
         }
 
-    # Shape sanity: 7 working cohort models, 19 fields each
+    # Shape sanity: 7 working cohort models, 34 fields each
     assert len(heatmap) == 7
     for model_row in heatmap.values():
-        assert len(model_row) == 19
+        assert len(model_row) == 34
         assert all(v in (0.0, 1.0) for v in model_row.values())

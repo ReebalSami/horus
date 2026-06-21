@@ -256,3 +256,185 @@ def _normalize_predicted_rate(raw: str) -> str | None:
     except InvalidOperation:
         return None
     return format(d.normalize(), "f")
+
+
+# EN16931 VAT category codes (UNTDID 5305 subset; BT-118/BT-151). The GT side
+# stores these letters verbatim from `ram:CategoryCode`; a VLM reads the page,
+# which prints the GERMAN WORD ("Umsatzsteuer"), never the code, so a faithful
+# predicted-side normalizer must recover the code from the model's rendering.
+_EN16931_VAT_CATEGORY_CODES: frozenset[str] = frozenset(
+    {"S", "Z", "E", "AE", "K", "G", "O", "L", "M", "B"}
+)
+
+# Parenthesized trailing code, e.g. "Umsatzsteuer (S)" → group 1 == "S".
+_PAREN_VAT_CODE_RE = re.compile(r"\(\s*([A-Za-z]{1,2})\s*\)")
+
+# German / English VAT-category phrasings → EN16931 code. Ordered SPECIFIC →
+# GENERIC: the substring scan returns the first hit, so the narrow exemption /
+# reverse-charge / intra-community phrases must precede the generic standard-rate
+# words (a "Reverse Charge" line also contains "Umsatzsteuer"). A reduced rate
+# (7 %, "ermäßigter Steuersatz") is still EN16931 category S.
+_VAT_CATEGORY_SYNONYMS: tuple[tuple[str, str], ...] = (
+    ("steuerschuldnerschaft des leistungsempfängers", "AE"),
+    ("reverse charge", "AE"),
+    ("innergemeinschaftliche lieferung", "K"),
+    ("innergemeinschaftlich", "K"),
+    ("intra-community", "K"),
+    ("intra community", "K"),
+    ("steuerbefreiung", "E"),
+    ("steuerfrei", "E"),
+    ("steuerbefreit", "E"),
+    ("exempt", "E"),
+    ("ausfuhrlieferung", "G"),
+    ("ausfuhr", "G"),
+    ("export", "G"),
+    # NOTE: keys are matched against a `str.casefold()`ed haystack, which maps
+    # ß → "ss"; this key is therefore written in the casefolded "ss" form so it
+    # matches BOTH the "ermäßigter" (ß) and "ermässigter" (ss) spellings.
+    ("ermässigter steuersatz", "S"),
+    ("regelsteuersatz", "S"),
+    ("umsatzsteuer", "S"),
+    ("mehrwertsteuer", "S"),
+    ("mwst", "S"),
+    ("ust", "S"),
+)
+
+
+def _normalize_predicted_vat_category(raw: str) -> str | None:
+    """Recover the EN16931 VAT-category code (BT-118) from a model's rendering.
+
+    The GT is a controlled-vocabulary letter ("S", "AE", "K", …) that is never
+    printed on the page. A VLM reads the German word and may emit any of:
+
+      - the bare code already — ``"S"`` / ``"ae"`` → ``"S"`` / ``"AE"``
+      - the word with the code in parens — ``"Umsatzsteuer (S)"`` → ``"S"``
+      - the bare German/English word — ``"Umsatzsteuer"`` → ``"S"``,
+        ``"innergemeinschaftliche Lieferung"`` → ``"K"``, ``"steuerfrei"`` → ``"E"``
+
+    This canonicalizes representation only — it never changes correctness: a
+    model that names the WRONG category in German still maps to the wrong code
+    and scores FN. Unrecognized input is returned stripped (honest; FN if it
+    doesn't match the GT code). ``None`` on empty input.
+    """
+    if not raw:
+        return None
+    s = unicodedata.normalize("NFC", raw.strip())
+    if not s:
+        return None
+    # 1. Bare EN16931 code already.
+    if s.upper() in _EN16931_VAT_CATEGORY_CODES:
+        return s.upper()
+    # 2. Parenthesized code the model supplied alongside the word.
+    m = _PAREN_VAT_CODE_RE.search(s)
+    if m and m.group(1).upper() in _EN16931_VAT_CATEGORY_CODES:
+        return m.group(1).upper()
+    # 3. German / English category phrase → code (specific-first scan).
+    low = s.casefold()
+    for phrase, code in _VAT_CATEGORY_SYNONYMS:
+        if phrase in low:
+            return code
+    # 4. No mapping — return stripped (honest: FN unless it equals the GT code).
+    return s
+
+
+# Leading invoice-number LABEL the page prints next to the value ("Rechnung
+# Nr. 471102", "Rechnungsnr.: 471102"). A REQUIRED separator after the label core
+# ([.:#] and/or whitespace) is what makes this safe: a genuine identifier that
+# merely starts with these letters ("NR-2024-001", "INV-001") has no such
+# separator, so it is never eaten. Anchored at the start; stripped once.
+_INVOICE_NUMBER_LABEL_RE = re.compile(
+    r"^\s*"
+    r"(?:invoice\s+|rechnungs?[-\s]*)?"  # optional qualifier word (Rechnung[s]/Invoice)
+    r"(?:nr|no|nummer|number)"  # the number-label core
+    r"(?:[.:#]+\s*|\s+)",  # REQUIRED separator run (guards against eating a real ID)
+    re.IGNORECASE,
+)
+
+
+def _normalize_predicted_invoice_number(raw: str) -> str | None:
+    """Strip a leading invoice-number LABEL the model echoed, then CODE-normalize.
+
+    invoice_number (BT-1) is ``field_type="CODE"``; the GT is the bare identifier
+    read from ``ram:ID`` (e.g. ``"471102"``). A VLM reading the page often
+    transcribes the printed LABEL together with the value — ``"Nr. 471102"``,
+    ``"Rechnung Nr. 471102"`` — so a literal-CODE comparison manufactures an FN
+    over a label the model faithfully copied (the same as-printed-vs-as-stored
+    class as ADR-046/048). Strip a leading number-label ONLY when a separator
+    follows (so a genuine identifier like ``"NR-2024-001"`` is never eaten), then
+    apply the standard predicted-CODE normalization.
+
+    Representation-only: a model that reads the WRONG number still scores FN; a
+    value with no label is unchanged. ``None`` on empty input. Falls back to the
+    un-stripped string if stripping would empty it (raw was a bare label).
+    """
+    if not raw:
+        return None
+    s = unicodedata.normalize("NFC", raw.strip())
+    if not s:
+        return None
+    stripped = _INVOICE_NUMBER_LABEL_RE.sub("", s, count=1).strip()
+    candidate = stripped if stripped else s
+    return _normalize_predicted_code(candidate, nfc=True)
+
+
+def _normalize_predicted_optional_zero_money(raw: str) -> str | None:
+    """Optional EN16931 totals (BT-107/108/113/114): a predicted 0 → absent.
+
+    ADR-043 established that a structural ``0.00`` in these optional totals
+    (allowance / charge / prepaid / rounding) is conventionally not rendered on
+    the page, so the GT side treats it as ABSENT. This is the symmetric
+    PREDICTED-side rule (ADR-051): a model that faithfully echoes the
+    page's/structure's ``0.00`` must not be penalized as a spurious emission (FP)
+    against that now-absent GT. A zero value → ``None`` (scored TN vs an absent
+    GT); any genuine NON-zero value → normal money normalization, so a real
+    prepaid/allowance is still scored against its GT (never masked). ``None`` on
+    empty/unparseable input.
+    """
+    norm = _normalize_predicted_money(raw)
+    if norm is None:
+        return None
+    try:
+        if Decimal(norm) == 0:
+            return None
+    except InvalidOperation:
+        return norm
+    return norm
+
+
+# A model often appends the line's GTIN/EAN to the seller article number with an
+# explicit "(GTIN)" marker: "PFA5 4000001234578 (GTIN)" or, run-on,
+# "KR3M4012345001235(GTIN)". The GT BT-155 is the bare seller article id
+# ("PFA5" / "KR3M"). Strip the trailing GTIN ONLY when the explicit marker is
+# present (so an article id that merely contains digits is never truncated) and
+# only for an EAN-13 (the corpus standard) — matching exactly 13 digits avoids
+# the boundary ambiguity when the article id itself ends in a digit
+# ("TB100A4" + "4012345001235" → keep "TB100A4", not "TB100A").
+_SELLER_ID_GTIN_RE = re.compile(
+    r"[\s/]*\d{13}\s*\(\s*GTIN\s*\)\s*$",
+    re.IGNORECASE,
+)
+
+
+def _normalize_predicted_seller_assigned_id(raw: str) -> str | None:
+    """Strip a trailing GTIN/EAN the model appended to the seller article id.
+
+    seller_assigned_id (BT-155) is ``field_type="CODE"``; the GT is the bare
+    article number from ``ram:SellerAssignedID``. A VLM reading the page often
+    concatenates the line's GTIN/EAN with an explicit "(GTIN)" marker
+    (``"PFA5 4000001234578 (GTIN)"``), so a literal-CODE comparison manufactures
+    an FN over a value the model read faithfully (the same as-printed-vs-as-stored
+    class as ADR-048/050). Remove a trailing EAN-13 + "(GTIN)" marker, then apply
+    the standard predicted-CODE normalization.
+
+    Representation-only: a model that reads the WRONG article id still scores FN;
+    an id with no GTIN marker is unchanged. ``None`` on empty input. Falls back to
+    the un-stripped string if stripping would empty it.
+    """
+    if not raw:
+        return None
+    s = unicodedata.normalize("NFC", raw.strip())
+    if not s:
+        return None
+    stripped = _SELLER_ID_GTIN_RE.sub("", s).strip()
+    candidate = stripped if stripped else s
+    return _normalize_predicted_code(candidate, nfc=True)

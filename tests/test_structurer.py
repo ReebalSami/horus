@@ -18,12 +18,51 @@ from __future__ import annotations
 import inspect
 import json
 
+import pytest
+
 from horus.eval import adapters as adapters_regex
 from horus.eval import structurer
 from horus.eval.ground_truth import FIELDS
 from horus.eval.schema import PURPOSE_SUMMARY_KEY
 
 _MODEL = "google/gemma-4-E4B-it"
+
+
+@pytest.fixture
+def _rabatte_missing_brace() -> str:
+    """The exact Arm-B Gemma malformation for EN16931_Rabatte (ADR-044 regression).
+
+    The 4th `line_items` object's closing `}` is substituted by `]`, leaving a
+    spurious extra `]` after the array already closes (`... "55,40" ] ], ...`);
+    pre-ADR-044 the whole object was unparseable (micro_f1=0.000). German comma
+    decimals are quoted (valid JSON strings) so only the structural slip matters.
+    Reproduced verbatim from the saved transcript
+    (`docs/sources/transcripts-arms-dev/google__gemma-4-e4b-it__EN16931_Rabatte.txt`).
+    """
+    return (
+        "Here is the extracted invoice data.\n\n"
+        "```json\n"
+        "{\n"
+        '  "invoice_number": "471102",\n'
+        '  "seller_name": "Lieferant GmbH",\n'
+        '  "grand_total_amount": "215,07",\n'
+        '  "vat_breakdown": [\n'
+        '    {"rate_percent": "7", "tax_amount": "9,06"},\n'
+        '    {"rate_percent": "19", "tax_amount": "12,24"}\n'
+        "  ],\n"
+        '  "line_items": [\n'
+        '    {"line_id": "1", "line_amount": "10,00"},\n'
+        '    {"line_id": "2", "line_amount": "27,50"},\n'
+        '    {"line_id": "3", "line_amount": "109,80"},\n'
+        "    {\n"
+        '      "line_id": "4",\n'
+        '      "line_amount": "55,40"\n'
+        "    ]\n"
+        "  ],\n"
+        '  "purpose_summary": "goods supplied"\n'
+        "}\n"
+        "```\n"
+    )
 
 
 def test_to_predicted_dict_clean_json_coerces_locale() -> None:
@@ -61,6 +100,28 @@ def test_to_predicted_dict_recovers_json_from_reasoning_wrapper() -> None:
     out = structurer.to_predicted_dict(raw, _MODEL)
     assert out["invoice_number"] == "471102"
     assert out["seller_name"] == "Lieferant GmbH"
+
+
+def test_to_predicted_dict_recovers_missing_brace_via_arm_b_path(
+    _rabatte_missing_brace: str,
+) -> None:
+    """The real Arm-B failure (Rabatte missing-`}`) recovers through the typed structurer path.
+
+    Pre-ADR-044 this output scored micro_f1=0.000 (whole-object unparseable);
+    after the structural-repair rung the flat fields are recovered AND
+    locale-coerced (German `215,07` -> canonical `215.07`).
+    """
+    out = structurer.to_predicted_dict(_rabatte_missing_brace, _MODEL)
+    assert out["invoice_number"] == "471102"
+    assert out["seller_name"] == "Lieferant GmbH"
+    assert out["grand_total_amount"] == "215.07"  # German comma -> canonical 2-dp
+
+
+def test_to_predicted_groups_recovers_missing_brace(_rabatte_missing_brace: str) -> None:
+    """The repeating-group path also recovers all 4 line_items from the repaired object."""
+    groups = structurer.to_predicted_groups(_rabatte_missing_brace)
+    assert len(groups["line_items"]) == 4
+    assert len(groups["vat_breakdown"]) == 2
 
 
 def test_to_predicted_dict_garbage_is_all_null() -> None:
@@ -128,3 +189,132 @@ def test_public_surface_signature_parity_with_adapters() -> None:
             f"structurer.{fn_name} params {structurer_params} must match "
             f"adapters.{fn_name} params {regex_params} for harness swappability"
         )
+
+
+# ---------------------------------------------------------------------------
+# ADR-042 — repeating-group extraction (vat_breakdown / skonto / line_items)
+# ---------------------------------------------------------------------------
+
+
+def test_to_predicted_groups_parses_arrays() -> None:
+    """JSON arrays parse to per-row coerced dicts; absent groups are empty lists."""
+    raw = json.dumps(
+        {
+            "vat_breakdown": [{"rate_percent": "19 %", "tax_amount": "19,00"}],
+            "line_items": [{"name": "Beratung", "line_amount": "100,00"}],
+        }
+    )
+    groups = structurer.to_predicted_groups(raw)
+    assert groups["vat_breakdown"][0]["rate_percent"] == "19"
+    assert groups["vat_breakdown"][0]["tax_amount"] == "19.00"
+    assert groups["line_items"][0]["name"] == "Beratung"
+    assert groups["line_items"][0]["line_amount"] == "100.00"
+    assert groups["skonto"] == []
+
+
+def test_to_predicted_groups_multipage_first_nonempty_wins() -> None:
+    """Per-page group merge keeps the first page that carries a non-empty group."""
+    page1 = json.dumps({"vat_breakdown": []})
+    page2 = json.dumps({"vat_breakdown": [{"rate_percent": "7"}]})
+    groups = structurer.to_predicted_groups_multipage([page1, page2], _MODEL)
+    assert groups["vat_breakdown"][0]["rate_percent"] == "7"
+
+
+def test_to_predicted_groups_unrecoverable_is_empty() -> None:
+    """Garbage output → all groups empty (honest; the model emitted no rows)."""
+    groups = structurer.to_predicted_groups("not json at all <eos>")
+    assert groups == {"vat_breakdown": [], "skonto": [], "line_items": []}
+
+
+# ---------------------------------------------------------------------------
+# ADR-049 — registry-driven structurer field glossary (totals + references)
+# ---------------------------------------------------------------------------
+
+
+def test_render_field_glossary_includes_confusable_fields() -> None:
+    """The guide carries the 7 commonly-confused fields with their German anchors."""
+    glossary = structurer.render_field_glossary()
+    # the two reference fields the model swapped, with disambiguating labels
+    assert "- buyer_reference:" in glossary
+    assert "Kundennummer" in glossary
+    assert "- buyer_order_reference:" in glossary
+    assert "Bestellnummer" in glossary
+    # the 5 document totals, each anchored to its printed German label
+    for key, label in (
+        ("line_total_amount", "Positionssumme"),
+        ("tax_basis_total_amount", "Rechnungssumme ohne USt."),
+        ("tax_total_amount", "Steuerbetrag"),
+        ("grand_total_amount", "Bruttosumme"),
+        ("due_payable_amount", "Zahlbetrag"),
+    ):
+        assert f"- {key}:" in glossary
+        assert label in glossary
+
+
+def test_render_field_glossary_excludes_fields_without_description() -> None:
+    """Fields with no `description` are omitted — the bare key list already names them."""
+    glossary = structurer.render_field_glossary()
+    for key in ("invoice_number", "seller_name", "seller_gln", "buyer_vat_id"):
+        assert f"- {key}:" not in glossary
+
+
+def test_render_field_glossary_carries_no_ground_truth_values() -> None:
+    """The generic guardrail: the guide holds field SEMANTICS + LABEL names only.
+
+    No invoice-specific value may leak into the prompt (e.g. EN16931_Einfach's
+    473.00 / 56.87 / 529.87 totals or the GE2020211 customer number). This test
+    fails loudly if a future description accidentally embeds a ground-truth value.
+    """
+    glossary = structurer.render_field_glossary()
+    for leak in ("473", "529", "56.87", "198.00", "GE2020211"):
+        assert leak not in glossary
+
+
+def test_render_field_glossary_is_registry_sourced() -> None:
+    """Every guide line maps to a FieldSpec with a `description` (single source of truth).
+
+    Open/closed: adding a `description` to another flat FieldSpec auto-extends the
+    guide; the renderer special-cases nothing. Repeating-group cells are NOT
+    glossed (measured net-negative, rejected per ADR-053), so the rendered keys
+    are exactly the described flat fields.
+    """
+    described = {key for key, spec in FIELDS.items() if spec.description is not None}
+    assert described  # the confusable flat fields are populated
+    rendered_keys = {
+        line[2:].split(":", 1)[0]
+        for line in structurer.render_field_glossary().splitlines()
+        if line.startswith("- ")
+    }
+    assert rendered_keys == described
+
+
+def test_render_structuring_prompt_substitutes_token() -> None:
+    """The `{field_glossary}` placeholder is filled with the registry guide."""
+    out = structurer.render_structuring_prompt("keys:\n{field_glossary}\nend")
+    assert "{field_glossary}" not in out
+    assert "Positionssumme" in out
+
+
+def test_render_structuring_prompt_preserves_literal_json_braces() -> None:
+    """Substitution uses str.replace (not str.format) → JSON braces survive verbatim."""
+    template = "row {category_code, rate_percent} and {field_glossary}"
+    out = structurer.render_structuring_prompt(template)
+    assert "{category_code, rate_percent}" in out
+    assert "Bruttosumme" in out
+
+
+def test_render_structuring_prompt_noop_without_token() -> None:
+    """A prompt without the placeholder (regex baseline / OCR defaults) is unchanged."""
+    template = "Convert this page to docling."
+    assert structurer.render_structuring_prompt(template) == template
+
+
+def test_build_structuring_input_fills_glossary_and_appends_reader_text() -> None:
+    """The composed input renders the guide and appends the reader transcript."""
+    full = structurer.build_structuring_input(
+        "Extract fields.\n{field_glossary}", "Belegsummen\nZahlbetrag 529,87"
+    )
+    assert "{field_glossary}" not in full
+    assert "- due_payable_amount:" in full
+    assert "Zahlbetrag 529,87" in full
+    assert "<<<" in full and ">>>" in full

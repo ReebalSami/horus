@@ -40,30 +40,85 @@ ADR-034 (the two arms + honesty guardrail).
 
 from __future__ import annotations
 
+from typing import Any
+
 from horus.eval.adapters_json import recover_json_object
-from horus.eval.ground_truth import FIELDS
+from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS
 from horus.eval.schema import InvoiceFields, validate_and_repair
 
 __all__ = [
     "build_structuring_input",
+    "render_field_glossary",
+    "render_structuring_prompt",
     "to_full_dict",
     "to_predicted_dict",
     "to_predicted_dict_multipage",
+    "to_predicted_groups",
+    "to_predicted_groups_multipage",
 ]
+
+# Placeholder a structuring prompt template may carry to request the
+# registry-sourced field guide (ADR-049). Substituted by `render_structuring_prompt`.
+_FIELD_GLOSSARY_TOKEN = "{field_glossary}"
+
+
+def render_field_glossary() -> str:
+    """Render the registry's per-field guide (description + German label aliases).
+
+    One terse line per ``FIELDS`` entry that carries a ``description`` — the
+    confusable scalar fields whose English key does not obviously map to the
+    German label printed on the invoice (document totals vs per-line/per-rate
+    values; customer-number vs order-number; ADR-049). Fields without a
+    ``description`` are omitted (the prompt's bare key list already names them).
+    Repeating-group cells are deliberately NOT glossed: extending the guide to
+    line-item cells was measured net-negative and rejected (ADR-053). Contains
+    field SEMANTICS + example German LABEL names only — never a ground-truth
+    value, so the guide is identical for every invoice + locale (the generic,
+    no-leakage guardrail).
+    """
+    lines: list[str] = []
+    for key, spec in FIELDS.items():
+        if spec.description is None:
+            continue
+        if spec.prompt_aliases:
+            labels = " / ".join(spec.prompt_aliases)
+            lines.append(f"- {key}: {spec.description} (printed as: {labels})")
+        else:
+            lines.append(f"- {key}: {spec.description}")
+    return "\n".join(lines)
+
+
+def render_structuring_prompt(template: str) -> str:
+    """Fill the ``{field_glossary}`` placeholder with the registry field guide.
+
+    Single substitution point (ADR-049) so every structuring path — Arm A (via
+    the harness), Arm B (``run_arm_b``), and the live demo — renders the SAME
+    guide from one source of truth (the ``FIELDS`` registry). Uses plain
+    ``str.replace`` (NOT ``str.format``) so the literal JSON braces elsewhere in
+    the prompt are left untouched. A no-op when the placeholder is absent, so
+    non-structurer prompts (the frozen regex baseline, the OCR/markdown
+    COHORT_MANIFEST defaults) pass through unchanged.
+    """
+    if _FIELD_GLOSSARY_TOKEN not in template:
+        return template
+    return template.replace(_FIELD_GLOSSARY_TOKEN, render_field_glossary())
 
 
 def build_structuring_input(structuring_prompt: str, reader_text: str) -> str:
     """Compose the structurer's text input: the instruction + the reader transcript.
 
     The YAML ``prompt_template_override`` carries only the *instruction* (what to
-    extract, the honesty rule, the key list); the reader's transcript text is
+    extract, the honesty rule, the key list, and optionally a ``{field_glossary}``
+    placeholder); the registry field guide is substituted via
+    ``render_structuring_prompt`` (ADR-049) and the reader's transcript text is
     appended here under a clear delimiter so the prompt stays readable in config
     and the text-injection lives in one place. Shared by the offline Arm-B runner
     (``arm_b.run_arm_b``) and the live demo page (``live.run_read_then_structure``)
     so the two paths compose the structuring prompt identically (ADR-038/ADR-039).
     """
+    rendered_prompt = render_structuring_prompt(structuring_prompt)
     return (
-        f"{structuring_prompt}\n\n"
+        f"{rendered_prompt}\n\n"
         "Invoice text (read by a specialist document model):\n"
         "<<<\n"
         f"{reader_text}\n"
@@ -113,13 +168,51 @@ def to_predicted_dict_multipage(
     return merged
 
 
-def to_full_dict(raw_text: str) -> dict[str, str | None]:
-    """Parse one structuring-model output into the FULL 20-key dict (incl. purpose_summary).
+def to_predicted_groups(raw_text: str) -> dict[str, list[dict[str, str | None]]]:
+    """Parse one structuring output into the repeating-group rows (ADR-042).
+
+    Returns ``{group_key: [row dicts]}`` for vat_breakdown / skonto / line_items
+    (empty list when the model emitted none) — the shape `scorer.score`'s
+    ``predicted_groups`` consumes. Cells are already locale-coerced by
+    ``InvoiceFields`` (same repair as the flat path). Unrecoverable JSON yields
+    all-empty groups (honest; the model extracted no rows).
+    """
+    full = to_full_dict(raw_text)
+    groups: dict[str, list[dict[str, str | None]]] = {}
+    for group_key in REPEATING_GROUPS:
+        rows = full.get(group_key)
+        groups[group_key] = [dict(row) for row in rows] if isinstance(rows, list) else []
+    return groups
+
+
+def to_predicted_groups_multipage(
+    per_page_texts: list[str],
+    model_id: str,  # noqa: ARG001
+) -> dict[str, list[dict[str, str | None]]]:
+    """Merge per-page repeating groups: the first page with a non-empty group wins.
+
+    Mirrors the flat first-non-None-wins merge (page 1 dominant; ADR-019 W3.1). A
+    cross-page line-item concatenation is a documented follow-up; for the
+    single-page synthetic corpus + typical short invoices this is exact.
+    ``model_id`` is signature-parity-only (unused).
+    """
+    merged: dict[str, list[dict[str, str | None]]] = {key: [] for key in REPEATING_GROUPS}
+    for page_text in per_page_texts:
+        page_groups = to_predicted_groups(page_text)
+        for group_key, rows in page_groups.items():
+            if not merged[group_key] and rows:
+                merged[group_key] = rows
+    return merged
+
+
+def to_full_dict(raw_text: str) -> dict[str, Any]:
+    """Parse one structuring-model output into the FULL dict (flat + groups + summary).
 
     Same recovery + validate/repair as :func:`to_predicted_dict`, but returns
-    ``InvoiceFields.to_full_dict()`` — the 19 scored fields PLUS the non-scored
-    ``purpose_summary`` (for the Streamlit demo per ADR-035/036). The scorer
-    never sees this; use :func:`to_predicted_dict` on the scoring path.
+    ``InvoiceFields.to_full_dict()`` — the 34 scored flat fields PLUS the non-scored
+    ``purpose_summary`` and the repeating-group lists (vat_breakdown / skonto /
+    line_items; for the Streamlit demo + `to_predicted_groups`). The flat scorer
+    never sees this; use :func:`to_predicted_dict` on the flat scoring path.
     """
     parsed = recover_json_object(raw_text)
     if parsed is None:

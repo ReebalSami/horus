@@ -3,8 +3,9 @@
 # Arm A (single-shot): image -> Gemma -> JSON -> structurer. Gemma reads each
 # invoice page image directly and emits reasoning-then-strict-JSON; the structurer
 # (src/horus/eval/structurer.py) routes that through InvoiceFields +
-# validate_and_repair into the 19-field scored dict. Runs through the cohort
-# harness with adapter_mode="structurer".
+# validate_and_repair into the full-coverage scored schema (34 flat fields +
+# the VAT-breakdown / Skonto / line-item repeating groups; ADR-041/042). Runs
+# through the cohort harness with adapter_mode="structurer".
 #
 # Composed on configs/pilot-13.yaml. Invoked via:
 #
@@ -15,7 +16,9 @@
 # generative structurer safe for the tax domain. dev_only=true (dev-surface only).
 #
 # Refs: ADR-038 (arms mechanism + structurer adapter_mode), ADR-034 (the two
-# arms), ADR-035 (InvoiceFields / validate_and_repair), ADR-037 (19-field scope).
+# arms), ADR-035 (InvoiceFields / validate_and_repair), ADR-041 (full-coverage
+# flat fields + VAT breakdown + Skonto), ADR-042 (line items + repeating-group
+# scoring), ADR-037 (frozen-baseline scope param).
 
 mlflow:
   experiment_name: arm-a-dev
@@ -44,8 +47,15 @@ cohort:
       You are a meticulous accountant reading ONE page of a German B2B invoice. First reason in 2-3 short sentences (do NOT analyze each field one-by-one — that wastes space and risks truncating the JSON), then output ONE JSON object on the final line.
 
       Rules:
-      - Extract ONLY values actually present on this page. If a field is not on this page, use null. NEVER invent a value (an honest null is correct and expected — pages often carry only some fields).
-      - Money values exactly as printed (digits + separators). Dates as printed. tax_rate is the VAT percentage (e.g. "19").
+      - Extract ONLY values actually present on this page. If a field is not on this page, use null (or [] for the array fields). NEVER invent a value (an honest null is correct and expected — pages often carry only some fields).
+      - Money values exactly as printed (digits + separators). Dates as printed. Percentages as the number (e.g. "19").
+      - document_type: one of "invoice", "credit_note", "correction".
       - Addresses: the full postal address as printed (street, postcode, city, country).
-      - Return EXACTLY these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, seller_name, seller_vat_id, seller_tax_id, seller_gln, buyer_name, buyer_reference, buyer_vat_id, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount, tax_rate, seller_address, buyer_address, purpose_summary.
+      - The array fields hold one object per row ([] or null if the invoice has none):
+        vat_breakdown — per VAT rate: {category_code, rate_percent, taxable_amount, tax_amount}
+        skonto — early-payment discount tiers: {percent, days, basis_amount}
+        line_items — one per product/service line: {line_id, name, seller_assigned_id, net_price, quantity, vat_rate, line_amount}
+      - Return EXACTLY these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, document_type, buyer_order_reference, billing_period_start, billing_period_end, seller_name, seller_vat_id, seller_tax_id, seller_gln, seller_address, buyer_name, buyer_reference, buyer_vat_id, buyer_address, payment_due_date, payment_means_code, payment_means_text, seller_iban, seller_bic, seller_account_name, payment_reference, tax_rate, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount, prepaid_amount, allowance_total_amount, charge_total_amount, rounding_amount, vat_breakdown, skonto, line_items, purpose_summary.
+      - Field guide for commonly-confused keys — choose the key by the German label printed on the invoice. The total amounts below are the whole-document summary values (typically under a "Belegsummen"/"Summen" block), NOT a single line and NOT one VAT rate:
+      {field_glossary}
       - purpose_summary: one short sentence describing what the invoice is for.

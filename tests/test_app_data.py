@@ -8,6 +8,8 @@ mirroring the corpus-skip pattern in `tests/_corpus.py`.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from app.components import charts, field_table
@@ -150,3 +152,45 @@ def test_load_invoice_runs_smoke() -> None:
     sample = next(iter(runs.values()))
     assert sample.invoice_id
     assert sample.field_results  # per-field scores were reconstructed from the artifact
+
+
+def test_heldout_save_draft_persists_repeating_groups(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """save_draft persists the repeating grids; blank rows drop; round-trips to GroundTruth."""
+    from app.data import heldout as heldout_data
+    from horus.eval.heldout import HeldoutItem, build_groundtruth_from_json
+
+    # Redirect CORPUS_ROOT so the index-flag refresh cannot touch real private data.
+    monkeypatch.setattr(heldout_data, "CORPUS_ROOT", tmp_path)
+    item = HeldoutItem(
+        id="belege-de-email-001",
+        pdf_path=tmp_path / "x.pdf",
+        gt_path=tmp_path / "belege-de-email-001.gt.json",
+        language="german",
+        channel="email",
+        verified=False,
+    )
+    blank_line = dict.fromkeys(heldout_data.repeating_subkeys("line_items"), "")
+    heldout_data.save_draft(
+        item,
+        fields={"invoice_number": "R-1"},
+        verified=True,
+        vat_breakdown=[
+            {
+                "category_code": "S",
+                "rate_percent": "19 %",
+                "taxable_amount": "100,00",
+                "tax_amount": "19,00",
+            }
+        ],
+        line_items=[{"line_id": "1", "name": "Beratung", "line_amount": "100,00"}, blank_line],
+    )
+    gt = build_groundtruth_from_json(item.gt_path)
+    assert gt.vat_breakdown is not None
+    assert gt.vat_breakdown[0]["rate_percent"].normalized_value == "19"
+    # The all-blank second line-item row is dropped (honest absence).
+    assert gt.line_items is not None
+    assert len(gt.line_items) == 1
+    assert gt.line_items[0]["name"].normalized_value == "Beratung"
+    assert gt.skonto is None

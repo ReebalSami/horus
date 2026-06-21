@@ -143,6 +143,46 @@ def test_buyer_vat_id_absent_in_einfach() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 2b. ADR-043 — optional-zero EN16931 totals are treated as absent
+# ---------------------------------------------------------------------------
+
+
+def test_optional_zero_totals_treated_as_absent() -> None:
+    """ADR-043: an optional EN16931 total (allowance BT-107 / charge BT-108 /
+    prepaid BT-113 / rounding BT-114) carried as a structural `0.00` in the CII
+    XML is recorded ABSENT — for a visual-extraction task the honest ground
+    truth for an un-rendered optional zero is `null` (so a model `null` scores
+    TN, not FN). `EN16931_Einfach` ships allowance/charge/prepaid all as `0.00`.
+    """
+    gt = parse_cii_xml(EINFACH_CII.read_bytes())
+    for key in ("allowance_total_amount", "charge_total_amount", "prepaid_amount"):
+        rec = gt.header[key]
+        assert rec.is_present is False, (
+            f"{key}=0.00 must be ABSENT per ADR-043 (optional-zero total), got {rec!r}"
+        )
+        assert rec.normalized_value is None
+        # raw_value is preserved for audit even though the field scores as absent.
+        assert rec.raw_value == "0.00"
+
+
+def test_nonzero_optional_totals_remain_present() -> None:
+    """ADR-043 is narrow: a genuinely non-zero optional total stays PRESENT so
+    real misses still count. `EN16931_Rabatte` carries real allowances / charges
+    / prepaid (14.73 / 5.80 / 50.00).
+    """
+    rabatte_cii = ZUGFERD_CII_DIR / "EN16931_Rabatte.cii.xml"
+    gt = parse_cii_xml(rabatte_cii.read_bytes())
+    for key, expected in (
+        ("allowance_total_amount", "14.73"),
+        ("charge_total_amount", "5.80"),
+        ("prepaid_amount", "50.00"),
+    ):
+        rec = gt.header[key]
+        assert rec.is_present is True, f"{key}={expected} must stay present (non-zero)"
+        assert rec.normalized_value == expected
+
+
+# ---------------------------------------------------------------------------
 # 3. Three-route dict-equivalence on the smoke fixture
 # ---------------------------------------------------------------------------
 
@@ -280,8 +320,12 @@ def test_xrechnung_documented_divergence(
     assert set(gt_facturx.header.keys()) == set(FIELDS.keys())
     assert set(gt_ferd.header.keys()) == set(FIELDS.keys())
 
-    # Non-date fields ARE route-equal (the corpus drift is dates-only)
-    non_date_keys = {k for k in FIELDS if k not in {"issue_date", "delivery_date"}}
+    # Non-date fields ARE route-equal (the corpus drift is dates-only). ALL
+    # DATE-typed fields are subject to the same FeRD-sidecar 2024-revision
+    # artifact (issue/delivery + the ADR-041 payment-due / billing-period dates),
+    # so exclude every date-typed field rather than a hard-coded pair.
+    _date_keys = {k for k, spec in FIELDS.items() if spec.field_type == "DATE"}
+    non_date_keys = {k for k in FIELDS if k not in _date_keys}
     for key in non_date_keys:
         assert gt_facturx.header[key] == gt_ferd.header[key], (
             f"XRECHNUNG corpus drift: non-date field {key} also diverges on "
@@ -435,14 +479,18 @@ def test_normalization_passthrough() -> None:
 
 
 def test_fields_registry_consistency() -> None:
-    """All 19 FIELDS rows: unique BT codes, unique english_keys, well-formed metadata."""
-    assert len(FIELDS) == 19, f"Expected 19 fields, found {len(FIELDS)}"
+    """All 34 FIELDS rows: unique BT codes, unique english_keys, well-formed metadata.
+
+    16 (ADR-012) + 3 (ADR-035: tax_rate + addresses) + 15 (ADR-041 Step 1a:
+    document identity / payment block / extra totals) = 34.
+    """
+    assert len(FIELDS) == 34, f"Expected 34 fields, found {len(FIELDS)}"
 
     english_keys = list(FIELDS.keys())
-    assert len(set(english_keys)) == 19, "Duplicate english_keys in FIELDS"
+    assert len(set(english_keys)) == 34, "Duplicate english_keys in FIELDS"
 
     bt_codes = [spec.bt_code for spec in FIELDS.values()]
-    assert len(set(bt_codes)) == 19, f"Duplicate BT codes in FIELDS: {bt_codes}"
+    assert len(set(bt_codes)) == 34, f"Duplicate BT codes in FIELDS: {bt_codes}"
 
     for english_key, spec in FIELDS.items():
         # Internal consistency: dict key matches FieldSpec.english_key
@@ -475,6 +523,33 @@ def test_fields_registry_consistency() -> None:
         )
 
 
+def test_fields_registry_descriptions_and_aliases() -> None:
+    """ADR-049: the 7 commonly-confused fields carry `description` + `prompt_aliases`.
+
+    These optional FieldSpec attributes are the single source of truth for the
+    structurer's prompt field guide (`structurer.render_field_glossary`). They are
+    generic field SEMANTICS + German LABEL names — never a ground-truth value.
+    Fields outside this set default to None (the bare key list names them).
+    """
+    described = {
+        "line_total_amount",
+        "tax_basis_total_amount",
+        "tax_total_amount",
+        "grand_total_amount",
+        "due_payable_amount",
+        "buyer_reference",
+        "buyer_order_reference",
+    }
+    for key in described:
+        spec = FIELDS[key]
+        assert spec.description, f"FIELDS[{key!r}].description must be set (ADR-049)"
+        assert spec.prompt_aliases, f"FIELDS[{key!r}].prompt_aliases must be set (ADR-049)"
+        assert isinstance(spec.prompt_aliases, tuple)
+    # Non-annotated fields default to None (only the confusable subset is populated).
+    assert FIELDS["invoice_number"].description is None
+    assert FIELDS["invoice_number"].prompt_aliases is None
+
+
 def test_fields_registry_field_type_consistency() -> None:
     """Every FIELDS row carries a valid `field_type` from the closed `FieldType` taxonomy.
 
@@ -488,13 +563,13 @@ def test_fields_registry_field_type_consistency() -> None:
         )
 
 
-def test_money_fields_are_exactly_the_five_totals() -> None:
-    """`field_type='MONEY'` ↔ exactly the 5 EN16931-mandatory totals (BT-106/109/110/112/115).
+def test_money_fields_partition() -> None:
+    """`field_type='MONEY'` ↔ the 9 monetary totals (5 ADR-012 + 4 ADR-041).
 
-    Locks the comparator dispatch table: PR(b)'s scorer applies
+    Locks the comparator dispatch table: the scorer applies
     `_normalize_predicted_money` + exact-match (Decimal-cent strict, per
-    Vorsteuerabzug requirement) exactly to these five fields. Any drift
-    here is a load-bearing change to legal-correctness semantics.
+    Vorsteuerabzug requirement) to exactly these fields. Any drift here is a
+    load-bearing change to legal-correctness semantics.
     """
     money_keys = {k for k, spec in FIELDS.items() if spec.field_type == "MONEY"}
     expected = {
@@ -503,51 +578,68 @@ def test_money_fields_are_exactly_the_five_totals() -> None:
         "tax_total_amount",  # BT-110
         "grand_total_amount",  # BT-112
         "due_payable_amount",  # BT-115
+        "prepaid_amount",  # BT-113 (ADR-041)
+        "allowance_total_amount",  # BT-107 (ADR-041)
+        "charge_total_amount",  # BT-108 (ADR-041)
+        "rounding_amount",  # BT-114 (ADR-041)
     }
     assert money_keys == expected, (
-        f"MONEY fields drifted from expected 5 totals. Got {sorted(money_keys)}, "
-        f"expected {sorted(expected)}. Update this test AND ADR-013 §Decision if the "
+        f"MONEY fields drifted from expected 9 totals. Got {sorted(money_keys)}, "
+        f"expected {sorted(expected)}. Update this test AND ADR-041 if the "
         f"comparator dispatch is intentionally changing."
     )
 
 
-def test_date_fields_are_exactly_issue_and_delivery() -> None:
-    """`field_type='DATE'` ↔ exactly `issue_date` (BT-2) + `delivery_date` (BT-72).
+def test_date_fields_partition() -> None:
+    """`field_type='DATE'` ↔ the 5 date fields (2 ADR-012 + 3 ADR-041).
 
-    Locks the comparator dispatch table for DATE: PR(b)'s scorer applies
+    Locks the comparator dispatch table for DATE: the scorer applies
     `_normalize_predicted_date` (parses DD.MM.YYYY / German-month-name /
-    ISO / US-slash) then exact-compares ISO strings. Only these two fields
-    are date-typed in the 16-field scope; line-item dates land via BG-25
-    in a future amendment.
+    ISO / US-slash) then exact-compares ISO strings. Line-item dates land via
+    BG-25 in Step 2.
     """
     date_keys = {k for k, spec in FIELDS.items() if spec.field_type == "DATE"}
-    expected = {"issue_date", "delivery_date"}
+    expected = {
+        "issue_date",  # BT-2
+        "delivery_date",  # BT-72
+        "payment_due_date",  # BT-9 (ADR-041)
+        "billing_period_start",  # BT-73 (ADR-041)
+        "billing_period_end",  # BT-74 (ADR-041)
+    }
     assert date_keys == expected, (
-        f"DATE fields drifted from expected (issue_date, delivery_date). "
-        f"Got {sorted(date_keys)}, expected {sorted(expected)}."
+        f"DATE fields drifted from expected 5. Got {sorted(date_keys)}, "
+        f"expected {sorted(expected)}."
     )
 
 
-def test_string_fields_are_names_and_addresses() -> None:
-    """`field_type='STRING'` ↔ exactly `seller_name` (BT-27) + `buyer_name` (BT-44).
+def test_string_fields_partition() -> None:
+    """`field_type='STRING'` ↔ the 7 free-text fields (names / addresses / payment text).
 
-    These are the only fields where ANLS\\* tolerance applies — names tolerate
+    These are the fields where ANLS\\* tolerance applies — free text tolerates
     OCR character errors. Codes, dates, and money are strict. Locks the
     cross-product invariant: STRING fields use ANLS\\* (Biten+ ICCV'19); all
     others use exact-on-normalized.
     """
     string_keys = {k for k, spec in FIELDS.items() if spec.field_type == "STRING"}
-    expected = {"seller_name", "buyer_name", "seller_address", "buyer_address"}
+    expected = {
+        "seller_name",  # BT-27
+        "buyer_name",  # BT-44
+        "seller_address",  # BG-5
+        "buyer_address",  # BG-8
+        "payment_means_text",  # BT-82 (ADR-041)
+        "seller_account_name",  # BT-85 (ADR-041)
+        "payment_reference",  # BT-83 (ADR-041)
+    }
     assert string_keys == expected, (
-        f"STRING fields drifted from expected names + addresses. "
+        f"STRING fields drifted from expected 7. "
         f"Got {sorted(string_keys)}, expected {sorted(expected)}."
     )
 
 
-def test_code_fields_cover_the_remaining_seven() -> None:
-    """`field_type='CODE'` covers the 7 strict-equality fields (IDs / currency / refs).
+def test_code_fields_partition() -> None:
+    """`field_type='CODE'` covers the 12 strict-equality fields (IDs / currency / refs / bank).
 
-    Closure assertion: STRING (2) + MONEY (5) + DATE (2) + CODE (7) = 16.
+    Closure assertion: STRING(7) + MONEY(9) + DATE(5) + CODE(12) + RATE(1) = 34.
     If new fields land via FIELDS amendment without a corresponding
     field_type tag, this closure check fails before the comparator dispatch
     silently mis-routes.
@@ -561,19 +653,24 @@ def test_code_fields_cover_the_remaining_seven() -> None:
         "seller_gln",  # BT-29
         "buyer_reference",  # BT-46
         "buyer_vat_id",  # BT-48
+        "document_type",  # BT-3 (ADR-041)
+        "buyer_order_reference",  # BT-13 (ADR-041)
+        "payment_means_code",  # BT-81 (ADR-041)
+        "seller_iban",  # BT-84 (ADR-041)
+        "seller_bic",  # BT-86 (ADR-041)
     }
     assert code_keys == expected, (
-        f"CODE fields drifted from expected 7. Got {sorted(code_keys)}, "
+        f"CODE fields drifted from expected 12. Got {sorted(code_keys)}, "
         f"expected {sorted(expected)}."
     )
 
-    # Closure: STRING(4) + MONEY(5) + DATE(2) + CODE(7) + RATE(1) = 19 (ADR-035)
+    # Closure: STRING(7) + MONEY(9) + DATE(5) + CODE(12) + RATE(1) = 34 (ADR-041)
     by_type: dict[str, int] = {"STRING": 0, "MONEY": 0, "DATE": 0, "CODE": 0, "RATE": 0}
     for spec in FIELDS.values():
         by_type[spec.field_type] += 1
-    assert by_type == {"STRING": 4, "MONEY": 5, "DATE": 2, "CODE": 7, "RATE": 1}, (
-        f"FieldType partition drift: {by_type}. Expected STRING=4, MONEY=5, "
-        f"DATE=2, CODE=7, RATE=1 (total 19)."
+    assert by_type == {"STRING": 7, "MONEY": 9, "DATE": 5, "CODE": 12, "RATE": 1}, (
+        f"FieldType partition drift: {by_type}. Expected STRING=7, MONEY=9, "
+        f"DATE=5, CODE=12, RATE=1 (total 34)."
     )
 
 
@@ -628,7 +725,7 @@ def test_ground_truth_dataclass_forward_compat() -> None:
     parsed = parse_cii_xml(EINFACH_CII.read_bytes())
     assert isinstance(parsed, GroundTruth)
     assert parsed.header is not None
-    assert len(parsed.header) == 19
+    assert len(parsed.header) == 34
 
     # Equality semantics work: two parses of the same XML produce equal dicts
     parsed_again = parse_cii_xml(EINFACH_CII.read_bytes())

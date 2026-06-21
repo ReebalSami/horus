@@ -20,7 +20,12 @@ Refs:
 
 from __future__ import annotations
 
-from horus.eval.adapters_json import preprocess, to_predicted_dict, to_predicted_dict_multipage
+from horus.eval.adapters_json import (
+    preprocess,
+    recover_json_object,
+    to_predicted_dict,
+    to_predicted_dict_multipage,
+)
 from horus.eval.ground_truth import FIELDS
 
 # ---------------------------------------------------------------------------
@@ -75,7 +80,7 @@ def test_to_predicted_dict_returns_all_19_canonical_keys() -> None:
     raw = '{"invoice_number": "INV-001"}'
     result = to_predicted_dict(raw, model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
-    assert len(result) == 19
+    assert len(result) == 34
 
 
 def test_to_predicted_dict_full_canonical_json_roundtrips() -> None:
@@ -242,6 +247,138 @@ def test_to_predicted_dict_top_level_array_yields_all_none() -> None:
     raw = '[{"invoice_number": "INV-001"}]'
     result = to_predicted_dict(raw, model_id="m")
     assert all(v is None for v in result.values())
+
+
+# ---------------------------------------------------------------------------
+# 3b. Structural-repair rung (ADR-044) -- mismatched closer + truncation
+# ---------------------------------------------------------------------------
+
+# The exact malformation observed in the Arm-B Gemma output for EN16931_Rabatte
+# (docs/sources/transcripts-arms-dev/google__gemma-4-e4b-it__EN16931_Rabatte.txt):
+# the 4th line_items object is missing its closing `}` before the array's `]`,
+# so the WHOLE object is unparseable and the invoice scored micro_f1=0.000 even
+# though every field was emitted. This is a measurement artifact, not a content
+# failure -- the repair rung recovers it without inventing any value.
+_RABATTE_MISSING_BRACE = """Here is the extracted invoice data.
+
+```json
+{
+  "invoice_number": "471102",
+  "seller_name": "Lieferant GmbH",
+  "grand_total_amount": "215,07",
+  "vat_breakdown": [
+    {"rate_percent": "7", "tax_amount": "9,06"},
+    {"rate_percent": "19", "tax_amount": "12,24"}
+  ],
+  "line_items": [
+    {"line_id": "1", "line_amount": "10,00"},
+    {"line_id": "2", "line_amount": "27,50"},
+    {"line_id": "3", "line_amount": "109,80"},
+    {"line_id": "4", "line_amount": "55,40"
+  ],
+  "purpose_summary": "goods supplied"
+}
+```
+"""
+
+
+def test_repair_recovers_missing_brace_before_array_close() -> None:
+    """The Rabatte missing-`}`-before-`]` -> the insert-missing-closer repair recovers all rows."""
+    obj = recover_json_object(_RABATTE_MISSING_BRACE)
+    assert obj is not None
+    assert obj["invoice_number"] == "471102"
+    assert obj["seller_name"] == "Lieferant GmbH"
+    assert obj["grand_total_amount"] == "215,07"
+    # All FOUR line items recovered -- the inserted `}` closed the 4th row, not
+    # dropped it; the trailing `purpose_summary` after the array survives too.
+    assert isinstance(obj["line_items"], list)
+    assert len(obj["line_items"]) == 4
+    assert obj["line_items"][3]["line_amount"] == "55,40"
+    assert obj["purpose_summary"] == "goods supplied"
+
+
+def test_repair_recovers_flat_fields_through_adapter() -> None:
+    """The flat adapter path surfaces the recovered flat fields (was all-None pre-ADR-044)."""
+    result = to_predicted_dict(_RABATTE_MISSING_BRACE, model_id="m")
+    assert result["invoice_number"] == "471102"
+    assert result["seller_name"] == "Lieferant GmbH"
+    assert result["grand_total_amount"] == "215,07"
+
+
+# The OTHER real Arm-B Rabatte malformation (regenerated run): the 4th line_items
+# object's closing `}` is SUBSTITUTED by `]`, leaving a spurious extra `]` after
+# the array already closes -- `... "55,40" ] ], ...`. The repair must drop the
+# stray `]` WITHOUT prematurely closing the enclosing object.
+_RABATTE_SUBSTITUTED_BRACE = """```json
+{
+  "invoice_number": "471102",
+  "seller_name": "Lieferant GmbH",
+  "grand_total_amount": "215,07",
+  "line_items": [
+    {"line_id": "1", "line_amount": "10,00"},
+    {"line_id": "2", "line_amount": "27,50"},
+    {"line_id": "3", "line_amount": "109,80"},
+    {
+      "line_id": "4",
+      "line_amount": "55,40"
+    ]
+  ],
+  "purpose_summary": "goods supplied"
+}
+```"""
+
+
+def test_repair_recovers_substituted_closer_with_spurious_bracket() -> None:
+    """`}`->`]` substitution (extra `]` after the array closes) -- the real Arm-B Rabatte case."""
+    obj = recover_json_object(_RABATTE_SUBSTITUTED_BRACE)
+    assert obj is not None
+    assert obj["invoice_number"] == "471102"
+    assert obj["grand_total_amount"] == "215,07"
+    assert isinstance(obj["line_items"], list)
+    assert len(obj["line_items"]) == 4
+    assert obj["line_items"][3]["line_amount"] == "55,40"
+    assert obj["purpose_summary"] == "goods supplied"
+
+
+def test_repair_drops_spurious_closer_without_closing_parent() -> None:
+    """A stray `]` (no matching opener) is dropped; the enclosing object is NOT closed early."""
+    raw = '{"a": [{"b": "c"}]], "d": "e"}'  # extra `]` after the array close
+    obj = recover_json_object(raw)
+    assert obj == {"a": [{"b": "c"}], "d": "e"}
+
+
+def test_repair_recovers_bracket_truncation() -> None:
+    """Model stopped mid-object (open `[`/`{`, strings closed) -> closers appended LIFO."""
+    raw = '{"invoice_number": "INV-9", "line_items": [{"line_id": "1"}'
+    obj = recover_json_object(raw)
+    assert obj is not None
+    assert obj["invoice_number"] == "INV-9"
+    assert obj["line_items"] == [{"line_id": "1"}]
+
+
+def test_repair_declines_when_truncated_midstring() -> None:
+    """Truncation mid-string -> honest all-None (the repair refuses to guess the string end).
+
+    Preserves the ratified "unparseable -> all-null" contract (ADR-018 / ADR-038)
+    for genuinely broken output, even though a `}` earlier in the text lets the
+    repair rung be reached.
+    """
+    raw = (
+        '{"invoice_number": "INV-9", "line_items": [{"line_id": "1"}], '
+        '"purpose_summary": "this got cut o'
+    )
+    assert recover_json_object(raw) is None
+
+
+def test_repair_does_not_invent_values() -> None:
+    """Value-preservation: the repair supplies delimiters only, never field values."""
+    raw = '{"invoice_number": "INV-9", "line_items": [{"line_id": "1"}'
+    result = to_predicted_dict(raw, model_id="m")
+    assert result["invoice_number"] == "INV-9"
+    non_emitted = {k: v for k, v in result.items() if k != "invoice_number"}
+    assert all(v is None for v in non_emitted.values()), (
+        "repair must not populate any field the model did not emit"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -503,7 +640,7 @@ def test_multipage_returns_all_19_canonical_keys() -> None:
     """Result dict always contains exactly the 19 canonical FIELDS keys."""
     result = to_predicted_dict_multipage(['{"invoice_number": "X"}'], model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
-    assert len(result) == 19
+    assert len(result) == 34
 
 
 def test_multipage_german_diacritics_preserved_across_pages() -> None:

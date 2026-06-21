@@ -46,7 +46,12 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, model_validator
 
-from horus.eval.ground_truth import FIELDS
+from horus.eval.ground_truth import (
+    FIELDS,
+    LINE_ITEM_FIELDS,
+    SKONTO_FIELDS,
+    VAT_BREAKDOWN_FIELDS,
+)
 from horus.eval.normalizers import (
     _normalize_predicted_code,
     _normalize_predicted_date,
@@ -59,6 +64,20 @@ from horus.eval.normalizers import (
 # for the Streamlit app, but deliberately absent from `FIELDS` so the scorer
 # (which iterates `FIELDS`) never includes it in any F1 metric (ADR-035 §A).
 PURPOSE_SUMMARY_KEY = "purpose_summary"
+
+
+def _coerce_by_type(field_type: str, s: str) -> str | None:
+    """Coerce a raw string to its canonical form for the given `FieldType`."""
+    if field_type == "MONEY":
+        return _normalize_predicted_money(s)
+    if field_type == "DATE":
+        return _normalize_predicted_date(s)
+    if field_type == "RATE":
+        return _normalize_predicted_rate(s)
+    if field_type == "CODE":
+        return _normalize_predicted_code(s)
+    # STRING (names / addresses / payment free text)
+    return _normalize_predicted_string(s)
 
 
 def _coerce_one(canonical_key: str, raw_value: Any) -> str | None:
@@ -75,19 +94,80 @@ def _coerce_one(canonical_key: str, raw_value: Any) -> str | None:
     if canonical_key == PURPOSE_SUMMARY_KEY:
         return _normalize_predicted_string(s)
     spec = FIELDS.get(canonical_key)
-    if spec is None:  # pragma: no cover — defensive; model fields ⊆ FIELDS ∪ {purpose_summary}
+    if spec is None:  # pragma: no cover — defensive; model fields ⊆ FIELDS ∪ non-scored
         return None
-    field_type = spec.field_type
-    if field_type == "MONEY":
-        return _normalize_predicted_money(s)
-    if field_type == "DATE":
-        return _normalize_predicted_date(s)
-    if field_type == "RATE":
-        return _normalize_predicted_rate(s)
-    if field_type == "CODE":
-        return _normalize_predicted_code(s)
-    # STRING (seller/buyer names + addresses)
-    return _normalize_predicted_string(s)
+    return _coerce_by_type(spec.field_type, s)
+
+
+# Repeating-group sub-field registries (ADR-041 Step 1b). The structurer may emit
+# `vat_breakdown` / `skonto` as a JSON list of row objects; each cell is coerced
+# by its sub-field `FieldType`, mirroring the flat path. SCORING of these groups
+# is unified with line items in ADR-042 — they are NOT in the flat scored dict.
+_REPEATING_SUBFIELDS = {
+    "vat_breakdown": VAT_BREAKDOWN_FIELDS,
+    "skonto": SKONTO_FIELDS,
+    "line_items": LINE_ITEM_FIELDS,
+}
+
+
+def _coerce_repeating(group_key: str, raw_value: Any) -> list[dict[str, str | None]] | None:
+    """Coerce a raw model list-of-rows into canonical per-row dicts (or None).
+
+    Non-list input → ``None`` (honest absence). Each row is matched
+    case-insensitively against the group's sub-field registry; each cell is
+    coerced by the sub-field's `FieldType`; unknown row keys are dropped.
+    """
+    if not isinstance(raw_value, list):
+        return None
+    subfields = _REPEATING_SUBFIELDS[group_key]
+    rows: list[dict[str, str | None]] = []
+    for item in raw_value:
+        if not isinstance(item, Mapping):
+            continue
+        lower_to_original = {str(k).lower(): k for k in item}
+        row: dict[str, str | None] = {}
+        for sub_key, spec in subfields.items():
+            original = lower_to_original.get(sub_key.lower())
+            raw_cell = item[original] if original is not None else None
+            if raw_cell is None:
+                row[sub_key] = None
+            else:
+                cell = raw_cell if isinstance(raw_cell, str) else str(raw_cell)
+                row[sub_key] = _coerce_by_type(spec.field_type, cell)
+        rows.append(row)
+    return rows
+
+
+class VatBreakdownLine(BaseModel):
+    """One per-VAT-rate breakdown row (BG-23) as canonical strings (ADR-041)."""
+
+    model_config = ConfigDict(extra="ignore")
+    category_code: str | None = None
+    rate_percent: str | None = None
+    taxable_amount: str | None = None
+    tax_amount: str | None = None
+
+
+class SkontoLine(BaseModel):
+    """One early-payment-discount tier as canonical strings (ADR-041)."""
+
+    model_config = ConfigDict(extra="ignore")
+    percent: str | None = None
+    days: str | None = None
+    basis_amount: str | None = None
+
+
+class LineItemLine(BaseModel):
+    """One invoice line-item row (BG-25) as canonical strings (ADR-042)."""
+
+    model_config = ConfigDict(extra="ignore")
+    line_id: str | None = None
+    name: str | None = None
+    seller_assigned_id: str | None = None
+    net_price: str | None = None
+    quantity: str | None = None
+    vat_rate: str | None = None
+    line_amount: str | None = None
 
 
 class InvoiceFields(BaseModel):
@@ -130,6 +210,31 @@ class InvoiceFields(BaseModel):
     tax_rate: str | None = None
     seller_address: str | None = None
     buyer_address: str | None = None
+    # --- ADR-041 Step 1a additions (scored) — document identity ---
+    document_type: str | None = None
+    buyer_order_reference: str | None = None
+    billing_period_start: str | None = None
+    billing_period_end: str | None = None
+    # --- ADR-041 Step 1a additions (scored) — payment ---
+    payment_due_date: str | None = None
+    payment_means_code: str | None = None
+    payment_means_text: str | None = None
+    seller_iban: str | None = None
+    seller_bic: str | None = None
+    seller_account_name: str | None = None
+    payment_reference: str | None = None
+    # --- ADR-041 Step 1a additions (scored) — totals ---
+    prepaid_amount: str | None = None
+    allowance_total_amount: str | None = None
+    charge_total_amount: str | None = None
+    rounding_amount: str | None = None
+    # --- ADR-041 Step 1b repeating groups (NOT in the flat scored dict; scored
+    #     via the unified repeating-group metric in ADR-042) ---
+    vat_breakdown: list[VatBreakdownLine] | None = None
+    skonto: list[SkontoLine] | None = None
+    # --- ADR-042 Step 2 line-item table (BG-25; scored via the unified
+    #     repeating-group metric, NOT the flat scored dict) ---
+    line_items: list[LineItemLine] | None = None
     # --- ADR-035 addition (NON-scored; Streamlit display only) ---
     purpose_summary: str | None = None
 
@@ -149,11 +254,14 @@ class InvoiceFields(BaseModel):
         lower_to_original: dict[str, Any] = {}
         for key in data:
             lower_to_original.setdefault(str(key).lower(), key)
-        coerced: dict[str, str | None] = {}
+        coerced: dict[str, Any] = {}
         for field_name in cls.model_fields:
             original_key = lower_to_original.get(field_name.lower())
             raw_value = data[original_key] if original_key is not None else None
-            coerced[field_name] = _coerce_one(field_name, raw_value)
+            if field_name in _REPEATING_SUBFIELDS:
+                coerced[field_name] = _coerce_repeating(field_name, raw_value)
+            else:
+                coerced[field_name] = _coerce_one(field_name, raw_value)
         return coerced
 
     def to_scored_dict(self) -> dict[str, str | None]:
@@ -165,8 +273,11 @@ class InvoiceFields(BaseModel):
         dumped = self.model_dump()
         return {key: dumped[key] for key in FIELDS}
 
-    def to_full_dict(self) -> dict[str, str | None]:
-        """Return all 20 fields incl. `purpose_summary` (for the Streamlit app)."""
+    def to_full_dict(self) -> dict[str, Any]:
+        """Return all fields incl. `purpose_summary` + repeating groups (Streamlit app).
+
+        `vat_breakdown` / `skonto` serialize to a list of row dicts (or `None`).
+        """
         return self.model_dump()
 
 

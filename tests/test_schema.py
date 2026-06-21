@@ -20,7 +20,10 @@ from horus.eval.ground_truth import (
     FIELDS_V1,
     GroundTruth,
     GroundTruthField,
+    _normalize_doctype,
     _normalize_rate,
+    _parse_freetext_due_date,
+    _parse_freetext_skonto,
     parse_cii_xml,
 )
 from horus.eval.normalizers import _normalize_predicted_rate
@@ -218,8 +221,15 @@ def test_parse_tax_rate_normalized() -> None:
     assert gt.header["tax_rate"].normalized_value == "19"
 
 
-def test_parse_multi_rate_takes_first_in_document_order() -> None:
-    """Multi-rate invoice (two ApplicableTradeTax) → first rate in document order (ADR-035 §A)."""
+def test_parse_multi_rate_tax_rate_excluded() -> None:
+    """Multi-distinct-rate invoice (two ApplicableTradeTax) -> flat tax_rate EXCLUDED (ADR-045).
+
+    Supersedes the pre-ADR-045 "take first rate in document order" behaviour. The
+    flat document-level tax_rate is ill-posed when the invoice carries multiple
+    distinct VAT rates (the per-rate truth lives in vat_breakdown), so
+    parse_cii_xml records is_present=True + normalized_value=None (the scorer's
+    EXCLUDED path); raw_value preserves the distinct rates for audit.
+    """
     tax = (
         "<ram:ApplicableTradeTax>"
         "<ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>"
@@ -229,14 +239,82 @@ def test_parse_multi_rate_takes_first_in_document_order() -> None:
         "</ram:ApplicableTradeTax>"
     )
     gt = parse_cii_xml(_v2_invoice(tax=tax))
+    rate = gt.header["tax_rate"]
+    assert rate.is_present is True
+    assert rate.normalized_value is None  # -> scorer EXCLUDED outcome
+    assert rate.raw_value == "19|7"  # sorted distinct rates, preserved for audit
+
+
+def test_multi_rate_tax_rate_scores_excluded() -> None:
+    """A single rate emitted on a multi-rate invoice scores EXCLUDED, not FP/FN (ADR-045)."""
+    tax = (
+        "<ram:ApplicableTradeTax>"
+        "<ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+        "<ram:ApplicableTradeTax>"
+        "<ram:RateApplicablePercent>7.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+    )
+    gt = parse_cii_xml(_v2_invoice(tax=tax))
+    predicted: dict[str, str | None] = {key: None for key in FIELDS}
+    predicted["tax_rate"] = "19"
+    result = score(predicted, gt, cfg=EvalConfig())
+    assert result.per_field["tax_rate"].outcome == "EXCLUDED"
+
+
+def test_parse_single_rate_repeated_still_scored() -> None:
+    """Multiple ApplicableTradeTax that all carry the SAME rate -> still scored (ADR-045)."""
+    tax = (
+        "<ram:ApplicableTradeTax>"
+        "<ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+        "<ram:ApplicableTradeTax>"
+        "<ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+    )
+    gt = parse_cii_xml(_v2_invoice(tax=tax))
+    assert gt.header["tax_rate"].is_present is True
     assert gt.header["tax_rate"].normalized_value == "19"
 
 
+def test_parse_zero_rate_tax_rate_excluded() -> None:
+    """A single 0% VAT rate (reverse-charge / intra-community / exempt) -> EXCLUDED (ADR-052).
+
+    Extends ADR-045: the flat document-level tax_rate is also ill-posed when the
+    only rate is 0 — there is no positive "tax rate" rendered on the page, and the
+    literal 0 is captured in the vat_breakdown group. parse_cii_xml records
+    is_present=True + normalized_value=None (the scorer's EXCLUDED path).
+    """
+    tax = (
+        "<ram:ApplicableTradeTax>"
+        "<ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+    )
+    gt = parse_cii_xml(_v2_invoice(tax=tax))
+    rate = gt.header["tax_rate"]
+    assert rate.is_present is True
+    assert rate.normalized_value is None  # -> scorer EXCLUDED outcome
+    assert rate.raw_value == "0.00"  # preserved for audit
+
+
+def test_zero_rate_tax_rate_scores_excluded() -> None:
+    """A model that omits flat tax_rate on a 0%-rate invoice scores EXCLUDED, not FN (ADR-052)."""
+    tax = (
+        "<ram:ApplicableTradeTax>"
+        "<ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+    )
+    gt = parse_cii_xml(_v2_invoice(tax=tax))
+    predicted: dict[str, str | None] = {key: None for key in FIELDS}
+    result = score(predicted, gt, cfg=EvalConfig())
+    assert result.per_field["tax_rate"].outcome == "EXCLUDED"
+
+
 def test_parse_header_has_19_keys() -> None:
-    """Parsed header always carries all 19 canonical keys (corpus-independent)."""
+    """Parsed header always carries all 34 canonical keys (corpus-independent)."""
     gt = parse_cii_xml(_v2_invoice())
     assert set(gt.header.keys()) == set(FIELDS.keys())
-    assert len(gt.header) == 19
+    assert len(gt.header) == 34
 
 
 # ===========================================================================
@@ -245,10 +323,15 @@ def test_parse_header_has_19_keys() -> None:
 
 
 def test_model_scored_fields_match_registry() -> None:
-    """InvoiceFields scored fields (minus purpose_summary) == FIELDS exactly (no drift)."""
+    """InvoiceFields flat scored fields == FIELDS exactly (excluding non-scored fields).
+
+    Non-scored model fields: purpose_summary (display) + the ADR-041 repeating
+    groups vat_breakdown / skonto (scored via ADR-042, not the flat dict).
+    """
     model_fields = set(InvoiceFields.model_fields)
-    assert PURPOSE_SUMMARY_KEY in model_fields
-    assert model_fields - {PURPOSE_SUMMARY_KEY} == set(FIELDS)
+    non_scored = {PURPOSE_SUMMARY_KEY, "vat_breakdown", "skonto", "line_items"}
+    assert non_scored <= model_fields
+    assert model_fields - non_scored == set(FIELDS)
 
 
 def test_to_scored_dict_excludes_purpose_summary() -> None:
@@ -345,3 +428,437 @@ def test_rate_scoring_false_negative_on_mismatch() -> None:
     predicted["tax_rate"] = "7%"
     result = score(predicted, gt, cfg=EvalConfig())
     assert result.per_field["tax_rate"].outcome == "FN"
+
+
+# ===========================================================================
+# 6. ADR-041 Step 1a — full-coverage flat fields (corpus-independent)
+# ===========================================================================
+
+
+def _v2_full_settlement_invoice() -> bytes:
+    """A CII v2 invoice exercising every ADR-041 Step 1a flat field."""
+    return (
+        f"<rsm:CrossIndustryInvoice {_V2_NS}>"
+        "<rsm:ExchangedDocument><ram:TypeCode>380</ram:TypeCode></rsm:ExchangedDocument>"
+        "<rsm:SupplyChainTradeTransaction>"
+        "<ram:ApplicableHeaderTradeAgreement>"
+        "<ram:BuyerOrderReferencedDocument>"
+        "<ram:IssuerAssignedID>PO-4711</ram:IssuerAssignedID>"
+        "</ram:BuyerOrderReferencedDocument>"
+        "</ram:ApplicableHeaderTradeAgreement>"
+        "<ram:ApplicableHeaderTradeSettlement>"
+        "<ram:PaymentReference>RF18-1234</ram:PaymentReference>"
+        "<ram:SpecifiedTradeSettlementPaymentMeans>"
+        "<ram:TypeCode>58</ram:TypeCode>"
+        "<ram:Information>SEPA-Überweisung</ram:Information>"
+        "<ram:PayeePartyCreditorFinancialAccount>"
+        "<ram:IBANID>DE89370400440532013000</ram:IBANID>"
+        "<ram:AccountName>Lieferant GmbH</ram:AccountName>"
+        "</ram:PayeePartyCreditorFinancialAccount>"
+        "<ram:PayeeSpecifiedCreditorFinancialInstitution>"
+        "<ram:BICID>COBADEFFXXX</ram:BICID>"
+        "</ram:PayeeSpecifiedCreditorFinancialInstitution>"
+        "</ram:SpecifiedTradeSettlementPaymentMeans>"
+        "<ram:BillingSpecifiedPeriod>"
+        "<ram:StartDateTime><udt:DateTimeString>20240101</udt:DateTimeString></ram:StartDateTime>"
+        "<ram:EndDateTime><udt:DateTimeString>20240131</udt:DateTimeString></ram:EndDateTime>"
+        "</ram:BillingSpecifiedPeriod>"
+        "<ram:SpecifiedTradePaymentTerms>"
+        "<ram:DueDateDateTime><udt:DateTimeString>20240215</udt:DateTimeString></ram:DueDateDateTime>"
+        "</ram:SpecifiedTradePaymentTerms>"
+        "<ram:SpecifiedTradeSettlementHeaderMonetarySummation>"
+        "<ram:AllowanceTotalAmount>10.00</ram:AllowanceTotalAmount>"
+        "<ram:ChargeTotalAmount>5.00</ram:ChargeTotalAmount>"
+        "<ram:RoundingAmount>0.01</ram:RoundingAmount>"
+        "<ram:TotalPrepaidAmount>100.00</ram:TotalPrepaidAmount>"
+        "</ram:SpecifiedTradeSettlementHeaderMonetarySummation>"
+        "</ram:ApplicableHeaderTradeSettlement>"
+        "</rsm:SupplyChainTradeTransaction>"
+        "</rsm:CrossIndustryInvoice>"
+    ).encode()
+
+
+def test_parse_adr041_flat_fields() -> None:
+    """Every ADR-041 Step 1a flat field parses + normalizes from a synthetic CII."""
+    h = parse_cii_xml(_v2_full_settlement_invoice()).header
+    expected = {
+        "document_type": "invoice",  # BT-3 code 380 → token
+        "buyer_order_reference": "PO-4711",
+        "payment_reference": "RF18-1234",
+        "payment_means_code": "58",
+        "payment_means_text": "SEPA-Überweisung",
+        "seller_iban": "DE89370400440532013000",
+        "seller_bic": "COBADEFFXXX",
+        "seller_account_name": "Lieferant GmbH",
+        "billing_period_start": "2024-01-01",
+        "billing_period_end": "2024-01-31",
+        "payment_due_date": "2024-02-15",
+        "allowance_total_amount": "10.00",
+        "charge_total_amount": "5.00",
+        "rounding_amount": "0.01",
+        "prepaid_amount": "100.00",
+    }
+    for key, value in expected.items():
+        assert h[key].is_present, f"{key} should be present"
+        assert h[key].normalized_value == value, (
+            f"{key}: expected {value!r}, got {h[key].normalized_value!r}"
+        )
+
+
+@pytest.mark.parametrize(
+    ("code", "token"),
+    [("380", "invoice"), ("389", "invoice"), ("381", "credit_note"), ("384", "correction")],
+)
+def test_document_type_code_maps_to_token(code: str, token: str) -> None:
+    """BT-3 UNTDID-1001 codes map to canonical HORUS document-type tokens."""
+    xml = (
+        f"<rsm:CrossIndustryInvoice {_V2_NS}>"
+        f"<rsm:ExchangedDocument><ram:TypeCode>{code}</ram:TypeCode></rsm:ExchangedDocument>"
+        "<rsm:SupplyChainTradeTransaction></rsm:SupplyChainTradeTransaction>"
+        "</rsm:CrossIndustryInvoice>"
+    ).encode()
+    gt = parse_cii_xml(xml)
+    assert gt.header["document_type"].normalized_value == token
+
+
+def test_adr041_fields_absent_are_honest_null() -> None:
+    """Absent ADR-041 fields → is_present=False, normalized None (honest null)."""
+    gt = parse_cii_xml(_v2_invoice())
+    for key in ("seller_iban", "payment_due_date", "prepaid_amount", "document_type"):
+        assert gt.header[key].is_present is False
+        assert gt.header[key].normalized_value is None
+
+
+def test_validate_and_repair_adr041_locale_coercion() -> None:
+    """Prediction-side coercion of the new fields (German money, spaced IBAN, DE date)."""
+    out = validate_and_repair(
+        {
+            "seller_iban": "DE89 3704 0044 0532 0130 00",
+            "prepaid_amount": "100,00",
+            "payment_due_date": "15.02.2024",
+            "document_type": "invoice",
+        }
+    )
+    assert out["seller_iban"] == "DE89370400440532013000"
+    assert out["prepaid_amount"] == "100.00"
+    assert out["payment_due_date"] == "2024-02-15"
+    assert out["document_type"] == "invoice"
+
+
+# ===========================================================================
+# 7. ADR-041 Step 1b — repeating groups (VAT breakdown + Skonto), GT side
+# ===========================================================================
+
+
+def test_parse_vat_breakdown_multi_rate() -> None:
+    """A 19% + 7% invoice yields a 2-row vat_breakdown with per-row cells parsed."""
+    tax = (
+        "<ram:ApplicableTradeTax>"
+        "<ram:CalculatedAmount>19.00</ram:CalculatedAmount>"
+        "<ram:BasisAmount>100.00</ram:BasisAmount>"
+        "<ram:CategoryCode>S</ram:CategoryCode>"
+        "<ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+        "<ram:ApplicableTradeTax>"
+        "<ram:CalculatedAmount>3.50</ram:CalculatedAmount>"
+        "<ram:BasisAmount>50.00</ram:BasisAmount>"
+        "<ram:CategoryCode>S</ram:CategoryCode>"
+        "<ram:RateApplicablePercent>7.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+    )
+    gt = parse_cii_xml(_v2_invoice(tax=tax))
+    assert gt.vat_breakdown is not None
+    assert len(gt.vat_breakdown) == 2
+    r0, r1 = gt.vat_breakdown
+    assert r0["rate_percent"].normalized_value == "19"
+    assert r0["taxable_amount"].normalized_value == "100.00"
+    assert r0["tax_amount"].normalized_value == "19.00"
+    assert r0["category_code"].normalized_value == "S"
+    assert r1["rate_percent"].normalized_value == "7"
+    assert r1["tax_amount"].normalized_value == "3.50"
+    # ADR-045: with two distinct header rates the flat tax_rate is EXCLUDED
+    # (is_present=True, normalized_value=None); the per-rate truth is the
+    # vat_breakdown rows above.
+    assert gt.header["tax_rate"].is_present is True
+    assert gt.header["tax_rate"].normalized_value is None
+
+
+def test_parse_skonto_from_discount_terms() -> None:
+    """Structured Skonto (ApplicableTradePaymentDiscountTerms) parses to one tier."""
+    settlement = (
+        "<ram:SpecifiedTradePaymentTerms>"
+        "<ram:ApplicableTradePaymentDiscountTerms>"
+        "<ram:BasisPeriodMeasure>14</ram:BasisPeriodMeasure>"
+        "<ram:BasisAmount>119.00</ram:BasisAmount>"
+        "<ram:CalculationPercent>2.00</ram:CalculationPercent>"
+        "</ram:ApplicableTradePaymentDiscountTerms>"
+        "</ram:SpecifiedTradePaymentTerms>"
+    )
+    gt = parse_cii_xml(_v2_invoice(tax=settlement))
+    assert gt.skonto is not None
+    assert len(gt.skonto) == 1
+    assert gt.skonto[0]["percent"].normalized_value == "2"
+    assert gt.skonto[0]["days"].normalized_value == "14"
+    assert gt.skonto[0]["basis_amount"].normalized_value == "119.00"
+
+
+def test_repeating_groups_absent_are_none() -> None:
+    """Absent repeating groups → None (honest null); line_items reserved for Step 2."""
+    gt = parse_cii_xml(_v2_invoice())
+    assert gt.vat_breakdown is None
+    assert gt.skonto is None
+    assert gt.line_items is None
+
+
+def test_invoice_fields_coerces_repeating_groups() -> None:
+    """The structurer's nested vat_breakdown / skonto rows are locale-coerced per cell."""
+    model = InvoiceFields.model_validate(
+        {
+            "vat_breakdown": [
+                {
+                    "rate_percent": "19 %",
+                    "taxable_amount": "100,00",
+                    "tax_amount": "19,00",
+                    "category_code": "S",
+                },
+                {"rate_percent": "7%", "taxable_amount": "50,00", "tax_amount": "3,50"},
+            ],
+            "skonto": [{"percent": "2,00", "days": "14", "basis_amount": "119,00"}],
+        }
+    )
+    full = model.to_full_dict()
+    assert full["vat_breakdown"][0]["rate_percent"] == "19"
+    assert full["vat_breakdown"][0]["taxable_amount"] == "100.00"
+    assert full["vat_breakdown"][1]["rate_percent"] == "7"
+    assert full["skonto"][0]["percent"] == "2"
+    assert full["skonto"][0]["basis_amount"] == "119.00"
+    # Repeating groups are NOT part of the flat scored dict (scored via ADR-042).
+    assert "vat_breakdown" not in model.to_scored_dict()
+    assert "skonto" not in model.to_scored_dict()
+
+
+def test_invoice_fields_repeating_absent_is_none() -> None:
+    """No repeating-group keys in the input → None (honest absence)."""
+    model = InvoiceFields.model_validate({"invoice_number": "X"})
+    assert model.vat_breakdown is None
+    assert model.skonto is None
+    assert model.line_items is None
+
+
+# ===========================================================================
+# 8. ADR-042 Step 2 — line items (BG-25), GT side + prediction side
+# ===========================================================================
+
+
+def _v2_with_lines(lines_xml: str) -> bytes:
+    """A CII v2 invoice carrying the given line-item rows under the transaction."""
+    return (
+        f"<rsm:CrossIndustryInvoice {_V2_NS}>"
+        "<rsm:SupplyChainTradeTransaction>"
+        f"{lines_xml}"
+        "<ram:ApplicableHeaderTradeSettlement></ram:ApplicableHeaderTradeSettlement>"
+        "</rsm:SupplyChainTradeTransaction>"
+        "</rsm:CrossIndustryInvoice>"
+    ).encode()
+
+
+def test_parse_line_items_multi_row() -> None:
+    """A 2-line invoice yields a 2-row line_items list; per-row cells parse + normalize."""
+    lines = (
+        "<ram:IncludedSupplyChainTradeLineItem>"
+        "<ram:AssociatedDocumentLineDocument><ram:LineID>1</ram:LineID>"
+        "</ram:AssociatedDocumentLineDocument>"
+        "<ram:SpecifiedTradeProduct>"
+        "<ram:SellerAssignedID>ART-1</ram:SellerAssignedID>"
+        "<ram:Name>Beratungsleistung</ram:Name>"
+        "</ram:SpecifiedTradeProduct>"
+        "<ram:SpecifiedLineTradeAgreement>"
+        "<ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount>"
+        "</ram:NetPriceProductTradePrice>"
+        "</ram:SpecifiedLineTradeAgreement>"
+        "<ram:SpecifiedLineTradeDelivery>"
+        "<ram:BilledQuantity unitCode='HUR'>2.0000</ram:BilledQuantity>"
+        "</ram:SpecifiedLineTradeDelivery>"
+        "<ram:SpecifiedLineTradeSettlement>"
+        "<ram:ApplicableTradeTax><ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>"
+        "</ram:ApplicableTradeTax>"
+        "<ram:SpecifiedTradeSettlementLineMonetarySummation>"
+        "<ram:LineTotalAmount>200.00</ram:LineTotalAmount>"
+        "</ram:SpecifiedTradeSettlementLineMonetarySummation>"
+        "</ram:SpecifiedLineTradeSettlement>"
+        "</ram:IncludedSupplyChainTradeLineItem>"
+        "<ram:IncludedSupplyChainTradeLineItem>"
+        "<ram:AssociatedDocumentLineDocument><ram:LineID>2</ram:LineID>"
+        "</ram:AssociatedDocumentLineDocument>"
+        "<ram:SpecifiedTradeProduct><ram:Name>Material</ram:Name></ram:SpecifiedTradeProduct>"
+        "<ram:SpecifiedLineTradeSettlement>"
+        "<ram:SpecifiedTradeSettlementLineMonetarySummation>"
+        "<ram:LineTotalAmount>50.00</ram:LineTotalAmount>"
+        "</ram:SpecifiedTradeSettlementLineMonetarySummation>"
+        "</ram:SpecifiedLineTradeSettlement>"
+        "</ram:IncludedSupplyChainTradeLineItem>"
+    )
+    gt = parse_cii_xml(_v2_with_lines(lines))
+    assert gt.line_items is not None
+    assert len(gt.line_items) == 2
+    r0, r1 = gt.line_items
+    assert r0["line_id"].normalized_value == "1"
+    assert r0["name"].normalized_value == "Beratungsleistung"
+    assert r0["seller_assigned_id"].normalized_value == "ART-1"
+    assert r0["net_price"].normalized_value == "100.00"
+    assert r0["vat_rate"].normalized_value == "19"
+    assert r0["line_amount"].normalized_value == "200.00"
+    assert r0["quantity"].raw_value == "2.0000"
+    assert r0["quantity"].is_present is True
+    # Row 2 carries only name + line_amount; the rest are honest-absent.
+    assert r1["name"].normalized_value == "Material"
+    assert r1["line_amount"].normalized_value == "50.00"
+    assert r1["seller_assigned_id"].is_present is False
+    assert r1["line_id"].normalized_value == "2"
+
+
+def test_invoice_fields_coerces_line_items() -> None:
+    """The structurer's nested line_items rows are locale-coerced per cell."""
+    model = InvoiceFields.model_validate(
+        {
+            "line_items": [
+                {
+                    "line_id": "1",
+                    "name": "Beratung",
+                    "seller_assigned_id": "ART-1",
+                    "net_price": "100,00",
+                    "quantity": "2",
+                    "vat_rate": "19 %",
+                    "line_amount": "200,00",
+                },
+            ],
+        }
+    )
+    full = model.to_full_dict()
+    assert full["line_items"][0]["net_price"] == "100.00"
+    assert full["line_items"][0]["vat_rate"] == "19"
+    assert full["line_items"][0]["line_amount"] == "200.00"
+    assert full["line_items"][0]["name"] == "Beratung"
+    assert "line_items" not in model.to_scored_dict()
+
+
+# ===========================================================================
+# 9. ADR-046 — document_type code map covers the EN16931 invoice family
+# ===========================================================================
+
+
+@pytest.mark.parametrize(
+    ("code", "token"),
+    [
+        ("380", "invoice"),  # commercial
+        ("386", "invoice"),  # prepayment
+        ("387", "invoice"),  # hire / rental (the Miete bug)
+        ("388", "invoice"),  # tax invoice
+        ("389", "invoice"),  # self-billed
+        ("393", "invoice"),  # factored
+        ("395", "invoice"),  # consignment
+        ("381", "credit_note"),
+        ("396", "credit_note"),  # factored credit note
+        ("384", "correction"),
+    ],
+)
+def test_doctype_invoice_family_maps_to_token(code: str, token: str) -> None:
+    """ADR-046: every in-scope UNTDID-1001 invoice-family code maps to its HORUS token."""
+    assert _normalize_doctype(code) == token
+
+
+def test_doctype_unknown_code_passes_through() -> None:
+    """An out-of-family code is returned stripped (honest present-but-unmapped, not dropped)."""
+    assert _normalize_doctype("751") == "751"
+
+
+# ===========================================================================
+# 10. ADR-047 — free-text payment-terms fallback (due date + Skonto)
+# ===========================================================================
+
+
+def _v2_with_payment_terms(description: str, *, structured_due: str = "") -> bytes:
+    """A CII v2 invoice whose settlement carries a free-text payment-terms Description.
+
+    `structured_due` (a ``DueDateDateTime`` fragment) lets a test assert that
+    structured data wins over the free-text fallback.
+    """
+    settlement = (
+        "<ram:SpecifiedTradePaymentTerms>"
+        f"{structured_due}"
+        f"<ram:Description>{description}</ram:Description>"
+        "</ram:SpecifiedTradePaymentTerms>"
+    )
+    return _v2_invoice(tax=settlement)
+
+
+def test_freetext_due_date_helper() -> None:
+    """`netto bis DD.MM.YYYY` → ISO; the Skonto deadline date is never picked."""
+    desc = [
+        "Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, "
+        "3% Skonto innerhalb 10 Tagen bis 15.03.2018"
+    ]
+    assert _parse_freetext_due_date(desc) == "2018-04-04"
+
+
+def test_freetext_due_date_helper_no_match_returns_none() -> None:
+    """No explicit `netto bis` phrasing → None (conservative; never a guessed GT)."""
+    assert _parse_freetext_due_date(["Der Betrag wird gutgeschrieben."]) is None
+    assert _parse_freetext_due_date(["Zahlbar bis 04.04.2018"]) is None  # no 'netto'
+
+
+def test_freetext_due_date_helper_invalid_date_returns_none() -> None:
+    """A syntactically-matched but impossible date → None (validated via datetime)."""
+    assert _parse_freetext_due_date(["... netto bis 31.02.2018"]) is None
+
+
+def test_freetext_skonto_helper_single_and_multi_tier() -> None:
+    """`X% Skonto innerhalb N Tagen` parses one row per tier; cells normalize."""
+    rows = _parse_freetext_skonto(
+        ["3% Skonto innerhalb 10 Tagen bis 15.03.2018, 1,5 % Skonto innerhalb 20 Tagen"]
+    )
+    assert len(rows) == 2
+    assert rows[0]["percent"].normalized_value == "3"
+    assert rows[0]["days"].normalized_value == "10"
+    assert rows[0]["basis_amount"].is_present is False
+    assert rows[1]["percent"].normalized_value == "1.5"
+    assert rows[1]["days"].normalized_value == "20"
+
+
+def test_freetext_payment_terms_fill_due_and_skonto_via_parse() -> None:
+    """End-to-end: parse_cii_xml fills BT-9 + Skonto from free text when structured is absent."""
+    gt = parse_cii_xml(
+        _v2_with_payment_terms(
+            "Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, "
+            "3% Skonto innerhalb 10 Tagen bis 15.03.2018"
+        )
+    )
+    assert gt.header["payment_due_date"].is_present is True
+    assert gt.header["payment_due_date"].normalized_value == "2018-04-04"
+    assert gt.skonto is not None
+    assert len(gt.skonto) == 1
+    assert gt.skonto[0]["percent"].normalized_value == "3"
+    assert gt.skonto[0]["days"].normalized_value == "10"
+
+
+def test_structured_due_date_wins_over_freetext() -> None:
+    """Structured DueDateDateTime is authoritative; free-text fallback never overrides it."""
+    structured = (
+        "<ram:DueDateDateTime><udt:DateTimeString format='102'>"
+        "20180401</udt:DateTimeString></ram:DueDateDateTime>"
+    )
+    gt = parse_cii_xml(
+        _v2_with_payment_terms(
+            "Zahlbar innerhalb 30 Tagen netto bis 04.04.2018",
+            structured_due=structured,
+        )
+    )
+    # Structured 2018-04-01 wins over the free-text 2018-04-04.
+    assert gt.header["payment_due_date"].normalized_value == "2018-04-01"
+
+
+def test_freetext_fallback_absent_when_no_payment_terms() -> None:
+    """No payment terms at all → due date absent + skonto None (no fabricated GT)."""
+    gt = parse_cii_xml(_v2_invoice())
+    assert gt.header["payment_due_date"].is_present is False
+    assert gt.skonto is None

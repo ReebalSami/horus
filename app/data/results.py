@@ -25,7 +25,13 @@ _FR_FIELDS: tuple[str, ...] = tuple(f.name for f in dataclasses.fields(FieldResu
 
 @dataclass(frozen=True)
 class InvoiceRun:
-    """One (model, invoice) nested run: its tags, headline F1, and per-field results."""
+    """One (model, invoice) nested run: its tags, headline F1, and per-field results.
+
+    `micro_f1` is the flat 34-field F1; `overall_micro_f1` additionally folds the
+    repeating-group cells (VAT breakdown / Skonto / line items) so it covers the
+    whole schema (ADR-042). `group_f1` maps each scored repeating group to its F1.
+    Both fall back to the flat number / empty when an older run lacks them.
+    """
 
     invoice_id: str
     model_id: str
@@ -35,6 +41,8 @@ class InvoiceRun:
     micro_f1: float
     run_id: str
     field_results: list[FieldResult] = field(default_factory=list)
+    overall_micro_f1: float = 0.0
+    group_f1: dict[str, float] = field(default_factory=dict)
 
     @property
     def is_finished(self) -> bool:
@@ -90,14 +98,24 @@ def load_invoice_runs(approach: Approach) -> dict[str, InvoiceRun]:
             continue
         payload = mlflow_store.load_artifact_json(run.info.run_id, "per_field_scores.json")
         results = parse_field_results(payload) if payload else []
+        metrics = run.data.metrics
+        flat_micro_f1 = float(metrics.get("micro_f1", 0.0))
+        group_f1 = {
+            key[len("group_") : -len("_f1")]: float(value)
+            for key, value in metrics.items()
+            if key.startswith("group_") and key.endswith("_f1")
+        }
         runs[invoice_id] = InvoiceRun(
             invoice_id=invoice_id,
             model_id=tags.get("model_id", approach.model_id),
             profile=tags.get("profile", ""),
             pages=_int_or_none(tags.get("pages")),
             status=run.info.status,
-            micro_f1=float(run.data.metrics.get("micro_f1", 0.0)),
+            micro_f1=flat_micro_f1,
             run_id=str(run.info.run_id),
             field_results=results,
+            # ADR-042: whole-schema headline (falls back to flat for older runs).
+            overall_micro_f1=float(metrics.get("overall_micro_f1", flat_micro_f1)),
+            group_f1=group_f1,
         )
     return runs
