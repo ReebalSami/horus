@@ -3,6 +3,7 @@
 | Filename | From | To | Status |
 |---|---|---|---|
 | `schema-step1-coding-handoff.md` | schema-extension thinking session | coding session (Step 1) | active |
+| `schema-step1-fields-empty-investigation.md` | full-coverage build session | fresh investigation session | active |
 
 ## Conventions
 

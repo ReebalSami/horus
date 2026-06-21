@@ -42,13 +42,22 @@ Refs: ADR-012 (this), ADR-010 (XML extraction substrate), ADR-009 Amendment 1
 from __future__ import annotations
 
 import logging
+import re
 import unicodedata
 from collections.abc import Callable
 from dataclasses import dataclass, replace
+from datetime import date
 from decimal import Decimal, InvalidOperation
 from typing import Final, Literal
 
 from lxml import etree
+
+from horus.eval.normalizers import (
+    _normalize_predicted_invoice_number,
+    _normalize_predicted_optional_zero_money,
+    _normalize_predicted_seller_assigned_id,
+    _normalize_predicted_vat_category,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -182,14 +191,27 @@ def _normalize_rate(raw: str) -> str:
 
 
 # EN16931 BT-3 (UNTDID 1001) document-type codes → canonical HORUS token. The
-# in-scope invoice family (ADR-041): commercial invoice / credit note /
-# correction. The prediction side emits the token directly (the structurer
-# prompt constrains output to {invoice, credit_note, correction}), so CODE
-# exact-match works against the GT token mapped from the BT-3 code here.
+# prediction side emits the token directly (the structurer prompt constrains
+# output to {invoice, credit_note, correction}), so CODE exact-match works
+# against the GT token mapped from the BT-3 code here.
+# EN16931 / UNTDID 1001 invoice-family codes all denote "an invoice document" for
+# HORUS's coarse scope {invoice, credit_note, correction}. The page renders the
+# German word ("Rechnung") or a generic invoice layout, never the numeric subtype
+# code — so a model that reads "Rechnung" → "invoice" is correct regardless of
+# which invoice-family code the issuer chose (380 commercial, 386 prepayment, 387
+# hire/rental [e.g. a Miete invoice], 388 tax, 389 self-billed, 393 factored, 395
+# consignment). Mapping the whole family to "invoice" (ADR-046) prevents the GT
+# normalizer from scoring a correct "invoice" read as FN on an unmapped subtype.
 _DOCTYPE_CODE_TO_TOKEN: Final[dict[str, str]] = {
     "380": "invoice",  # Commercial invoice
-    "389": "invoice",  # Self-billed invoice (still an invoice for our scope)
+    "386": "invoice",  # Prepayment invoice
+    "387": "invoice",  # Hire invoice (e.g. car rental / Miete)
+    "388": "invoice",  # Tax invoice
+    "389": "invoice",  # Self-billed invoice
+    "393": "invoice",  # Factored invoice
+    "395": "invoice",  # Consignment invoice
     "381": "credit_note",  # Credit note
+    "396": "credit_note",  # Factored credit note
     "384": "correction",  # Corrected invoice
 }
 _DOCTYPE_TOKENS: Final[frozenset[str]] = frozenset({"invoice", "credit_note", "correction"})
@@ -286,6 +308,25 @@ class FieldSpec:
             = read the matched element's own ``.text`` (every scalar leaf
             field). Present children are joined with ``", "`` in declaration
             order; absent/empty children are skipped. Per ADR-035.
+        predicted_normalize: optional predicted-side normalizer overriding the
+            scorer's ``field_type``-based dispatch (ADR-048). Set only where the
+            GT is a controlled-vocabulary value that is never printed verbatim,
+            so the model's rendering must be mapped back to the canonical code —
+            currently ``vat_breakdown.category_code`` (the EN16931 category
+            letter is read off the page as the German word "Umsatzsteuer", not
+            "S"). ``None`` (default) = use the ``field_type`` predicted dispatch.
+        description: optional concise, generic semantic gloss surfaced to the
+            structurer in its prompt (ADR-049), for fields whose English key does
+            not obviously map to the German label printed on the invoice (the
+            document totals vs per-line/per-rate values; customer-number vs
+            order-number). Field SEMANTICS only — never a ground-truth value, so
+            it stays generic across every invoice + locale. ``None`` (default) =
+            omitted from the prompt field guide (the bare key list still names it).
+        prompt_aliases: optional tuple of common German display labels the field
+            appears under on real invoices (e.g. ("Positionssumme", "Summe der
+            Nettobeträge")), rendered after the ``description`` as the model's
+            label anchor (ADR-049). LABEL NAMES only — never a value. ``None``
+            (default) = no alias hint rendered.
     """
 
     english_key: str
@@ -295,6 +336,9 @@ class FieldSpec:
     normalize: Callable[[str], str]
     field_type: FieldType
     composite_leaves: tuple[str, ...] | None = None
+    predicted_normalize: Callable[[str], str | None] | None = None
+    description: str | None = None
+    prompt_aliases: tuple[str, ...] | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -351,6 +395,10 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath="/rsm:CrossIndustryInvoice/rsm:ExchangedDocument/ram:ID",
         normalize=_normalize_string,
         field_type="CODE",
+        # The page prints the value next to its label ("Rechnung Nr. 471102");
+        # the GT ram:ID is the bare identifier. Strip a leading number-label so a
+        # faithfully-read value is not scored FN over the echoed label (ADR-050).
+        predicted_normalize=_normalize_predicted_invoice_number,
     ),
     # 2. Issue date (BT-2) — exactly 1 per invoice (EN16931-mandatory).
     # Raw text is `CCYYMMDD` (UN/CEFACT format code "102"); normalized to ISO.
@@ -453,6 +501,11 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_HEADER_AGREEMENT}/ram:BuyerTradeParty/ram:ID",
         normalize=_normalize_string,
         field_type="CODE",
+        description=(
+            "The buyer's own customer/account number (the identifying number shown "
+            "in the buyer/Käufer block). NOT a purchase-order number."
+        ),
+        prompt_aliases=("Kundennummer", "Kunden-Nr.", "Nummer (im Käufer-Block)"),
     ),
     # 11. Buyer VAT identifier (BT-48), scheme VA. 0..1; conditionally
     # mandatory in EN16931 (B2B cross-border EU). Deliberately included to
@@ -477,6 +530,12 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:LineTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        description=(
+            "Sum of ALL line net amounts for the whole invoice, taken from the "
+            "totals/summary block — NOT a single line's amount and NOT one VAT "
+            "rate's subtotal."
+        ),
+        prompt_aliases=("Positionssumme", "Summe der Nettobeträge"),
     ),
     # 13. Invoice total without VAT / tax basis (BT-109) — EN16931-mandatory.
     "tax_basis_total_amount": FieldSpec(
@@ -486,6 +545,12 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TaxBasisTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        description=(
+            "Total taxable base (net) for the whole invoice before VAT, summed "
+            "across all VAT rates — the document-level summary total, not a single "
+            "line or rate."
+        ),
+        prompt_aliases=("Rechnungssumme ohne USt.", "Steuerlicher Bemessungsbetrag"),
     ),
     # 14. Invoice total VAT amount (BT-110) — EN16931-mandatory.
     "tax_total_amount": FieldSpec(
@@ -495,6 +560,11 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TaxTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        description=(
+            "Total VAT amount for the whole invoice, summed across all VAT rates, "
+            "taken from the totals/summary block — NOT a single rate's VAT amount."
+        ),
+        prompt_aliases=("Steuerbetrag", "Umsatzsteuer gesamt"),
     ),
     # 15. Invoice total amount with VAT / grand total (BT-112) — EN16931-mandatory.
     "grand_total_amount": FieldSpec(
@@ -504,6 +574,11 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:GrandTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        description=(
+            "Invoice total INCLUDING VAT (gross) for the whole invoice — the "
+            "document-level summary total."
+        ),
+        prompt_aliases=("Bruttosumme", "Bruttobetrag", "Gesamtbetrag"),
     ),
     # 16. Amount due for payment (BT-115) — EN16931-mandatory.
     "due_payable_amount": FieldSpec(
@@ -513,6 +588,11 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:DuePayableAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        description=(
+            "Amount actually due for payment (gross total minus any prepayments) — "
+            "the document-level summary total."
+        ),
+        prompt_aliases=("Zahlbetrag",),
     ),
     # 17. Applied VAT rate (BG-23 / BT-119) — ADR-035 schema extension. Takes
     # the first ApplicableTradeTax/RateApplicablePercent in document order (the
@@ -570,6 +650,11 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_HEADER_AGREEMENT}/ram:BuyerOrderReferencedDocument/ram:IssuerAssignedID",
         normalize=_normalize_string,
         field_type="CODE",
+        description=(
+            "The purchase-order number — use ONLY if an explicit order number is "
+            "printed; never put the buyer's customer number here."
+        ),
+        prompt_aliases=("Bestellnummer", "Auftragsnummer", "Bestell-Nr."),
     ),
     # 22. Billing period start (BT-73).
     "billing_period_start": FieldSpec(
@@ -665,6 +750,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TotalPrepaidAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        # ADR-051: symmetric with the GT-side ADR-043 rule — a predicted 0.00 on
+        # this optional total is treated as absent (TN, not FP).
+        predicted_normalize=_normalize_predicted_optional_zero_money,
     ),
     # 32. Sum of document-level allowances (BT-107).
     "allowance_total_amount": FieldSpec(
@@ -674,6 +762,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:AllowanceTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        # ADR-051: predicted 0.00 → absent (symmetric with ADR-043).
+        predicted_normalize=_normalize_predicted_optional_zero_money,
     ),
     # 33. Sum of document-level charges (BT-108).
     "charge_total_amount": FieldSpec(
@@ -683,6 +773,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:ChargeTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        # ADR-051: predicted 0.00 → absent (symmetric with ADR-043).
+        predicted_normalize=_normalize_predicted_optional_zero_money,
     ),
     # 34. Rounding amount (BT-114).
     "rounding_amount": FieldSpec(
@@ -692,6 +784,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_TOTALS}/ram:RoundingAmount",
         normalize=_normalize_money,
         field_type="MONEY",
+        # ADR-051: predicted 0.00 → absent (symmetric with ADR-043).
+        predicted_normalize=_normalize_predicted_optional_zero_money,
     ),
 }
 
@@ -811,6 +905,10 @@ VAT_BREAKDOWN_FIELDS: Final[dict[str, FieldSpec]] = {
         xpath="ram:CategoryCode",
         normalize=_normalize_string,
         field_type="CODE",
+        # The EN16931 category letter is never printed on the page (only the
+        # German word "Umsatzsteuer" / "steuerfrei" / …), so the predicted side
+        # recovers the code from the model's rendering (ADR-048).
+        predicted_normalize=_normalize_predicted_vat_category,
     ),
     "rate_percent": FieldSpec(
         english_key="rate_percent",
@@ -900,6 +998,10 @@ LINE_ITEM_FIELDS: Final[dict[str, FieldSpec]] = {
         xpath="ram:SpecifiedTradeProduct/ram:SellerAssignedID",
         normalize=_normalize_string,
         field_type="CODE",
+        # The model often appends the line GTIN/EAN with a "(GTIN)" marker
+        # ("PFA5 4000001234578 (GTIN)"); the GT is the bare article id. Strip the
+        # marked GTIN so a faithfully-read id is not scored FN (ADR-051).
+        predicted_normalize=_normalize_predicted_seller_assigned_id,
     ),
     "net_price": FieldSpec(
         english_key="net_price",
@@ -1039,6 +1141,9 @@ class GroundTruthField:
         is_present: `True` iff the XPath matched at least one element. The
             normalized value may still be `None` (normalizer rejection); the
             raw value may still be `""` (present-but-empty element).
+            Exception (ADR-043): optional-zero totals in `_OPTIONAL_ZERO_TOTALS`
+            are recorded `is_present=False` despite an XPath match when their
+            value is a structural `0.00` (see `parse_cii_xml`).
     """
 
     bt_code: str
@@ -1118,6 +1223,129 @@ def _select_schema(
 
 
 # ---------------------------------------------------------------------------
+# ADR-043: optional EN16931 totals that conventionally ship as a structural
+# 0.00 in the CII XML even when not rendered on the visual document. For a
+# visual-extraction task the page's ground truth for these is "no value", so a
+# parsed 0.00 is treated as ABSENT in `parse_cii_xml`. Mandatory totals
+# (line/tax-basis/tax/grand/due) are deliberately excluded — a 0.00 there is
+# meaningful and must still be scored.
+# ---------------------------------------------------------------------------
+_OPTIONAL_ZERO_TOTALS: frozenset[str] = frozenset(
+    {
+        "allowance_total_amount",  # BT-107
+        "charge_total_amount",  # BT-108
+        "prepaid_amount",  # BT-113
+        "rounding_amount",  # BT-114
+    }
+)
+
+
+# ---------------------------------------------------------------------------
+# 6b. Free-text payment-terms fallback (ADR-047)
+# ---------------------------------------------------------------------------
+#
+# The synthetic ZUGFeRD corpus (and many real invoices) carry the NET due date
+# and the Skonto tier in the free-text `SpecifiedTradePaymentTerms/Description`
+# rather than the structured `DueDateDateTime` / `ApplicableTradePaymentDiscount-
+# Terms`. For a VISUAL extraction task the page shows these, so the GT must too —
+# otherwise a model that correctly reads them is scored FP (precision artifact),
+# and a model that misses them is rewarded. This is the "structured-text fallback"
+# the Skonto group comment flagged as a follow-up. The patterns are deliberately
+# CONSERVATIVE: they fire only on the explicit, standardized German phrasing, and
+# ONLY when the corresponding structured field is absent — so a non-matching
+# description leaves the field absent (never a fabricated GT).
+
+# "... netto bis 04.04.2018" -> the net due date (NOT the Skonto deadline date).
+_FREETEXT_DUE_DATE_RE: Final[re.Pattern[str]] = re.compile(
+    r"netto\s+bis\s+(\d{1,2})\.(\d{1,2})\.(\d{4})",
+    re.IGNORECASE,
+)
+# "3% Skonto innerhalb 10 Tagen" / "1,5 % Skonto innerhalb 14 Tagen" (multi-tier
+# via finditer). Captures (percent, days); the Skonto deadline date is not a
+# scored SKONTO_FIELDS cell, so it is not captured.
+_FREETEXT_SKONTO_RE: Final[re.Pattern[str]] = re.compile(
+    r"(\d+(?:[.,]\d+)?)\s*%\s*Skonto\s+innerhalb\s+(\d+)\s*Tagen",
+    re.IGNORECASE,
+)
+
+
+def _payment_terms_descriptions(
+    tree: etree._Element, namespaces: dict[str, str], is_v1: bool
+) -> list[str]:
+    """Return the free-text `SpecifiedTradePaymentTerms/Description` strings (both schemas)."""
+    base = _to_v1_xpath(_PAYMENT_TERMS) if is_v1 else _PAYMENT_TERMS
+    els = tree.xpath(f"{base}/ram:Description", namespaces=namespaces)
+    return [el.text.strip() for el in els if el.text and el.text.strip()]
+
+
+def _parse_freetext_due_date(descriptions: list[str]) -> str | None:
+    """Extract the NET due date (ISO `YYYY-MM-DD`) from free-text payment terms, or None.
+
+    Matches the explicit "... netto bis DD.MM.YYYY" phrasing only (never the
+    Skonto deadline). Returns None when no clean match exists or the date is
+    invalid — conservative: a non-match yields an absent GT, never a guess.
+    """
+    for desc in descriptions:
+        m = _FREETEXT_DUE_DATE_RE.search(desc)
+        if m is None:
+            continue
+        day, month, year = (int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        try:
+            return date(year, month, day).isoformat()
+        except ValueError:
+            return None
+    return None
+
+
+def _parse_freetext_skonto(descriptions: list[str]) -> list[dict[str, GroundTruthField]]:
+    """Extract Skonto tiers (percent + days) from free-text payment terms.
+
+    Returns one row dict per matched "X% Skonto innerhalb N Tagen" tier, shaped
+    like the structured Skonto rows (`SKONTO_FIELDS` keys: percent / days /
+    basis_amount). `basis_amount` is absent (free text carries no basis). The
+    normalized values use the SAME normalizers as the structured path so scoring
+    is route-identical. Empty list when no tier matches.
+    """
+    rows: list[dict[str, GroundTruthField]] = []
+    for desc in descriptions:
+        for m in _FREETEXT_SKONTO_RE.finditer(desc):
+            percent_raw, days_raw = m.group(1), m.group(2)
+            try:
+                # Free text is German-locale: a comma decimal ("1,5") must be
+                # canonicalized to a dot before _normalize_rate (which, like the
+                # structured XML path, expects a dot-decimal). Keeps the GT value
+                # byte-identical to the structured route.
+                percent_norm = _normalize_rate(percent_raw.replace(",", "."))
+            except ValueError:
+                continue
+            row: dict[str, GroundTruthField] = {
+                "percent": GroundTruthField(
+                    bt_code=SKONTO_FIELDS["percent"].bt_code,
+                    raw_value=percent_raw,
+                    normalized_value=percent_norm,
+                    xpath="freetext:SpecifiedTradePaymentTerms/Description",
+                    is_present=True,
+                ),
+                "days": GroundTruthField(
+                    bt_code=SKONTO_FIELDS["days"].bt_code,
+                    raw_value=days_raw,
+                    normalized_value=_normalize_string(days_raw),
+                    xpath="freetext:SpecifiedTradePaymentTerms/Description",
+                    is_present=True,
+                ),
+                "basis_amount": GroundTruthField(
+                    bt_code=SKONTO_FIELDS["basis_amount"].bt_code,
+                    raw_value=None,
+                    normalized_value=None,
+                    xpath="freetext:SpecifiedTradePaymentTerms/Description",
+                    is_present=False,
+                ),
+            }
+            rows.append(row)
+    return rows
+
+
+# ---------------------------------------------------------------------------
 # 7. parse_cii_xml — main entry point
 # ---------------------------------------------------------------------------
 
@@ -1181,6 +1409,35 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
             continue
 
         if len(elements) > 1:
+            # ADR-045: the flat document-level tax_rate (BT-119) is well-defined
+            # only for single-rate invoices (ADR-035's stated intent). When the
+            # invoice carries multiple DISTINCT VAT rates (e.g. 7% + 19%) there
+            # is no single "the rate" on the page — the per-rate truth lives in
+            # the vat_breakdown repeating group — so scoring a flat scalar is
+            # ill-posed (any single rate the model emits is simultaneously right
+            # and wrong). Mark it EXCLUDED via the scorer's is_present=True +
+            # normalized_value=None path (neither TP/FP/FN nor TN). raw_value
+            # preserves the distinct rates for audit. Multiple elements that all
+            # carry the SAME rate fall through to normal single-rate scoring.
+            if english_key == "tax_rate":
+                distinct_rates: set[str] = set()
+                for rate_el in elements:
+                    rate_txt = rate_el.text
+                    if rate_txt and rate_txt.strip():
+                        try:
+                            distinct_rates.add(_normalize_rate(rate_txt))
+                        except ValueError:
+                            continue
+                if len(distinct_rates) > 1:
+                    header[english_key] = GroundTruthField(
+                        bt_code=spec.bt_code,
+                        raw_value="|".join(sorted(distinct_rates)),
+                        normalized_value=None,
+                        xpath=spec.xpath,
+                        is_present=True,
+                    )
+                    continue
+
             # Multi-match — corpus anomaly path. Log + take first.
             logger.warning(
                 "Field %s (%s) matched %d elements; taking first in document order. XPath: %s",
@@ -1234,6 +1491,41 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
         else:
             normalized = ""
 
+        # ADR-052: extend ADR-045 — the flat document-level tax_rate (BT-119) is
+        # also ill-posed when the SINGLE VAT rate is 0 (reverse-charge /
+        # intra-community / exempt). There is no positive "tax rate" rendered on
+        # the page (it shows "0 %" / "steuerfrei" / "innergemeinschaftliche
+        # Lieferung" / "Reverse Charge"), and the literal 0 is already captured in
+        # the per-rate vat_breakdown group (rate_percent). Scoring a flat scalar 0
+        # therefore rewards/penalizes a redundant, ill-posed field. Mark EXCLUDED
+        # (is_present=True, normalized_value=None) — same neutral path as the
+        # multi-rate exclusion above. A positive single rate (e.g. 19) is
+        # unaffected and still scored.
+        if english_key == "tax_rate" and normalized == "0":
+            header[english_key] = GroundTruthField(
+                bt_code=spec.bt_code,
+                raw_value=raw_str,
+                normalized_value=None,
+                xpath=spec.xpath,
+                is_present=True,
+            )
+            continue
+
+        # ADR-043: an optional EN16931 total (allowance/charge/prepaid/rounding)
+        # carried as a structural 0.00 in the CII XML is treated as ABSENT — the
+        # value is conventionally not rendered on the page, so for a visual-
+        # extraction task the honest ground truth is "no value" (null). raw_value
+        # is preserved for audit; scoring keys off is_present + normalized_value.
+        if english_key in _OPTIONAL_ZERO_TOTALS and normalized == "0.00":
+            header[english_key] = GroundTruthField(
+                bt_code=spec.bt_code,
+                raw_value=raw_str,
+                normalized_value=None,
+                xpath=spec.xpath,
+                is_present=False,
+            )
+            continue
+
         header[english_key] = GroundTruthField(
             bt_code=spec.bt_code,
             raw_value=raw_str,
@@ -1251,6 +1543,28 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
         repeating[group_key] = _parse_repeating_group(
             tree, namespaces, row_xpath, sub_fields, is_v1=is_v1
         )
+
+    # ADR-047: free-text payment-terms fallback. Fill the NET due date (BT-9) and
+    # the Skonto group from `SpecifiedTradePaymentTerms/Description` ONLY when the
+    # structured element was absent — the page renders these, so the GT must too.
+    # Structured data always wins (the fallback never overrides a parsed field).
+    if not header["payment_due_date"].is_present or not repeating["skonto"]:
+        descriptions = _payment_terms_descriptions(tree, namespaces, is_v1)
+        if descriptions:
+            if not header["payment_due_date"].is_present:
+                due_iso = _parse_freetext_due_date(descriptions)
+                if due_iso is not None:
+                    header["payment_due_date"] = GroundTruthField(
+                        bt_code=FIELDS["payment_due_date"].bt_code,
+                        raw_value=due_iso,
+                        normalized_value=due_iso,
+                        xpath="freetext:SpecifiedTradePaymentTerms/Description",
+                        is_present=True,
+                    )
+            if not repeating["skonto"]:
+                skonto_rows = _parse_freetext_skonto(descriptions)
+                if skonto_rows:
+                    repeating["skonto"] = skonto_rows
 
     return GroundTruth(
         header=header,

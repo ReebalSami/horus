@@ -299,9 +299,15 @@ def _score_against_spec(
             gt_present=gt_field.is_present,
         )
 
-    # Normalize the prediction side (None passes through)
+    # Normalize the prediction side (None passes through). A field may carry an
+    # explicit `predicted_normalize` hook (ADR-048) that overrides the
+    # field_type-based dispatch — used where the GT is a controlled-vocabulary
+    # code that is never printed verbatim (vat_breakdown.category_code), so the
+    # model's rendering must be mapped back to the code.
     if predicted is None:
         pred_norm: str | None = None
+    elif spec.predicted_normalize is not None:
+        pred_norm = spec.predicted_normalize(predicted)
     elif spec.field_type == "MONEY":
         pred_norm = _normalize_predicted_money(predicted)
     elif spec.field_type == "DATE":

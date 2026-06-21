@@ -845,7 +845,12 @@ def run_cohort(
             # the cross-field validator on CohortConfig already rejected unknown keys
             # at boot, so a `.get(model_id, default)` here is safe and intentional.
             prompt_override = cohort_cfg.prompt_template_override or {}
-            prompt = prompt_override.get(model_id, manifest_entry["prompt_template"])
+            # ADR-049: fill the {field_glossary} placeholder from the FIELDS
+            # registry. A no-op for prompts without the token (the regex baseline
+            # / OCR defaults), so the frozen baseline (ADR-037) is untouched.
+            prompt = structurer.render_structuring_prompt(
+                prompt_override.get(model_id, manifest_entry["prompt_template"])
+            )
             max_tokens = manifest_entry["max_tokens"]
 
             extractor = get_extractor(model_id)

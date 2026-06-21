@@ -48,6 +48,8 @@ from horus.eval.schema import InvoiceFields, validate_and_repair
 
 __all__ = [
     "build_structuring_input",
+    "render_field_glossary",
+    "render_structuring_prompt",
     "to_full_dict",
     "to_predicted_dict",
     "to_predicted_dict_multipage",
@@ -55,19 +57,68 @@ __all__ = [
     "to_predicted_groups_multipage",
 ]
 
+# Placeholder a structuring prompt template may carry to request the
+# registry-sourced field guide (ADR-049). Substituted by `render_structuring_prompt`.
+_FIELD_GLOSSARY_TOKEN = "{field_glossary}"
+
+
+def render_field_glossary() -> str:
+    """Render the registry's per-field guide (description + German label aliases).
+
+    One terse line per ``FIELDS`` entry that carries a ``description`` — the
+    confusable scalar fields whose English key does not obviously map to the
+    German label printed on the invoice (document totals vs per-line/per-rate
+    values; customer-number vs order-number; ADR-049). Fields without a
+    ``description`` are omitted (the prompt's bare key list already names them).
+    Repeating-group cells are deliberately NOT glossed: extending the guide to
+    line-item cells was measured net-negative and rejected (ADR-053). Contains
+    field SEMANTICS + example German LABEL names only — never a ground-truth
+    value, so the guide is identical for every invoice + locale (the generic,
+    no-leakage guardrail).
+    """
+    lines: list[str] = []
+    for key, spec in FIELDS.items():
+        if spec.description is None:
+            continue
+        if spec.prompt_aliases:
+            labels = " / ".join(spec.prompt_aliases)
+            lines.append(f"- {key}: {spec.description} (printed as: {labels})")
+        else:
+            lines.append(f"- {key}: {spec.description}")
+    return "\n".join(lines)
+
+
+def render_structuring_prompt(template: str) -> str:
+    """Fill the ``{field_glossary}`` placeholder with the registry field guide.
+
+    Single substitution point (ADR-049) so every structuring path — Arm A (via
+    the harness), Arm B (``run_arm_b``), and the live demo — renders the SAME
+    guide from one source of truth (the ``FIELDS`` registry). Uses plain
+    ``str.replace`` (NOT ``str.format``) so the literal JSON braces elsewhere in
+    the prompt are left untouched. A no-op when the placeholder is absent, so
+    non-structurer prompts (the frozen regex baseline, the OCR/markdown
+    COHORT_MANIFEST defaults) pass through unchanged.
+    """
+    if _FIELD_GLOSSARY_TOKEN not in template:
+        return template
+    return template.replace(_FIELD_GLOSSARY_TOKEN, render_field_glossary())
+
 
 def build_structuring_input(structuring_prompt: str, reader_text: str) -> str:
     """Compose the structurer's text input: the instruction + the reader transcript.
 
     The YAML ``prompt_template_override`` carries only the *instruction* (what to
-    extract, the honesty rule, the key list); the reader's transcript text is
+    extract, the honesty rule, the key list, and optionally a ``{field_glossary}``
+    placeholder); the registry field guide is substituted via
+    ``render_structuring_prompt`` (ADR-049) and the reader's transcript text is
     appended here under a clear delimiter so the prompt stays readable in config
     and the text-injection lives in one place. Shared by the offline Arm-B runner
     (``arm_b.run_arm_b``) and the live demo page (``live.run_read_then_structure``)
     so the two paths compose the structuring prompt identically (ADR-038/ADR-039).
     """
+    rendered_prompt = render_structuring_prompt(structuring_prompt)
     return (
-        f"{structuring_prompt}\n\n"
+        f"{rendered_prompt}\n\n"
         "Invoice text (read by a specialist document model):\n"
         "<<<\n"
         f"{reader_text}\n"

@@ -67,4 +67,6 @@ cohort:
         skonto — early-payment discount tiers: {percent, days, basis_amount}
         line_items — one per product/service line: {line_id, name, seller_assigned_id, net_price, quantity, vat_rate, line_amount}
       - Return EXACTLY these keys: invoice_number, issue_date, invoice_currency_code, delivery_date, document_type, buyer_order_reference, billing_period_start, billing_period_end, seller_name, seller_vat_id, seller_tax_id, seller_gln, seller_address, buyer_name, buyer_reference, buyer_vat_id, buyer_address, payment_due_date, payment_means_code, payment_means_text, seller_iban, seller_bic, seller_account_name, payment_reference, tax_rate, line_total_amount, tax_basis_total_amount, tax_total_amount, grand_total_amount, due_payable_amount, prepaid_amount, allowance_total_amount, charge_total_amount, rounding_amount, vat_breakdown, skonto, line_items, purpose_summary.
+      - Field guide for commonly-confused keys — choose the key by the German label printed on the invoice. The total amounts below are the whole-document summary values (typically under a "Belegsummen"/"Summen" block), NOT a single line and NOT one VAT rate:
+      {field_glossary}
       - purpose_summary: one short sentence describing what the invoice is for.

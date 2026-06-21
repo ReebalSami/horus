@@ -923,6 +923,242 @@ def test_score_repeating_group_spurious_row_is_fp() -> None:
     assert result.recall == 1.0
 
 
+# ===========================================================================
+# ADR-048 — predicted-side category_code normalizer (BT-118)
+# ===========================================================================
+
+
+def _category_cell_outcome(predicted_category: str) -> str:
+    """Score a single VAT row whose category_code prediction is `predicted_category`.
+
+    GT category is the canonical EN16931 code "S"; the other three cells match
+    exactly so only the category_code outcome is under test.
+    """
+    gt = [_vat_gt_row("S", "19", "100.00", "19.00")]
+    pred = [_vat_pred_row(predicted_category, "19", "100.00", "19.00")]
+    result = score_repeating_group("vat_breakdown", pred, gt)
+    cell = next(r for r in result.cell_results if r.english_key.endswith(".category_code"))
+    return cell.outcome
+
+
+@pytest.mark.parametrize(
+    "predicted_category",
+    ["S", "Umsatzsteuer (S)", "Umsatzsteuer", "Regelsteuersatz", "USt"],
+)
+def test_category_code_standard_rate_renderings_score_tp(predicted_category: str) -> None:
+    """ADR-048: every faithful rendering of standard VAT maps to "S" → TP (was FN)."""
+    assert _category_cell_outcome(predicted_category) == "TP"
+
+
+def test_category_code_wrong_category_still_fn() -> None:
+    """The normalizer is representation-only: naming the WRONG category still FNs."""
+    # GT is "S" (standard); the model says exempt → must NOT be rewarded.
+    assert _category_cell_outcome("steuerfrei") == "FN"
+
+
+def test_category_code_intra_community_maps_to_k() -> None:
+    """A pure K row: GT "K" vs model's German phrase "innergemeinschaftliche Lieferung" → TP."""
+    gt = [_vat_gt_row("K", "0", "100.00", "0.00")]
+    pred = [_vat_pred_row("innergemeinschaftliche Lieferung", "0", "100.00", "0.00")]
+    result = score_repeating_group("vat_breakdown", pred, gt)
+    cell = next(r for r in result.cell_results if r.english_key.endswith(".category_code"))
+    assert cell.outcome == "TP"
+    assert cell.predicted_normalized == "K"
+
+
+def test_category_code_field_spec_has_predicted_hook() -> None:
+    """The hook is wired on the registry (open/closed extension, not a scorer special-case)."""
+    from horus.eval.ground_truth import VAT_BREAKDOWN_FIELDS
+    from horus.eval.normalizers import _normalize_predicted_vat_category
+
+    spec = VAT_BREAKDOWN_FIELDS["category_code"]
+    assert spec.predicted_normalize is _normalize_predicted_vat_category
+
+
+# ===========================================================================
+# ADR-050 — predicted-side invoice_number label stripping (BT-1)
+# ===========================================================================
+
+
+@pytest.mark.parametrize(
+    ("rendered", "expected"),
+    [
+        ("Nr. 471102", "471102"),  # the observed Gemma rendering (4/6 invoices)
+        ("Nr. 47110818", "47110818"),
+        ("Nr 471102", "471102"),  # no period
+        ("Nr.471102", "471102"),  # no space
+        ("Rechnung Nr. 471102", "471102"),  # qualifier word + label
+        ("Rechnungsnr.: 471102", "471102"),  # compound label + colon
+        ("Rechnungsnummer: 471102", "471102"),
+        ("No. 471102", "471102"),  # English label
+        ("Invoice No. 471102", "471102"),
+    ],
+)
+def test_invoice_number_strips_leading_label(rendered: str, expected: str) -> None:
+    """ADR-050: a leading number-label the model echoed is stripped → bare identifier."""
+    from horus.eval.normalizers import _normalize_predicted_invoice_number
+
+    assert _normalize_predicted_invoice_number(rendered) == expected
+
+
+@pytest.mark.parametrize(
+    "identifier",
+    [
+        "471102",  # already bare
+        "9314110911/00/M/00/N",  # Miete's slashed id (no label) — must be untouched
+        "NR-2024-001",  # starts with "NR" but NO separator → must NOT be eaten
+        "INV-001",  # starts with "INV" but is the value itself
+        "NO2024",  # "NO" run-on into the value → no separator → untouched
+    ],
+)
+def test_invoice_number_preserves_genuine_identifiers(identifier: str) -> None:
+    """The required-separator guard means a real id starting with label letters survives."""
+    from horus.eval.normalizers import _normalize_predicted_invoice_number
+
+    assert _normalize_predicted_invoice_number(identifier) == identifier
+
+
+def test_invoice_number_empty_is_none() -> None:
+    """Empty / whitespace input → None (honest absent), never an empty string."""
+    from horus.eval.normalizers import _normalize_predicted_invoice_number
+
+    assert _normalize_predicted_invoice_number("") is None
+    assert _normalize_predicted_invoice_number("   ") is None
+
+
+def test_invoice_number_bare_label_falls_back_not_empty() -> None:
+    """A raw that is ONLY a label ("Nr.") must not normalize to empty (→ honest FN)."""
+    from horus.eval.normalizers import _normalize_predicted_invoice_number
+
+    out = _normalize_predicted_invoice_number("Nr.")
+    assert out == "Nr."  # unchanged; scores FN against a real GT number, never a TP
+
+
+def test_invoice_number_wrong_value_still_differs() -> None:
+    """Representation-only: stripping the label never turns a wrong number into a match."""
+    from horus.eval.normalizers import _normalize_predicted_invoice_number
+
+    assert _normalize_predicted_invoice_number("Nr. 999999") == "999999"  # != GT "471102"
+
+
+def test_invoice_number_field_spec_has_predicted_hook() -> None:
+    """The hook is wired on the FIELDS registry (open/closed; not a scorer special-case)."""
+    from horus.eval.ground_truth import FIELDS
+    from horus.eval.normalizers import _normalize_predicted_invoice_number
+
+    assert FIELDS["invoice_number"].predicted_normalize is _normalize_predicted_invoice_number
+
+
+# ===========================================================================
+# ADR-051 — predicted-side optional-zero totals (BT-107/108/113/114)
+# ===========================================================================
+
+
+@pytest.mark.parametrize("zero", ["0.00", "0", "0,00", "-0.00", "0.000"])
+def test_optional_zero_money_maps_zero_to_absent(zero: str) -> None:
+    """ADR-051: a predicted 0 on an optional total → None (absent), symmetric with ADR-043."""
+    from horus.eval.normalizers import _normalize_predicted_optional_zero_money
+
+    assert _normalize_predicted_optional_zero_money(zero) is None
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [("50.00", "50.00"), ("-50.00", "-50.00"), ("14.73", "14.73"), ("1.234,56", "1234.56")],
+)
+def test_optional_zero_money_keeps_nonzero(raw: str, expected: str) -> None:
+    """A genuine non-zero value is normalized normally (never masked → still scored)."""
+    from horus.eval.normalizers import _normalize_predicted_optional_zero_money
+
+    assert _normalize_predicted_optional_zero_money(raw) == expected
+
+
+def test_optional_zero_money_empty_is_none() -> None:
+    from horus.eval.normalizers import _normalize_predicted_optional_zero_money
+
+    assert _normalize_predicted_optional_zero_money("") is None
+    assert _normalize_predicted_optional_zero_money("n/a") is None
+
+
+def test_optional_zero_totals_have_predicted_hook() -> None:
+    """All four optional EN16931 totals carry the symmetric predicted hook."""
+    from horus.eval.ground_truth import FIELDS
+    from horus.eval.normalizers import _normalize_predicted_optional_zero_money
+
+    keys = ("allowance_total_amount", "charge_total_amount", "prepaid_amount", "rounding_amount")
+    for key in keys:
+        assert FIELDS[key].predicted_normalize is _normalize_predicted_optional_zero_money
+
+
+def test_optional_zero_predicted_zero_vs_absent_gt_is_tn() -> None:
+    """End-to-end: predicted '0.00' on an absent optional total → TN (not FP)."""
+    from horus.eval.ground_truth import FIELDS, GroundTruthField
+    from horus.eval.scorer import _score_one_field
+
+    gt_absent = GroundTruthField(
+        bt_code="BT-113",
+        raw_value=None,
+        normalized_value=None,
+        xpath=FIELDS["prepaid_amount"].xpath,
+        is_present=False,
+    )
+    res = _score_one_field("prepaid_amount", "0.00", gt_absent, cfg=CFG)
+    assert res.outcome == "TN"
+
+
+# ===========================================================================
+# ADR-051 — predicted-side seller_assigned_id GTIN stripping (BT-155)
+# ===========================================================================
+
+
+@pytest.mark.parametrize(
+    ("rendered", "expected"),
+    [
+        ("PFA5 4000001234578 (GTIN)", "PFA5"),  # spaced
+        ("KR3M4012345001235(GTIN)", "KR3M"),  # run-on
+        ("TB100A44012345001235(GTIN)", "TB100A4"),  # id ENDS in a digit (EAN-13 boundary)
+        ("SFK5 4000050986428 (GTIN)", "SFK5"),
+        ("GTRWA5 4000001234561 (GTIN)", "GTRWA5"),
+        ("PFA5/4000001234578 (GTIN)", "PFA5"),  # slash separator
+    ],
+)
+def test_seller_assigned_id_strips_marked_gtin(rendered: str, expected: str) -> None:
+    """ADR-051: a trailing EAN-13 + '(GTIN)' marker is removed → bare article id."""
+    from horus.eval.normalizers import _normalize_predicted_seller_assigned_id
+
+    assert _normalize_predicted_seller_assigned_id(rendered) == expected
+
+
+@pytest.mark.parametrize(
+    "identifier",
+    [
+        "PFA5",  # already bare
+        "TB100A4",  # ends in digit, no GTIN marker → untouched
+        "4012345001235",  # a bare 13-digit id with no marker → not stripped (no "(GTIN)")
+        "ART-12345678901234",  # digits but no marker → untouched
+    ],
+)
+def test_seller_assigned_id_without_marker_untouched(identifier: str) -> None:
+    """No '(GTIN)' marker → never stripped (an id that merely contains digits is safe)."""
+    from horus.eval.normalizers import _normalize_predicted_seller_assigned_id
+
+    assert _normalize_predicted_seller_assigned_id(identifier) == identifier
+
+
+def test_seller_assigned_id_empty_is_none() -> None:
+    from horus.eval.normalizers import _normalize_predicted_seller_assigned_id
+
+    assert _normalize_predicted_seller_assigned_id("") is None
+
+
+def test_seller_assigned_id_field_spec_has_predicted_hook() -> None:
+    from horus.eval.ground_truth import LINE_ITEM_FIELDS
+    from horus.eval.normalizers import _normalize_predicted_seller_assigned_id
+
+    spec = LINE_ITEM_FIELDS["seller_assigned_id"]
+    assert spec.predicted_normalize is _normalize_predicted_seller_assigned_id
+
+
 def test_score_overall_equals_flat_when_no_groups() -> None:
     """Without predicted_groups, overall_micro_* equals the flat micro_* (backward-compat)."""
     from horus.eval.ground_truth import FIELDS

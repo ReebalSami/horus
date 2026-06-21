@@ -143,6 +143,46 @@ def test_buyer_vat_id_absent_in_einfach() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 2b. ADR-043 — optional-zero EN16931 totals are treated as absent
+# ---------------------------------------------------------------------------
+
+
+def test_optional_zero_totals_treated_as_absent() -> None:
+    """ADR-043: an optional EN16931 total (allowance BT-107 / charge BT-108 /
+    prepaid BT-113 / rounding BT-114) carried as a structural `0.00` in the CII
+    XML is recorded ABSENT — for a visual-extraction task the honest ground
+    truth for an un-rendered optional zero is `null` (so a model `null` scores
+    TN, not FN). `EN16931_Einfach` ships allowance/charge/prepaid all as `0.00`.
+    """
+    gt = parse_cii_xml(EINFACH_CII.read_bytes())
+    for key in ("allowance_total_amount", "charge_total_amount", "prepaid_amount"):
+        rec = gt.header[key]
+        assert rec.is_present is False, (
+            f"{key}=0.00 must be ABSENT per ADR-043 (optional-zero total), got {rec!r}"
+        )
+        assert rec.normalized_value is None
+        # raw_value is preserved for audit even though the field scores as absent.
+        assert rec.raw_value == "0.00"
+
+
+def test_nonzero_optional_totals_remain_present() -> None:
+    """ADR-043 is narrow: a genuinely non-zero optional total stays PRESENT so
+    real misses still count. `EN16931_Rabatte` carries real allowances / charges
+    / prepaid (14.73 / 5.80 / 50.00).
+    """
+    rabatte_cii = ZUGFERD_CII_DIR / "EN16931_Rabatte.cii.xml"
+    gt = parse_cii_xml(rabatte_cii.read_bytes())
+    for key, expected in (
+        ("allowance_total_amount", "14.73"),
+        ("charge_total_amount", "5.80"),
+        ("prepaid_amount", "50.00"),
+    ):
+        rec = gt.header[key]
+        assert rec.is_present is True, f"{key}={expected} must stay present (non-zero)"
+        assert rec.normalized_value == expected
+
+
+# ---------------------------------------------------------------------------
 # 3. Three-route dict-equivalence on the smoke fixture
 # ---------------------------------------------------------------------------
 
@@ -481,6 +521,33 @@ def test_fields_registry_consistency() -> None:
             f"FIELDS[{english_key!r}].field_type={spec.field_type!r} is not one of "
             f"STRING/MONEY/DATE/CODE/RATE (the closed FieldType taxonomy)"
         )
+
+
+def test_fields_registry_descriptions_and_aliases() -> None:
+    """ADR-049: the 7 commonly-confused fields carry `description` + `prompt_aliases`.
+
+    These optional FieldSpec attributes are the single source of truth for the
+    structurer's prompt field guide (`structurer.render_field_glossary`). They are
+    generic field SEMANTICS + German LABEL names — never a ground-truth value.
+    Fields outside this set default to None (the bare key list names them).
+    """
+    described = {
+        "line_total_amount",
+        "tax_basis_total_amount",
+        "tax_total_amount",
+        "grand_total_amount",
+        "due_payable_amount",
+        "buyer_reference",
+        "buyer_order_reference",
+    }
+    for key in described:
+        spec = FIELDS[key]
+        assert spec.description, f"FIELDS[{key!r}].description must be set (ADR-049)"
+        assert spec.prompt_aliases, f"FIELDS[{key!r}].prompt_aliases must be set (ADR-049)"
+        assert isinstance(spec.prompt_aliases, tuple)
+    # Non-annotated fields default to None (only the confusable subset is populated).
+    assert FIELDS["invoice_number"].description is None
+    assert FIELDS["invoice_number"].prompt_aliases is None
 
 
 def test_fields_registry_field_type_consistency() -> None:

@@ -14,16 +14,19 @@ shape keyed by the 16 canonical FIELDS keys (per ADR-012). The harness selects
 between them via ``cohort.adapter_mode: Literal["regex", "json"]`` (per ADR-018
 schema addition in ``src/horus/config.py``).
 
-Permissive JSON recovery (5-step ladder; first match wins):
+Permissive JSON recovery ladder (first match wins; see ``_try_parse_json``):
 
     1. ``json.loads(text)`` direct attempt on the preprocessed text.
-    2. Substring extraction: ``text[first_lbrace : last_rbrace + 1]`` -- handles
+    2. Balanced-bracket scan -- first complete ``{...}`` (handles concatenated
+       dicts + prose-around-JSON).
+    3. Substring extraction: ``text[first_lbrace : last_rbrace + 1]`` -- handles
        models that emit prose before / after the JSON object.
-    3. Trailing-comma tolerance via regex ``,\\s*([}\\]])`` -> ``\\1`` -- handles
+    4. Trailing-comma tolerance via regex ``,\\s*([}\\]])`` -> ``\\1`` -- handles
        models that emit human-readable JSON with the trailing comma JS / Python
        convention rejects but humans use.
-    4. Substring + trailing-comma applied jointly to the substring.
-    5. All attempts failed -> return all-None dict (16 keys, all None).
+    5. Structural repair (ADR-044) -- supplies omitted delimiters (mismatched
+       closer / bracket truncation), string-safe + value-preserving.
+    6. All attempts failed -> return all-None dict (keys present, all None).
 
 Design decisions (locked in ADR-018 §"Decision + integration thoughts"):
 
@@ -270,6 +273,11 @@ def _try_parse_json(text: str) -> dict[str, Any] | None:
          unusual mismatched-bracket cases not handled by the balanced scan.
       4. Trailing-comma sanitization applied to the greedy substring —
          handles ``{"a": "b",}`` (Python / JS-style trailing comma).
+      5. Structural repair ``_repair_unbalanced_json`` (ADR-044) — supplies
+         delimiters the model omitted (a value object's missing ``}`` before
+         an array's ``]``, or bracket / brace truncation at end-of-generation).
+         String-safe and value-preserving: it never invents a key or value, so
+         the honesty guardrail holds. Reached only when every rung above fails.
 
     Top-level shape gate: if the WHOLE input parses as JSON but yields a non-dict
     (list / scalar / null), return None immediately — DO NOT fall through to
@@ -315,6 +323,108 @@ def _try_parse_json(text: str) -> dict[str, Any] | None:
     if isinstance(parsed, dict):
         return parsed
 
+    repaired = _repair_unbalanced_json(text)
+    if repaired is not None:
+        return repaired
+
+    return None
+
+
+def _repair_unbalanced_json(text: str) -> dict[str, Any] | None:
+    """Last-resort structural repair for near-valid JSON objects (ADR-044).
+
+    Recovers two malformation classes empirically observed in structuring-model
+    output that the earlier ladder rungs cannot:
+
+      1. **Mismatched closer** — a value object inside an array is missing its
+         closing ``}`` before the array's ``]`` (e.g. a ``line_items`` row the
+         model failed to close: ``... "line_amount": "55,40" ] ], ...``). The
+         repair inserts the missing ``}`` so the row, the array, and the
+         enclosing object all balance.
+      2. **Bracket / brace truncation** — the model stopped emitting before
+         closing every ``{`` / ``[`` it opened. The repair appends the missing
+         closers in LIFO order.
+
+    The scan is **string-safe** (braces / brackets inside JSON string literals
+    do not affect depth; backslash-escapes are honored) and stops as soon as
+    the top-level object closes, so trailing markdown fences or prose are
+    ignored. It is **value-preserving**: only delimiters the model omitted are
+    supplied — never a key or a value — so the honesty guardrail (ADR-034: a
+    structurer must never invent a value) is preserved.
+
+    Deliberately conservative: if the text is truncated **mid-string**
+    (``in_string`` still open at end), the function returns ``None`` rather
+    than guess where the string ended — preserving the "unparseable -> honest
+    all-null" contract (ADR-018 / ADR-038) for genuinely broken output. Any
+    trailing comma left dangling by an inserted closer is sanitized before the
+    parse attempt.
+
+    Returns the parsed dict on success, or ``None`` if the repaired text still
+    does not parse to a top-level object.
+    """
+    first_lbrace = text.find("{")
+    if first_lbrace == -1:
+        return None
+
+    closer = {"{": "}", "[": "]"}
+    out: list[str] = []
+    stack: list[str] = []
+    in_string = False
+    escape_next = False
+
+    for ch in text[first_lbrace:]:
+        if escape_next:
+            out.append(ch)
+            escape_next = False
+            continue
+        if in_string:
+            out.append(ch)
+            if ch == "\\":
+                escape_next = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+            out.append(ch)
+            continue
+        if ch in "{[":
+            stack.append(ch)
+            out.append(ch)
+            continue
+        if ch in "}]":
+            # Spurious closer with NO matching opener anywhere on the stack
+            # (e.g. a `}`->`]` substitution that leaves an extra `]` after the
+            # array already closed). Drop it and leave the stack intact -- never
+            # pop an enclosing delimiter to satisfy a stray closer, or the root
+            # object would close prematurely and trailing fields would dangle.
+            if not any(closer[opener] == ch for opener in stack):
+                continue
+            # A matching opener exists deeper in the stack: pop up to it,
+            # supplying closers for any intervening unclosed delimiters
+            # (mismatched-closer repair -- the missing `}` before an array `]`).
+            while stack:
+                top = stack[-1]
+                if closer[top] == ch:
+                    stack.pop()
+                    out.append(ch)
+                    break
+                out.append(closer[stack.pop()])
+            if not stack:
+                break  # top-level object closed; ignore trailing fence / prose
+            continue
+        out.append(ch)
+
+    if in_string:
+        # Truncated mid-string: not safely repairable -> honest all-null.
+        return None
+    while stack:
+        out.append(closer[stack.pop()])
+
+    repaired = _TRAILING_COMMA_RE.sub(r"\1", "".join(out))
+    parsed = _safe_json_loads(repaired)
+    if isinstance(parsed, dict):
+        return parsed
     return None
 
 

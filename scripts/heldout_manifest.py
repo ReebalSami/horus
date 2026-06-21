@@ -205,14 +205,16 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
     page_values = [item.n_pages for item in items if item.n_pages is not None]
     n_verified = sum(1 for item in items if item.verified)
 
-    # Per-field presence over the VERIFIED GT only (aggregate; no field values).
-    gt_cache = build_gt_cache(corpus_root, verified_only=True)
+    # Per-field presence over ALL drafted GT (aggregate counts only; no values).
+    # Drafts are Cascade-authored, author-verified field-by-field in the review
+    # page; the verified count is reported separately so the caveat is explicit.
+    gt_cache = build_gt_cache(corpus_root)
     presence: dict[str, int] = dict.fromkeys(FIELDS, 0)
     for gt in gt_cache.values():
         for key, field in gt.header.items():
             if field.is_present:
                 presence[key] += 1
-    n_scored = len(gt_cache)
+    n_drafted = len(gt_cache)
 
     today = datetime.now(UTC).strftime("%Y-%m-%d")
     lines: list[str] = []
@@ -227,7 +229,8 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
     )
     lines.append(f"- **Generated:** {today}")
     lines.append(f"- **Invoices:** {len(items)}")
-    lines.append(f"- **Ground truth verified:** {n_verified} / {len(items)}")
+    lines.append(f"- **Ground truth drafted:** {n_drafted} / {len(items)}")
+    lines.append(f"- **Ground truth author-verified:** {n_verified} / {len(items)}")
     lines.append(f"- **GT schema version:** {GT_SCHEMA_VERSION}\n")
 
     lines.append("## Composition\n")
@@ -242,17 +245,20 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
         lines.append(f"| Pages | per-invoice | {page_summary} |")
     lines.append("")
 
-    lines.append("## Field-presence rate (verified GT)\n")
-    if n_scored:
-        lines.append(f"Across the {n_scored} verified invoices, how often each field is present:\n")
+    lines.append("## Field-presence rate (drafted GT)\n")
+    if n_drafted:
+        lines.append(
+            f"Across the {n_drafted} drafted invoices ({n_verified} author-verified), "
+            "how often each field is present (honest nulls for absent fields):\n"
+        )
         lines.append("| Field | Present | Rate |")
         lines.append("| --- | --- | --- |")
         for key in FIELDS:
             count = presence[key]
-            rate = count / n_scored
-            lines.append(f"| `{key}` | {count}/{n_scored} | {rate:.0%} |")
+            rate = count / n_drafted
+            lines.append(f"| `{key}` | {count}/{n_drafted} | {rate:.0%} |")
     else:
-        lines.append("*(No verified ground truth yet — re-run after verification.)*")
+        lines.append("*(No ground truth drafted yet — re-run after drafting.)*")
     lines.append("")
 
     lines.append("## Freeze table (id \u2194 sha256)\n")
@@ -272,7 +278,66 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines), encoding="utf-8")
-    print(f"  datasheet written: {out_path} ({len(items)} invoices, {n_scored} verified GT).")
+    print(
+        f"  datasheet written: {out_path} ({len(items)} invoices, "
+        f"{n_drafted} drafted, {n_verified} verified)."
+    )
+    return out_path
+
+
+def _extract_text(pdf_path: Path) -> list[str]:
+    """Return the per-page embedded text layer of a PDF (empty strings for image-only pages)."""
+    import pypdfium2 as pdfium  # noqa: PLC0415 — heavy; defer
+
+    pdf = pdfium.PdfDocument(str(pdf_path))
+    try:
+        pages: list[str] = []
+        for i in range(len(pdf)):
+            textpage = pdf[i].get_textpage()
+            pages.append(textpage.get_text_range())
+        return pages
+    finally:
+        pdf.close()
+
+
+def dump_text(corpus_root: Path, out_path: Path) -> Path:
+    """Dump every indexed invoice's embedded text to ONE local file (drafting aid).
+
+    Writes per-invoice + per-page separated text to `out_path` (under the git-ignored
+    data tree) and prints a `(id, pages, chars)` summary sorted low-text-first, so
+    image-only scans (near-zero text layer → need vision drafting) are obvious. This
+    is a LOCAL inspection aid for ground-truth drafting; it emits no tracked artifact.
+    """
+    items = load_heldout_index(corpus_root)
+    if not items:
+        raise SystemExit(
+            f"No index found at {corpus_root / INDEX_FILENAME}. Run the `index` mode first."
+        )
+    blocks: list[str] = []
+    summary: list[tuple[str, int, int]] = []
+    for item in items:
+        pages: list[str] = []
+        if item.pdf_path.is_file():
+            try:
+                pages = _extract_text(item.pdf_path)
+            except Exception as exc:  # noqa: BLE001 — extraction failure is non-fatal
+                print(f"  WARN: text extraction failed for {item.id}: {exc}", flush=True)
+        total_chars = sum(len(p) for p in pages)
+        summary.append((item.id, len(pages), total_chars))
+        header = (
+            f"===== {item.id} | {item.language}/{item.channel} | "
+            f"pages={len(pages)} | chars={total_chars} ====="
+        )
+        body = "\n\n".join(f"--- page {n} ---\n{text.strip()}" for n, text in enumerate(pages, 1))
+        blocks.append(f"{header}\n{body}")
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text("\n\n\n".join(blocks), encoding="utf-8")
+    print(f"  text dumped: {out_path} ({len(items)} invoices) [LOCAL-ONLY]", flush=True)
+    print("  id / pages / chars (low-text first = likely image-only scan):", flush=True)
+    for inv_id, n_pages, chars in sorted(summary, key=lambda row: row[2]):
+        flag = "  <-- low text (scan?)" if chars < 200 else ""
+        print(f"    {inv_id:26s} pages={n_pages:2d} chars={chars:6d}{flag}", flush=True)
     return out_path
 
 
@@ -295,11 +360,19 @@ def main() -> None:
         default=PROJECT_ROOT / "docs" / "architecture" / "belege-heldout-datasheet.md",
     )
 
+    p_text = sub.add_parser("text", help="dump per-invoice extracted text (local drafting aid)")
+    p_text.add_argument("--corpus-root", type=Path, default=DEFAULT_CORPUS_ROOT)
+    p_text.add_argument(
+        "--out", type=Path, default=DEFAULT_CORPUS_ROOT / "_text" / "all-invoices.txt"
+    )
+
     args = parser.parse_args()
     if args.mode == "index":
         build_index(args.corpus_root)
     elif args.mode == "datasheet":
         build_datasheet(args.corpus_root, args.out)
+    elif args.mode == "text":
+        dump_text(args.corpus_root, args.out)
 
 
 if __name__ == "__main__":
