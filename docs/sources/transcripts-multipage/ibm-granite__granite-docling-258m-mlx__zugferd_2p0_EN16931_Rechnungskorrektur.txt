@@ -1,0 +1,89 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EN16931_Rechnungskorrektur
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  17.89s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_59><loc_405><loc_68>Rechnungskorrektur Nr. RK21012345 vom 16.09.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_274><loc_97>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_104><loc_173><loc_110>Rechnungswährung : EUR</text>
+<text><loc_41><loc_138><loc_254><loc_144>Liefer- und Leistungsdatum : 05.08.2018</text>
+<text><loc_41><loc_159><loc_113><loc_165>Bestellung</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text><loc_41><loc_166><loc_113><loc_172>Lieferavis :</text>
+<text>
+===== PAGE 2 =====
+<doctag><text><loc_42><loc_34><loc_224><loc_40>Ursprungsbeleg-Nr : R876554321012345</text>
+<text><loc_42><loc_40><loc_219><loc_47>Reklamationsnummer : REKLAA-2018-235</text>
+<text><loc_41><loc_67><loc_123><loc_86>Warenempfänger GLN 430417088093</text>
+<text><loc_41><loc_86><loc_103><loc_92>MUSTER-MARKT</text>
+<text><loc_42><loc_99><loc_118><loc_104>HAUPTSTRASSE 44</text>
+<text><loc_42><loc_104><loc_112><loc_110>31157 SARSTEDT</text>
+<text><loc_41><loc_117><loc_123><loc_123>Abteilung : 8211</text>
+<otsl><loc_41><loc_136><loc_459><loc_338><ched>Pos<ched>Art-Nr-Kunde Art-Nr-Lief.<ched>Beschreibung<ched>Nettopreis<ched>Menge<ched>USt.<ched>Positionsbetrag ohne USt.<nl><fcel>1<fcel>Zitronensäure<fcel>100ml<ecel><fcel>1,0000<fcel>-5 Stk<fcel>-5,00<nl><fcel>ZS997 (GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>4123456000014<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis :1,0000<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Verpackung: Flasche<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>VKE/Geb: 1<ecel><ecel><ecel><ecel><ecel><nl><fcel>2<fcel>Gelierzucker<fcel>1,4500<fcel>-2 Stk<fcel>7 %<fcel>-2,90<ecel><nl><fcel>GZ250 (GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_42><loc_28><loc_133><loc_34>Zu- und Abschläge:</section_header_level_1>
+<otsl><loc_41><loc_42><loc_459><loc_140><fcel>Art<fcel>%Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<nl><fcel>Rechnungsrabatt 1 - Abschlag 2,00% Basisbetrag:<ecel><fcel>19 % UST (S)<fcel>0,10<ecel><nl><fcel>-5,00, MwSt. % 19,0<ecel><ecel><ecel><ecel><nl><fcel>Rechnungsrabatt 1 - Abschlag 2,00% Basisbetrag:<ecel><fcel>7 % UST (S)<fcel>0,06<ecel><nl><fcel>-2,90, MwSt. % 7,0<ecel><ecel><ecel><ecel><nl><fcel>Rechnungsrabatt 2 AbschlagBasisbetrag: -5,00, MwSt. % 19,0<ecel><fcel>19 % UST (S)<fcel>0,05<ecel><nl><fcel>Abschlag<ecel><fcel>7 % UST (S)<fcel>0,02<ecel><nl><fcel>Rechnungsrabatt 2<ecel><ecel><ecel><ecel><nl><fcel>Basisbetrag: -2,90, MwSt. % 7,0<ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_180><loc_153><loc_186>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_194><loc_459><loc_296><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<fcel>-4,85<fcel>19<fcel>-0,92<ecel><nl><fcel>Umsatzsteuer (S)<fcel>-2,82<fcel>7<fcel>-0,20<ecel><nl><fcel>Belegsummen:<ecel><ecel><ecel><ecel><nl><ecel><fcel>Positionssumme<ecel><fcel>-7,90<ecel><nl><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><fcel>0,00<ecel><nl><ecel><fcel>Gesamtbetrag der Abschlage<ecel><fcel>0,23<ecel><nl><ecel><fcel>Rechnungssumme ohne USt.<ecel><fcel>-7,67<ecel><nl><ecel><fcel>Steuerbetrag in<ecel><fcel>EUR<fcel>-<nl><ecel><fcel>Bruttosumme<ecel><fcel>-8,79<ecel><nl><ecel><fcel>Erhaltene Anzahlungen<ecel><fcel>-0,00<ecel><nl><ecel><fcel>Zahlbetrag<ecel><fcel>-8,79<ecel><nl></otsl>
+</doctag>

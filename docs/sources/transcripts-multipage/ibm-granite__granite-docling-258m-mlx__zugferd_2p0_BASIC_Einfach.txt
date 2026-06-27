@@ -1,0 +1,64 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_BASIC_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  11.57s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_60><loc_352><loc_68>Handelsrechnung Nr. 471102 vom 05.03.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_451><loc_97>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic</text>
+<text><loc_41><loc_105><loc_173><loc_110>Rechnungswährung : EUR</text>
+<text><loc_41><loc_135><loc_254><loc_142>Liefer- und Leistungsdatum : 05.03.2018</text>
+<section_header_level_1><loc_41><loc_173><loc_92><loc_178>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_186><loc_113><loc_192>Lieferant GmbH</text>
+<text><loc_41><loc_193><loc_143><loc_206>Lieferantenstraße 20 DE 80333 München</text>
+<text><loc_41><loc_214><loc_184><loc_220>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_221><loc_173><loc_227>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_234><loc_173><loc_240>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_41><loc_248><loc_118><loc_252>Kunden AG Mitte</text>
+<text><loc_41><loc_254><loc_113><loc_267>Hans Muster Kundenstraße 15</text>
+<text><loc_41><loc_268><loc_133><loc_273>DE 69876 Frankfurt</text>
+<text><loc_41><loc_295><loc_248><loc_300>Rechnung gemäß Bestellung vom 01.03.2018.</text>
+<text><loc_41><loc_315><loc_163><loc_349>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland Geschäftsführer: Hans Muster Handelsregisternummer: H A 123</text>
+<text><loc_41><loc_375><loc_184><loc_394>Unsere GLN: 4000001123452 Ihre GLN: 4000001987658</text>
+<text><loc_41><loc_409><loc_451><loc_421>Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018.</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><otsl><loc_42><loc_83><loc_460><loc_158><fcel>Art-Nr-Kunde<fcel>Pos<fcel>Art-Nr-Lief. Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions- betrag ohne USt.<nl><fcel>(Art)<ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>1<fcel>GTIN:<fcel>4012345001235<fcel>9,9000<fcel>20 Stk<fcel>19 %<fcel>198,00<nl><fcel>4012345001235 Unsere Art.- (GLN)<fcel>Nr.: TB100A4<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Trennblätter<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>A4<ecel><ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_193><loc_142><loc_199>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_42><loc_208><loc_103><loc_213>Beschreibung</text>
+<text><loc_327><loc_208><loc_378><loc_213>Fälligkeit</text>
+<text><loc_402><loc_208><loc_458><loc_213>Teilzahlung</text>
+<text><loc_327><loc_215><loc_378><loc_220>04.04.2018</text>
+<section_header_level_1><loc_42><loc_252><loc_153><loc_258>Steueraufschlüsselung:</section_header_level_1>
+<text><loc_42><loc_266><loc_115><loc_272>Art (Kategorie)</text>
+<text><loc_135><loc_266><loc_246><loc_272>Warenwert Zu-/Abschlag</text>
+<text><loc_260><loc_266><loc_316><loc_272>Basisbetrag</text>
+<text><loc_356><loc_266><loc_378><loc_272>USt.</text>
+<text><loc_387><loc_266><loc_414><loc_272>%</text>
+<text><loc_428><loc_266><loc_458><loc_272>Steuerbetrag</text>
+<text><loc_42><loc_273><loc_115><loc_279>Umsatzsteuer (S)</text>
+<text><loc_288><loc_273><loc_316><loc_279>198,00</text>
+<text><loc_396><loc_273><loc_408><loc_279>19</text>
+<text><loc_428><loc_273><loc_458><loc_279>37,62</text>
+<section_header_level_1><loc_42><loc_288><loc_103><loc_294>Belegsummen:</section_header_level_1>
+<text><loc_242><loc_295><loc_312><loc_301>Positionssumme</text>
+<text><loc_440><loc_295><loc_458><loc_301>198,00</text>
+<text><loc_242><loc_303><loc_372><loc_309>Gesamtbetrag der Zuschläge</text>
+<text><loc_428><loc_303><loc_458><loc_309>0,00</text>
+<text><loc_242><loc_310><loc_372><loc_316>Gesamtbetrag der Abschläge</text>
+<text><loc_428><loc_310><loc_458><loc_316>-0,00</text>
+<text><loc_242><loc_318><loc_362><loc_324>Rechnungssumme ohne USt.</text>
+<text><loc_440><loc_318><loc_458><loc_324>198,00</text>
+<text><loc_242><loc_326><loc_318><loc_332>Steuerbetrag in</text>
+<text><loc_428><loc_326><loc_458><loc_332>37,62</text>
+<text><loc_242><loc_334><loc_297><loc_340>Bruttosumme</text>
+<text><loc_428><loc_334><loc_458><loc_340>235,62</text>
+<text><loc_242><loc_351><loc_292><loc_357>Zahlbetrag</text>
+<text><loc_428><loc_351><loc_458><loc_357>235,62</text>
+</doctag>

@@ -1,0 +1,114 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  15.78s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_341><loc_71><_YAML_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+  ZUGFeRD-Version   : 2.1 vom 24.03.2020
+  Stylesheet-Version: 2.0 vom 18.10.2018
+  Codelisten-Version: 3.0 vom 15.11.2019
+  (c) AWV e.V. 2020
+</code>
+<section_header_level_1><loc_41><loc_84><loc_403><loc_93>Handelsrechnung Nr. E2018092011804 vom 20.09.2018</section_header_level_1>
+<text><loc_41><loc_115><loc_268><loc_121>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_122><loc_155><loc_128>Währung : . EU</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum : 20.09.2018</text>
+<text><loc_41><loc_150><loc_312><loc_156>Referenz des Käufers : 05 158 004 - 11023 - 45</text>
+<text><loc_41><loc_163><loc_278><loc_169>Bestellung : 2018092011804</text>
+<section_header_level_1><loc_41><loc_183><loc_91><loc_189>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_190><loc_150><loc_196>Nummer : 549910</text>
+<text><loc_41><loc_197><loc_144><loc_203>Verkehrsbetriebe GmbH</text>
+<text><loc_41><loc_204><loc_111><loc_210>Torti Mayer</text>
+<text><loc_41><loc_211><loc_111><loc_217>Musterstraße 3</text>
+<text><loc_41><loc_225><loc_115><loc_231>DE 12345 Berlin</text>
+<text><loc_41><loc_238><loc_90><loc_244>Telefon</text>
+<text><loc_106><loc_238><loc_179><loc_244>: +493012345678</text>
+<text><loc_41><loc_245><loc_223><loc_251>E-Mail : tm@verkehrsbetriebe.de</text>
+<text><loc_41><loc_252><loc_170><loc_258>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_265><loc_76><loc_271>Käufer:</section_header_level_1>
+<text><loc_41><loc_272><loc_218><loc_278>Nummer : Liselotte Müllermann</text>
+<text><loc_41><loc_279><loc_140><loc_285>Liselotte Müllermann</text>
+<text><loc_41><loc_286><loc_125><loc_292>Beispielstraße 24</text>
+<text><loc_41><loc_299><loc_115><loc_305>DE 12345 Berlin</text>
+<text><loc_41><loc_320><loc_194><loc_326>Qualifizierung der Textart : ADU</text>
+<text><loc_41><loc_327><loc_439><loc_339>Bei Schriftwechsel bitte Ihre Kundennummer 35040727 und Belegnummer 2018092011804 angeben</text>
+<text><loc_41><loc_347><loc_121><loc_353>Art-Nr-Kunde</text>
+<text><loc_41><loc_354><loc_155><loc_360>Pos Art-Nr-Lief. Beschreibung</text>
+<text><loc_41><loc_361><loc_91><loc_367>Art-Nr</text>
+<text><loc_41><loc_368><loc_61><loc_374>(Art)</text>
+<text><loc_41><loc_375><loc_61><loc_381>0</text>
+<text><loc_41><loc_382><loc_170><loc_388>Fahrten-</text>
+<text><loc_41><loc_389><loc_90><loc_395>Karte</text>
+<text><loc_41><loc_396><loc_90><loc_402>Berlin</text>
+<text><loc_41><loc_403><loc_61><loc_409>AB</text>
+<text><loc_41><loc_419><loc_401><loc_424>Gültig ab 20.09.2018 15:39 Uhr bis 20.09.2018 17:39</text>
+<text><loc_41><loc_425><loc_401><loc_431>Uhr Abschnitt: 1/4</text>
+<section_header_level_1><loc_41><loc_453><loc_140><loc_459>Zahlungsbedingungen:</section_header_level_1>
+</doctag>
+===== PAGE 2 =====
+<doctag><section_header_level_1><loc_149><loc_35><loc_209><loc_41>Beschreibung</section_header_level_1>
+<text><loc_42><loc_42><loc_308><loc_55>Zahlungsbedingungen: Der Rechnungsbetrag wurde bereits beglichen.</text>
+<section_header_level_1><loc_42><loc_70><loc_101><loc_75>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_84><loc_165><loc_89>Zahlungstyp (codiert): 30</text>
+<text><loc_42><loc_98><loc_150><loc_103>Verkäufer-Kontoname</text>
+<text><loc_42><loc_105><loc_150><loc_110>Verkäufer-IBAN</text>
+<text><loc_42><loc_111><loc_150><loc_117>Verkäufer-BIC</text>
+<text><loc_42><loc_140><loc_179><loc_145>Umsatzsteueraufschlüsselung:</text>
+<text><loc_42><loc_154><loc_317><loc_159>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag</text>
+<text><loc_42><loc_161><loc_78><loc_166>VAT (S)</text>
+<text><loc_298><loc_161><loc_317><loc_166>8,41</text>
+<text><loc_42><loc_176><loc_101><loc_181>Belegsummen:</text>
+<text><loc_246><loc_182><loc_315><loc_187>Positionssumme</text>
+<text><loc_436><loc_182><loc_456><loc_187>8,41</text>
+<text><loc_246><loc_190><loc_374><loc_196>Gesamtbetrag der Zuschläge</text>
+<text><loc_246><loc_199><loc_374><loc_204>Gesamtbetrag der Abschläge</text>
+<text><loc_246><loc_207><loc_363><loc_212>Rechnungssumme ohne USt.</text>
+<text><loc_436><loc_207><loc_456><loc_212>8,41</text>
+<text><loc_246><loc_216><loc_305><loc_221>Steuerbetrag</text>
+<text><loc_436><loc_216><loc_456><loc_221>0,59</text>
+<text><loc_246><loc_224><loc_301><loc_229>Bruttosumme</text>
+<text><loc_436><loc_224><loc_456><loc_229>9,00</text>
+<text><loc_246><loc_233><loc_350><loc_239>Erhaltene Anzahlungen</text>
+<text><loc_246><loc_242><loc_296><loc_248>Zahlbetrag</text>
+<text><loc_436><loc_242><loc_456><loc_248>9,00</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250><loc_296><loc_255>Zahlbetrag:</text>
+<text><loc_42><loc_250

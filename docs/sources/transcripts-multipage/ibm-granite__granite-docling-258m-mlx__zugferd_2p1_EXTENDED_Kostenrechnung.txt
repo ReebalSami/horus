@@ -1,0 +1,169 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EXTENDED_Kostenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  24.11s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version:  2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_36><loc_56><loc_115><loc_63>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_80><loc_322><loc_91>Handelsrechnung Nr. KR87654321012 vom 06.10.2018</section_header_level_1>
+<text><loc_37><loc_111><loc_92><loc_118>Testkennzeichen</text>
+<text><loc_121><loc_111><loc_139><loc_118>: true</text>
+<text><loc_37><loc_118><loc_350><loc_125>Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended</text>
+<text><loc_37><loc_125><loc_62><loc_132>Währung</text>
+<text><loc_121><loc_125><loc_141><loc_132>: EUR</text>
+<text><loc_37><loc_139><loc_117><loc_146>Liefer- und Leistungsdatum</text>
+<text><loc_121><loc_139><loc_177><loc_146>: 30.09.2018</text>
+<text><loc_37><loc_159><loc_95><loc_166>Weitere Referenz</text>
+<text><loc_121><loc_159><loc_232><loc_166>: A777123, Art der Referenz: 130</text>
+<section_header_level_1><loc_37><loc_180><loc_76><loc_187>Verkäufer:</section_header_level_1>
+<text><loc_37><loc_187><loc_179><loc_220>Nummer : 549910 Globale Nummer: 4333741000005 (GIN) MUSTERLIEFERANT GMBH BAHNHFSTRASSE 99 DE 99199 MUSTERHAUSEN</text>
+<text><loc_37><loc_227><loc_62><loc_234>Telefon</text>
+<text><loc_73><loc_227><loc_134><loc_234>: +49 932 431 500</text>
+<text><loc_37><loc_234><loc_62><loc_241>E-Mail</text>
+<text><loc_73><loc_234><loc_202><loc_241>: max.mustermann@musterlieferant.de</text>
+<text><loc_37><loc_241><loc_142><loc_248>Steuernummer : 201/113/40209</text>
+<section_header_level_1><loc_37><loc_254><loc_66><loc_261>Käufer:</section_header_level_1>
+<text><loc_37><loc_261><loc_179><loc_295>Nummer : 339420 Globale Nummer: 4304171000002 (GIN) MUSTER-KUNDE GMBH KUNDENWEG 88 DE 40235 DUESSELDORF</text>
+<section_header_level_1><loc_37><loc_307><loc_153><loc_314>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_37><loc_321><loc_179><loc_355>Globale Nummer: 4304171088093 (GIN) MUSTER-MARKT 7322 HAUPTSTRASSE 44 DE 31157 SARSTEDT</text>
+<section_header_level_1><loc_37><loc_368><loc_168><loc_375>Abweichender Rechnungsempfänger:</section_header_level_1>
+<text><loc_37><loc_375><loc_179><loc_408>Nummer : 339420 Globale Nummer: 4304171000002 (GIN) MUSTER-KUNDE GMBH KUNDENWEG 88 DE 40235 DUESSELDORF</text>
+<text><loc_37><loc_422><loc_251><loc_428>Qualifizierung der Textart: AAK, Qualifizierung des Textes: ST3</text>
+<text><loc_37><loc_428><loc_206><loc_435>Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_37><loc_441><loc_251><loc_448>Qualifizierung der Textart: AAJ, Qualifizierung des Textes: EEV</text>
+<text><loc_37><loc_448><loc_392><loc_455>Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_36><loc_32><loc_130><loc_41>Qualifizierung der Textart:</text>
+<text><loc_36><loc_40><loc_147><loc_116>MUSTERLIEFERANT GMBH BAHNHFSTRASSE 99 99199 MUSTERHAUSEN Geschäftsführung: Max Mustermann USt-IdNr: DE123456789 Telefon: +49 932 431 0</text>
+<text><loc_36><loc_127><loc_130><loc_136>Pos. Art-Nr-Kunde</text>
+<text><loc_36><loc_135><loc_100><loc_144>Art-Nr-Lief.</text>
+<text><loc_36><loc_143><loc_69><loc_152>Art-Nr</text>
+<text><loc_36><loc_151><loc_55><loc_160>(Art)</text>
+<text><loc_36><loc_159><loc_49><loc_167>1</text>
+<text><loc_36><loc_166><loc_96><loc_174>WA997</text>
+<text><loc_36><loc_174><loc_111><loc_182>4123456000014</text>
+<text><loc_36><loc_181><loc_69><loc_189>(GTIN)</text>
+<text><loc_36><loc_189><loc_130><loc_197>Bruttopreis : 0,05</text>
+<text><loc_36><loc_208><loc_190><loc_216>Weitere Eigenschaften:</text>
+<text><loc_36><loc_224><loc_130><loc_232>Zählpunkt: =</text>
+<text><loc_36><loc_240><loc_130><loc_247>ÖST250</text>
+<text><loc_36><loc_247><loc_111><loc_255>4123456000021</text>
+<text><loc_36><loc_254><loc_69><loc_262>(GTIN)</text>
+<text><loc_36><loc_262><loc_130><loc_270>Bruttopreis : 0,02</text>
+<text><loc_36><loc_283><loc_46><loc_291>3</text>
+<text><loc_36><loc_291><loc_130><loc_299>4260331811362</text>
+<text><loc_36><loc_299><loc_69><loc_306>(GTIN)</text>
+<text><loc_36><loc_315><loc_130><loc_323>Bruttopreis : 15,00</text>
+<text><loc_36><loc_333><loc_130><loc_341>Besteller: Hr. Mayer,</text>
+<text><loc_36><loc_333><loc_69><loc_341>Personalr.</text>
+<text><loc_36><loc_350><loc_46><loc_358>4</text>
+<text><loc_36><loc_358><loc_130><loc_383>FB05 20010150013325 (GTIN)</text>
+<text><loc_36><loc_383><loc_130><loc_391>Bruttopreis : 0,01</text>
+<text><loc_36><loc_404><loc_46><loc_412>5</text>
+<text><loc_36><loc_412><loc_130><loc_435>KOP05 4123456000038 (GTIN)</text>
+<text><loc_36><loc_435><loc_130><loc_443>Bruttopreis : 0,01</text>
+<text><loc_36><loc_451><loc_130><loc_459>Zählerstand von-bis:</text>
+<text><loc_130><loc_451><loc_256><loc_459>543210 - 544420</text>
+<text><loc_130><loc_151><loc_164><loc_159>Wirkarbeit</text>
+<text><loc_130><loc_159><loc_149><loc_167>HT</text>
+<text><loc_130><loc_166><loc_149><loc_174>4123</text>
+<text><loc_130><loc_174><loc_149><loc_182>(GTIN)</text>
+<text><loc_130><loc_208><loc_206><loc_216>Weitere Eigenschaften:</text>
+<text><loc_130><loc_224><loc_313><loc_232>Zählpunkt: = DE0001346448600000000000000100038</text>
+<text><loc_130><loc_240><loc_164><loc_247>Lieferant</text>
+<text><loc_130><loc_247><loc_160><loc_255>4123</text>
+<text><loc_130><loc_254><loc_149><loc_262>(GTIN)</text>
+<text><loc_130><loc_262><loc_140><loc_270>0,02</text>
+<text><loc_130><loc_283><loc_186><loc_291>Kommissionierer</text>
+<text><loc_130><loc_291><loc_161><loc_299>1250032</text>
+<text><loc_130><loc_299><loc_152><loc_307>Muster</text>
+<text><loc_130><loc_315><loc_149><loc_323>15,00</text>
+<text><loc_130><loc_333><loc_256><loc_341>Besteller: Hr. Mayer, Personalnr. 4488</text>
+<text><loc_130><loc_350><loc_190><loc_358>FALTENBUTEL</text>
+<text><loc_130><loc_358><loc_171><loc_365>16x6x28 CM</text>
+<text><loc_130><loc_365><loc_171><loc_373>20010150013325</text>
+<text><loc_130><loc_383><loc_140><loc_391>0,01</text>
+<text><loc_130><loc_404><loc_172><loc_412>Kopierpapier</text>
+<text><loc_130><loc_412><loc_149><loc_420>A4</text>
+<text><loc_130><loc_420><loc_149><loc_428>A4</text>
+<text><loc_130><loc_428><loc_140><loc_436>0,01</text>
+<text><loc_130><loc_445><loc_256><loc_453>Zählerstand von-bis: 543210 - 544420</text>
+<text><loc_130><loc_151><loc_164><loc_159>Nettopreis</text>
+<text><loc_130><loc_159><loc_149><loc_167>0,05</text>
+<text><loc_130><loc_208><loc_206><loc_216>Weitere Eigenschaften:</text>
+<text><loc
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_128><loc_34><loc_204><loc_41>Weitere Eigenschaften:</section_header_level_1>
+<text><loc_128><loc_47><loc_216><loc_54>Zähler-Nr.: = MG-X79318</text>
+<section_header_level_1><loc_37><loc_75><loc_118><loc_82>Zahlungsbedingungen:</section_header_level_1>
+<otsl><loc_36><loc_89><loc_463><loc_289></otsl>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_37><loc_289><loc_57><loc_296>Zahlbar</text>
+<text><loc_

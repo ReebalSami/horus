@@ -1,0 +1,54 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_BASIC_Rechnungskorrektur
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  11.90s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version: 2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_36><loc_57><loc_99><loc_63>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_81><loc_321><loc_91>Rechnungskorrektur Nr. RK21012345 vom 16.09.2019</section_header_level_1>
+<text><loc_36><loc_112><loc_332><loc_118>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic</text>
+<text><loc_37><loc_119><loc_69><loc_125>Währung</text>
+<text><loc_112><loc_119><loc_116><loc_125>:</text>
+<text><loc_116><loc_119><loc_116><loc_125>EUR</text>
+<text><loc_37><loc_133><loc_116><loc_140>Liefer- und Leistungsdatum</text>
+<text><loc_121><loc_133><loc_177><loc_140>: 05.08.2019</text>
+<text><loc_37><loc_169><loc_75><loc_175>Verkäufer:</text>
+<text><loc_37><loc_182><loc_147><loc_201>GLN 4333741000005 Lief-Nr: 549910 MUSTERLIEFERANT GMBH</text>
+<text><loc_37><loc_208><loc_139><loc_221>BAHNHOFSTRASSE 99 DE 99199 MUSTERHAUSEN</text>
+<text><loc_37><loc_228><loc_131><loc_235>USt.-Id.-Nr. : DE123456789</text>
+<text><loc_37><loc_242><loc_64><loc_248>Käufer:</text>
+<text><loc_37><loc_255><loc_116><loc_269>GLN 4304171000002 Kunden-Nr. : 009420</text>
+<text><loc_37><loc_270><loc_132><loc_276>MUSTER-KUNDE GMBH</text>
+<text><loc_37><loc_283><loc_131><loc_295>KUNDENWEG 88 DE 40235 DUESSELDORF</text>
+<text><loc_37><loc_315><loc_206><loc_321>Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_37><loc_335><loc_147><loc_355>MUSTERLIEFERANT GMBH BAHNHOFSTRASSE 99 99199 MUSTERHAUSEN</text>
+<text><loc_37><loc_362><loc_168><loc_407>Geschäftsführung: Max Mustermann USt-IdNr: DE123456789 Telefon: +49 932 431 0 www.musterlieferant.de HRB Nr. 372876 Amtsgericht Musterstadt GLN 4304171000002</text>
+<text><loc_37><loc_427><loc_93><loc_433>Bei Rückfragen:</text>
+<text><loc_37><loc_434><loc_123><loc_440>Telefon: +49 932 431 500</text>
+<text><loc_37><loc_441><loc_182><loc_447>E-Mail : max.muster@musterlieferant.de</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_37><loc_41><loc_112><loc_73>Warenempfänger GLN 430417088093 MUSTER-MARKT HAUPTSTRASSE 44 31157 SARSTEDT</text>
+<text><loc_37><loc_80><loc_94><loc_86>Abteilung : 8211</text>
+<text><loc_37><loc_114><loc_94><loc_120>Bestell-Nr</text>
+<text><loc_90><loc_114><loc_138><loc_120>: B123456789</text>
+<text><loc_37><loc_120><loc_94><loc_126>Bestell-Datum</text>
+<text><loc_90><loc_120><loc_138><loc_126>: 01.08.2019</text>
+<text><loc_37><loc_134><loc_94><loc_140>Lieferschein-Nr</text>
+<text><loc_90><loc_134><loc_168><loc_140>: L87654321012345</text>
+<text><loc_37><loc_140><loc_138><loc_146>Lieferschein-Datum : 05.08.2019</text>
+<text><loc_37><loc_146><loc_178><loc_152>Ursprungsbeleg-Nr : R87654321012345</text>
+<text><loc_37><loc_152><loc_185><loc_158>Reklamationsnummer : REKLA-2018-235</text>
+<text><loc_37><loc_181><loc_168><loc_222>Rechnungsempfänger GLN 4304171000002 MUSTER-KUNDE GMBH KUNDENWEG 88 40235 DUESSELDORF Kunden-Nr. : 009420</text>
+<otsl><loc_37><loc_236><loc_464><loc_422></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_37><loc_41><loc_106><loc_48>Zu- und Abschläge:</section_header_level_1>
+<otsl><loc_36><loc_55><loc_464><loc_208></otsl>
+</doctag>

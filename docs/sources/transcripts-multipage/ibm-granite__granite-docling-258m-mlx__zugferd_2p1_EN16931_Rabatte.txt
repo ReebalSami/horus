@@ -1,0 +1,39 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  8.75s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_278><loc_65>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version:  2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019 (c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_81><loc_272><loc_91>Handelsrechnung Nr. 471102 vom 05.06.2018</section_header_level_1>
+<text><loc_37><loc_112><loc_209><loc_119>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_37><loc_119><loc_69><loc_126>Währung</text>
+<text><loc_119><loc_119><loc_141><loc_126>: EUR</text>
+<text><loc_37><loc_133><loc_146><loc_140>Liefer- und Leistungsdatum :</text>
+<text><loc_136><loc_133><loc_177><loc_140>03.06.2018</text>
+<text><loc_37><loc_153><loc_72><loc_160>Bestellung</text>
+<text><loc_136><loc_153><loc_185><loc_160>: 2013-471331</text>
+<section_header_level_1><loc_36><loc_174><loc_75><loc_181>Verkäufer:</section_header_level_1>
+<text><loc_37><loc_188><loc_176><loc_215>Globale Nummer: 4000001123452 (GLN) Lieferant GmbH Lieferantenstraße 20 DE 80333 München</text>
+<text><loc_37><loc_221><loc_141><loc_228>Steuernummer : 201/113/40209</text>
+<text><loc_37><loc_228><loc_130><loc_235>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_37><loc_241><loc_64><loc_248>Käufer:</section_header_level_1>
+<text><loc_37><loc_248><loc_127><loc_275>Nummer : GE2020211 Kunden AG Mitte Kundenstraße 15 DE 69876 Frankfurt</text>
+<text><loc_37><loc_289><loc_255><loc_296>Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.</text>
+<text><loc_37><loc_302><loc_144><loc_309>Qualifizierung der Textart: AAK</text>
+<text><loc_37><loc_315><loc_204><loc_322>Es bestehen Rabatt- und Bonusvereinbarungen.</text>
+<text><loc_37><loc_328><loc_144><loc_335>Qualifizierung der Textart: REG</text>
+<text><loc_37><loc_348><loc_141><loc_387>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland Geschäftsführer: Hans Muster Handelsregisternummer: H A 123</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><otsl><loc_37><loc_34><loc_464><loc_451></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_37><loc_41><loc_88><loc_48>Belegsummen:</section_header_level_1>
+<otsl><loc_250><loc_49><loc_462><loc_116><rhed>Positionssumme<fcel>202,70<nl><rhed>Gesamtbetrag der Zuschläge<fcel>5,80<nl><rhed>Gesamtbetrag der Abschläge<fcel>-14,73<nl><rhed>Rechnungssumme ohne USt.<fcel>193,77<nl><rhed>Steuerbetrag<fcel>21,30<nl><rhed>Bruttosumme<fcel>215,07<nl><rhed>Erhaltene Anzahlungen<fcel>-50,00<nl><rhed>Zahlbetrag<fcel>165,07<nl></otsl>
+</doctag>

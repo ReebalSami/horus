@@ -1,0 +1,15 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  additional-data-sample-1
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  2.61s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_15><loc_230><loc_22><loc_330>ZG-ER-Bere.Spreißerechnung Extended, Copyright © 2019 eV.A.V.</text>
+<otsl><loc_29><loc_36><loc_481><loc_474></otsl>
+<picture><loc_426><loc_11><loc_475><loc_27><logo></picture>
+</doctag>

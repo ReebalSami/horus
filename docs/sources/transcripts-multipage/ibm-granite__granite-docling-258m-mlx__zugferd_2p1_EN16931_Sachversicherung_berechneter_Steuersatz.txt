@@ -1,0 +1,98 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Sachversicherung_berechneter_Steuersatz
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  20.49s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_345><loc_71><_unknown_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+        ZUGFeRD-Version   : 2.1 vom 24.03.2020
+        Stylesheet-Version: 2.0 vom 18.10.2018
+        Codelisten-Version: 3.0 vom 15.11.2019
+        (c) AWV e.V. 2020</code>
+<section_header_level_1><loc_41><loc_85><loc_432><loc_103>Rechnung des Versicherers Nr. 00.123.456.7-2018-1 vom 18.04.2018</section_header_level_1>
+<code><loc_41><loc_125><loc_268><loc_150><_unknown_>Anwendungsempfehlung : urn:cen.eu:en16931:2017
+        Währung              : EUR</code>
+<section_header_level_1><loc_41><loc_181><loc_91><loc_187>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_188><loc_217><loc_194>Nummer        : 549910</text>
+<text><loc_41><loc_195><loc_218><loc_201>Globale Nummer: 1234567890128 (GTIN)</text>
+<text><loc_41><loc_202><loc_120><loc_207>MVM Musterhafter</text>
+<text><loc_41><loc_208><loc_218><loc_214>Versicherungsverein Musterstadt a.G.</text>
+<text><loc_41><loc_222><loc_121><loc_228>Musterstr. 12</text>
+<text><loc_41><loc_229><loc_140><loc_234>DE 12345 Musterstadt</text>
+<text><loc_41><loc_242><loc_170><loc_248>USt.-Id.-Nr. : DE234567891</text>
+<section_header_level_1><loc_41><loc_255><loc_76><loc_261>Käufer:</section_header_level_1>
+<text><loc_41><loc_268><loc_82><loc_274>Herrn</text>
+<text><loc_41><loc_275><loc_110><loc_280>Max Mustermann</text>
+<text><loc_41><loc_288><loc_120><loc_294>Musterstr. 11</text>
+<text><loc_41><loc_295><loc_165><loc_300>DE 12346 Bad Musterhausen</text>
+<text><loc_41><loc_323><loc_272><loc_328>Sachversicherungsvertrag Nr: 00.123.456.7</text>
+<text><loc_42><loc_329><loc_272><loc_335>(Bei Schriftwechsel und Zahlung bitte angeben.)</text>
+<text><loc_41><loc_349><loc_194><loc_355>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_356><loc_120><loc_361>MVM Musterhafter</text>
+<text><loc_41><loc_362><loc_218><loc_368>Versicherungsverein Musterstadt a.G.</text>
+<text><loc_41><loc_369><loc_125><loc_375>Versicherungsbüro</text>
+<text><loc_41><loc_376><loc_73><loc_382>Muster</text>
+<text><loc_41><loc_383><loc_106><loc_389>Musterstr. 12</text>
+<text><loc_41><loc_390><loc_125><loc_395>12345 Musterstadt</text>
+<text><loc_41><loc_396><loc_120><loc_402>Tel.: 0123/45678</text>
+<text><loc_41><loc_403><loc_140><loc_408>Fax.: 01231/99 45678</text>
+<text><loc_41><loc_409><loc_165><loc_415>Mo.-Fr. 08.30 - 12.30 Uhr</text>
+<text><loc_41><loc_416><loc_165><loc_421>Mo.-Fr. 14.00 - 17.00 Uhr</text>
+<text><loc_41><loc_422><loc_234><loc_428>Mo-Fr 8.00-20.00 Uhr, Sa 8.00-14.00 Uhr</text>
+<page_footer><loc_44><loc_451><loc_186><loc_456>Pos Art-Nr-Kunde Beschreibung</page_footer>
+<text><loc_44><loc_457><loc_120><loc_463>Art-Nr-Lief.</text>
+<text><loc_299><loc_451><loc_341><loc_456>Menge</text>
+<text><loc_361><loc_451><loc_391><loc_456>Steuer</text>
+<text><loc_423><loc_451><loc_458><loc_456>Entgelt</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_62><loc_33><loc_91><loc_39>Art-Nr</text>
+<text><loc_62><loc_40><loc_85><loc_46>(Art)</text>
+<text><loc_47><loc_47><loc_52><loc_53>1</text>
+<text><loc_105><loc_47><loc_155><loc_53>Verbundene</text>
+<text><loc_241><loc_47><loc_280><loc_53>1.000,00</text>
+<text><loc_317><loc_47><loc_397><loc_53>1 Stk 0 % VAT (E)</text>
+<text><loc_423><loc_47><loc_458><loc_53>1163,40</text>
+<text><loc_105><loc_54><loc_219><loc_60>Wohngebäudeversicherung</text>
+<text><loc_138><loc_62><loc_244><loc_68>Bruttopreis : 1.163,40</text>
+<text><loc_132><loc_78><loc_384><loc_84>- Feuerversicherung - Teil A § 2 62.000 MK1914</text>
+<text><loc_132><loc_85><loc_369><loc_91>- Leitungswasserversicherung - Teil A § 3 62.000</text>
+<text><loc_132><loc_92><loc_384><loc_98>MK1914 - Sturm- und Hagelversicherung - Teil A § 4 Ziff. 2</text>
+<text><loc_132><loc_99><loc_384><loc_105>62.000 MK1914 - WohngebäudePlus und zusätzliche Einschlüsse gemäß</text>
+<text><loc_132><loc_106><loc_384><loc_112>Antrag - Weitere Elementargefahren - Teil A § 4 Ziff. 3</text>
+<text><loc_132><loc_113><loc_384><loc_119>62.000 MK1914 -</text>
+<text><loc_132><loc_120><loc_384><loc_126>Antrag - Weitere Elementargefahren - Teil A § 4 Ziff. 3</text>
+<text><loc_132><loc_127><loc_384><loc_133>62.000 MK1914</text>
+<text><loc_132><loc_142><loc_359><loc_148>Enthält 16,34 % Versicherungssteuer = 163,40 €</text>
+<section_header_level_1><loc_41><loc_180><loc_140><loc_186>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_149><loc_194><loc_209><loc_199>Beschreibung</section_header_level_1>
+<text><loc_42><loc_201><loc_313><loc_270>Einen zu zahlenden Beitrag überweisen Sie bitte auf folgende Bankverbindung: IBAN DE7512345678000001234, BIC WELADED1MST, Sparkasse Musterstadt Ost. Einfacher für Sie ist es, wenn Sie uns ein SEAPLastschriftmandaterte ellen. Wir würden dann zu der Fälligkeit 21.05.2018 den Beitrag von dem uns bekannten Konto abbuchen. In diesem Fall würden Sie, sofern sich keine Beitragsänderung ergibt, zukunftig keine Zwischenrechnung erhalten. Beitragsgutschein aus Ihrem Vertrag erstatten wir per Scheck.</text>
+<text><loc_327><loc_194><loc_437><loc_200>Fälligkeit Teilzahlung</text>
+<text><loc_396><loc_201><loc_451><loc_207></text>
+<text><loc_42><loc_317><loc_179><loc_323>Umsatzsteueraufschlüsselung:</text>
+<otsl><loc_41><loc_331><loc_456><loc_366><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (E)<ecel><ecel><ecel><nl><fcel>Umsatzsteuerbefreit<ecel><fcel>1163,40<fcel>0,00<nl><fcel>nach §4 Nr. 10a<ecel><ecel><ecel><nl><fcel>UStG<ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_41><loc_374><loc_101><loc_380>Belegsummen:</section_header_level_1>
+<otsl><loc_246><loc_382><loc_457><loc_448><fcel>Positionssumme<fcel>1163,40<nl><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><fcel>Rechnungssumme ohne USt.<fcel>1163,40<nl><fcel>Steuerbetrag<fcel>0,00<nl><fcel>Bruttosumme<fcel>1163,40<nl><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><fcel>Zahlbetrag<fcel>1163,40<nl></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_60><loc_46><loc_441><loc_63>Theoretical and Computational Results</section_header_level_1>
+<text><loc_60><loc_70><loc_441><loc_100>In this paper, we consider the problem of finding the largest among the given positive integers. The problem is formulated as a linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_104><loc_441><loc_128>The first part of the problem is the linear programming problem, which is formulated as a linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_132><loc_441><loc_157>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_161><loc_441><loc_186>The first part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_190><loc_441><loc_212>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_216><loc_441><loc_238>The first part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_242><loc_441><loc_266>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_270><loc_441><loc_292>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_296><loc_441><loc_318>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_322><loc_441><loc_346>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_350><loc_441><loc_372>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_376><loc_441><loc_398>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_402><loc_441><loc_425>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_429><loc_441><loc_452>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+</doctag>

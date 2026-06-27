@@ -1,0 +1,55 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EN16931_Reisekostenabrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  10.53s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_60><loc_352><loc_68>Handelsrechnung Nr. 280081 vom 13.07.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_274><loc_97>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_104><loc_173><loc_110>Rechnungswährung : EUR</text>
+<text><loc_41><loc_132><loc_309><loc_138>Liefer-/Leistungszeitraum : 09.07.2018 bis 11.07.2018</text>
+<text><loc_41><loc_153><loc_380><loc_159>Weitere Referenz : 42389, Art der Referenz: Referenzpapier</text>
+<text><loc_41><loc_160><loc_380><loc_166>Weitere Referenz : 42390, Art der Referenz: Referenzpapier</text>
+<section_header_level_1><loc_41><loc_180><loc_92><loc_186>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_194><loc_223><loc_200>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_41><loc_201><loc_113><loc_207>Lieferant GmbH</text>
+<text><loc_41><loc_208><loc_143><loc_214>Lieferantenstraße 20</text>
+<text><loc_41><loc_215><loc_124><loc_221>DE 80333 München</text>
+<text><loc_41><loc_228><loc_183><loc_234>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_235><loc_173><loc_241>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_248><loc_173><loc_254>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_41><loc_255><loc_173><loc_261>Nummer : GE2020211</text>
+<text><loc_41><loc_262><loc_223><loc_268>Globale Nummer: 4000001987658 (GTIN)</text>
+<text><loc_41><loc_269><loc_118><loc_275>Kunden AG Mitte</text>
+<text><loc_41><loc_276><loc_118><loc_282>Kundenstraße 15</text>
+<text><loc_41><loc_283><loc_133><loc_289>DE 69876 Frankfurt</text>
+<section_header_level_1><loc_41><loc_302><loc_183><loc_308>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_41><loc_315><loc_143><loc_321>Musterfirma Nürnberg</text>
+<text><loc_41><loc_322><loc_108><loc_328>Am Bahnhof 42</text>
+<text><loc_41><loc_329><loc_128><loc_335>DE 75319 Nürnberg</text>
+<text><loc_41><loc_349><loc_295><loc_355>Qualifizierung der Textart : Regulatory information</text>
+<text><loc_41><loc_356><loc_295><loc_362>Listelotte Müllermann, Kumpelstr. 54, 12345 Berlin</text>
+<text><loc_41><loc_363><loc_193><loc_369>Handelsregisternummer: H A 713</text>
+<text><loc_41><loc_382><loc_279><loc_388>Qualifizierung der Textart : General information</text>
+<text><loc_41><loc_389><loc_223><loc_395>Flug wurde vom Auftraggeber gebucht.</text>
+<text><loc_41><loc_409><loc_279><loc_415>Qualifizierung der Textart : General information</text>
+<text><loc_41><loc_416><loc_213><loc_422>Reise: Musterreisekostenabrechnung</text>
+<text><loc_41><loc_423><loc_178><loc_429>Zweck: Workshop in Nürnberg</text>
+<text><loc_41><loc_430><loc_128><loc_436>Land: Deutschland</text>
+<text><loc_41><loc_437><loc_163><loc_443>Strecke: Berlin - Berlin</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><otsl><loc_41><loc_34><loc_459><loc_214><fcel>PosArt-Nr-Kunde Beschreibung Art-Nr-Lief. Art-Nr (Art)<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positionsbetrag ohne USt.<nl><fcel>1<fcel>Übernachtung. 2 Nächte Hotel<fcel>158,8800<fcel>1 Stk<fcel>7 % 158,88<nl><fcel>2<fcel>Verpflegung 11,7600<fcel>1 Stk<fcel>19 %<fcel>11,76<nl><fcel>3<fcel>Fahrtkosten, 23,3600<fcel>1 Stk<fcel>7 %<fcel>23,36<nl><fcel>4<fcel>Fahrtkosten, 20,0900<fcel>1 Stk<fcel>7 %<fcel>20,09<nl><fcel>4<fcel>Taxi Nürnberg<fcel>21,5000<ecel><ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_237><loc_142><loc_242>Zahlungsbedingungen:</section_header_level_1>
+<otsl><loc_41><loc_250><loc_459><loc_277><fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl><fcel>Zahlbar innerhalb 30 Tagen netto bis 12.08.2018, 3%<ecel><ecel><nl><fcel>Skonto innerhalb 10 Tagen bis 15.03.2018<ecel><ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_302><loc_153><loc_307>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_315><loc_459><loc_337><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<fcel>202,33<fcel>7<fcel>14,16<ecel><nl><fcel>Umsatzsteuer (S)<fcel>11,76<fcel>19<fcel>2,23<ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_346><loc_103><loc_351>Belegsummen:</section_header_level_1>
+<otsl><loc_241><loc_353><loc_459><loc_413><fcel>Positionssumme<fcel>214,09<nl><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><fcel>Rechnungssumme ohne USt.<fcel>214,09<nl><fcel>Steuerbetrag in<fcel>EUR 16,39<nl><fcel>Bruttosumme<fcel>230,48<nl><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><fcel>Zahlbetrag<fcel>230,48<nl></otsl>
+</doctag>

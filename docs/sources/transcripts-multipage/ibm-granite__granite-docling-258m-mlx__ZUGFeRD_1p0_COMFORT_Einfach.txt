@@ -1,0 +1,73 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  ZUGFeRD_1p0_COMFORT_Einfach
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  9.38s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_16><loc_159><loc_23><loc_225>ZUGRFR DASBepirocht COMFORT 2014 -Copyright/R&W © 2014</page_header>
+<text><loc_33><loc_24><loc_83><loc_28>Rechnungsersteller</text>
+<text><loc_44><loc_32><loc_128><loc_80>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland GLN 4000001123452</text>
+<text><loc_33><loc_85><loc_91><loc_89>Rechnungsempfänger</text>
+<text><loc_44><loc_93><loc_114><loc_135>Kunden AG Mitte Hans Muster Kundenstraße 15 69876 Frankfurt</text>
+<text><loc_44><loc_137><loc_114><loc_143>Deutschland</text>
+<text><loc_44><loc_146><loc_114><loc_151>GLN 4000001987658</text>
+<text><loc_44><loc_155><loc_72><loc_160>Unsere</text>
+<text><loc_33><loc_163><loc_72><loc_168>Pos Art.Nr.</text>
+<text><loc_33><loc_171><loc_72><loc_177>1 TB100A4</text>
+<text><loc_33><loc_192><loc_72><loc_198>2 ARNR2</text>
+<text><loc_33><loc_228><loc_172><loc_234>Rechnungssumme Netto (excl. USt.)</text>
+<text><loc_33><loc_237><loc_150><loc_243>Steuerbasisbetrag USt. 7%</text>
+<text><loc_33><loc_245><loc_150><loc_251>Steuerbasisbetrag USt. 19%</text>
+<text><loc_33><loc_255><loc_194><loc_261>Rechnungssumme Brutto (inkl. USt.)</text>
+<text><loc_33><loc_295><loc_93><loc_300>Zahlungsinformationen:</text>
+<text><loc_33><loc_301><loc_419><loc_308>Zahlbar innerhalb 30 Tagen netto bis 04.04.2013, 3% Skonto innerhalb 10 Tagen bis 15.03.2013</text>
+<text><loc_33><loc_318><loc_91><loc_323>Bank-/Steuerinformationen</text>
+<text><loc_33><loc_328><loc_56><loc_333>Kontonr.:</text>
+<text><loc_33><loc_336><loc_47><loc_341>BLZ:</text>
+<text><loc_33><loc_344><loc_64><loc_349>Bankname:</text>
+<text><loc_91><loc_318><loc_144><loc_323>IBAN-Nr.:</text>
+<text><loc_91><loc_328><loc_133><loc_333>700 901 00</text>
+<text><loc_91><loc_336><loc_133><loc_341>BIC:</text>
+<text><loc_91><loc_344><loc_148><loc_349>Hausbank München</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_179><loc_318><loc_202><loc_323>DE08</text>
+<text><loc_179><loc_328><loc_202><loc_333>DE08</text>
+<text><loc_179><loc_336><loc_202><loc_341>GENF</text>
+<text><loc_179><loc_344><loc_202><loc_349>Hans</text>
+<text><loc_

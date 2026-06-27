@@ -1,0 +1,68 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  ZUGFeRD_1p0_BASIC_Einfach
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  10.17s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_17><loc_162><loc_23><loc_267>ZUJER-Besteiplarung COMP-DORT 2014 Copyright © 2014 Lieferant GmbH</page_header>
+<text><loc_33><loc_24><loc_83><loc_28>Rechnungsersteller</text>
+<text><loc_44><loc_31><loc_128><loc_75>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland GLN 4000001123452</text>
+<text><loc_33><loc_84><loc_90><loc_88>Rechnungsempfänger</text>
+<text><loc_44><loc_92><loc_114><loc_136>Kunden AG Mitte Hans Muster Kundenstraße 15 69876 Frankfurt</text>
+<text><loc_44><loc_139><loc_116><loc_144>GLN 4000001987658</text>
+<text><loc_45><loc_152><loc_68><loc_157>Unsere</text>
+<text><loc_45><loc_159><loc_68><loc_164>Art.Nr.</text>
+<text><loc_158><loc_159><loc_208><loc_164>Artikelbeschreibung</text>
+<text><loc_45><loc_167><loc_78><loc_173>TB100A4</text>
+<text><loc_158><loc_167><loc_226><loc_181>Trennblätter A4 GTIN: 4012345001235</text>
+<text><loc_253><loc_167><loc_266><loc_173>20</text>
+<text><loc_354><loc_167><loc_371><loc_173>Einheit</text>
+<text><loc_378><loc_167><loc_401><loc_173>Einheit</text>
+<text><loc_454><loc_167><loc_481><loc_173>USt. %</text>
+<text><loc_253><loc_175><loc_272><loc_181>Stk.</text>
+<text><loc_378><loc_175><loc_401><loc_181>198,00</text>
+<text><loc_454><loc_175><loc_481><loc_181>19</text>
+<text><loc_253><loc_175><loc_272><loc_181>Stk.</text>
+<text><loc_45><loc_212><loc_184><loc_219>Rechnungssumme Netto (excl. USt.)</text>
+<text><loc_45><loc_221><loc_154><loc_227>Steuerbasisbetrag USt. 19%</text>
+<text><loc_45><loc_232><loc_194><loc_239>Rechnungssumme Brutto (inkl. USt.)</text>
+<text><loc_45><loc_270><loc_94><loc_276>Zahlungsinformationen:</text>
+<text><loc_45><loc_277><loc_419><loc_285>Zahlbar innerhalb 30 Tagen netto bis 04.04.2013, 3% Skonto innerhalb 10 Tagen bis 15.03.2013</text>
+<text><loc_45><loc_295><loc_103><loc_300>Bank-/Steuerinformationen</text>
+<text><loc_33><loc_305><loc_56><loc_310>Kontonr.:</text>
+<text><loc_33><loc_313><loc_44><loc_318>BLZ:</text>
+<text><loc_33><loc_321><loc_64><loc_326>Bankname:</text>
+<text><loc_75><loc_321><loc_148><loc_326>Hausbank München</text>
+<text><loc_158><loc_305><loc_181><loc_310>IBAN-Nr.:</text>
+<text><loc_158><loc_313><loc_183><loc_318>BIC:</text>
+<text><loc_158><loc_321><loc_186><loc_326>Geschäftsf.:</text>
+<text><loc_198><loc_305><loc_315><loc_310>DE08 7009 0100 1234 5678 90</text>
+<text><loc_198><loc_313><loc_258><loc_318>GENODEF1M04</text>
+<text><loc_198><loc_321><loc_243><loc_326>Hans Muster</text>
+<text><loc_396><loc_305><loc_425><loc_310>H A 123</text>
+<text><loc_396><loc_313><loc_450><loc_318>DE123456789</text>
+<text><loc_396><loc_321><loc_450><loc_326>201/113/40209</text>
+<text><loc_253><loc_305><loc_288><loc_310>Handelsreg.:</text>
+<text><loc_253><loc_313><loc_288><loc_318>USt.-Identnr.:</text>
+<text><loc_253><loc_321><loc_274><loc_326>Steuernr.:</text>
+<text><loc_158><loc_305><loc_181><loc_310>1234 5678</text>
+<text><loc_158><loc_313><loc_183><loc_318>700 901 00</text>
+<text><loc_158><loc_321><loc_186><loc_326>Geschäftsf.:</text>
+<text><loc_158><loc_305><loc_181><loc_310>1234 5678</text>
+<text><loc_158><loc_313><loc_183><loc_318>700 901 00</text>
+<text><loc_158><loc_321><loc_186><loc_326>Hausmuster</text>
+<text><loc_253><loc_305><loc_288><loc_310>DE08 7009 0100</text>
+<text><loc_253><loc_313><loc_288><loc_318>GENODEF1M04</text>
+<text><loc_253><loc_321><loc_274><loc_326>Hausmuster</text>
+<text><loc_253><loc_305><loc_288><loc_310>1234 5678 90</text>
+<text><loc_253><loc_321><loc_288><loc_326>Hausmuster</text>
+<text><loc_253><loc_305><loc_288><loc_310>1234 5678 90</text>
+<text><loc_253><loc_321><loc_288><loc_326>Hausmuster</text>
+<text><loc_253><loc_305><loc_288><loc_310>1234 5678 90</text>
+<text><loc_253><loc_321><loc_288><loc_326>Hausmuster</text>
+<text><loc_253><loc_305><loc_288><loc_310

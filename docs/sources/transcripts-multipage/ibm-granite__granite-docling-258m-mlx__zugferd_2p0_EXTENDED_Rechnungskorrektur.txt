@@ -1,0 +1,67 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EXTENDED_Rechnungskorrektur
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  10.91s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_40><loc_38><loc_315><loc_42>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_40><loc_55><loc_328><loc_69>Rechnungskorrektur Nr. RK21012345 vom 16.09.2018 RECHNUNGS-KORREKTUR</section_header_level_1>
+<text><loc_40><loc_87><loc_118><loc_92>Testkennzeichen :</text>
+<text><loc_127><loc_87><loc_148><loc_92>true</text>
+<text><loc_40><loc_92><loc_118><loc_97>Geschäftsprozess :</text>
+<text><loc_127><loc_92><loc_228><loc_97>Beispielgeschäftsprozess</text>
+<text><loc_40><loc_97><loc_380><loc_102>Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended</text>
+<text><loc_40><loc_109><loc_118><loc_114>Rechnungswährung :</text>
+<text><loc_127><loc_109><loc_144><loc_114>EUR</text>
+<text><loc_40><loc_136><loc_208><loc_141>Liefer- und Leistungsdatum : 05.08.2018</text>
+<text><loc_40><loc_152><loc_118><loc_157>Bestellung :</text>
+<text><loc_127><loc_152><loc_192><loc_157>B123456789</text>
+<text><loc_40><loc_157><loc_381><loc_162>Weitere Referenz : REKLA-2018-235, Art der Referenz: Rechnungsdatenblatt</text>
+<text><loc_40><loc_162><loc_381><loc_167>Weitere Referenz : R87654321012345, Art der Referenz: Rechnungsdatenblatt</text>
+<section_header_level_1><loc_40><loc_178><loc_81><loc_183>Verkäufer:</section_header_level_1>
+<text><loc_40><loc_183><loc_183><loc_189>Nummer : 549910</text>
+<text><loc_40><loc_189><loc_183><loc_194>Globale Nummer: 433374000005 (STIN)</text>
+<text><loc_40><loc_195><loc_144><loc_200>MUSTERLIEFERANT GMBH</text>
+<text><loc_40><loc_200><loc_114><loc_205>BAHNHOFSTRASSE 99</text>
+<text><loc_40><loc_205><loc_125><loc_210>DE 99199 MUSTERHAUSEN</text>
+<text><loc_40><loc_216><loc_161><loc_221>Telefon : +49 932 431 500</text>
+<text><loc_40><loc_221><loc_232><loc_226>E-Mail : max.mustermann@musterlieferant.de</text>
+<text><loc_40><loc_226><loc_145><loc_231>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_40><loc_237><loc_145><loc_242>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_40><loc_242><loc_183><loc_247>Nummer : 009420</text>
+<text><loc_40><loc_247><loc_183><loc_252>Globale Nummer: 4304171000002 (STIN)</text>
+<text><loc_40><loc_252><loc_114><loc_257>MUSTER-KUNDE GMBH</text>
+<text><loc_40><loc_257><loc_114><loc_262>KUNDENWEG 88</text>
+<text><loc_40><loc_262><loc_120><loc_267>DE 40235 DUESSELDORF</text>
+<section_header_level_1><loc_40><loc_279><loc_153><loc_284>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_40><loc_290><loc_183><loc_295>Globale Nummer: 4304171088093 (STIN)</text>
+<text><loc_40><loc_295><loc_89><loc_300>MUSTER-MARKT</text>
+<text><loc_40><loc_300><loc_60><loc_305>8211</text>
+<text><loc_40><loc_305><loc_118><loc_310>HAUPTSTRASSE 44</text>
+<text><loc_40><loc_310><loc_114><loc_315>DE 31157 SARSTEDT</text>
+<section_header_level_1><loc_40><loc_326><loc_168><loc_331>Abweichender Rechnungsempfänger:</section_header_level_1>
+<text><loc_40><loc_331><loc_183><loc_336>Nummer : 009420</text>
+<text><loc_40><loc_336><loc_183><loc_341>Globale Nummer: 4304171000002 (STIN)</text>
+<text><loc_40><loc_341><loc_114><loc_346>MUSTER-KUNDE GMBH</text>
+<text><loc_40><loc_346><loc_89><loc_351>KUNDENWEG 88</text>
+<text><loc_40><loc_351><loc_120><loc_356>DE 40235 DUESSELDORF</text>
+<text><loc_40><loc_368><loc_348><loc_380>Qualifizierung der Textart: Price conditions , Qualifizierung des Textes: ST3 Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_40><loc_385><loc_240><loc_390>Qualifizierung der Textart: Regulatory information</text>
+<text><loc_40><loc_390><loc_121><loc_395>MUSTERLIEFERANT GMBH</text>
+<text><loc_40><loc_395><loc_114><loc_400>BAHNHOFSTRASSE 99</text>
+<text><loc_40><loc_400><loc_114><loc_405>99199 MUSTERHAUSEN</text>
+<text><loc_40><loc_405><loc_114><loc_410>Geschäftsführung:</text>
+<text><loc_40><loc_410><loc_108><loc_415>Max Mustermann</text>
+<text><loc_40><loc_415><loc_124><loc_420>USt-IdNr: DE123456
+===== PAGE 2 =====
+<doctag><otsl><loc_40><loc_33><loc_460><loc_156></otsl>
+<section_header_level_1><loc_41><loc_179><loc_113><loc_184>Zu- und Abschläge:</section_header_level_1>
+<otsl><loc_40><loc_189><loc_460><loc_215></otsl>
+<section_header_level_1><loc_41><loc_229><loc_128><loc_234>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_40><loc_240><loc_460><loc_323></otsl>
+</doctag>

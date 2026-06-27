@@ -1,0 +1,73 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Reisekostenabrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  11.50s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_341><loc_71><_unknown_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+        ZUGFeRD-Version   : 2.1 vom 24.03.2020
+        Stylesheet-Version: 2.0 vom 18.10.2018
+        Codelisten-Version: 3.0 vom 15.11.2019
+        (c) AWV e.V. 2020</code>
+<section_header_level_1><loc_41><loc_85><loc_344><loc_93>Handelsrechnung Nr. 280081 vom 13.07.2018</section_header_level_1>
+<code><loc_41><loc_115><loc_268><loc_129><_unknown_>Anwendungsempfehlung : urn:cen.eu:en16931:2017
+            Wahrung            : EUR</code>
+<code><loc_41><loc_137><loc_322><loc_143><_unknown_>Abrechnungszeitraum         : 09.07.2018 bis 11.07.2018</code>
+<code><loc_41><loc_157><loc_322><loc_163><_unknown_>Weitere Referenz
+            Weitere Referenz         : 42389, Art der Referenz: 916</code>
+<code><loc_41><loc_176><loc_232><loc_198><_unknown_>Verkaufer:
+        Nummer        : 549910
+        Globale Nummer: 4000001123452 (GTIN)
+        Lieferant GmbH
+        Lieferantenstraße 20
+        DE 80333 München</code>
+<section_header_level_1><loc_41><loc_184><loc_91><loc_190>Verkaufer:</section_header_level_1>
+<text><loc_41><loc_190><loc_217><loc_198>Nummer : 549910</text>
+<text><loc_41><loc_198><loc_218><loc_204>Globale Nummer: 4000001123452 (GTIN)</text>
+<section_header_level_1><loc_41><loc_204><loc_111><loc_210>Lieferant GmbH</section_header_level_1>
+<text><loc_41><loc_210><loc_140><loc_217>Lieferantenstraße 20</text>
+<text><loc_41><loc_217><loc_120><loc_223>DE 80333 München</text>
+<text><loc_41><loc_231><loc_150><loc_237>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_237><loc_170><loc_243>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_250><loc_76><loc_256>Käufer:</section_header_level_1>
+<text><loc_41><loc_256><loc_164><loc_262>Nummer : GE2020211</text>
+<text><loc_41><loc_262><loc_150><loc_268>Kunden AG Mitte</text>
+<text><loc_41><loc_268><loc_115><loc_274>Kundenstraße 15</text>
+<text><loc_41><loc_274><loc_130><loc_280>DE 69876 Frankfurt</text>
+<section_header_level_1><loc_41><loc_296><loc_179><loc_302>Abweichender Warenempfänger:</section_header_level_1>
+<section_header_level_1><loc_41><loc_310><loc_140><loc_316>Musterfirma Nürnberg</section_header_level_1>
+<text><loc_41><loc_316><loc_120><loc_322>Am Bahnhof 42</text>
+<text><loc_41><loc_322><loc_126><loc_328>DE 75319 Nürnberg</text>
+<text><loc_41><loc_344><loc_194><loc_350>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_350><loc_287><loc_356>Listelotte Müllermann, Kumpelstr. 54, 12345 Berlin</text>
+<text><loc_41><loc_357><loc_189><loc_363>Handelsregisternummer: H A 713</text>
+<text><loc_41><loc_377><loc_194><loc_383>Qualifizierung der Textart: AAI</text>
+<text><loc_41><loc_383><loc_218><loc_389>Flug wurde vom Auftraggeber gebucht.</text>
+<text><loc_41><loc_404><loc_194><loc_410>Qualifizierung der Textart: AAI</text>
+<text><loc_41><loc_411><loc_209><loc_417>Reise: Musterreisekostenabrechnung</text>
+<text><loc_41><loc_418><loc_175><loc_424>Zweck: Workshop in Nürnberg</text>
+<text><loc_41><loc_424><loc_126><loc_430>Land: Deutschland</text>
+<text><loc_41><loc_430><loc_159><loc_436>Strecke: Berlin - Berlin</text>
+<text><loc_44><loc_452><loc_186><loc_458>Pos Art-Nr-Kunde Beschreibung</text>
+<text><loc_44><loc_458><loc_120><loc_464>Art-Nr-Lief.</text>
+<text><loc_204><loc_452><loc_269><loc_458>Nettopreis</text>
+<text><loc_300><loc_452><loc_325><loc_458>Menge</text>
+<text><loc_362><loc_452><loc_391><loc_458>Steuer</text>
+<text><loc_423><loc_452><loc_458><loc_458>Entgelt</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><otsl><loc_42><loc_33><loc_459><loc_195><fcel>Art-Nr (Art)<fcel>Übernachtung. 2 Nächte Hotel<fcel>158,88 1 Stk 7 % VAT (S)<fcel>158,88<nl><fcel>2<fcel>Bruttopreis : 158,88<ecel><ecel><nl><fcel>2<fcel>Verpflegung<fcel>11,76 1 Stk 19 % VAT (S)<fcel>11,76<nl><fcel>3<fcel>Fahrtkosten,<fcel>23,36 1 Stk 7 % VAT (S)<fcel>23,36<nl><fcel>4<fcel>Fahrtkosten,<fcel>20,09 1 Stk 7 % VAT (S)<fcel>20,09<nl><fcel>4<fcel>Fahrtkosten,<fcel>21,50<ecel><nl></otsl>
+<section_header_level_1><loc_41><loc_226><loc_140><loc_232>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_150><loc_241><loc_209><loc_246>Beschreibung</section_header_level_1>
+<text><loc_42><loc_248><loc_293><loc_260>Zahlbar innerhalb 30 Tagen netto bis 12.08.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018</text>
+<text><loc_327><loc_241><loc_436><loc_247>Fälligkeit Teilzahlung</text>
+<section_header_level_1><loc_41><loc_291><loc_179><loc_296>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_304><loc_459><loc_328><fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (S)<fcel>202,33<fcel>7<nl><fcel>VAT (S)<fcel>11,76<fcel>19<nl></otsl>
+<section_header_level_1><loc_41><loc_336><loc_101><loc_342>Belegsummen:</section_header_level_1>
+<otsl><loc_245><loc_342><loc_458><loc_409><fcel>Positionssumme<fcel>214,09<nl><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><fcel>Rechnungssumme ohne USt.<fcel>214,09<nl><fcel>Steuerbetrag<fcel>16,39<nl><fcel>Bruttosumme<fcel>230,48<nl><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><fcel>Zahlbetrag<fcel>230,48<nl></otsl>
+</doctag>

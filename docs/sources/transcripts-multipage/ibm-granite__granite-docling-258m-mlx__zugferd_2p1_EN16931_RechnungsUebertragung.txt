@@ -1,0 +1,122 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_RechnungsUebertragung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  18.98s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_345><loc_71><_unknown_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+        ZUGFeRD-Version   : 2.1 vom 24.03.2020
+        Stylesheet-Version: 2.0 vom 18.10.2018
+        Codelisten-Version: 3.0 vom 15.11.2019
+        (c) AWV e.V. 2020</code>
+<section_header_level_1><loc_41><loc_84><loc_447><loc_93>Handelsrechnung Nr. 9314110911/00/M/00/N vom 01.10.2018</section_header_level_1>
+<text><loc_41><loc_115><loc_268><loc_121>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_122><loc_155><loc_128>Wahrung : . EU</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum : 29.09.2018</text>
+<text><loc_41><loc_157><loc_91><loc_163>Bestellung</text>
+<text><loc_41><loc_164><loc_288><loc_170>Lieferavis : L87654321012345</text>
+<section_header_level_1><loc_41><loc_183><loc_91><loc_189>Verkaufer:</section_header_level_1>
+<text><loc_41><loc_190><loc_183><loc_212>Nummer : 549910 Globale Nummer: 433374100005 (GTIN) MUSTER-Autovermietung</text>
+<text><loc_41><loc_213><loc_121><loc_219>Musterstr. 99</text>
+<text><loc_41><loc_220><loc_145><loc_225>DE 99199 MUSTERHAUSEN</text>
+<text><loc_41><loc_233><loc_170><loc_239>USt.-Id.-Nr. : DE136695976</text>
+<section_header_level_1><loc_41><loc_246><loc_76><loc_252>Käufer:</section_header_level_1>
+<text><loc_41><loc_253><loc_169><loc_259>Nummer : 9314110911</text>
+<text><loc_41><loc_260><loc_125><loc_266>MUSTER-KUNDE GMBH</text>
+<text><loc_41><loc_267><loc_101><loc_272>KUNDENWEG 88</text>
+<text><loc_41><loc_273><loc_140><loc_279>DE 40235 DUESSELDORF</text>
+<text><loc_41><loc_294><loc_194><loc_300>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_301><loc_169><loc_306>MUSTER-Autovermietung GMBH</text>
+<text><loc_41><loc_308><loc_120><loc_313>Musterstr. 99</text>
+<text><loc_41><loc_314><loc_121><loc_320>99199 MUSTERHAUSEN</text>
+<text><loc_41><loc_321><loc_125><loc_327>Geschäftsführung:</text>
+<text><loc_41><loc_328><loc_125><loc_333>Maxima Musterfrau</text>
+<text><loc_41><loc_334><loc_145><loc_340>USt-IdNr: DE136695976</text>
+<text><loc_41><loc_341><loc_164><loc_347>Telefon: +49 711-50885524</text>
+<text><loc_41><loc_348><loc_150><loc_353>www.musterlieferant.de</text>
+<text><loc_41><loc_354><loc_110><loc_360>HRB Nr. 372876</text>
+<text><loc_41><loc_361><loc_155><loc_367>Amtsgericht Musterstadt</text>
+<text><loc_41><loc_368><loc_125><loc_374>GLN 4304171000002</text>
+<text><loc_41><loc_393><loc_120><loc_399>Bei Rückfragen:</text>
+<text><loc_41><loc_400><loc_165><loc_406>Telefon: +49 711-50885524</text>
+<text><loc_41><loc_407><loc_228><loc_413>E-Mail : info@muster-autovermietung.de</text>
+<text><loc_41><loc_432><loc_188><loc_446>Übergabe am 29.09.2018/ 10:35 Ort: Frankfurt a. M. km: 17791</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_41><loc_41><loc_188><loc_54>Rückgabe am 01.10.2018/ 10:19 Ort: Frankfurt a. M.</text>
+<text><loc_75><loc_55><loc_135><loc_60>km: 18664</text>
+<text><loc_42><loc_81><loc_140><loc_86>Übernahme: Frankfurt</text>
+<text><loc_75><loc_88><loc_174><loc_93>Datum: 01.10.2018</text>
+<text><loc_75><loc_95><loc_160><loc_100>Zeit: 10:19</text>
+<text><loc_75><loc_102><loc_159><loc_107>km/out: 177791</text>
+<text><loc_75><loc_109><loc_160><loc_114>km/in: 18664</text>
+<text><loc_75><loc_116><loc_168><loc_121>km gefahren: 873</text>
+<text><loc_75><loc_123><loc_199><loc_128>Kennzeichen: M-MM 0000</text>
+<text><loc_75><loc_130><loc_99><loc_135>CO2:</text>
+<text><loc_99><loc_130><loc_99><loc_135>0</text>
+<text><loc_99><loc_130><loc_99><loc_135>5</text>
+<text><loc_75><loc_137><loc_208><loc_142>Bruttolistenpreis: 68300</text>
+<text><loc_62><loc_157><loc_121><loc_162>Art-Nr-Kunde</text>
+<text><loc_42><loc_164><loc_99><loc_169>Pos Art-Nr-Lief.</text>
+<text><loc_42><loc_171><loc_99><loc_176>Art-Nr</text>
+<text><loc_42><loc_178><loc_99><loc_183>(Art)</text>
+<text><loc_42><loc_185><loc_49><loc_190>1</text>
+<text><loc_130><loc_185><loc_171><loc_190>Miettagge</text>
+<text><loc_216><loc_185><loc_240><loc_190>86,55</text>
+<text><loc_292><loc_185><loc_302><loc_190>2</text>
+<text><loc_302><loc_185><loc_308><loc_190>Stk</text>
+<text><loc_318><loc_185><loc_326><loc_190>19</text>
+<text><loc_328><loc_185><loc_336><loc_190>%</text>
+<text><loc_339><loc_185><loc_350><loc_190>VAT</text>
+<text><loc_352><loc_185><loc_360><loc_190>(S)</text>
+<text><loc_423><loc_185><loc_436><loc_190>173,10</text>
+<section_header_level_1><loc_132><loc_214><loc_241><loc_219>Weitere Eigenschaften:</section_header_level_1>
+<text><loc_133><loc_227><loc_295><loc_232>Fahrzeug-Kennzeichen: = M-MM 0000</text>
+<text><loc_117><loc_241><loc_202><loc_246>Navigationssystem</text>
+<text><loc_244><loc_241><loc_264><loc_246>5,04</text>
+<text><loc_308><loc_241><loc_410><loc_246>2 Stk 19 % VAT (S)</text>
+<text><loc_433><loc_241><loc_458><loc_246>10,08</text>
+<text><loc_117><loc_248><loc_202><loc_253>- Garantie</text>
+<text><loc_133><loc_259><loc_276><loc_264>Inklusiv-Kilometer waren: 873</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264>2</text>
+<text><loc_42><loc_259><loc_49><loc_264
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_149><loc_34><loc_209><loc_40>Beschreibung</section_header_level_1>
+<text><loc_42><loc_48><loc_303><loc_82>Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.</text>
+<section_header_level_1><loc_42><loc_119><loc_180><loc_125>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_132><loc_458><loc_236><fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (S)<fcel>286,52<fcel>19<nl><fcel>Belegsummen:<ecel><ecel><nl><ecel><fcel>Positionssumme<fcel>286,52<nl><ecel><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><ecel><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><ecel><fcel>Rechnungssumme ohne USt.<fcel>286,52<nl><ecel><fcel>Steuerbetrag<fcel>54,44<nl><ecel><fcel>Bruttosumme<fcel>340,96<nl><ecel><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><ecel><fcel>Zahlbetrag<fcel>340,96<nl></otsl>
+</doctag>

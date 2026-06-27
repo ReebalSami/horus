@@ -1,0 +1,101 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  16.23s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_341><loc_71><_YAML_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+  ZUGFeRD-Version   : 2.1 vom 24.03.2020
+  Stylesheet-Version: 2.0 vom 18.10.2018
+  Codelisten-Version: 3.0 vom 15.11.2019
+  (c) AWV e.V. 2020
+</code>
+<section_header_level_1><loc_41><loc_84><loc_344><loc_93>Handelsrechnung Nr. R18-31 vom 03.10.2018</section_header_level_1>
+<text><loc_41><loc_115><loc_268><loc_121>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_122><loc_169><loc_128>Währung : EU.</text>
+<text><loc_41><loc_122><loc_169><loc_128>Währung : EU.</text>
+<text><loc_41><loc_122><loc_169><loc_128>Währung : EU.</text>
+<text><loc_41><loc_122><loc_169><loc_128>Währung : EU.</text>
+<section_header_level_1><loc_41><loc_164><loc_91><loc_170>Verkäufer:</section_header_level_1>
+<section_header_level_1><loc_41><loc_177><loc_125><loc_183>Physiotherapeutin</section_header_level_1>
+<text><loc_41><loc_184><loc_115><loc_197>Tanja Tinder Musterstraße 12</text>
+<text><loc_41><loc_204><loc_149><loc_210>DE 12345 Beispielstadt</text>
+<text><loc_41><loc_218><loc_93><loc_224>Telefon</text>
+<text><loc_106><loc_218><loc_174><loc_224>: 015119630027</text>
+<text><loc_41><loc_224><loc_82><loc_230>E-Mail</text>
+<text><loc_106><loc_224><loc_277><loc_230>: tanja.tinder@beispiel-provider.de</text>
+<text><loc_41><loc_230><loc_169><loc_236>USt.-Id.-Nr. : DE136695976</text>
+<section_header_level_1><loc_41><loc_244><loc_76><loc_250>Käufer:</section_header_level_1>
+<section_header_level_1><loc_41><loc_257><loc_120><loc_263>Liselotte Müller</section_header_level_1>
+<text><loc_41><loc_264><loc_130><loc_270>Rechnungsstraße 12</text>
+<text><loc_41><loc_278><loc_149><loc_284>DE 12345 Beispielstadt</text>
+<text><loc_41><loc_300><loc_121><loc_306>Art-Nr-Kunde</text>
+<text><loc_41><loc_307><loc_119><loc_320>Pos Art-Nr-Lief. Beschreibung</text>
+<text><loc_41><loc_320><loc_86><loc_326>(Art)</text>
+<text><loc_41><loc_327><loc_51><loc_333>0</text>
+<text><loc_121><loc_327><loc_190><loc_333>Physiotherapie</text>
+<text><loc_231><loc_327><loc_256><loc_333>26,00</text>
+<text><loc_299><loc_327><loc_391><loc_333>10 Stk 0 % VAT (E)</text>
+<text><loc_429><loc_327><loc_458><loc_333>260,00</text>
+<text><loc_132><loc_351><loc_373><loc_384>Behandlungen aufgrund der Verordnung von Frau Dr. Heilerin vom 05.09.2018 an folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018</text>
+<text><loc_41><loc_392><loc_51><loc_398>1</text>
+<text><loc_128><loc_392><loc_177><loc_398>Hausbesuch</text>
+<text><loc_221><loc_392><loc_246><loc_398>12,00</text>
+<text><loc_292><loc_392><loc_371><loc_398>10 Stk 0 % VAT (E)</text>
+<text><loc_429><loc_392><loc_458><loc_398>120,00</text>
+<text><loc_132><loc_417><loc_363><loc_437>An folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018</text>
+<section_header_level_1><loc_41><loc_457><loc_140><loc_463>Zahlungsbedingungen:</section_header_level_1>
+</doctag>
+===== PAGE 2 =====
+<doctag><section_header_level_1><loc_149><loc_41><loc_209><loc_47>Beschreibung</section_header_level_1>
+<text><loc_42><loc_48><loc_279><loc_61>Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.</text>
+<section_header_level_1><loc_42><loc_77><loc_101><loc_82>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_91><loc_165><loc_97>Zahlungstyp (codiert): 30</text>
+<text><loc_42><loc_104><loc_165><loc_110>Verkäufer-Kontoname : Tanja Tinder</text>
+<text><loc_42><loc_111><loc_165><loc_117>Verkäufer-IBAN : DE02120300000000202051</text>
+<section_header_level_1><loc_42><loc_138><loc_179><loc_144>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_152><loc_458><loc_181><fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (E)<fcel>380,00<fcel>0,00<nl><fcel>Steuerfreie<fcel>0<ecel><nl><fcel>Leistungen nach<fcel>0<ecel><nl><fcel>$4 Nr. 14 UStG<ecel><ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_194><loc_101><loc_199>Belegsummen:</section_header_level_1>
+<otsl><loc_41><loc_201><loc_458><loc_270><ecel><fcel>Positionssumme<fcel>380,00<nl><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><nl><ecel><fcel>Gesamtbetrag der Abschläge<ecel><nl><ecel><fcel>Rechnungssumme ohne USt.<fcel>380,00<nl><ecel><fcel>Steuerbetrag<fcel>0,00<nl><ecel><fcel>Bruttosumme<fcel>380,00<nl><ecel><fcel>Erhaltene Anzahlungen<ecel><nl><ecel><fcel>Zahlbetrag<fcel>380,00<nl></otsl>
+<text><loc_42><loc_271><loc_279><loc_277>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_277><loc_279><loc_283>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_283><loc_279><loc_289>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_289><loc_279><loc_295>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_295><loc_279><loc_301>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_301><loc_279><loc_307>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_307><loc_279><loc_313>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_313><loc_279><loc_319>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_319><loc_279><loc_325>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_325><loc_279><loc_331>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_331><loc_279><loc_337>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_337><loc_279><loc_343>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_343><loc_279><loc_349>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_349><loc_279><loc_355>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_355><loc_279><loc_361>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_361><loc_279><loc_367>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_367><loc_279><loc_373>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_373><loc_279><loc_379>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_379><loc_279><loc_385>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_385><loc_279><loc_391>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_391><loc_279><loc_397>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_397><loc_279><loc_403>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_403><loc_279><loc_409>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_409><loc_279><loc_415>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_415><loc_279><loc_421>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_421><loc_279><loc_427>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_427><loc_279><loc_433>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_433><loc_279><loc_439>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_439><loc_279><loc_445>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_445><loc_279><loc_451>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_451><loc_279><loc_457>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_457><loc_279><loc_463>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_463><loc_279><loc_469>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_469><loc_279><loc_475>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_475><loc_279><loc_481>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_481><loc_279><loc_487>Zahlbetrag: 380,00</text>
+<text><loc_42><loc_487><loc_279><

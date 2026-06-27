@@ -94,8 +94,12 @@ class InvoiceRecord:
 
 
 def _quiet_facturx() -> None:
-    """Silence factur-x's per-file INFO/WARNING spam (we record failures ourselves)."""
-    logging.getLogger("facturx").setLevel(logging.ERROR)
+    """Silence factur-x's per-file INFO/WARNING spam (we record failures ourselves).
+
+    The library names its logger ``factur-x`` (with a hyphen) and calls
+    ``logging.basicConfig`` at import, so raising that logger's level is what mutes it.
+    """
+    logging.getLogger("factur-x").setLevel(logging.ERROR)
 
 
 def discover_invoice_pdfs(corpus_root: Path) -> list[Path]:

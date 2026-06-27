@@ -1,0 +1,76 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Einfach_DueDate
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  11.97s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_37><loc_341><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version : 2.1 vom 24.03.2020</text>
+<text><loc_41><loc_55><loc_227><loc_61>Stylesheet-Version: 2.0 vom 18.10.2018</text>
+<text><loc_41><loc_62><loc_227><loc_68>Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_41><loc_68><loc_118><loc_74>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_41><loc_85><loc_344><loc_93>Handelsrechnung Nr. 471102 vom 05.03.2018</section_header_level_1>
+<text><loc_41><loc_115><loc_268><loc_121>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_122><loc_154><loc_128>Währung</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum</text>
+<text><loc_41><loc_
+===== PAGE 2 =====
+<doctag><text><loc_63><loc_34><loc_126><loc_39>4000050986428</text>
+<text><loc_63><loc_40><loc_86><loc_46>(GLN)</text>
+<text><loc_138><loc_48><loc_225><loc_54>Bruttopreis : 5,50</text>
+<section_header_level_1><loc_41><loc_85><loc_140><loc_91>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_149><loc_99><loc_209><loc_105>Beschreibung</text>
+<text><loc_329><loc_99><loc_393><loc_105>Fälligkeit</text>
+<text><loc_396><loc_99><loc_451><loc_105>Teilzahlung</text>
+<text><loc_329><loc_107><loc_377><loc_113>05.03.2019</text>
+<section_header_level_1><loc_41><loc_143><loc_179><loc_149>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_157><loc_458><loc_263><fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (S)<fcel>275,00<fcel>7<nl><fcel>VAT (S)<fcel>198,00<fcel>19<nl><fcel>Belegsummen:<ecel><ecel><nl><ecel><fcel>Positionssumme<fcel>473,00<nl><ecel><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><ecel><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><ecel><fcel>Rechnungssumme ohne USt.<fcel>473,00<nl><ecel><fcel>Steuerbetrag<fcel>56,87<nl><ecel><fcel>Bruttosumme<fcel>529,87<nl><ecel><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><ecel><fcel>Zahlbetrag<fcel>529,87<nl></otsl>
+</doctag>

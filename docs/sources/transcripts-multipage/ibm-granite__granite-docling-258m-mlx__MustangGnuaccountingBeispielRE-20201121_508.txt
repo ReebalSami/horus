@@ -1,0 +1,40 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  MustangGnuaccountingBeispielRE-20201121_508
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  5.91s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_54><loc_34><loc_96><loc_41>2020-11-21</page_header>
+<page_header><loc_47><loc_34><loc_96><loc_41>2020-11-21</page_header>
+<text><loc_68><loc_91><loc_230><loc_96>Bei Spiel GmbH · Ecke 12 · 12345 Stadthausen · Germany</text>
+<section_header_level_1><loc_59><loc_99><loc_124><loc_109>Theodor Est</section_header_level_1>
+<text><loc_59><loc_116><loc_111><loc_125>Bahnstr. 42</text>
+<text><loc_59><loc_133><loc_166><loc_150>88802 Spielkreis Deutschland / Germany</text>
+<section_header_level_1><loc_47><loc_184><loc_100><loc_192>Customer:2</section_header_level_1>
+<section_header_level_1><loc_47><loc_200><loc_146><loc_210>Your order AB321</section_header_level_1>
+<text><loc_47><loc_210><loc_270><loc_226>Invoice # RE-20201121/508 issued at 2020-11-21 Date of delivery 2020-11-10</text>
+<otsl><loc_47><loc_232><loc_453><loc_296><ched>Amount<ched>Product<ched>VAT<ched>Price<ched>Total<nl><fcel>1.00<fcel>Design (hours): Of a sample  invoice<fcel>7%<fcel>160.00 €<fcel>160.00 €<nl><fcel>400.00<fcel>Ballons: various colors,  ~2000ml<fcel>19%<fcel>0.79 €<fcel>316.00 €<nl><fcel>800.00<fcel>Hot air „heiße Luft" (litres):<fcel>19%<fcel>0.025 €<fcel>20.00 €<nl></otsl>
+<text><loc_47><loc_296><loc_131><loc_304>Net total: 496.00 €</text>
+<section_header_level_1><loc_47><loc_311><loc_87><loc_319>plus VAT</section_header_level_1>
+<otsl><loc_47><loc_320><loc_241><loc_356><ched>VAT<ched>Net amout<ched>VAT amount<nl><fcel>7%<fcel>160.00 €<fcel>11.20 €<nl><fcel>19%<fcel>336.00 €<fcel>63.84 €<nl><fcel>VAT total: 75.04 €<lcel><lcel><nl></otsl>
+<text><loc_47><loc_357><loc_150><loc_365>Due payable: 571.04 €</text>
+<section_header_level_1><loc_47><loc_388><loc_189><loc_397>Please remit until 2020-12-12.</section_header_level_1>
+<text><loc_47><loc_397><loc_453><loc_413>Please remit until 2020-12-12.</text>
+<text><loc_47><loc_413><loc_453><loc_439>Please remit until 2020-12-12.</text>
+<page_footer><loc_233><loc_457><loc_267><loc_464>Page 1/1</page_footer>
+<picture><loc_377><loc_27><loc_439><loc_69><screenshot></picture>
+<section_header_level_1><loc_379><loc_73><loc_437><loc_80>Bei Spiel GmbH</section_header_level_1>
+<text><loc_379><loc_83><loc_417><loc_89>Ecke 12</text>
+<text><loc_379><loc_92><loc_438><loc_98>12345 Stadthausen</text>
+<text><loc_379><loc_101><loc_438><loc_107>phone (555) 23 78 -0</text>
+<text><loc_379><loc_110><loc_408><loc_116>HRA 12345</text>
+<text><loc_379><loc_119><loc_422><loc_125>http://localhost/</text>
+<text><loc_379><loc_128><loc_417><loc_134>Ingmar N. Fo</text>
+<text><loc_379><loc_137><loc_442><loc_143>phone (555) 23 78 -23</text>
+<text><loc_379><loc_146><loc_436><loc_152>info@localhost.local</text>
+</doctag>

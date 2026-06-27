@@ -1,0 +1,63 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  ZUGFeRD_1p0_EXTENDED_Kostenrechnung
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  9.28s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_13><loc_189><loc_20><loc_245>ZU-GZR-D Beispielerechnung Extended, Copyright AWE v. 2013</text>
+<text><loc_33><loc_391><loc_283><loc_396>Transportkosten : Frachtbetrag: 15,00, MwSt.-% 19,0</text>
+<text><loc_33><loc_396><loc_329><loc_401>Skontovereinbarung: 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum</text>
+<text><loc_33><loc_407><loc_215><loc_412>Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_33><loc_418><loc_425><loc_423>Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.</text>
+<otsl><loc_29><loc_28><loc_481><loc_465></otsl>
+<text><loc_33><loc_465><loc_124><loc_469>BAHNHOFSTRASSE 99</text>
+<text><loc_132><loc_465><loc_192><loc_469>Max Mustermann</text>
+<text><loc_209><loc_465><loc_291><loc_469>www.musterlieferant.de</text>
+<text><loc_307><loc_465><loc_404><loc_469>Antsgericht Musterstadt</text>
+<text><loc_209><loc_465><loc_291><loc_469>www.musterlieferant.de</text>
+<text><loc_307><loc_465><loc_404><loc_469>GLN 4304171000002</text>
+<text><loc_33><loc_469><loc_124><loc_473>99199 MUSTERHAUSEN</text>
+<text><loc_132><loc_469><loc_192><loc_473>Max Mustermann</text>
+<text><loc_209><loc_469><loc_291><loc_473>www.musterlieferant.de</text>
+<text><loc_307><loc_469><loc_404><loc_473>GLN 4304171000002</text>
+<text><loc_33><loc_473><loc_124><loc_477>MUSTERLIEFERANT GMBH</text>
+<text><loc_132><loc_473><loc_192><loc_477>Max Mustermann</text>
+<text><loc_209><loc_473><loc_291><loc_477>www.musterlieferant.de</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477>GLN 4304171000002</text>
+<text><loc_307><loc_473><loc_404><loc_477

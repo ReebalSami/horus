@@ -1,0 +1,56 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_BASIC_Taxifahrt
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  9.82s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version:  2.0 vom 18.10.2018</text>
+<text><loc_36><loc_55><loc_169><loc_62>Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_36><loc_62><loc_99><loc_69>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_82><loc_293><loc_92>Handelsrechnung Nr. TX-471102 vom 30.10.2019</section_header_level_1>
+<text><loc_36><loc_112><loc_332><loc_119>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic</text>
+<text><loc_36><loc_119><loc_86><loc_126>Währung</text>
+<text><loc_97><loc_119><loc_116><loc_126>: EUR</text>
+<text><loc_36><loc_133><loc_146><loc_140>Liefer- und Leistungsdatum</text>
+<text><loc_146><loc_133><loc_177><loc_140>: 29.10.2019</text>
+<section_header_level_1><loc_36><loc_168><loc_75><loc_175>Verkäufer:</section_header_level_1>
+<text><loc_36><loc_181><loc_138><loc_201>Taxiunternehmen TX GmbH Lieferantenstraße 20 DE 10369 Berlin</text>
+<text><loc_36><loc_208><loc_130><loc_214>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_36><loc_221><loc_65><loc_228>Käufer:</section_header_level_1>
+<text><loc_36><loc_234><loc_106><loc_261>Taxi-Gast AG Mitte Hans Mustermann Kundenstraße 15 DE 13351 Berlin</text>
+<text><loc_36><loc_282><loc_189><loc_289>Rechnung gemäß Taxifahrt vom 29.10.2019</text>
+<text><loc_36><loc_303><loc_165><loc_342>Taxiunternehmen TX GmbH Lieferantenstraße 20 10369 Berlin Deutschland Geschäftsführer: Hans Mustermann Handelsregisternummer: H A 123</text>
+<text><loc_36><loc_361><loc_155><loc_382>Unsere GLN: 4000001123452 Ihre GLN: 4000001987658 Ihre Kundennummer: GE2020211</text>
+<text><loc_41><loc_397><loc_108><loc_420>Art-Nr-Kunde Art-Nr-Lief. (Art)</text>
+<text><loc_128><loc_397><loc_176><loc_404>Beschreibung</text>
+<text><loc_208><loc_397><loc_246><loc_404>Nettopreis</text>
+<text><loc_299><loc_397><loc_323><loc_404>Menge</text>
+<text><loc_438><loc_397><loc_462><loc_404>Entgelt</text>
+<text><loc_41><loc_420><loc_60><loc_427>1</text>
+<text><loc_128><loc_420><loc_166><loc_435>Grundpreis (Pauschale)</text>
+<text><loc_230><loc_420><loc_245><loc_427>3,90</text>
+<text><loc_304><loc_420><loc_322><loc_427>1 Stk</text>
+<text><loc_349><loc_420><loc_392><loc_427>3,90 VAT (S)</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_45><loc_34><loc_49><loc_42>2</text>
+<text><loc_128><loc_34><loc_169><loc_62>Stadtfahrt - 2,00 Euro je gefahrene Kilometer</text>
+<text><loc_229><loc_34><loc_245><loc_42>2,00</text>
+<text><loc_304><loc_34><loc_322><loc_42>6 Stk</text>
+<text><loc_350><loc_34><loc_392><loc_42>7 % VAT (S)</text>
+<text><loc_441><loc_34><loc_462><loc_42>13,00</text>
+<text><loc_128><loc_42><loc_169><loc_64>Kilometer</text>
+<text><loc_37><loc_91><loc_118><loc_99>Zahlungsbedingungen:</text>
+<text><loc_155><loc_107><loc_203><loc_115>Beschreibung</text>
+<text><loc_340><loc_107><loc_374><loc_115>Fälligkeit</text>
+<text><loc_407><loc_107><loc_448><loc_115>Teilzahlung</text>
+<section_header_level_1><loc_37><loc_149><loc_142><loc_157>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_36><loc_164><loc_462><loc_260></otsl>
+<text><loc_250><loc_262><loc_306><loc_271>Zahlbetrag</text>
+<text><loc_443><loc_262><loc_462><loc_271>18,08</text>
+</doctag>

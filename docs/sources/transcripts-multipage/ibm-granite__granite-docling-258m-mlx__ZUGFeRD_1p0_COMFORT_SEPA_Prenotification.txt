@@ -1,0 +1,69 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  ZUGFeRD_1p0_COMFORT_SEPA_Prenotification
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  9.19s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_15><loc_171><loc_19><loc_231>ZUG-FED Basel-Rechnung COMFORT 2014-Copyright AAV. e. V. 2014</page_header>
+<text><loc_33><loc_24><loc_83><loc_28>Rechnungsersteller</text>
+<text><loc_44><loc_32><loc_128><loc_77>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland GLN 4000001123452</text>
+<text><loc_33><loc_86><loc_91><loc_90>Rechnungsempfänger</text>
+<text><loc_44><loc_94><loc_114><loc_136>Kunden AG Mitte Hans Muster Kundenstraße 15 69876 Frankfurt</text>
+<text><loc_44><loc_139><loc_114><loc_144>GLN 4000001987658</text>
+<text><loc_44><loc_171><loc_79><loc_176>1 TB100A4</text>
+<text><loc_44><loc_198><loc_79><loc_203>2 ARNR2</text>
+<text><loc_44><loc_232><loc_184><loc_238>Rechnungssumme Netto (excl. USt.)</text>
+<text><loc_44><loc_241><loc_150><loc_247>Steuerbasisbetrag USt. 7%</text>
+<text><loc_44><loc_249><loc_154><loc_255>Steuerbasisbetrag USt. 19%</text>
+<text><loc_44><loc_259><loc_194><loc_265>Rechnungssumme Brutto (inkl. USt.)</text>
+<text><loc_305><loc_32><loc_470><loc_77>RECHNUNG Rechnungsnummer Rechnungsdatum 05.03.2014 05.03.2014 Leistungsdatum Referenz (bitte bei Zahlung angeben) 2014-471102 GE2020211</text>
+<text><loc_305><loc_80><loc_470><loc_85>Kundennummer</text>
+<text><loc_305><loc_88><loc_470><loc_93>Beträge in EUR</text>
+<text><loc_305><loc_97><loc_470><loc_102>Hinweis</text>
+<text><loc_305><loc_107><loc_475><loc_120>Rechnung gemäß Bestellung Nr. 2014-471331 vom 01.03.2014.</text>
+<text><loc_305><loc_122><loc_465><loc_127>Es bestehen Rabatt- und Bonusvereinbarungen.</text>
+<text><loc_305><loc_171><loc_470><loc_176>Einheit 198,00</text>
+<text><loc_305><loc_198><loc_470><loc_203>5,50</text>
+<text><loc_305><loc_232><loc_470><loc_238>473,00</text>
+<text><loc_305><loc_241><loc_470><loc_247>275,00</text>
+<text><loc_305><loc_249><loc_470><loc_255>198,00</text>
+<text><loc_305><loc_259><loc_470><loc_265>529,87</text>
+<text><loc_305><loc_171><loc_470><loc_176>Einheit 198,00</text>
+<text><loc_305><loc_198><loc_470><loc_203>5,50</text>
+<text><loc_305><loc_232><loc_470><loc_238>475,00</text>
+<text><loc_305><loc_241><loc_470><loc_247>198,00</text>
+<text><loc_305><loc_249><loc_470><loc_255>37,62</text>
+<text><loc_305><loc_259><loc_470><loc_265>529,87</text>
+<text><loc_305><loc_171><loc_470><loc_176>Einheit 198,00</text>
+<text><loc_305><loc_198><loc_470><loc_203>5,50</text>
+<text><loc_305><loc_232><loc_470><loc_238>475,00</text>
+<text><loc_305><loc_241><loc_470><loc_247>198,00</text>
+<text><loc_305><loc_249><loc_470><loc_255>37,62</text>
+<text><loc_305><loc_259><loc_470><loc_265>529,87</text>
+<text><loc_305><loc_171><loc_470><loc_176>Einheit 198,00</text>
+<text><loc_305><loc_198><loc_470><loc_203>5,50</text>
+<text><loc_305><loc_232><loc_470><loc_238>475,00</text>
+<text><loc_305><loc_241><loc_470><loc_247>198,00</text>
+<text><loc_305><loc_249><loc_470><loc_255>37,62</text>
+<text><loc_305><loc_259><loc_470><loc_265>529,87</text>
+<text><loc_305><loc_171><loc_470><loc_176>Einheit 198,00</text>
+<text><loc_305><loc_198><loc_470><loc_203>5,50</text>
+<text><loc_305><loc_232><loc_470><loc_238>475,00</text>
+<text><loc_305><loc_241><loc_470><loc_247>198,00</text>
+<text><loc_305><loc_249><loc_470><loc_255>37,62</text>
+<text><loc_305><loc_259><loc_470><loc_265>529,87</text>
+<text><loc_305><loc_171><loc_470><loc_176>Einheit 198,00</text>
+<text><loc_305><loc_198><loc_470><loc_203>5,50</text>
+<text><loc_305><loc_232><loc_470><loc_238>475,00</text>
+<text><loc_305><loc_241><loc_470><loc_247>198,00</text>
+<text><loc_305><loc_249><loc_470><loc_255>37,62</text>
+<text><loc_305><loc_259><loc_470><loc_265>529,87</text>
+<text><loc_305><loc_171><loc_470><loc_176>Einheit 198,00</text>
+<text><loc_305><loc_198><loc_470><loc_203>5,50</text>
+<text><loc_305><loc_232><loc_470><loc_238>475,00</text>
+<text><loc_305><

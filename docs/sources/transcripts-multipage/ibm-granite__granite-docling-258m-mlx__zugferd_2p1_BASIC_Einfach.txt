@@ -1,0 +1,40 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_BASIC_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  7.67s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_65>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version:  2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019 (c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_81><loc_272><loc_91>Handelsrechnung Nr. 471102 vom 05.03.2020</section_header_level_1>
+<text><loc_37><loc_112><loc_332><loc_119>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic</text>
+<text><loc_37><loc_119><loc_101><loc_126>Währung : EUR</text>
+<text><loc_37><loc_133><loc_162><loc_140>Liefer- und Leistungsdatum : 05.03.2020</text>
+<section_header_level_1><loc_37><loc_168><loc_75><loc_175>Verkäufer:</section_header_level_1>
+<text><loc_37><loc_181><loc_105><loc_201>Lieferant GmbH Lieferantenstraße 20 DE 80333 München</text>
+<text><loc_37><loc_208><loc_141><loc_214>Steuernummer : 201/113/40209</text>
+<text><loc_37><loc_214><loc_130><loc_221>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_37><loc_228><loc_65><loc_235>Käufer:</section_header_level_1>
+<text><loc_37><loc_241><loc_103><loc_268>Kunden AG Mitte Hans Muster Kundenstraße 15 DE 69876 Frankfurt</text>
+<text><loc_37><loc_288><loc_194><loc_295>Rechnung gemäß Bestellung vom 01.03.2020.</text>
+<text><loc_37><loc_309><loc_155><loc_349>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland Geschäftsführer: Hans Muster Handelsregisternummer: H A 123</text>
+<text><loc_37><loc_368><loc_156><loc_388>Unsere GLN: 4000001123452 Ihre GLN: 4000001987658 Ihre Kundenummer: GE2020211</text>
+<text><loc_37><loc_402><loc_371><loc_409>Zahlbar innerhalb 30 Tagen netto bis 04.04.2020, 3% Skonto innerhalb 10 Tagen bis 15.03.2020.</text>
+<otsl><loc_40><loc_423><loc_462><loc_458></otsl>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_57><loc_34><loc_111><loc_40>4012345001235</text>
+<text><loc_57><loc_40><loc_80><loc_47>(GLN)</text>
+<text><loc_127><loc_40><loc_180><loc_54>Unsere Art.-Nr.: TB100A4</text>
+<text><loc_127><loc_54><loc_179><loc_61>Trennblätter A4</text>
+<section_header_level_1><loc_37><loc_99><loc_117><loc_105>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_155><loc_113><loc_203><loc_119>Beschreibung</text>
+<text><loc_340><loc_113><loc_375><loc_119>Fälligkeit</text>
+<text><loc_407><loc_113><loc_448><loc_119>Teilzahlung</text>
+<text><loc_37><loc_157><loc_142><loc_163>Umsatzsteueraufschlüsselung:</text>
+<otsl><loc_35><loc_170><loc_462><loc_267></otsl>
+</doctag>

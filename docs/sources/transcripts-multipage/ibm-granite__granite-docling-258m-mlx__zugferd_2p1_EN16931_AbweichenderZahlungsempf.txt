@@ -1,0 +1,127 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_AbweichenderZahlungsempf
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  16.05s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_341><loc_48>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen</text>
+<text><loc_41><loc_48><loc_228><loc_54>ZUGFeRD-Version : 2.1 vom 24.03.2020</text>
+<text><loc_41><loc_54><loc_228><loc_60>Stylesheet-Version: 2.0 vom 18.10.2018</text>
+<text><loc_41><loc_60><loc_228><loc_66>Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_41><loc_66><loc_124><loc_72>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_41><loc_85><loc_343><loc_94>Handelsrechnung Nr. 471102 vom 05.03.2018</section_header_level_1>
+<text><loc_41><loc_115><loc_268><loc_121>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_122><loc_154><loc_128>Wahrung : EUR</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum : 05.03.2018</text>
+<section_header_level_1><loc_41><loc_171><loc_91><loc_177>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_178><loc_228><loc_184>Nummer : 549910</text>
+<text><loc_41><loc_185><loc_218><loc_191>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_41><loc_192><loc_124><loc_198>Lieferant GmbH</text>
+<text><loc_41><loc_199><loc_140><loc_205>Lieferantenstraße 20</text>
+<text><loc_41><loc_206><loc_121><loc_212>DE 80333 München</text>
+<text><loc_41><loc_220><loc_179><loc_226>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_226><loc_169><loc_232>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_239><loc_76><loc_245>Käufer:</section_header_level_1>
+<text><loc_41><loc_246><loc_179><loc_252>Nummer : GE2020211</text>
+<text><loc_41><loc_253><loc_116><loc_259>Kunden AG Mitte</text>
+<text><loc_41><loc_260><loc_116><loc_266>Kundenstraße 15</text>
+<text><loc_41><loc_267><loc_130><loc_273>DE 69876 Frankfurt</text>
+<section_header_level_1><loc_41><loc_286><loc_194><loc_292>Abweichender Zahlungsempfänger:</section_header_level_1>
+<text><loc_41><loc_292><loc_140><loc_298>Nummer : 4711</text>
+<text><loc_41><loc_299><loc_111><loc_305>Factoring GmbH</text>
+<text><loc_41><loc_325><loc_243><loc_331>Rechnung gemäß Bestellung vom 01.03.2018.</text>
+<text><loc_41><loc_339><loc_194><loc_345>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_346><loc_124><loc_352>Lieferant GmbH</text>
+<text><loc_41><loc_353><loc_140><loc_359>Lieferantenstraße 20</text>
+<text><loc_41><loc_360><loc_106><loc_366>80333 München</text>
+<text><loc_41><loc_367><loc_104><loc_373>Deutschland</text>
+<text><loc_41><loc_374><loc_179><loc_380>Geschäftsführer: Hans Muster</text>
+<text><loc_41><loc_380><loc_189><loc_386>Handelsregisternummer: H A 123</text>
+<text><loc_41><loc_401><loc_121><loc_407>Art-Nr-Kunde</text>
+<text><loc_41><loc_408><loc_124><loc_414>Art-Nr-Lief.</text>
+<text><loc_41><loc_414><loc_104><loc_420>Pos Art-Nr</text>
+<text><loc_41><loc_421><loc_85><loc_427>(Art)</text>
+<text><loc_41><loc_428><loc_46><loc_434>1</text>
+<text><loc_41><loc_435><loc_124><loc_449>TB100A4 TB10045001235 (GLN)</text>
+<text><loc_138><loc_455><loc_224><loc_461>Bruttopreis : 9,90</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_49><loc_49><loc_53><loc_54>2</text>
+<text><loc_49><loc_56><loc_53><loc_61>2</text>
+<text><loc_49><loc_63><loc_53><loc_68>2</text>
+<text><loc_49><loc_70><loc_53><loc_75>2</text>
+<text><loc_49><loc_77><loc_53><loc_82>2</text>
+<text><loc_49><loc_84><loc_53><loc_89>2</text>
+<text><loc_49><loc_91><loc_53><loc_96>2</text>
+<text><loc_49><loc_98><loc_53><loc_103>2</text>
+<text><loc_49><loc_106><loc_53><loc_111>2</text>
+<text><loc_49><loc_113><loc_53><loc_118>2</text>
+<text><loc_49><loc_120><loc_53><loc_125>2</text>
+<text><loc_49><loc_127><loc_53><loc_132>2</text>
+<text><loc_49><loc_134><loc_53><loc_139>2</text>
+<text><loc_49><loc_141><loc_53><loc_146>2</text>
+<text><loc_49><loc_148><loc_53><loc_153>2</text>
+<text><loc_49><loc_155><loc_53><loc_160>2</text>
+<text><loc_49><loc_162><loc_53><loc_167>2</text>
+<text><loc_49><loc_169><loc_53><loc_174>2</text>
+<text><loc_49><loc_176><loc_53><loc_181>2</text>
+<text><loc_49><loc_183><loc_53><loc_188>2</text>
+<text><loc_49><loc_190><loc_53><loc_195>2</text>
+<text><loc_49><loc_197><loc_53><loc_202>2</text>
+<text><loc_49><loc_204><loc_53><loc_209>2</text>
+<text><loc_49><loc_211><loc_53><loc_216>2</text>
+<text><loc_49><loc_218><loc_53><loc_223>2</text>
+<text><loc_49><loc_225><loc_53><loc_230>2</text>
+<text><loc_49><loc_232><loc_53><loc_237>2</text>
+<text><loc_49><loc_239><loc_53><loc_244>2</text>
+<text><loc_49><loc_246><loc_53><loc_251>2</text>
+<text><loc_49><loc_253><loc_53><loc_258>2</text>
+<text><loc_49><loc_260><loc_53><loc_265>2</text>
+<text><loc_49><loc_267><loc_53><loc_272>2</text>
+<text><loc_49><loc_274><loc_53><loc_279>2</text>
+<text><loc_49><loc_281><loc_53><loc_286>2</text>
+<text><loc_49><loc_288><loc_53><loc_293>2</text>
+<text><loc_49><loc_295><loc_53><loc_300>2</text>
+<text><loc_49><loc_302><loc_53><loc_307>2</text>
+<text><loc_49><loc_309><loc_53><loc_314>2</text>
+<text><loc_49><loc_316><loc_53><loc_321>2</text>
+<text><loc_49><loc_323><loc_53><loc_328>2</text>
+<text><loc_49><loc_330><loc_53><loc_335>2</text>
+<text><loc_49><loc_337><loc_53><loc_342>2</text>
+<text><loc_49><loc_344><loc_53><loc_349>2</text>
+<text><loc_49><loc_351><loc_53><loc_356>2</text>
+<text><loc_49><loc_358><loc_53><loc_363>2</text>
+<text><loc_49><loc_365><loc_53><loc_370>2</text>
+<text><loc_49><loc_372><loc_53><loc_377>2</text>
+<text><loc_49><loc_379><loc_53><loc_384>2</text>
+<text><loc_49><loc_386><loc_53><loc_391>2</text>
+<text><loc_49><loc_393><loc_53><loc_398>2</text>
+<text><loc_49><loc_400><loc_53><loc_405>2</text>
+<text><loc_49><loc_407><loc_53><loc_412>2</text>
+<text><loc_49><loc_414><loc_53><loc_419>2</text>
+<text><loc_49><loc_421><loc_53><loc_426>2</text>
+<text><loc_49><loc_428><loc_53><loc_433>2</text>
+<text><loc_49><loc_435><loc_53><loc_440>2</text>
+<text><loc_49><loc_442><loc_53><loc_447>2</text>
+<text><loc_49><loc_449><loc_53><loc_454>2</text>
+<text><loc_49><loc_456><loc_53><loc_461>2</text>
+<text><loc_49><loc_463><loc_53><loc_468>2</text>
+<text><loc_49><loc_470><loc_53><loc_475>2</text>
+<text><loc_49><loc_477><loc_53><loc_482>2</text>
+<text><loc_49><loc_484><loc_53><loc_489>2</text>
+<text><loc_49><loc_492><loc_53><loc_497>2</text>
+<text><loc_49><loc_500><loc_53><loc_505>2</text>
+<text><loc_49><loc_508><loc_53><loc_513>2</text>
+<text><loc_49><loc_415><loc_53><loc_420>2</text>
+<text><loc_49><loc_422><loc_53><loc_427>2</text>
+<text><loc_49><loc_429><loc_53><loc_434>2</text>
+<text><loc_49><loc_436><loc_53><loc_441>2</text>
+<text><loc_49><loc_443><loc_53><loc_448>2</text>
+<text><loc_49><loc_450><loc_53><loc_455>2</text>
+<text><loc_49><loc_457><loc_53><loc_462>2</text>
+<text><

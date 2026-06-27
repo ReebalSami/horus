@@ -1,0 +1,100 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EN16931_Gutschrift
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  15.64s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_60><loc_435><loc_78>Gutschrift (Selbst ausgestellte Rechnung) Nr. 471102 vom 05.03.2018</section_header_level_1>
+<text><loc_41><loc_101><loc_274><loc_107>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_115><loc_173><loc_121>Rechnungswährung : EUR</text>
+<text><loc_41><loc_149><loc_254><loc_155>Liefer- und Leistungsdatum : 05.03.2018</text>
+<section_header_level_1><loc_41><loc_183><loc_91><loc_189>Verkäufer:</section_header_level_1>
+<text><loc_42><loc_197><loc_223><loc_203>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_42><loc_204><loc_127><loc_210>Lieferant GmbH</text>
+<text><loc_42><loc_211><loc_143><loc_217>Lieferantenstraße 20</text>
+<text><loc_42><loc_218><loc_123><loc_224>DE 80333 München</text>
+<text><loc_42><loc_232><loc_183><loc_238>Steuernummer : 201/113/40209</text>
+<text><loc_42><loc_239><loc_173><loc_245>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_252><loc_173><loc_258>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_42><loc_259><loc_223><loc_264>Nummer : GE2020211</text>
+<text><loc_42><loc_266><loc_223><loc_271>Globale Nummer: 4000001987658 (GTIN)</text>
+<text><loc_42><loc_273><loc_118><loc_278>Kunden AG Mitte</text>
+<text><loc_42><loc_280><loc_118><loc_285>Kundenstraße 15</text>
+<text><loc_42><loc_286><loc_133><loc_292>DE 69876 Frankfurt</text>
+<text><loc_42><loc_299><loc_173><loc_305>USt.-Id.-Nr. : DE136695976</text>
+<text><loc_41><loc_320><loc_248><loc_326>Rechnung gemäß Bestellung vom 01.03.2018.</text>
+<text><loc_42><loc_334><loc_294><loc_340>Qualifizierung der Textart: Regulatory information</text>
+<text><loc_42><loc_341><loc_113><loc_346>Lieferant GmbH</text>
+<text><loc_42><loc_348><loc_143><loc_353>Lieferantenstraße 20</text>
+<text><loc_42><loc_354><loc_113><loc_360>80333 München</text>
+<text><loc_42><loc_361><loc_108><loc_367>Deutschland</text>
+<text><loc_42><loc_368><loc_198><loc_373>Geschäftsführer: Hans Muster</text>
+<text><loc_42><loc_374><loc_193><loc_380>Handelsregisternummer: H A 123</text>
+<otsl><loc_41><loc_393><loc_458><loc_454><fcel>Art-Nr-Kunde  Pos Art-Nr-Lief. Beschreibung  (Art)<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions- betrag ohne USt.<nl><fcel>1<fcel>Trennbätter<fcel>9,9000<fcel>20 Stk<fcel>198,00<nl><fcel>TB100A4<fcel>A4<ecel><ecel><ecel><nl><fcel>4012345001235<ecel><ecel><ecel><ecel><nl><fcel>(GLN)<ecel><ecel><ecel><ecel><nl></otsl>
+<text><loc_136><loc_450><loc_233><loc_456>Brutopreis : 9,9000</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_49><loc_42><loc_52><loc_48>2</text>
+<text><loc_42><loc_48><loc_52><loc_54>ARNR2</text>
+<text><loc_42><loc_55><loc_128><loc_61>4000050986428</text>
+<text><loc_42><loc_62><loc_70><loc_68>(GLN)</text>
+<text><loc_135><loc_42><loc_169><loc_48>Joghurt</text>
+<text><loc_135><loc_48><loc_163><loc_54>Banane</text>
+<text><loc_135><loc_55><loc_160><loc_61>50000</text>
+<text><loc_135><loc_62><loc_232><loc_68>Bruttopreis : 5,5000</text>
+<text><loc_135><loc_68><loc_233><loc_74>5,5000</text>
+<section_header_level_1><loc_42><loc_105><loc_142><loc_111>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_42><loc_120><loc_103><loc_126>Beschreibung</section_header_level_1>
+<text><loc_42><loc_127><loc_300><loc_140>Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018</text>
+<section_header_level_1><loc_42><loc_171><loc_153><loc_177>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_184><loc_458><loc_205><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer<fcel>(S)<fcel>275,00<fcel>7<fcel>19,25<nl><fcel>Umsatzsteuer<fcel>(S)<fcel>198,00<fcel>19<fcel>37,62<nl></otsl>
+<section_header_level_1><loc_42><loc_214><loc_103><loc_220>Belegsummen:</section_header_level_1>
+<otsl><loc_41><loc_219><loc_458><loc_283><ecel><fcel>Positionssumme<fcel>473,00<nl><ecel><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<nl><ecel><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<nl><ecel><fcel>Rechnungssumme ohne USt.<fcel>473,00<nl><ecel><fcel>Steuerbetrag in<fcel>EUR<fcel>56,87<nl><ecel><fcel>Bruttosumme<fcel>529,87<nl><ecel><fcel>Erhaltene Anzahlungen<fcel>-0,00<nl><ecel><fcel>Zahlbetrag<fcel>529,87<nl></otsl>
+<text><loc_42><loc_283><loc_52><loc_289>GLN</text>
+<text><loc_42><loc_289><loc_52><loc_295>GLN</text>
+<text><loc_42><loc_295><loc_52><loc_301>GLN</text>
+<text><loc_42><loc_301><loc_52><loc_307>GLN</text>
+<text><loc_42><loc_307><loc_52><loc_313>GLN</text>
+<text><loc_42><loc_313><loc_52><loc_319>GLN</text>
+<text><loc_42><loc_319><loc_52><loc_325>GLN</text>
+<text><loc_42><loc_325><loc_52><loc_331>GLN</text>
+<text><loc_42><loc_331><loc_52><loc_337>GLN</text>
+<text><loc_42><loc_337><loc_52><loc_343>GLN</text>
+<text><loc_42><loc_343><loc_52><loc_349>GLN</text>
+<text><loc_42><loc_349><loc_52><loc_355>GLN</text>
+<text><loc_42><loc_355><loc_52><loc_361>GLN</text>
+<text><loc_42><loc_361><loc_52><loc_367>GLN</text>
+<text><loc_42><loc_367><loc_52><loc_373>GLN</text>
+<text><loc_42><loc_373><loc_52><loc_379>GLN</text>
+<text><loc_42><loc_379><loc_52><loc_385>GLN</text>
+<text><loc_42><loc_385><loc_52><loc_391>GLN</text>
+<text><loc_42><loc_391><loc_52><loc_397>GLN</text>
+<text><loc_42><loc_397><loc_52><loc_403>GLN</text>
+<text><loc_42><loc_403><loc_52><loc_409>GLN</text>
+<text><loc_42><loc_409><loc_52><loc_415>GLN</text>
+<text><loc_42><loc_415><loc_52><loc_421>GLN</text>
+<text><loc_42><loc_421><loc_52><loc_427>GLN</text>
+<text><loc_42><loc_427><loc_52><loc_433>GLN</text>
+<text><loc_42><loc_433><loc_52><loc_439>GLN</text>
+<text><loc_42><loc_439><loc_52><loc_445>GLN</text>
+<text><loc_42><loc_445><loc_52><loc_451>GLN</text>
+<text><loc_42><loc_451><loc_52><loc_457>GLN</text>
+<text><loc_42><loc_457><loc_52><loc_463>GLN</text>
+<text><loc_42><loc_463><loc_52><loc_469>GLN</text>
+<text><loc_42><loc_469><loc_52><loc_475>GLN</text>
+<text><loc_42><loc_475><loc_52><loc_481>GLN</text>
+<text><loc_42><loc_481><loc_52><loc_487>GLN</text>
+<text><loc_209><loc_42><loc_239><loc_48>5,5000</text>
+<text><loc_286><loc_42><loc_317><loc_48>50 Stk</text>
+<text><loc_371><loc_42><loc_386><loc_48>7 %</text>
+<text><loc_428><loc_42><loc_458><loc_48>275,00</text>
+<text><loc_135><loc_68><loc_233><loc_74>Bruttopreis : 5,5000</text>
+<text><loc_135><loc_42><loc_169><loc_48>Joghurt</text>
+<text><loc_135><loc_48><loc_163><loc_54>Banane</text>
+</doctag>

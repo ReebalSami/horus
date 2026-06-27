@@ -1,0 +1,50 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EN16931_Betriebskostenabrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  9.56s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_60><loc_352><loc_68>Handelsrechnung Nr. 471102 vom 05.03.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_274><loc_97>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_104><loc_157><loc_110>Rechnungswährung :</text>
+<text><loc_157><loc_104><loc_173><loc_110>EUR</text>
+<text><loc_41><loc_131><loc_309><loc_137>Liefer-/Leistungszeitraum : 01.01.2010 bis 31.12.2010</text>
+<text><loc_41><loc_152><loc_431><loc_158>Weitere Referenz : Abrechnung 2010, Art der Referenz: Referenzpapier</text>
+<section_header_level_1><loc_41><loc_172><loc_92><loc_178>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_186><loc_152><loc_192>Grundbesitz GmbH & Co.</text>
+<text><loc_42><loc_193><loc_135><loc_206>Musterstraße 42 DE 75645 Frankfurt</text>
+<text><loc_42><loc_214><loc_184><loc_220>Steuernummer : 201/113/40209</text>
+<text><loc_42><loc_221><loc_173><loc_227>USt.-Id.-Nr. : DE136695976</text>
+<section_header_level_1><loc_41><loc_234><loc_173><loc_240>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_41><loc_248><loc_138><loc_254>Beispielmieter GmbH</text>
+<text><loc_42><loc_255><loc_143><loc_260>Verwaltung Straße 40</text>
+<text><loc_42><loc_262><loc_143><loc_267>DE 12345 Musterstadt</text>
+<section_header_level_1><loc_41><loc_281><loc_184><loc_287>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_42><loc_294><loc_143><loc_308>Verwaltung Straße 40 Einheit: 5.OG rechts</text>
+<text><loc_42><loc_309><loc_143><loc_315>DE 12345 Musterstadt</text>
+<text><loc_41><loc_335><loc_309><loc_341>Rechnung gemäß Betriebskostenrechnung vom 21.11.2011.</text>
+<text><loc_41><loc_349><loc_294><loc_354>Qualifizierung der Textart : Regulatory information</text>
+<text><loc_42><loc_356><loc_152><loc_361>Grundbesitz GmbH & Co.</text>
+<text><loc_41><loc_369><loc_158><loc_375>Musterstraße 42</text>
+<text><loc_41><loc_382><loc_88><loc_388>Frankfurt</text>
+<text><loc_405><loc_377><loc_431><loc_382>75645</text>
+<text><loc_41><loc_396><loc_138><loc_402>Deutschland</text>
+<text><loc_41><loc_410><loc_224><loc_416>Geschäftsführer: Hans Muster</text>
+<text><loc_41><loc_424><loc_234><loc_429>Handelsregisternummer: H A 123</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><otsl><loc_41><loc_49><loc_458><loc_108><fcel>Pos Art-Nr-Kunde Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions-<nl><fcel>Art-Nr-Lief.<ecel><ecel><ecel><fcel>betrag<nl><fcel>Art-Nr<ecel><ecel><ecel><fcel>ohne<nl><fcel>(Art)<ecel><ecel><ecel><fcel>USt.<nl><fcel>1<fcel>Abrechnungskreis  15.387,0800<fcel>1 Stk<fcel>19 %<fcel>15387,08<nl><fcel>4012345001235<ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_133><loc_142><loc_139>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_42><loc_148><loc_103><loc_153>Beschreibung</text>
+<text><loc_326><loc_148><loc_378><loc_153>Fälligkeit</text>
+<text><loc_402><loc_148><loc_458><loc_153>Teilzahlung</text>
+<text><loc_326><loc_156><loc_378><loc_161>04.04.2018</text>
+<section_header_level_1><loc_42><loc_191><loc_153><loc_196>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_204><loc_458><loc_295><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<fcel>15387,08<fcel>19<fcel>2923,55<ecel><nl><fcel>Belegsummen:<ecel><ecel><ecel><ecel><nl><ecel><fcel>Positionssumme<ecel><fcel>15387,08<ecel><nl><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><fcel>0,00<ecel><nl><ecel><fcel>Gesamtbetrag der Abschläge<ecel><fcel>-0,00<ecel><nl><ecel><fcel>Rechnungssumme ohne USt.<ecel><fcel>15387,08<ecel><nl><ecel><fcel>Steuerbetrag in<ecel><fcel>2923,55<ecel><nl><ecel><fcel>Bruttosumme<ecel><fcel>18310,63<ecel><nl><ecel><fcel>Erhaltene Anzahlungen<ecel><fcel>-17808,00<ecel><nl><ecel><fcel>Zahlbetrag<ecel><fcel>502,63<ecel><nl></otsl>
+</doctag>

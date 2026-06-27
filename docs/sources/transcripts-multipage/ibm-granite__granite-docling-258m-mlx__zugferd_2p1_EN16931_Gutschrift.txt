@@ -1,0 +1,85 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Gutschrift
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  12.14s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_345><loc_71><_XML_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+  ZUGFeRD-Version : 2.1 vom 24.03.2020
+  Stylesheet-Version: 2.0 vom 18.10.2018
+  Codelisten-Version: 3.0 vom 15.11.2019
+  (c) AWV e.V. 2020</code>
+<section_header_level_1><loc_41><loc_85><loc_455><loc_103>Gutschrift (Selbst ausgestellte Rechnung) Nr. 471102 vom 05.03.2018</section_header_level_1>
+<code><loc_41><loc_125><loc_268><loc_147><_YAML_>Anwendungsempfehlung : urn:cen.eu:en16931:2017
+    Wahrung : EUR
+</code>
+<text><loc_41><loc_147><loc_248><loc_153>Liefer- und Leistungsdatum : 05.03.2018</text>
+<section_header_level_1><loc_41><loc_181><loc_91><loc_187>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_188><loc_217><loc_194>Nummer : 549910</text>
+<text><loc_41><loc_194><loc_233><loc_200>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_41><loc_201><loc_126><loc_207>Lieferant GmbH</text>
+<text><loc_41><loc_207><loc_140><loc_213>Lieferantenstraße 20</text>
+<text><loc_41><loc_214><loc_121><loc_220>DE 80333 München</text>
+<text><loc_41><loc_227><loc_179><loc_233>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_234><loc_170><loc_240>USt.-Id.-Nr. : DE123456789</text>
+<text><loc_41><loc_247><loc_76><loc_253>Käufer:</text>
+<text><loc_41><loc_254><loc_164><loc_260>Nummer : GE2020211</text>
+<text><loc_41><loc_261><loc_115><loc_267>Kunden AG Mitte</text>
+<text><loc_41><loc_268><loc_115><loc_274>Kundenstraße 15</text>
+<text><loc_41><loc_275><loc_130><loc_281>DE 69876 Frankfurt</text>
+<text><loc_41><loc_288><loc_170><loc_294>USt.-Id.-Nr. : DE136695976</text>
+<text><loc_41><loc_308><loc_243><loc_314>Rechnung gemäß Bestellung vom 01.03.2018.</text>
+<text><loc_41><loc_321><loc_194><loc_327>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_328><loc_126><loc_334>Lieferant GmbH</text>
+<text><loc_41><loc_335><loc_140><loc_341>Lieferantenstraße 20</text>
+<text><loc_41><loc_342><loc_121><loc_348>80333 München</text>
+<text><loc_41><loc_349><loc_96><loc_355>Deutschland</text>
+<text><loc_41><loc_356><loc_179><loc_362>Geschäftsführer: Hans Muster</text>
+<text><loc_41><loc_363><loc_189><loc_369>Handelsregisternummer: H A 123</text>
+<text><loc_41><loc_383><loc_121><loc_389>Art-Nr-Kunde</text>
+<text><loc_41><loc_390><loc_126><loc_396>Art-Nr-Lief.</text>
+<text><loc_41><loc_397><loc_76><loc_403>Pos</text>
+<text><loc_41><loc_404><loc_76><loc_410>(Art)</text>
+<text><loc_41><loc_411><loc_46><loc_417>1</text>
+<text><loc_41><loc_418><loc_126><loc_424>TB100A4 A4</text>
+<text><loc_41><loc_425><loc_126><loc_431>4012345001235</text>
+<text><loc_41><loc_432><loc_76><loc_438>(GLN)</text>
+<text><loc_138><loc_433><loc_225><loc_439>Bruttopreis : 9,90</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_49><loc_34><loc_53><loc_40>2</text>
+<text><loc_42><loc_41><loc_127><loc_57>ARNR2 4000050986428 (GLN)</text>
+<text><loc_134><loc_34><loc_167><loc_40>Joghurt</text>
+<text><loc_134><loc_41><loc_163><loc_47>Banane</text>
+<text><loc_287><loc_34><loc_318><loc_40>5,50</text>
+<text><loc_333><loc_34><loc_386><loc_40>7 % VAT (S)</text>
+<text><loc_428><loc_34><loc_458><loc_40>275,00</text>
+<text><loc_138><loc_61><loc_225><loc_67>Bruttopreis : 5,50</text>
+<section_header_level_1><loc_41><loc_99><loc_140><loc_105>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_150><loc_113><loc_209><loc_119>Beschreibung</section_header_level_1>
+<text><loc_42><loc_120><loc_298><loc_133>Der Betrag wird ihrem Kundenkonto gutgeschrieben und mit der nächsten Rechnung verrechnet.</text>
+<section_header_level_1><loc_41><loc_163><loc_179><loc_169>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_177><loc_458><loc_199><fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (S)<fcel>275,00<fcel>7<nl><fcel>VAT (S)<fcel>198,00<fcel>19<nl></otsl>
+<section_header_level_1><loc_41><loc_207><loc_101><loc_213>Belegsummen:</section_header_level_1>
+<section_header_level_1><loc_246><loc_215><loc_315><loc_221>Positionssumme</section_header_level_1>
+<text><loc_428><loc_215><loc_457><loc_221>473,00</text>
+<text><loc_246><loc_223><loc_374><loc_229>Gesamtbetrag der Zuschläge</text>
+<text><loc_434><loc_223><loc_457><loc_229>0,00</text>
+<text><loc_246><loc_231><loc_374><loc_237>Gesamtbetrag der Abschläge</text>
+<text><loc_434><loc_231><loc_457><loc_237>-0,00</text>
+<text><loc_246><loc_240><loc_363><loc_246>Rechnungssumme ohne USt.</text>
+<text><loc_429><loc_240><loc_457><loc_246>473,00</text>
+<text><loc_246><loc_248><loc_306><loc_254>Steuerbetrag</text>
+<text><loc_434><loc_248><loc_457><loc_254>56,87</text>
+<text><loc_246><loc_257><loc_300><loc_263>Bruttosumme</text>
+<text><loc_429><loc_257><loc_457><loc_263>529,87</text>
+<text><loc_246><loc_266><loc_350><loc_272>Erhaltene Anzahlungen</text>
+<text><loc_429><loc_266><loc_457><loc_272>-0,00</text>
+<text><loc_246><loc_275><loc_296><loc_280>Zahlbetrag</text>
+<text><loc_429><loc_275><loc_457><loc_280>529,87</text>
+</doctag>
