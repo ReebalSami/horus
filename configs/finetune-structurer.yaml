@@ -41,6 +41,9 @@ train:
   max_seq_length_cap: 8192
   train_on_completions: true # mask loss to the assistant turn (the JSON answer) only
   grad_clip: 1.0
+  grad_checkpoint: true       # required: 7.5B 4-bit + seq ~3k OOMs without it on M1 Pro 16 GB
+  free_vision_audio: true     # text-only SFT: drop the unused vision+audio towers (frees ~GB)
+  wired_limit_gb: 0.0         # 12.7 GB Metal cap is hard (raises above it are rejected); leave default
   seed: 42
   steps_per_report: 10
   steps_per_save: 0          # 0 = save only the final adapter (no intermediate checkpoints)

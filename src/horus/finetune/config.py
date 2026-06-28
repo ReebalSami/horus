@@ -47,6 +47,16 @@ class TrainParams(BaseModel):
     max_seq_length_cap: int = Field(default=8192, ge=256)
     train_on_completions: bool = True
     grad_clip: float = Field(default=1.0, gt=0)
+    grad_checkpoint: bool = False  # trade compute for memory (M1 Pro 16 GB safety valve)
+    # Release gemma-4's vision + audio towers before a TEXT-ONLY SFT. They are never
+    # invoked when pixel_values=None (verified in gemma4.py get_input_embeddings), so
+    # dropping their multi-GB un-quantized weights reclaims the headroom a 7.5B-4bit
+    # LoRA step needs under the 12.7 GB Metal cap. Disable only if training multimodally.
+    free_vision_audio: bool = True
+    # Raise the Metal wired-memory limit above mlx's conservative max_recommended
+    # (~2/3 RAM). 0 = leave mlx's default. On a 16 GB M1 Pro, ~13–14 is the headroom
+    # that lets a 7.5B-4bit LoRA step fit; too high starves the OS (know-your-hardware).
+    wired_limit_gb: float = Field(default=0.0, ge=0.0)
     seed: int = 42
     steps_per_report: int = Field(default=10, ge=1)
     # 0 → save only the final adapter (no intermediate checkpoints).
