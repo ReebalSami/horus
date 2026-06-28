@@ -1,0 +1,46 @@
+# Fine-tune the Arm-B structurer (google/gemma-4-E4B-it) via text-only LoRA (issue #55).
+#
+# All knobs are validated by horus.finetune.config.FinetuneConfig at boot
+# (horus-config-discipline: Pydantic-validates-at-boot, fails fast before any model loads).
+# The structuring prompt is NOT duplicated here — it is loaded from configs/arm-b.yaml's
+# cohort.prompt_template_override so the zero-shot baseline, the training targets, and the
+# fine-tuned eval provably share ONE instruction string (matched-precision; ADR-034/038).
+#
+# Sequence:
+#   1. uv run python scripts/finetune_seal_split.py                       # seal split (done once)
+#   2. uv run python scripts/finetune_evaluate.py --split val --label zero-shot \
+#        --out data/finetune/eval-zeroshot-val.json                       # baseline
+#   3. uv run python scripts/finetune_train.py                            # LoRA SFT
+#   4. uv run python scripts/finetune_evaluate.py --split val --adapter data/finetune/adapter \
+#        --label finetuned --out data/finetune/eval-finetuned-val.json    # fine-tuned
+#
+# Refs: ADR-038 (Arm-B structurer), issue #55, plan
+# ~/.windsurf/plans/horus-finetune-structurer-55a1c3.md.
+
+structurer_model: google/gemma-4-E4B-it
+structuring_prompt_config: configs/arm-b.yaml
+corpus_root: data/raw/german/zugferd-corpus
+transcript_dir: docs/sources/transcripts-multipage
+reader_model: ibm-granite/granite-docling-258M-mlx
+split_path: data/finetune/split.json
+adapter_dir: data/finetune/adapter
+eval_max_tokens: 2048
+min_self_overall: 0.95
+
+lora:
+  rank: 8
+  alpha: 16.0
+  dropout: 0.05
+
+train:
+  learning_rate: 1.0e-4
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  epochs: 4
+  max_seq_length: 0          # 0 = auto: longest example rounded up, capped at max_seq_length_cap
+  max_seq_length_cap: 8192
+  train_on_completions: true # mask loss to the assistant turn (the JSON answer) only
+  grad_clip: 1.0
+  seed: 42
+  steps_per_report: 10
+  steps_per_save: 0          # 0 = save only the final adapter (no intermediate checkpoints)
