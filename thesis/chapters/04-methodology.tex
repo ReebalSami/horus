@@ -1,0 +1,50 @@
+\chapter{Methodology}
+\label{ch:methodology}
+
+% The scientific-correctness backbone. Everything in Sec. "a-priori locks" must
+% be fixed BEFORE results are read (no HARKing, no p-hacking; \cite{kerr1998}).
+
+\section{System Architecture}
+\label{sec:method-architecture}
+
+% TODO: the three-layer pipeline (extraction -> KG -> query); the single-shot
+% vs. orchestrated-specialists comparison axis at Layer 1.
+
+\section{Datasets}
+\label{sec:method-data}
+
+% TODO: primary German B2B (ZUGFeRD/Factur-X corpus \cite{zugferdcorpus};
+% synthetic generation; self-collected Belege held-out set). International
+% anchors (CORD, SROIE, FUNSD, OmniDocBench). Datasheets per \cite{gebru2018datasheets}.
+
+\section{Ground Truth from Embedded XML}
+\label{sec:method-gt}
+
+% TODO: render PDF page -> VLM extracts JSON -> embedded CII XML decoded ->
+% compare. EN 16931 field schema; free, legal, unlimited, no manual labelling.
+
+\section{Compliance-Aware Evaluation Suite}
+\label{sec:method-metrics}
+
+% TODO (a-priori lock): token \ac{F1}; field-weighted \ac{F1} (W=3/2/1 tiers by
+% \S14 UStG legal weight); compliance pass rate; Vorsteuerabzug eligibility;
+% per-field error analysis; (conditional) validator catch rate.
+
+\section{Held-Out Test Set and Freeze Policy}
+\label{sec:method-heldout}
+
+% TODO (a-priori lock): held-out = self-collected Belege + frozen GI-2021 subset;
+% frozen on a fixed date; never seen during fine-tuning/validation/tuning; hash
+% committed for audit.
+
+\section{Falsifiable Hypotheses}
+\label{sec:method-hypotheses}
+
+% TODO (a-priori lock): pre-registered H1-H6 + H8 (see Appendix). Predictions
+% committed before test results; a wrong hypothesis is a valid finding.
+
+\section{Reproducibility and Hardware}
+\label{sec:method-repro}
+
+% TODO: experiment tracking (MLflow), seeding, config-as-data discipline;
+% Apple Silicon M1 Pro / 16 GB envelope; MLX vs. MPS runtimes.

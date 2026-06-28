@@ -1,0 +1,71 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% HORUS -- Master Thesis (FH Wedel, SS26)
+%% Author: Reebal Sami  -- Supervisor: Prof. Dr. Dennis Saering
+%%
+%% Build:  make thesis        (from the repository root)
+%%   ->    latexmk -pdf       (pdflatex + biber, multi-pass)
+%%   ->    output: thesis/_build/main.pdf
+%%
+%% Structure + provenance: thesis/README.md
+%% Authoring decision:      docs/decisions/ADR-054-thesis-authoring-setup.md
+%% Adapted from the FH Wedel LaTeX template (github.com/fh-wedel/thesis-template).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[
+    12pt,
+    openright,          % chapters begin on a right-hand page
+    listof=totoc,       % lists in the table of contents
+    bibliography=totoc, % bibliography in the table of contents
+    parskip=full        % paragraphs separated by vertical space
+]{scrreprt}
+
+\input{preamble/header}
+
+\begin{document}
+
+\pagenumbering{Roman}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title page
+\newgeometry{left=3cm,right=2cm,top=2.0cm,bottom=2.0cm}
+\include{preamble/titlepage}
+\restoregeometry
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abstract
+\include{chapters/00-abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Front-matter lists. Extra numbering width for chapters with >= 10 figures.
+\DeclareTOCStyleEntry[numwidth=3em]{tocline}{figure}
+\tableofcontents
+\listoffigures
+\listoftables
+\include{preamble/acronyms}
+\cleardoublepage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagenumbering{arabic}
+
+\begin{onehalfspace}
+\include{chapters/01-introduction}
+\include{chapters/02-background}
+\include{chapters/03-related-work}
+\include{chapters/04-methodology}
+\include{chapters/05-extraction}
+\include{chapters/06-knowledge-graph}
+\include{chapters/07-query}
+\include{chapters/08-system}
+\include{chapters/09-discussion}
+\include{chapters/10-conclusion}
+
+\appendix
+\include{appendix/appendix}
+\end{onehalfspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\printbibliography{}
+
+% Eidesstattliche Erklaerung (statutory declaration; FH Wedel, incl. AI clause)
+\include{preamble/declaration}
+
+\end{document}

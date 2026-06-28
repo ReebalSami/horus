@@ -1,0 +1,98 @@
+\chapter{Introduction}
+\label{ch:introduction}
+
+\section{Motivation}
+\label{sec:motivation}
+
+German tax advisors (\textit{Steuerberater}), auditors
+(\textit{Wirtschaftspr\"ufer}), and lawyers (\textit{Rechtsanw\"alte}) process
+large volumes of client documents --- incoming invoices
+(\textit{Eingangsrechnungen}) and supporting receipts (\textit{Belege}) --- as a
+daily core activity. Recent progress in document \ac{VLM}s makes it tempting to
+automate this work with cloud services. For these professions, however, that
+path is not merely a data-protection question but a criminal-law one.
+
+Whereas the \ac{DSGVO} can be satisfied for cloud processing through a data
+processing agreement and EU data residency, the professional-secrecy regime of
+\S203~\ac{StGB} in conjunction with \S62a~\ac{StBerG} imposes a stricter,
+separate requirement: a confidentiality obligation in text form for any external
+service provider that gains access to client data \cite{bstbk2026}. As of early
+2026 the major cloud \ac{LLM} providers do not offer such an agreement, and
+foreign providers additionally fail the comparable-secrecy test of
+\S62a~Abs.~4~\ac{StBerG}. The practical consequence is sharp: for this specific
+professional context, \emph{local} inference is currently the only legally
+watertight option. This thesis takes that constraint as its operational premise
+--- not as its research contribution --- and asks what is technically achievable
+\emph{within} it.
+
+\section{Problem Statement}
+\label{sec:problem}
+
+The constraint rules out the strongest cloud models and confines the system to
+models that run on commodity, on-premise hardware. This raises a concrete
+empirical question: how far do small, locally hosted, open-source document
+\ac{VLM}s --- the wave of specialised models released from late~2025 onward ---
+close the gap to cloud state of the art on the German B2B accounting workflow,
+and where does reasoning over an automatically constructed \ac{KG} add value
+over flat vector retrieval? Prior work on invoice processing with vision models
+\cite{berghaus2025} benchmarked large cloud models but did not include the
+recent specialised open-source document \ac{VLM}s; that omission is the gap this
+thesis addresses.
+
+\section{Research Questions}
+\label{sec:research-questions}
+
+The guiding question of this thesis is:
+
+\begin{quote}
+\itshape
+How well can current open-source local document \acp{VLM} handle the German B2B
+accounting workflow end to end (extraction $\rightarrow$ knowledge graph
+$\rightarrow$ analytical querying), and where does compliance-aware reasoning
+over an automatically constructed knowledge graph beat flat vector retrieval?
+\end{quote}
+
+\noindent It is decomposed along the three system layers and made falsifiable
+through a pre-registered hypothesis set (H1--H6, H8;
+see Chapter~\ref{ch:methodology}).
+
+\section{Contributions}
+\label{sec:contributions}
+
+% TODO(contributions): finalise once results land. Draft claims:
+This thesis contributes:
+
+\begin{itemize}
+  \item an evaluation of recent open-source local document \acp{VLM} on
+        German ZUGFeRD-derived invoices, closing the cloud-only gap in
+        \cite{berghaus2025};
+  \item a compliance-aware evaluation suite weighting fields by their legal
+        importance under \S14~\ac{UStG}/\S33~\ac{UStDV}, beyond a single token
+        \ac{F1};
+  \item an image-to-\ac{KG} fidelity study, extending the text-to-\ac{KG}
+        evaluation of \cite{cai2025} to the document-image setting;
+  \item a characterisation of \emph{when} graph retrieval beats flat vector
+        retrieval on German accounting corpora, relating to \cite{han2025}; and
+  \item a privacy-preserving, locally deployable prototype as an engineering
+        artefact.
+\end{itemize}
+
+\section{Scope and Delimitations}
+\label{sec:scope}
+
+This thesis is \emph{not} a startup pitch, a pure \ac{OCR} benchmark, or a
+legal-tech treatise: \S203~\ac{StGB} frames the motivation but is not the
+contribution. It does not claim to beat commercial systems in general; it
+characterises a German-specific cell of the problem space where the local-only
+constraint binds.
+
+\section{Thesis Structure}
+\label{sec:structure}
+
+% TODO(structure): keep in sync with the final chapter list.
+Chapter~\ref{ch:background} introduces the technical and legal background.
+Chapter~\ref{ch:related-work} positions the thesis against prior work.
+Chapter~\ref{ch:methodology} specifies the system, datasets, metrics, and the
+pre-registered hypotheses. Chapters~\ref{ch:extraction}--\ref{ch:system} report
+the three layers and the prototype. Chapter~\ref{ch:discussion} discusses the
+findings and Chapter~\ref{ch:conclusion} concludes.

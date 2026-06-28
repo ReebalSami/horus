@@ -1,0 +1,3 @@
+# Generated LaTeX tables (.tex) are written here by the asset-export pipeline
+# (see thesis/README.md) and \input by the chapters. Tracked dir; generated
+# .tex tables are git-ignored unless deliberately committed.

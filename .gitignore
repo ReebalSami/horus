@@ -144,3 +144,8 @@ docs/sources/transcripts-arm-a-dev/
 # background-removed brand PNGs at app/assets/brand/*.png ARE tracked (the
 # running app loads them at runtime).
 app/assets/brand/sources/
+
+# ADR-054: thesis LaTeX build artifacts. Source is thesis/**/*.tex +
+# thesis/references.bib (tracked); the compiled PDF + all aux/log/bbl/bcf/toc
+# intermediates are written by latexmk into thesis/_build/ and are transient.
+thesis/_build/
