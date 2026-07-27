@@ -474,6 +474,17 @@ class TransformersMPSExtractor:
             ``trust_remote_code=True``. Wired through to ``AutoProcessor`` and
             ``AutoModelForImageTextToText.from_pretrained`` when True. Disclosed
             in COHORT_MANIFEST per ADR-009 §3.7.
+        max_pixels: Optional cap on total input-image pixels. Images above the
+            cap are LANCZOS-downscaled (aspect preserved) BEFORE the processor
+            sees them. Needed for native-resolution ViT models (qwen3_vl) whose
+            vision-attention buffer grows quadratically with pixel count — a
+            300-DPI A4 page (≈8.7 M px) demands a 35 GiB Metal buffer on
+            Qwen3-VL-4B, exceeding the M1 Pro 16 GB ceiling (`know-your-hardware`).
+        repetition_penalty: Optional HF ``generate(repetition_penalty=...)``
+            value. MinerU2.5 falls into unbounded repetition loops on
+            2014-era ZUGFeRDv1 scans under plain greedy decode (reader bake-off,
+            issue #55); its official pipeline ships repetition handling our
+            plain ``generate`` lacks. ``None`` = greedy unchanged.
     """
 
     backend_name: ClassVar[str] = "transformers-mps"
@@ -484,10 +495,14 @@ class TransformersMPSExtractor:
         *,
         alt_model_id: str | None = None,
         needs_trust_remote_code: bool = False,
+        max_pixels: int | None = None,
+        repetition_penalty: float | None = None,
     ) -> None:
         self.model_id = model_id
         self._effective_model_id = alt_model_id or model_id
         self._needs_trust_remote_code = needs_trust_remote_code
+        self._max_pixels = max_pixels
+        self._repetition_penalty = repetition_penalty
         self._model: Any = None
         self._processor: Any = None
         self._load_seconds: float = 0.0
@@ -560,6 +575,12 @@ class TransformersMPSExtractor:
             from PIL import Image
 
             image = Image.open(image_path).convert("RGB")
+            if self._max_pixels is not None and image.width * image.height > self._max_pixels:
+                scale = (self._max_pixels / (image.width * image.height)) ** 0.5
+                image = image.resize(
+                    (max(1, int(image.width * scale)), max(1, int(image.height * scale))),
+                    Image.Resampling.LANCZOS,
+                )
 
             # Try HF-canonical chat-template formatting; fall back to a plain
             # "<image>{prompt}" string if the processor doesn't expose one.
@@ -590,12 +611,17 @@ class TransformersMPSExtractor:
             # MPS dtype mismatches (observed in ADR-007 smoke).
             inputs = self._processor(text=formatted, images=[image], return_tensors="pt").to("mps")
 
+            gen_kwargs: dict[str, Any] = {}
+            if self._repetition_penalty is not None:
+                gen_kwargs["repetition_penalty"] = self._repetition_penalty
+
             gen_start = time.perf_counter()
             with torch.no_grad():
                 generated_ids = self._model.generate(
                     **inputs,
                     max_new_tokens=max_tokens,
                     do_sample=False,
+                    **gen_kwargs,
                 )
             extract_seconds = time.perf_counter() - gen_start
 
@@ -865,9 +891,16 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         "alt_model_id": None,
         "license": "apache-2.0",
         "needs_trust_remote_code": False,
+        "repetition_penalty": 1.05,
         "note": (
             "qwen2_vl arch; 1.16 B params; OmniDocBench v1.6 = 95.69 (ADR-008 "
-            "forward-pointer). PR(b) scope per ADR-009 §3.8."
+            "forward-pointer). PR(b) scope per ADR-009 §3.8. repetition_penalty=1.05 "
+            "added at the issue-#55 reader bake-off: plain greedy decode looped "
+            "unboundedly ('USt. Gesamt: 75,04 €' × hundreds) on 2014-era ZUGFeRDv1 "
+            "scans, burning the 2048-token budget mid-page; MinerU's official "
+            "pipeline ships repetition handling our bare generate() lacks. Runs "
+            "BEFORE this knob (pilot-13) were greedy — comparability note for "
+            "any future MinerU re-run."
         ),
     },
     "allenai/olmOCR-2-7B-1025": {
@@ -979,6 +1012,7 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
         "alt_model_id": None,
         "license": "apache-2.0",
         "needs_trust_remote_code": False,
+        "max_pixels": 2_150_000,
         "note": (
             "qwen3_vl arch; 4.44 B params; multilingual. v2 §9.1 smaller variant "
             "(replaces 8B/30B-A3B per ADR-009 §3.2 delta). PR(b) Step 5 escalation "
@@ -992,7 +1026,11 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
             "TransformersMPSExtractor (PyTorch MPS, smaller per-kernel command "
             "buffers) per ADR-009 §3.8 O6 fallback. Cohort delta: only Cat 3 entry "
             "running through TransformersMPSExtractor instead of MLXVLMExtractor; "
-            "documented as runtime-path-mixed per ADR-009 §3.10."
+            "documented as runtime-path-mixed per ADR-009 §3.10. max_pixels=2.15M "
+            "(≈A4@150DPI) added at the issue-#55 reader bake-off: qwen3_vl's "
+            "native-resolution ViT demanded a 35.10 GiB Metal buffer on a 300-DPI "
+            "A4 page (RuntimeError: Invalid buffer size), exceeding the 16 GB "
+            "ceiling; the cap LANCZOS-downscales before the processor."
         ),
     },
     "google/paligemma2-3b-mix-448": {
@@ -1080,10 +1118,18 @@ def get_extractor(model_id: str) -> VLMExtractor:
         raise KeyError(f"Model {model_id!r} not in COHORT_MANIFEST. Known cohort: {known}")
     entry = COHORT_MANIFEST[model_id]
     cls = entry["extractor_class"]
+    # Optional per-model inference knobs (currently TransformersMPSExtractor-only;
+    # a manifest entry setting them on another class fails loudly at construction).
+    optional_kwargs: dict[str, Any] = {
+        key: entry[key]
+        for key in ("max_pixels", "repetition_penalty")
+        if entry.get(key) is not None
+    }
     return cls(
         model_id=model_id,
         alt_model_id=entry.get("alt_model_id"),
         needs_trust_remote_code=entry.get("needs_trust_remote_code", False),
+        **optional_kwargs,
     )
 
 
@@ -1141,6 +1187,20 @@ def validate_manifest() -> None:
             raise ValueError(
                 f"COHORT_MANIFEST[{model_id!r}] needs_trust_remote_code must be bool, "
                 f"got {type(entry['needs_trust_remote_code']).__name__}"
+            )
+        max_pixels = entry.get("max_pixels")
+        if max_pixels is not None and (not isinstance(max_pixels, int) or max_pixels <= 0):
+            raise ValueError(
+                f"COHORT_MANIFEST[{model_id!r}] max_pixels must be a positive int or absent, "
+                f"got {max_pixels!r}"
+            )
+        rep_penalty = entry.get("repetition_penalty")
+        if rep_penalty is not None and (
+            not isinstance(rep_penalty, float) or not rep_penalty >= 1.0
+        ):
+            raise ValueError(
+                f"COHORT_MANIFEST[{model_id!r}] repetition_penalty must be a float >= 1.0 "
+                f"or absent, got {rep_penalty!r}"
             )
         if not isinstance(entry["extractor_class"], type) or not issubclass(
             entry["extractor_class"], valid_classes

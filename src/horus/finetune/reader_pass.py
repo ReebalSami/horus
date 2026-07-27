@@ -30,7 +30,7 @@ from horus.finetune.dataset import (
     DEFAULT_TRANSCRIPT_DIR,
     InvoiceRecord,
 )
-from horus.vlm_extractor import COHORT_MANIFEST, MLXVLMExtractor, get_extractor
+from horus.vlm_extractor import COHORT_MANIFEST, get_extractor
 
 __all__ = ["ReaderPassConfig", "run_reader_pass"]
 
@@ -93,12 +93,16 @@ def run_reader_pass(
     config: ReaderPassConfig | None = None,
     overwrite: bool = False,
     limit: int | None = None,
+    stems: set[str] | None = None,
 ) -> ReaderPassResult:
     """Transcribe every GT-bearing record lacking a transcript with the reader model.
 
     Streams per-invoice progress to stdout (`long-running-foreground`). Skips invoices
-    that already have a transcript (unless ``overwrite``), making the pass resumable.
-    ``limit`` caps the number transcribed this invocation (spike-first discipline).
+    whose transcript already exists in ``config.transcript_dir`` (unless ``overwrite``),
+    making the pass resumable — the existence check is against the OUTPUT dir, so a
+    bake-off pass into a fresh dir re-transcribes invoices that have a canonical
+    transcript elsewhere. ``limit`` caps the number transcribed this invocation
+    (spike-first discipline); ``stems`` restricts to a subset (e.g. the sealed val split).
 
     Returns a `ReaderPassResult` with written / skipped / failed stems.
     """
@@ -106,13 +110,17 @@ def run_reader_pass(
     manifest = COHORT_MANIFEST[cfg.reader_model]
     prompt: str = manifest["prompt_template"]
     max_tokens: int = manifest["max_tokens"]
+    reader_slug = _model_slug(cfg.reader_model)
 
     targets: list[InvoiceRecord] = []
     result = ReaderPassResult()
     for rec in records:
         if not rec.has_gt:
             continue
-        if rec.has_transcript and not overwrite:
+        if stems is not None and rec.stem not in stems:
+            continue
+        out_path = cfg.transcript_dir / f"{reader_slug}__{rec.stem}.txt"
+        if out_path.exists() and not overwrite:
             result.skipped.append(rec.stem)
             continue
         targets.append(rec)
@@ -128,11 +136,9 @@ def run_reader_pass(
     if not targets:
         return result
 
+    # Any cohort extractor works as a reader — the protocol (load/extract/unload) is
+    # framework-agnostic; MinerU2.5 (transformers-MPS) is a first-class bake-off candidate.
     extractor = get_extractor(cfg.reader_model)
-    if not isinstance(extractor, MLXVLMExtractor):
-        raise ValueError(
-            f"reader {cfg.reader_model!r} must be an MLX extractor; got {type(extractor).__name__}"
-        )
 
     cfg.transcript_dir.mkdir(parents=True, exist_ok=True)
     extractor.load()
@@ -158,7 +164,7 @@ def run_reader_pass(
                     total_seconds=sum(r.extract_seconds for r in per_page),
                     prompt=prompt,
                 )
-                out_path = cfg.transcript_dir / f"{_model_slug(cfg.reader_model)}__{rec.stem}.txt"
+                out_path = cfg.transcript_dir / f"{reader_slug}__{rec.stem}.txt"
                 out_path.write_text(header + concatenated, encoding="utf-8")
                 result.written.append(rec.stem)
                 print(

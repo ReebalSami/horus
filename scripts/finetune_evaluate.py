@@ -40,9 +40,7 @@ def _print_summary(report: EvalReport) -> None:
     print(f"  overall_micro_f1        : {report.mean_overall_micro_f1:.4f}")
     print(f"  micro_f1 (flat)         : {report.mean_micro_f1:.4f}")
     print(f"  presence_conditional_f1 : {report.mean_presence_conditional_f1:.4f}")
-    print(
-        f"  spurious_emission_rate  : {report.mean_spurious_emission_rate:.4f}  (lower = better)"
-    )
+    print(f"  spurious_emission_rate  : {report.mean_spurious_emission_rate:.4f}  (lower = better)")
     worst = sorted((e for e in report.per_invoice if e.ok), key=lambda e: e.overall_micro_f1)[:5]
     if worst:
         print("  weakest invoices (overall_micro_f1):")
