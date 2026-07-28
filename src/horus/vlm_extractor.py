@@ -161,8 +161,15 @@ class VLMExtractor(Protocol):
     ``extract()`` and ``unload()`` between models to avoid OOM accumulation.
     """
 
-    model_id: str
-    backend_name: str
+    # Read-only protocol members: implementers satisfy them with either a
+    # ClassVar (backend_name pattern) or a plain instance attribute (model_id
+    # pattern). Declaring them as mutable attributes would make ClassVar
+    # implementations fail structural checks under mypy.
+    @property
+    def model_id(self) -> str: ...
+
+    @property
+    def backend_name(self) -> str: ...
 
     def load(self) -> None: ...
 
@@ -474,12 +481,15 @@ class TransformersMPSExtractor:
             ``trust_remote_code=True``. Wired through to ``AutoProcessor`` and
             ``AutoModelForImageTextToText.from_pretrained`` when True. Disclosed
             in COHORT_MANIFEST per ADR-009 §3.7.
-        max_pixels: Optional cap on total input-image pixels. Images above the
-            cap are LANCZOS-downscaled (aspect preserved) BEFORE the processor
-            sees them. Needed for native-resolution ViT models (qwen3_vl) whose
-            vision-attention buffer grows quadratically with pixel count — a
-            300-DPI A4 page (≈8.7 M px) demands a 35 GiB Metal buffer on
-            Qwen3-VL-4B, exceeding the M1 Pro 16 GB ceiling (`know-your-hardware`).
+        max_pixels: Optional cap on total input-image pixels, applied ON MPS
+            ONLY. Images above the cap are LANCZOS-downscaled (aspect preserved)
+            BEFORE the processor sees them. It is a Metal-memory workaround, not
+            a quality choice: native-resolution ViT models (qwen3_vl) grow their
+            vision-attention buffer quadratically with pixel count — a 300-DPI
+            A4 page (≈8.7 M px) demands a 35 GiB Metal buffer on Qwen3-VL-4B,
+            exceeding the M1 Pro 16 GB ceiling (`know-your-hardware`). CUDA's
+            fused SDPA kernels don't materialize that buffer, so the GPU path
+            keeps native resolution (scripts/gpu/ runbook).
         repetition_penalty: Optional HF ``generate(repetition_penalty=...)``
             value. MinerU2.5 falls into unbounded repetition loops on
             2014-era ZUGFeRDv1 scans under plain greedy decode (reader bake-off,
@@ -503,24 +513,38 @@ class TransformersMPSExtractor:
         self._needs_trust_remote_code = needs_trust_remote_code
         self._max_pixels = max_pixels
         self._repetition_penalty = repetition_penalty
+        self._device: str = "mps"
         self._model: Any = None
         self._processor: Any = None
         self._load_seconds: float = 0.0
         self._loaded: bool = False
 
+    @staticmethod
+    def _pick_device() -> str:
+        """Prefer MPS (the HORUS deployment target), fall back to CUDA (rented
+        GPU per the issue-#55 bake-off runbook). CPU is refused — silent 100×
+        slowdowns are worse than a loud error (`long-running-foreground`).
+        """
+        import torch
+
+        if torch.backends.mps.is_available():
+            return "mps"
+        if torch.cuda.is_available():
+            return "cuda"
+        raise RuntimeError(
+            "No MPS or CUDA device available — TransformersMPSExtractor requires "
+            "Apple Silicon Metal (deployment target) or an NVIDIA GPU (bake-off/"
+            "training box per scripts/gpu/). CPU inference is deliberately refused."
+        )
+
     def load(self) -> None:
-        """Download (if needed) + load the model on MPS in bfloat16."""
+        """Download (if needed) + load the model in bfloat16 on MPS or CUDA."""
         if self._loaded:
             return
         import torch
         from transformers import AutoModelForImageTextToText, AutoProcessor
 
-        if not torch.backends.mps.is_available():
-            raise RuntimeError(
-                "PyTorch MPS backend not available — TransformersMPSExtractor "
-                "requires Apple Silicon + Metal-capable PyTorch (>=2.5 per "
-                "pyproject.toml)."
-            )
+        self._device = self._pick_device()
 
         load_start = time.perf_counter()
         self._processor = AutoProcessor.from_pretrained(
@@ -547,7 +571,7 @@ class TransformersMPSExtractor:
             model.tie_weights()
         # mypy mis-tracks the chained `.to(...)` through transformers' overload
         # soup; the runtime contract (nn.Module.to(str)) is well-established.
-        self._model = model.to("mps")  # type: ignore[arg-type]
+        self._model = model.to(self._device)  # type: ignore[arg-type]
         self._load_seconds = time.perf_counter() - load_start
         self._loaded = True
 
@@ -575,7 +599,11 @@ class TransformersMPSExtractor:
             from PIL import Image
 
             image = Image.open(image_path).convert("RGB")
-            if self._max_pixels is not None and image.width * image.height > self._max_pixels:
+            if (
+                self._device == "mps"
+                and self._max_pixels is not None
+                and image.width * image.height > self._max_pixels
+            ):
                 scale = (self._max_pixels / (image.width * image.height)) ** 0.5
                 image = image.resize(
                     (max(1, int(image.width * scale)), max(1, int(image.height * scale))),
@@ -609,7 +637,9 @@ class TransformersMPSExtractor:
             # Image inputs stay float32 — MPS handles dtype downcast on the
             # model side. Casting pixel_values to bfloat16 manually triggers
             # MPS dtype mismatches (observed in ADR-007 smoke).
-            inputs = self._processor(text=formatted, images=[image], return_tensors="pt").to("mps")
+            inputs = self._processor(text=formatted, images=[image], return_tensors="pt").to(
+                self._device
+            )
 
             gen_kwargs: dict[str, Any] = {}
             if self._repetition_penalty is not None:

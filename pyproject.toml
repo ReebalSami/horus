@@ -17,7 +17,10 @@ dependencies = [
     "matplotlib>=3.10.9",
     "mineru>=3.1.11",
     "mlflow>=3.7",
-    "mlx-vlm>=0.5.0",
+    # Apple-Silicon-only (Metal): MLX inference + LoRA trainer. Platform-gated so
+    # `uv sync` works on the rented CUDA box (scripts/gpu/ runbook, issue #55) —
+    # all mlx imports in src/ are lazy (method-local), so Linux never touches them.
+    "mlx-vlm>=0.5.0; sys_platform == 'darwin' and platform_machine == 'arm64'",
     "plotly>=6.0,<7.0",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",

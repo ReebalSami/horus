@@ -54,6 +54,12 @@ def main() -> int:
     )
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument(
+        "--force-transformers",
+        action="store_true",
+        help="run the CANONICAL HF repo at bf16 via transformers (CUDA bake-off path), "
+        "ignoring the manifest's MLX/quant wiring",
+    )
+    parser.add_argument(
         "--score-only", action="store_true", help="skip transcription; score existing transcripts"
     )
     args = parser.parse_args()
@@ -73,7 +79,11 @@ def main() -> int:
     if not args.score_only:
         result = run_reader_pass(
             records,
-            config=ReaderPassConfig(reader_model=args.reader, transcript_dir=out_dir),
+            config=ReaderPassConfig(
+                reader_model=args.reader,
+                transcript_dir=out_dir,
+                force_transformers=args.force_transformers,
+            ),
             overwrite=args.overwrite,
             limit=args.limit,
             stems=stems,

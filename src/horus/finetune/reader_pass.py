@@ -30,7 +30,12 @@ from horus.finetune.dataset import (
     DEFAULT_TRANSCRIPT_DIR,
     InvoiceRecord,
 )
-from horus.vlm_extractor import COHORT_MANIFEST, get_extractor
+from horus.vlm_extractor import (
+    COHORT_MANIFEST,
+    TransformersMPSExtractor,
+    VLMExtractor,
+    get_extractor,
+)
 
 __all__ = ["ReaderPassConfig", "run_reader_pass"]
 
@@ -44,12 +49,21 @@ _DEFAULT_DPI = 300
 
 @dataclass(frozen=True)
 class ReaderPassConfig:
-    """Knobs for the reader pass (defaults mirror pilot-13's Granite reader)."""
+    """Knobs for the reader pass (defaults mirror pilot-13's Granite reader).
+
+    ``force_transformers`` bypasses the manifest's ``extractor_class`` /
+    ``alt_model_id`` (Apple-deployment wiring: MLX ports, 4-bit quants) and runs
+    the CANONICAL HF repo through ``TransformersMPSExtractor`` at bf16 — the
+    full-precision path for the rented-GPU reader bake-off (scripts/gpu/,
+    issue #55). Prompt / max_tokens / repetition_penalty still come from the
+    manifest so runs stay comparable across backends.
+    """
 
     reader_model: str = DEFAULT_READER_MODEL
     transcript_dir: Path = DEFAULT_TRANSCRIPT_DIR
     raster_cache_dir: Path = _DEFAULT_RASTER_CACHE
     dpi: int = _DEFAULT_DPI
+    force_transformers: bool = False
 
 
 @dataclass
@@ -138,7 +152,15 @@ def run_reader_pass(
 
     # Any cohort extractor works as a reader — the protocol (load/extract/unload) is
     # framework-agnostic; MinerU2.5 (transformers-MPS) is a first-class bake-off candidate.
-    extractor = get_extractor(cfg.reader_model)
+    if cfg.force_transformers:
+        extractor: VLMExtractor = TransformersMPSExtractor(
+            model_id=cfg.reader_model,
+            needs_trust_remote_code=manifest.get("needs_trust_remote_code", False),
+            max_pixels=manifest.get("max_pixels"),
+            repetition_penalty=manifest.get("repetition_penalty"),
+        )
+    else:
+        extractor = get_extractor(cfg.reader_model)
 
     cfg.transcript_dir.mkdir(parents=True, exist_ok=True)
     extractor.load()
