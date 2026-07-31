@@ -91,6 +91,16 @@ ignore_missing_imports = true
 module = ["mlx_vlm", "mlx_vlm.*"]
 ignore_missing_imports = true
 
+# ADR-007 (CI parity): `mlx` itself is Apple-Silicon-only. It IS installed on the
+# dev Mac (and ships py.typed, so it type-checks there), but it is absent on the
+# Linux CI runner — where mypy would otherwise fail with `import-not-found` for
+# `mlx`, `mlx.core` and `mlx.optimizers`. `ignore_missing_imports` is a no-op when
+# the package is present, so local strictness is unchanged; it only makes CI agree
+# with the Mac. Same override pattern as mlx_vlm / factur-x / fpdf / mineru.
+[[tool.mypy.overrides]]
+module = ["mlx", "mlx.*"]
+ignore_missing_imports = true
+
 # ADR-008: docling ships py.typed (no override needed); mineru does NOT ship py.typed.
 [[tool.mypy.overrides]]
 module = ["mineru", "mineru.*"]

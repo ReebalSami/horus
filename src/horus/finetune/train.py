@@ -38,6 +38,16 @@ __all__ = ["FinetuneResult", "run_finetune"]
 
 _LOGGER = logging.getLogger(__name__)
 
+
+def _noop_set_wired_limit(*_args: object, **_kwargs: object) -> None:
+    """No-op stand-in for ``mx.set_wired_limit``.
+
+    ``mlx_vlm.train()`` resets the wired limit to ``max_recommended`` on entry,
+    which would undo the deliberate raise made before training starts. Patching
+    the symbol with this no-op holds the raised limit for the whole run.
+    """
+
+
 # Fallback assistant-turn token id if <end_of_turn> can't be resolved (mlx_vlm's Qwen default).
 _DEFAULT_ASSISTANT_ID = 77091
 
@@ -316,8 +326,13 @@ def run_finetune(
             target_gb = cfg.train.wired_limit_gb
             try:
                 mx.set_wired_limit(int(target_gb * 1024**3))
-                # Hold it: mlx_vlm's train() resets the limit to max_recommended on entry.
-                mx.set_wired_limit = lambda *_a, **_k: None  # type: ignore[assignment]
+                # Hold it: mlx_vlm's train() resets the limit to max_recommended on
+                # entry. Patch through an Any-typed alias so this type-checks the
+                # same way whether mlx is installed and typed (dev Mac) or absent
+                # and therefore untyped (Linux CI) -- a `type: ignore` here would be
+                # required on the Mac and flagged as unused on CI.
+                mx_module: Any = mx
+                mx_module.set_wired_limit = _noop_set_wired_limit
                 print(f"raised wired limit -> {target_gb:.1f} GB (held through train)", flush=True)
             except Exception as exc:  # noqa: BLE001 — surface, don't crash
                 _LOGGER.warning("could not raise wired limit to %.1f GB: %s", target_gb, exc)
