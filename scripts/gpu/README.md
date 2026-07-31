@@ -10,7 +10,12 @@ M1** (the mlx_vlm LoRA trainer is Apple-only by design — matched train/serve p
 Budget approved: ≲ $15 (< 6 GPU-hours on-demand). **Terminate the instance when done —
 step 6 is not optional.**
 
-## 1. Launch (once) — exact AWS-console steps
+> **Provider status (2026-07-31)**: AWS denied the G-instance vCPU quota increase twice
+> (fresh-account ramp policy; case 178548148400462). **Plan of record is §1B (RunPod)** —
+> no quota gate, per-second billing, A40 48 GB at ≈ $0.35–0.44/hr (vs $1.01/hr A10G).
+> §1A (AWS) is retained in case the quota appeal ever lands.
+
+## 1A. Launch via AWS console (blocked by quota — retained for reference)
 
 Target: `g5.xlarge` (A10G 24 GB), region `eu-central-1` (Frankfurt), on-demand ≈ $1.01/hr
 (spot ≈ $0.30–0.45/hr also works — every pass is resumable — but on-demand is simpler).
@@ -63,6 +68,55 @@ Host horus-gpu
 ```
 
 then `ssh horus-gpu` / `rsync … horus-gpu:~/horus/` work without flags.
+
+## 1B. Launch via RunPod (plan of record)
+
+Pods are Docker containers with the NVIDIA driver ready; you are `root` inside. Per-second
+billing; ≈ $0.35–0.44/hr for an A40 48 GB → the full job costs < $5 of the ≤ $15 budget.
+
+### Console steps (user)
+
+1. <https://runpod.io> → sign up → **Billing** → load **$10** credit (card; minimum top-up)
+2. **Settings → SSH Keys** → paste your public key (`cat ~/.ssh/id_ed25519.pub`; if none
+   exists first run `ssh-keygen -t ed25519`). MUST happen **before** deploying the pod.
+3. **Pods → Deploy**:
+   - **GPU**: `A40` (48 GB) — fallback `RTX A6000` (48 GB) if A40 shows no availability
+   - **Cloud type**: Secure Cloud (never preempted; community saves cents but can reclaim)
+   - **Datacenter/region**: any **EU** location (e.g. EU-SE, EU-NL, EU-RO)
+   - **Template**: any *RunPod PyTorch 2.x* template (base CUDA Ubuntu also fine —
+     `setup.sh` installs everything via uv)
+   - **Edit template**: Container disk **30 GB**; **Volume 250 GB** mounted at `/workspace`
+     (checkpoints + corpus + transcripts live here; survives pod restarts)
+   - Pricing: **On-Demand** → **Deploy**
+4. Pod page → **Connect** → copy the **"SSH over exposed TCP"** command
+   (`ssh root@<pod-ip> -p <port> -i ~/.ssh/id_ed25519`). If only the proxy command is
+   shown, Edit Pod → **Expose TCP Ports** → add `22` → restart. The proxy (`ssh.runpod.io`)
+   does NOT support rsync — the exposed-TCP endpoint is required.
+5. Test: ssh in → `nvidia-smi` must show the A40. Exit. Give Cascade `<pod-ip>` + `<port>`.
+
+### `~/.ssh/config` alias (so §2–§6 work verbatim)
+
+```
+Host horus-gpu
+  HostName <pod-ip>
+  Port <port>
+  User root
+  IdentityFile ~/.ssh/id_ed25519
+```
+
+### One-time pod prep (from the Mac, before §2)
+
+```sh
+ssh horus-gpu 'command -v rsync >/dev/null || (apt-get update -qq && apt-get install -y -qq rsync)'
+ssh horus-gpu 'mkdir -p /workspace/horus && ln -sfn /workspace/horus /root/horus'
+```
+
+(The symlink keeps every `~/horus` path in §2–§6 valid while the bytes live on the
+250 GB `/workspace` volume. `setup.sh` additionally redirects `HF_HOME` to
+`/workspace/hf` when it detects a RunPod volume, so model checkpoints land there too.)
+
+**Terminate** (RunPod flavor of §6): console → pod → **Terminate** (deletes container +
+pod volume; billing stops). Verify the Pods list is empty afterwards.
 
 ## 2. Sync repo + data (from the Mac)
 
@@ -135,7 +189,14 @@ this replaced. Resume-safe: re-running skips already-transcribed stems.)
 # from the Mac
 rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/bakeoff/ ~/Projects/horus/data/finetune/bakeoff/
 rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/gpu-transcripts/ ~/Projects/horus/data/finetune/gpu-transcripts/
+```
 
+(With the §1B ssh alias, replace `ubuntu@<instance-ip>` with `horus-gpu`.)
+
+- **RunPod**: console → pod → **Terminate**; verify the Pods list is empty (billing stops).
+- **AWS** (only if §1A was used):
+
+```sh
 aws ec2 terminate-instances --instance-ids <id> --region eu-central-1
 aws ec2 describe-instances --instance-ids <id> --region eu-central-1 \
   --query 'Reservations[].Instances[].State.Name'   # expect "shutting-down"/"terminated"

@@ -18,6 +18,15 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 uv --version
 
+echo "== HF cache placement (RunPod volume, if present) =="
+if [ -d /workspace ]; then
+    export HF_HOME=/workspace/hf
+    grep -q 'HF_HOME=/workspace/hf' ~/.bashrc 2>/dev/null || echo 'export HF_HOME=/workspace/hf' >> ~/.bashrc
+    echo "HF_HOME -> /workspace/hf (persistent volume; survives pod restart)"
+else
+    echo "no /workspace volume detected — default HF cache"
+fi
+
 echo "== Python + deps (mlx-vlm is platform-gated out on Linux) =="
 uv python install 3.14
 uv sync
