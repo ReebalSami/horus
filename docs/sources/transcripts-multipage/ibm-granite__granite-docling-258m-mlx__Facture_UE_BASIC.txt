@@ -1,0 +1,57 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  Facture_UE_BASIC
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  7.95s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><picture><loc_26><loc_19><loc_59><loc_40><logo></picture>
+<text><loc_93><loc_18><loc_346><loc_30>Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France +33 4 50 44 68 99 - http://www.aubonmoulin.fr</text>
+<text><loc_93><loc_30><loc_393><loc_36>TVA: FR11999999998 - SIRET : 9999999800010 - APE : 4778C - SARL au capital de 120 000,00 €</text>
+<section_header_level_1><loc_26><loc_55><loc_187><loc_67>Invoice FA-2017-0008</section_header_level_1>
+<section_header_level_1><loc_30><loc_73><loc_99><loc_80>Delivery Address</section_header_level_1>
+<text><loc_30><loc_83><loc_113><loc_114>Me gusta olive 87 camino de la calor 41700 Dos Hermanas Spain +34 954 93 12 29</text>
+<text><loc_30><loc_114><loc_107><loc_121>contact@megustaolive.es</text>
+<text><loc_27><loc_131><loc_78><loc_138>Invoice Date</text>
+<text><loc_27><loc_141><loc_90><loc_148>Payment Terms</text>
+<text><loc_27><loc_158><loc_65><loc_165>Due Date</text>
+<text><loc_27><loc_168><loc_90><loc_175>Your Reference</text>
+<text><loc_27><loc_178><loc_90><loc_185>Agreement Ref.</text>
+<text><loc_27><loc_188><loc_120><loc_195>Customer VAT Number</text>
+<text><loc_27><loc_198><loc_69><loc_205>Incoterms</text>
+<text><loc_27><loc_228><loc_113><loc_236>Nougat de l'Abbaye 250g</text>
+<text><loc_27><loc_240><loc_113><loc_247>Biscuits aux raisins 300g</text>
+<text><loc_27><loc_252><loc_113><loc_259>Huile d'olive à l'ancienne</text>
+<otsl><loc_25><loc_264><loc_255><loc_308></otsl>
+<text><loc_42><loc_316><loc_67><loc_323>Notes</text>
+<text><loc_86><loc_316><loc_204><loc_323>Free shipping (amount > 300 €)</text>
+<text><loc_37><loc_335><loc_73><loc_343>Payment</text>
+<text><loc_86><loc_335><loc_326><loc_342>Invoice to pay by wire transfer to the following bank account:</text>
+<text><loc_86><loc_342><loc_432><loc_349>IBAN : FR20 1242 1242 1242 1242 1242 - BIC : FIDCFR21XX - Bank: Banque Fiducial</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_274><loc_81><loc_364><loc_118>Me gusta olive Pedro Sanchez 87 camino de la calor 41700 Dos Hermanas Spain</text>
+<section_header_level_1><loc_274><loc_131><loc_330><loc_138>Sales Contact</section_header_level_1>
+<text><loc_274><loc_141><loc_338><loc_148>Tony Dubois</text>
+<text><loc_274><loc_148><loc_353><loc_155>33 4 72 07 08 56 +33 6 11 22 33 44</text>
+<text><loc_274><loc_155><loc_372><loc_162>tony.dubois@aubonmoulin.fr</text>
+<text><loc_274><loc_158><loc_390><loc_165></text>
+<text><loc_274><loc_168><loc_390><loc_175></text>
+<text><loc_274><loc_178><loc_390><loc_185></text>
+<text><loc_274><loc_188><loc_390><loc_195></text>
+<text><loc_274><loc_198><loc_390><loc_205></text>
+<text><loc_274><loc_228><loc_390><loc_236>8 Unit(s) 4.55 € 10%</text>
+<text><loc_274><loc_240><loc_390><loc_247>20 Unit(s) 3.20 €</text>
+<text><loc_274><loc_252><loc_390><loc_259>100 Liter(s) 19.80 €</text>
+<text><loc_274><loc_264><loc_390><loc_271>Net total 2,076.76 €</text>
+<text><loc_274><loc_275><loc_390><loc_282>Tax Total 0.00 €</text>
+<text><loc_274><loc_286><loc_390><loc_293>Total 2,076.76 €</text>
+<text><loc_274><loc_297><loc_390><loc_304>Residual 1,453.76 €</text>
+<text><loc_274><loc_335><loc_390><loc_343>Invoice to pay by wire transfer to the following bank account:</text>
+<text><loc_274><loc_342><loc_431><loc_349>IBAN : FR20 1242 1242 1242 1242 - BIC : FIDCFR21XX - Bank: Banque Fiducial</text>
+<page_footer><loc_235><loc_477><loc_266><loc_483>Page 1 / 1</page_footer>
+<picture><loc_428><loc_21><loc_449><loc_37></picture>
+</doctag>

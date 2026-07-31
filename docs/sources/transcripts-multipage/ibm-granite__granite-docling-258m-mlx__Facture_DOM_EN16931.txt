@@ -1,0 +1,49 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  Facture_DOM_EN16931
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  6.84s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><picture><loc_26><loc_19><loc_59><loc_40><logo></picture>
+<text><loc_93><loc_19><loc_346><loc_30>Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France +33 4 50 44 68 99 - http://www.aubonmoulin.fr</text>
+<text><loc_93><loc_30><loc_393><loc_36>TVA: FR11999999998 - SIRET : 9999999800010 - APE : 4778C - SARL au capital de 120 000,00 €</text>
+<section_header_level_1><loc_26><loc_55><loc_189><loc_67>Facture FA-2017-0009</section_header_level_1>
+<section_header_level_1><loc_30><loc_73><loc_113><loc_80>Adresse de livraison</section_header_level_1>
+<text><loc_30><loc_84><loc_150><loc_123>Hôtel Saint Denis 42 rue du stade 97400 Saint Denis de la réunion Ile de la Réunion +33 2 62 94 26 00</text>
+<text><loc_30><loc_123><loc_133><loc_130>book@hotelsaintdenis.re</text>
+<text><loc_27><loc_135><loc_89><loc_142>Date de facture</text>
+<text><loc_130><loc_135><loc_171><loc_142>05/11/2017</text>
+<text><loc_27><loc_145><loc_124><loc_152>Conditions de paiement</text>
+<text><loc_130><loc_145><loc_235><loc_152>30% d'acompte, solde à 30 j</text>
+<text><loc_27><loc_155><loc_94><loc_162>Date d'échéance</text>
+<text><loc_130><loc_155><loc_171><loc_162>05/12/2017</text>
+<text><loc_27><loc_165><loc_90><loc_172>Votre référence</text>
+<text><loc_130><loc_165><loc_156><loc_172>BC543</text>
+<text><loc_27><loc_175><loc_76><loc_182>Réf. marché</text>
+<text><loc_130><loc_175><loc_224><loc_182>WELCOME_PACK_2017</text>
+<text><loc_27><loc_185><loc_69><loc_192>N° TVA client</text>
+<text><loc_130><loc_185><loc_192><loc_192>FR90343434346</text>
+<text><loc_27><loc_195><loc_69><loc_202>Incoterms</text>
+<text><loc_130><loc_195><loc_215><loc_202>RENDU DROITS NON</text>
+<text><loc_130><loc_202><loc_178><loc_209>ACQUITTIÉS</text>
+<otsl><loc_24><loc_215><loc_475><loc_264></otsl>
+<otsl><loc_24><loc_266><loc_255><loc_299></otsl>
+<otsl><loc_24><loc_301><loc_255><loc_315></otsl>
+<text><loc_43><loc_318><loc_66><loc_325>Notes</text>
+<text><loc_86><loc_318><loc_236><loc_325>Franco de port (Commande > 300 € HT)</text>
+<text><loc_43><loc_334><loc_77><loc_341>Règlement</text>
+<text><loc_86><loc_334><loc_281><loc_341>Facture à régler par virement sur le compte suivant :</text>
+<text><loc_86><loc_341><loc_444><loc_348>IBAN : FR20 1242 1242 1242 1242 1242 124 - BIC : FIDCFR21XX - Banque : Banque Fiducial</text>
+<text><loc_26><loc_350><loc_201><loc_355>Exonération de TVA selon article 262 l du Code général des impôts</text>
+<page_footer><loc_235><loc_477><loc_266><loc_483>Page 1 / 1</page_footer>
+<text><loc_273><loc_80><loc_350><loc_116>Hôtel Saint Denis Stéphanie Hoarau 42 rue du stade 97400 Saint Denis Ile de la Réunion</text>
+<section_header_level_1><loc_274><loc_132><loc_355><loc_139>Contact commercial</section_header_level_1>
+<text><loc_273><loc_142><loc_355><loc_166>Tony Dubois +33 4 72 07 08 56 +33 6 11 22 33 44</text>
+<text><loc_273><loc_166><loc_390><loc_173>tony.dubois@aubonmoulin.fr</text>
+<picture><loc_428><loc_21><loc_449><loc_36><logo></picture>
+</doctag>

@@ -1,0 +1,56 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Elektron
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  9.70s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version:  2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_36><loc_56><loc_99><loc_64>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_80><loc_270><loc_92>Baurechnung Nr. 181301674 vom 25.04.2018</section_header_level_1>
+<text><loc_36><loc_112><loc_110><loc_120>Geschäftsprozess</text>
+<text><loc_121><loc_112><loc_170><loc_120>: Baurechnung</text>
+<text><loc_36><loc_119><loc_209><loc_127>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_36><loc_127><loc_69><loc_134>Währung</text>
+<text><loc_121><loc_127><loc_141><loc_134>: EUR</text>
+<text><loc_36><loc_140><loc_128><loc_148>Liefer- und Leistungsdatum</text>
+<text><loc_131><loc_140><loc_177><loc_148>: 06.03.2018</text>
+<text><loc_36><loc_153><loc_110><loc_161>Referenz des Käufers</text>
+<text><loc_127><loc_153><loc_232><loc_161>: Liselotte Müller-Lüdenscheidt</text>
+<text><loc_36><loc_159><loc_99><loc_167>Zahungsreferenz</text>
+<text><loc_127><loc_159><loc_207><loc_167>: Rechnung 181301674</text>
+<text><loc_36><loc_166><loc_99><loc_174>Buchungsreferenz</text>
+<text><loc_127><loc_166><loc_161><loc_174>: 420</text>
+<text><loc_36><loc_179><loc_95><loc_187>Weitere Referenz</text>
+<text><loc_121><loc_179><loc_234><loc_187>: 13130162, Art der Referenz: 916</text>
+<text><loc_36><loc_186><loc_95><loc_194>Weitere Referenz</text>
+<text><loc_121><loc_186><loc_225><loc_194>: 42389, Art der Referenz: 916</text>
+<section_header_level_1><loc_36><loc_205><loc_75><loc_213>Verkäufer:</section_header_level_1>
+<text><loc_36><loc_212><loc_167><loc_242>Nummer : 549910 ELEKTRON Industrieservice GmbH Erfurter Strasse 13 DE 74465 Demoort</text>
+<text><loc_36><loc_247><loc_130><loc_255>USt.-Id.-Nr. : DE136695076</text>
+<text><loc_36><loc_260><loc_65><loc_268>Käufer:</text>
+<text><loc_36><loc_266><loc_127><loc_296>Nummer : 16259 ConsultingService GmbH Musterstr. 18 DE 76138 Karlsruhe</text>
+<text><loc_36><loc_314><loc_161><loc_322>Rapport-Nr.: 42389 vom 08.03.2018</text>
+<text><loc_36><loc_327><loc_458><loc_355>Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Daftir eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.</text>
+<otsl><loc_40><loc_362><loc_463><loc_461><fcel>Art-Nr-Kunde<fcel>Art-Nr-Lief. Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgeilt<nl><fcel>Pos (Art)<fcel>TGA Obermonteur/ Monteur<ecel><fcel>3 Std<fcel>19 % VAT (S)<fcel>129,60<nl><fcel>01<fcel>Bruttopreis : 43,20<ecel><ecel><ecel><ecel><nl><ecel><fcel>01 Beamermontage Für die doppelte Verlegung, falls erforderlich.<ecel><ecel><ecel><ecel><nl><ecel><fcel>Beamer- Deckenhalterung<fcel>122,50<fcel>1 H87<fcel>19 % VAT (S)<fcel>122,50<nl></otsl>
+</doctag>
+===== PAGE 2 =====
+<doctag><page_header><loc_43><loc_43><loc_51><loc_50>02</page_header>
+<text><loc_81><loc_36><loc_147><loc_43>Bruttopreis : 122,50</text>
+<text><loc_128><loc_44><loc_203><loc_51>02 Außerhalb Angebot</text>
+<section_header_level_1><loc_37><loc_79><loc_118><loc_85>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_155><loc_92><loc_203><loc_99>Beschreibung</text>
+<text><loc_340><loc_92><loc_373><loc_99>Fälligkeit</text>
+<text><loc_407><loc_92><loc_448><loc_99>Teilzahlung</text>
+<text><loc_37><loc_100><loc_118><loc_107>Zahlbar sofort rein netto</text>
+<section_header_level_1><loc_37><loc_122><loc_83><loc_129>Zahlungsart.</section_header_level_1>
+<text><loc_37><loc_136><loc_120><loc_143>Zahlungstyp (codiert): 58</text>
+<text><loc_37><loc_149><loc_92><loc_156>Verkäufer-IBAN</text>
+<text><loc_106><loc_149><loc_187><loc_156>: DE546789456786500</text>
+<section_header_level_1><loc_37><loc_177><loc_142><loc_184>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_36><loc_191><loc_463><loc_288></otsl>
+</doctag>

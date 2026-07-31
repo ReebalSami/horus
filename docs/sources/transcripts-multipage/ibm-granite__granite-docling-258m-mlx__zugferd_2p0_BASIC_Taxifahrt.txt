@@ -1,0 +1,48 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_BASIC_Taxifahrt
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  12.90s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_41><loc_38><loc_394><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</page_header>
+<section_header_level_1><loc_42><loc_60><loc_375><loc_68>Handelsrechnung Nr. TX-471102 vom 30.10.2018</section_header_level_1>
+<text><loc_41><loc_78><loc_451><loc_84>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic</text>
+<text><loc_42><loc_92><loc_140><loc_98>Rechnungswährung</text>
+<text><loc_148><loc_92><loc_173><loc_98>: EUR</text>
+<text><loc_42><loc_107><loc_254><loc_113>Liefer- und Leistungsdatum : 29.10.2018</text>
+<section_header_level_1><loc_41><loc_122><loc_92><loc_128>Verkäufer:</section_header_level_1>
+<text><loc_42><loc_135><loc_158><loc_140>Taxiunternehmen TX GmbH</text>
+<text><loc_42><loc_142><loc_142><loc_147>Lieferantenstraße 20</text>
+<text><loc_42><loc_149><loc_119><loc_154>DE 10369 Berlin</text>
+<text><loc_42><loc_162><loc_173><loc_168>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_176><loc_173><loc_181>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_42><loc_189><loc_133><loc_195>Taxi-Gast AG Mitte</text>
+<text><loc_42><loc_196><loc_118><loc_201>Hans Mustermann</text>
+<text><loc_42><loc_203><loc_118><loc_208>Kundenstraße 15</text>
+<text><loc_42><loc_210><loc_118><loc_215>DE 13351 Berlin</text>
+<text><loc_42><loc_236><loc_239><loc_242>Rechnung gemäß Taxifahrt vom 29.10.2018</text>
+<text><loc_42><loc_250><loc_158><loc_255>Taxiunternehmen TX GmbH</text>
+<text><loc_42><loc_257><loc_158><loc_262>Lieferantenstraße 20</text>
+<text><loc_42><loc_264><loc_118><loc_269>10369 Berlin</text>
+<text><loc_42><loc_271><loc_98><loc_276>Deutschland</text>
+<text><loc_42><loc_278><loc_204><loc_283>Geschäftsführer: Hans Mustermann</text>
+<text><loc_42><loc_285><loc_193><loc_290>Handelsregisternummer: H A 123</text>
+<text><loc_42><loc_310><loc_168><loc_315>Unsere GLN: 4000001123452</text>
+<text><loc_42><loc_317><loc_158><loc_322>Ihre GLN: 4000001987658</text>
+<text><loc_42><loc_324><loc_183><loc_329>Ihre Kundennummer: GE2020211</text>
+<otsl><loc_41><loc_341><loc_459><loc_440><ched>Art-Nr-Kunde<ched>Pos<ched>Art-Nr-Lief. Beschreibung<ched>Nettopreis<ched>Menge<ched>USt.<ched>Positionsbetrag ohne USt.<nl><fcel>(Art)<ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>1<fcel>Grundpreis (Pauschale)<ecel><fcel>3,9000<fcel>1 Stk<fcel>7 %<fcel>3,90<nl><fcel>2<fcel>Stadtfahrt - 2,00 Euro je gefahren<ecel><fcel>2,0000<fcel>6,5 Stk<fcel>7 %<fcel>13,00<nl></otsl>
+</doctag>
+===== PAGE 2 =====
+<doctag><section_header_level_1><loc_42><loc_49><loc_142><loc_55>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_42><loc_63><loc_103><loc_68>Beschreibung</text>
+<text><loc_326><loc_63><loc_378><loc_68>Fälligkeit</text>
+<text><loc_402><loc_63><loc_458><loc_68>Teilzahlung</text>
+<text><loc_326><loc_71><loc_378><loc_76>29.11.2018</text>
+<section_header_level_1><loc_42><loc_107><loc_153><loc_113>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_121><loc_458><loc_211><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer<fcel>(S)<fcel>16,90<fcel>7<fcel>1,18<nl><fcel>Belegsummen:<ecel><ecel><ecel><ecel><nl><ecel><ecel><fcel>Positionssumme<fcel>16,90<ecel><nl><ecel><ecel><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<ecel><nl><ecel><ecel><fcel>Gesamtbetrag der Abschläge<fcel>-0,00<ecel><nl><ecel><ecel><fcel>Rechnungssumme ohne USt.<fcel>16,90<ecel><nl><ecel><ecel><fcel>Steuerbetrag in<fcel>EUR<fcel>1,18<nl><ecel><ecel><fcel>Bruttosumme<fcel>18,08<ecel><nl><ecel><ecel><fcel>Zahlbetrag<fcel>18,08<ecel><nl></otsl>
+</doctag>

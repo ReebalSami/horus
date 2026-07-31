@@ -1,0 +1,44 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  Facture_FR_BASIC
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  6.00s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><picture><loc_26><loc_19><loc_59><loc_40><logo></picture>
+<text><loc_93><loc_19><loc_330><loc_30>Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France</text>
+<text><loc_93><loc_29><loc_330><loc_36>+33 4 50 44 68 99 - http://www.aubonmoulin.fr</text>
+<text><loc_93><loc_35><loc_393><loc_41>TVA : FR11999999998 - SIRET : 9999999800010 - APE : 4778C - SARL au capital de 120 000,00 €</text>
+<section_header_level_1><loc_26><loc_55><loc_190><loc_68>Facture FA-2017-0010</section_header_level_1>
+<section_header_level_1><loc_30><loc_73><loc_113><loc_80>Adresse de livraison</section_header_level_1>
+<text><loc_30><loc_83><loc_120><loc_120>Ma jolie boutique 35 rue de la République 69001 Lyon France +33 4 72 07 08 55</text>
+<text><loc_30><loc_120><loc_135><loc_127>sav@majolieboutique.net</text>
+<text><loc_28><loc_133><loc_89><loc_140>Date de facture</text>
+<text><loc_130><loc_133><loc_171><loc_140>13/11/2017</text>
+<text><loc_28><loc_143><loc_124><loc_150>Conditions de paiement</text>
+<text><loc_130><loc_143><loc_235><loc_150>30% d'acompte, solde à 30 j</text>
+<text><loc_28><loc_153><loc_95><loc_160>Date d'échéance</text>
+<text><loc_130><loc_153><loc_171><loc_160>13/12/2017</text>
+<text><loc_28><loc_163><loc_90><loc_170>Votre référence</text>
+<text><loc_130><loc_163><loc_157><loc_170>PO445</text>
+<text><loc_28><loc_173><loc_77><loc_180>Réf. marché</text>
+<text><loc_130><loc_173><loc_172><loc_180>MSPE2017</text>
+<text><loc_28><loc_183><loc_81><loc_190>N° TVA client</text>
+<text><loc_130><loc_183><loc_192><loc_190>FR19787878784</text>
+<otsl><loc_25><loc_197><loc_474><loc_245></otsl>
+<otsl><loc_25><loc_245><loc_255><loc_295></otsl>
+<otsl><loc_25><loc_301><loc_255><loc_315></otsl>
+<text><loc_33><loc_320><loc_77><loc_327>Règlement</text>
+<text><loc_86><loc_320><loc_280><loc_327>Facture à régler par virement sur le compte suivant :</text>
+<text><loc_86><loc_327><loc_444><loc_334>IBAN : FR20 1242 1242 1242 1242 1242 124 - BIC : FIDCFR21XXX - Banque : Banque Fiducial</text>
+<page_footer><loc_235><loc_477><loc_266><loc_483>Page 1 / 1</page_footer>
+<text><loc_274><loc_80><loc_372><loc_116>Ma jolie boutique Alexandre Payet 35 rue de la République 69001 Lyon France</text>
+<section_header_level_1><loc_274><loc_133><loc_354><loc_140>Contact commercial</section_header_level_1>
+<text><loc_274><loc_143><loc_353><loc_160>Tony Dubois +33 4 72 07 08 56</text>
+<text><loc_274><loc_160><loc_390><loc_167>tony.dubois@aubonmoulin.fr</text>
+<picture><loc_428><loc_21><loc_449><loc_36><logo></picture>
+</doctag>

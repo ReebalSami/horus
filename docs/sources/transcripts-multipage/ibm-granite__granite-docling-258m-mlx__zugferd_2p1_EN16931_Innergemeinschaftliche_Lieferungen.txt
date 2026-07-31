@@ -1,0 +1,112 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Innergemeinschaftliche_Lieferungen
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  24.12s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_345><loc_71><_XML_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+  ZUGFeRD-Version   : 2.1 vom 24.03.2020
+  Stylesheet-Version: 2.0 vom 18.10.2018
+  Codelisten-Version: 3.0 vom 15.11.2019
+  (c) AWV e.V. 2020</code>
+<section_header_level_1><loc_41><loc_84><loc_445><loc_103>Gutschrift (Selbst ausgestellte Rechnung) Nr. 47110818 vom 31.10.2018</section_header_level_1>
+<code><loc_41><loc_127><loc_305><loc_151><_XML_>Geschäftsprozess     : Beispielgeschäftsprozess
+  Anwendungsempfehlung : urn:cen.eu:en16931:2017
+  Währung              : EUR
+</code>
+<text><loc_41><loc_154><loc_291><loc_160>Abrechnungszeitraum : 01.10.2018 bis 31.10.2018</text>
+<section_header_level_1><loc_41><loc_187><loc_91><loc_193>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_194><loc_140><loc_200>Nummer : 12345676</text>
+<text><loc_41><loc_201><loc_140><loc_207>Global Supplies Ltd.</text>
+<text><loc_41><loc_208><loc_137><loc_214>153 Victoria Street</text>
+<text><loc_41><loc_215><loc_130><loc_221>GB SW1B 3BN London</text>
+<text><loc_41><loc_228><loc_170><loc_234>USt.-Id.-Nr. : GB123456789</text>
+<section_header_level_1><loc_41><loc_242><loc_76><loc_247>Käufer:</section_header_level_1>
+<text><loc_41><loc_249><loc_177><loc_254>Nummer : 75969813</text>
+<text><loc_41><loc_255><loc_180><loc_261>Metallbau Leipzig GmbH & Co. KG</text>
+<text><loc_41><loc_262><loc_126><loc_268>Pappelallee 15</text>
+<text><loc_41><loc_269><loc_69><loc_274>Hof 3</text>
+<text><loc_41><loc_275><loc_121><loc_281>DE 12345 Leipzig</text>
+<text><loc_41><loc_289><loc_170><loc_295>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_302><loc_179><loc_308>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_41><loc_309><loc_177><loc_315>Nummer : 75969815</text>
+<text><loc_41><loc_316><loc_194><loc_322>Metallbau Leipzig GmbH & Co. KG</text>
+<text><loc_41><loc_323><loc_130><loc_329>Eichenpromenade 37</text>
+<text><loc_41><loc_330><loc_69><loc_336>Tor 1</text>
+<text><loc_41><loc_337><loc_140><loc_343>DE 12347 Metallstadt</text>
+<section_header_level_1><loc_41><loc_356><loc_194><loc_362>Abweichender Zahlungsempfänger:</section_header_level_1>
+<text><loc_41><loc_369><loc_200><loc_375>Globale Nummer: 432156789 (DUNS)</text>
+<text><loc_41><loc_375><loc_209><loc_381>Global Supplies Financial Services</text>
+<text><loc_41><loc_396><loc_224><loc_418>Qualifizierung der Textart: REG Mitglieder der Geschäftsleitung: Geschäftsführerin: Johanna Musterfrau</text>
+<text><loc_41><loc_419><loc_184><loc_424>Prokuristin: Isabell Herrlich</text>
+<text><loc_41><loc_425><loc_121><loc_430>HRB Berlin 13086</text>
+<text><loc_41><loc_439><loc_121><loc_444>Art-Nr-Kunde</text>
+<text><loc_41><loc_445><loc_200><loc_450>Art-Nr-Lief. Beschreibung</text>
+<text><loc_41><loc_451><loc_89><loc_456>Art-Nr</text>
+<text><loc_41><loc_457><loc_85><loc_463>(Art)</text>
+<text><loc_41><loc_469><loc_130><loc_475>Art-Nr. 1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1
+===== PAGE 2 =====
+<doctag><code><loc_46><loc_33><loc_459><loc_168><_ObjectiveC_>1	Toolbox			Stahlcoil				100,00		10	Stk 0	% VAT	(K)			1000,00
+		0815				Preisbasismenge:			1	Stk
+		CO-123/V2A	Preisbasismenge:			1	Stk
+		1	Stk				Preisbasismenge:			1	Stk
+		1	Stk				Preisbasismenge:			1	Stk
+		1	Stk				Preisbasismenge:			1	Stk
+		* Berechnungszeitraum:	01.10.2018 bis 31.10.2018
+		* Herkunftssland: DE
+		* Berechnungszeitraum:	100,00		10	Stk 0	% VAT	(K)			1000,00
+	2	BR-4529-ZF	Stoßfänger				100,00		10	Stk 0	% VAT	(K)			1000,00
+		IM-712/A2A				Preisbasismenge:			1	Stk
+		1	Stk				Preisbasismenge:			1	Stk
+		1	Stk				Preisbasismenge:			1	Stk
+		1	Stk				Preisbasismenge:			1	Stk
+		1	Stk				Preisbasismenge:			1	Stk
+		* Berechnungszeitraum:	01.10.2018 bis 31.10.2018
+		* Herkunftssland: DE</code>
+<section_header_level_1><loc_41><loc_190><loc_143><loc_196>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_149><loc_204><loc_209><loc_209>Beschreibung</text>
+<text><loc_327><loc_204><loc_409><loc_209>Fälligkeit Teilzahlung</text>
+<text><loc_327><loc_211><loc_378><loc_216>30.11.2018</text>
+<section_header_level_1><loc_41><loc_233><loc_104><loc_239>Zahlungsart:</section_header_level_1>
+<text><loc_41><loc_247><loc_165><loc_253>Zahlungstyp (codiert): 58</text>
+<text><loc_41><loc_260><loc_165><loc_266>Verkäufer-Kontoname :</text>
+<text><loc_41><loc_267><loc_263><loc_273>Verkäufer-IBAN : DE12 1234 4321 9876 00</text>
+<section_header_level_1><loc_41><loc_295><loc_183><loc_301>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<text><loc_46><loc_309><loc_459><loc_360>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag USt. % USt.-Betrag VAT (K) Mehrwertsteuerbefreiung für die innergemeinschaftliche Lieferung von Waren und Dienstleistungen in der EU</text>
+<section_header_level_1><loc_41><loc_370><loc_104><loc_376>Belegsummen:</section_header_level_1>
+<text><loc_246><loc_380><loc_315><loc_386>Positionssumme</text>
+<text><loc_421><loc_380><loc_459><loc_386>2000,00</text>
+<text><loc_246><loc_388><loc_374><loc_394>Gesamtbetrag der Zuschläge</text>
+<text><loc_246><loc_396><loc_374><loc_402>Gesamtbetrag der Abschläge</text>
+<text><loc_246><loc_405><loc_363><loc_411>Rechnungssumme ohne USt.</text>
+<text><loc_421><loc_405><loc_459><loc_411>2000,00</text>
+<text><loc_246><loc_413><loc_305><loc_419>Steuerbetrag</text>
+<text><loc_423><loc_413><loc_459><loc_419>0,00</text>
+<text><loc_246><loc_422><loc_305><loc_428>Bruttosumme</text>
+<text><loc_421><loc_422><loc_459><loc_428>2000,00</text>
+<text><loc_246><loc_431><loc_353><loc_437>Erhaltene Anzahlungen</text>
+<text><loc_246><loc_439><loc_296><loc_445>Zahlbetrag</text>
+<text><loc_421><loc_439><loc_459><loc_445>2000,00</text>
+</doctag>
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_60><loc_46><loc_441><loc_63>Theoretical and Computational Results</section_header_level_1>
+<text><loc_60><loc_70><loc_441><loc_100>In this paper, we consider the problem of finding the largest among the given positive integers. The problem is formulated as a linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_104><loc_441><loc_128>The first part of the problem is the linear programming problem, which is formulated as a linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_132><loc_441><loc_157>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_161><loc_441><loc_186>The first part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_190><loc_441><loc_212>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_216><loc_441><loc_238>The first part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_242><loc_441><loc_266>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_270><loc_441><loc_292>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_296><loc_441><loc_318>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_322><loc_441><loc_346>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_350><loc_441><loc_372>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_376><loc_441><loc_398>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_402><loc_441><loc_425>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+<text><loc_60><loc_429><loc_441><loc_452>The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function. The second part of the problem is the linear programming problem, where the objective function is the maximum of the linear combination of the first and second derivatives of the function.</text>
+</doctag>

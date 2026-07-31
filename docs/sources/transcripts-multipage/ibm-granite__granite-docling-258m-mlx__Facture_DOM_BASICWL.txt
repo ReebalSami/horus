@@ -1,0 +1,65 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  Facture_DOM_BASICWL
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  9.88s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><picture><loc_26><loc_19><loc_59><loc_40><logo></picture>
+<text><loc_93><loc_19><loc_346><loc_30>Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France +33 4 50 44 68 99 - http://www.aubonmoulin.fr</text>
+<text><loc_93><loc_30><loc_393><loc_36>TVA: FR11999999998 - SIRET : 9999999800010 - APE : 4778C - SARL au capital de 120 000,00 €</text>
+<section_header_level_1><loc_26><loc_55><loc_189><loc_67>Facture FA-2017-0009</section_header_level_1>
+<section_header_level_1><loc_30><loc_73><loc_113><loc_80>Adresse de livraison</section_header_level_1>
+<text><loc_30><loc_83><loc_151><loc_125>Hôtel Saint Denis 42 rue du stade 97400 Saint Denis de la réunion Ile de la Réunion +33 2 62 94 26 00 book@hotelsaintdenis.re</text>
+<text><loc_27><loc_132><loc_89><loc_139>Date de facture</text>
+<text><loc_27><loc_142><loc_124><loc_149>Conditions de paiement</text>
+<text><loc_27><loc_152><loc_89><loc_159>Date d'échéance</text>
+<text><loc_27><loc_162><loc_89><loc_169>Votre référence</text>
+<text><loc_27><loc_172><loc_77><loc_179>Réf. marché</text>
+<text><loc_27><loc_182><loc_77><loc_189>N° TVA client</text>
+<text><loc_27><loc_192><loc_69><loc_199>Incoterms</text>
+<text><loc_27><loc_233><loc_113><loc_240>Nougat de l'Abbaye 250g</text>
+<text><loc_27><loc_244><loc_112><loc_251>Biscuits aux raisins 300g</text>
+<text><loc_27><loc_254><loc_112><loc_261>Huile d'olive à l'ancienne</text>
+<otsl><loc_24><loc_266><loc_255><loc_296></otsl>
+<text><loc_27><loc_296><loc_56><loc_302>Vir SEPA</text>
+<text><loc_27><loc_313><loc_52><loc_320>Notes</text>
+<text><loc_27><loc_334><loc_69><loc_341>Règlement</text>
+<text><loc_27><loc_350><loc_201><loc_355>Exonération de TVA selon article 262 l du Code général des impôts</text>
+<text><loc_273><loc_81><loc_350><loc_116>Hôtel Saint Denis Stéphanie Hoarau 42 rue du stade 97400 Saint Denis Ile de la Réunion</text>
+<section_header_level_1><loc_274><loc_132><loc_355><loc_139>Contact commercial</section_header_level_1>
+<text><loc_274><loc_142><loc_354><loc_166>Tony Dubois +33 4 72 07 08 56 +33 6 11 22 33 44 tony.dubois@aubonmoulin.fr</text>
+<text><loc_274><loc_173><loc_390><loc_179>WELCOME_PACK_2017</text>
+<text><loc_274><loc_183><loc_390><loc_189>FR90343434346</text>
+<text><loc_274><loc_193><loc_390><loc_207>RENDU DROITS NON ACQUITTÉS</text>
+<otsl><loc_24><loc_215><loc_475><loc_267></otsl>
+<otsl><loc_24><loc_266><loc_255><loc_296></otsl>
+<text><loc_27><loc_296><loc_56><loc_302>Vir SEPA</text>
+<text><loc_27><loc_313><loc_52><loc_320>Notes</text>
+<text><loc_27><loc_334><loc_69><loc_341>Règlement</text>
+<text><loc_27><loc_350><loc_201><loc_355>Exonération de TVA selon article 262 l du Code général des impôts</text>
+<text><loc_274><loc_193><loc_350><loc_207>ACQUITTÉS</text>
+<text><loc_274><loc_233><loc_350><loc_240>50 Unit(s)</text>
+<text><loc_274><loc_244><loc_350><loc_251>40 Unit(s)</text>
+<text><loc_274><loc_254><loc_350><loc_261>10 Liter(s)</text>
+<text><loc_274><loc_266><loc_350><loc_296>Total HT Total taxes Total TTC</text>
+<text><loc_274><loc_300><loc_350><loc_307>Solde à payer</text>
+<text><loc_274><loc_313><loc_350><loc_320>45 300 € HT</text>
+<text><loc_274><loc_334><loc_350><loc_341>45 300 € HT</text>
+<text><loc_274><loc_350><loc_350><loc_357>45 300 € HT</text>
+<text><loc_274><loc_313><loc_350><loc_320>45 300 € HT</text>
+<text><loc_274><loc_350><loc_350><loc_357>45 300 € HT</text>
+<text><loc_274><loc_313><loc_350><loc_320>45 300 € HT</text>
+<text><loc_274><loc_350><loc_350><loc_357>45 300 € HT</text>
+<text><loc_274><loc_334><loc_350><loc_341>45 300 € HT</text>
+<text><loc_274><loc_350><loc_350><loc_357>45 300 € HT</text>
+<text><loc_274><loc_313><loc_350><loc_320>45 300 € HT</text>
+<text><loc_274><loc_334><loc_350><loc_341>45 300 € HT</text>
+<text><loc_274><loc_350><loc_350><loc_357>45 300 € HT</text>
+<text><loc_274><loc_313><loc_350><loc_320>45 300 € HT</text>
+<text><loc_274><loc_350><loc_350><loc_357>45 300 € HT</text>
+<text><loc_274><loc_313><

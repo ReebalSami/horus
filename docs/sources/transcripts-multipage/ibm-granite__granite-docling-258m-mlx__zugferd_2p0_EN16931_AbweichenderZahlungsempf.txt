@@ -1,0 +1,83 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EN16931_AbweichenderZahlungsempf
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  19.41s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_60><loc_352><loc_68>Handelsrechnung Nr. 471102 vom 05.03.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_274><loc_97>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_105><loc_157><loc_111>Rechnungswährung</text>
+<text><loc_148><loc_105><loc_173><loc_111>: EUR</text>
+<text><loc_41><loc_139><loc_254><loc_145>Liefer- und Leistungsdatum : 05.03.2018</text>
+<section_header_level_1><loc_41><loc_173><loc_92><loc_178>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_187><loc_223><loc_192>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_41><loc_194><loc_114><loc_199>Lieferant GmbH</text>
+<text><loc_41><loc_201><loc_142><loc_206>Lieferantenstraße 20</text>
+<text><loc_41><loc_208><loc_123><loc_213>DE 80333 München</text>
+<text><loc_41><loc_221><loc_184><loc_227>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_228><loc_173><loc_233>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_241><loc_173><loc_247>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_41><loc_248><loc_184><loc_253>Nummer : GE2020211</text>
+<text><loc_41><loc_255><loc_254><loc_260>Globale Nummer: 4000001987658 (GTIN)</text>
+<text><loc_41><loc_262><loc_118><loc_267>Kunden AG Mitte</text>
+<text><loc_41><loc_269><loc_118><loc_274>Kundenstraße 15</text>
+<text><loc_41><loc_276><loc_133><loc_281>DE 69876 Frankfurt</text>
+<section_header_level_1><loc_41><loc_296><loc_199><loc_301>Abweichender Zahlungsempfänger:</section_header_level_1>
+<text><loc_41><loc_302><loc_142><loc_307>Nummer : 4711</text>
+<text><loc_41><loc_309><loc_114><loc_314>Factoring GmbH</text>
+<text><loc_41><loc_335><loc_248><loc_341>Rechnung gemäß Bestellung vom 01.03.2018.</text>
+<text><loc_41><loc_349><loc_294><loc_354>Qualifizierung der Textart: Regulatory information</text>
+<text><loc_41><loc_356><loc_114><loc_361>Lieferant GmbH</text>
+<text><loc_41><loc_363><loc_142><loc_368>Lieferantenstraße 20</text>
+<text><loc_41><loc_370><loc_114><loc_375>80333 München</text>
+<text><loc_41><loc_377><loc_114><loc_382>Deutschland</text>
+<text><loc_41><loc_384><loc_183><loc_389>Geschäftsführer: Hans Muster</text>
+<text><loc_41><loc_391><loc_193><loc_396>Handelsregisternummer: H A 123</text>
+<otsl><loc_41><loc_411><loc_458><loc_461><fcel>Art-Nr-Kunde<fcel>Pos Art-Nr-Lief. Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Abteilung  ohne  USt.<nl><fcel>Art-Nr<fcel>(Art)<ecel><ecel><ecel><nl><fcel>1<fcel>Trennbätter<fcel>9,9000<fcel>20 Stk<ecel><nl><fcel>TB100A4<fcel>A4<ecel><ecel><ecel><nl><fcel>4012345001235<ecel><ecel><ecel><ecel><nl><fcel>(GLN)<ecel><ecel><ecel><ecel><nl></otsl>
+<text><loc_129><loc_463><loc_227><loc_468>Bruttopreis :9,9000</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_42><loc_55><loc_49><loc_61>2</text>
+<text><loc_42><loc_63><loc_69><loc_68>ARNR2</text>
+<text><loc_42><loc_70><loc_128><loc_75>4000050986428</text>
+<text><loc_42><loc_77><loc_73><loc_82>(GLN)</text>
+<text><loc_135><loc_55><loc_169><loc_61>Joghurt</text>
+<text><loc_210><loc_55><loc_239><loc_61>5,5000</text>
+<text><loc_287><loc_55><loc_316><loc_61>50 Stk</text>
+<text><loc_371><loc_55><loc_387><loc_61>7 %</text>
+<text><loc_428><loc_55><loc_458><loc_61>275,00</text>
+<text><loc_135><loc_84><loc_233><loc_90>Bruttopreis : 5,5000</text>
+<section_header_level_1><loc_42><loc_121><loc_142><loc_127>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_42><loc_135><loc_103><loc_141>Beschreibung</section_header_level_1>
+<text><loc_42><loc_142><loc_300><loc_155>Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018</text>
+<section_header_level_1><loc_42><loc_171><loc_103><loc_177>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_184><loc_285><loc_190>Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG</text>
+<text><loc_42><loc_197><loc_79><loc_203>IBAN</text>
+<text><loc_98><loc_197><loc_218><loc_203>: DE12123456781234567890</text>
+<section_header_level_1><loc_42><loc_226><loc_153><loc_232>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_240><loc_458><loc_264><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<fcel>275,00<fcel>7<fcel>19,25<fcel>19,25<nl><fcel>Umsatzsteuer (S)<fcel>198,00<fcel>19<fcel>37,62<fcel>37,62<nl></otsl>
+<section_header_level_1><loc_42><loc_272><loc_103><loc_278>Belegsummen:</section_header_level_1>
+<section_header_level_1><loc_242><loc_277><loc_312><loc_283>Positionssumme</section_header_level_1>
+<text><loc_428><loc_277><loc_458><loc_283>473,00</text>
+<text><loc_242><loc_285><loc_373><loc_291>Gesamtbetrag der Zuschläge</text>
+<text><loc_428><loc_285><loc_458><loc_291>0,00</text>
+<text><loc_242><loc_293><loc_373><loc_299>Gesamtbetrag der Abschläge</text>
+<text><loc_428><loc_293><loc_458><loc_299>-0,00</text>
+<text><loc_242><loc_301><loc_362><loc_307>Rechnungssumme ohne USt.</text>
+<text><loc_428><loc_301><loc_458><loc_307>473,00</text>
+<text><loc_242><loc_309><loc_349><loc_315>Steuerbetrag in</text>
+<text><loc_382><loc_309><loc_397><loc_315>EUR</text>
+<text><loc_428><loc_309><loc_458><loc_315>56,87</text>
+<text><loc_242><loc_317><loc_297><loc_323>Bruttosumme</text>
+<text><loc_428><loc_317><loc_458><loc_323>529,87</text>
+<text><loc_242><loc_325><loc_348><loc_331>Erhaltene Anzahlungen</text>
+<text><loc_428><loc_325><loc_458><loc_331>-0,00</text>
+<text><loc_242><loc_333><loc_293><loc_339>Zahlbetrag</text>
+<text><loc_428><loc_333><loc_458><loc_339>529,87</text>
+</doctag>

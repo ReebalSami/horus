@@ -1,0 +1,69 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Rechnungskorrektur
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  15.41s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_341><loc_70><_unknown_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+        ZUGFeRD-Version   : 2.1 vom 24.03.2020
+        Stylesheet-Version: 2.0 vom 18.10.2018
+        Codelisten-Version: 3.0 vom 15.11.2019
+        (c) AWV e.V. 2020</code>
+<section_header_level_1><loc_41><loc_84><loc_395><loc_93>Rechnungskorrektur Nr. RK21012345 vom 16.09.2018</section_header_level_1>
+<text><loc_41><loc_115><loc_268><loc_121>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_122><loc_155><loc_128>Wahrung : . EU</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum : 05.08.2018</text>
+<text><loc_41><loc_157><loc_91><loc_163>Bestellung</text>
+<text><loc_41><loc_164><loc_273><loc_170>Lieferavis : L87654321012345</text>
+<section_header_level_1><loc_41><loc_183><loc_91><loc_189>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_190><loc_168><loc_196>Nummer : 549910</text>
+<text><loc_41><loc_197><loc_218><loc_203>Globale Nummer: 433374100005 (GTIN)</text>
+<text><loc_41><loc_204><loc_140><loc_210>MUSTERLIEFERANT GMBH</text>
+<text><loc_41><loc_211><loc_127><loc_217>BAHNHOFSTRASSE 99</text>
+<text><loc_41><loc_218><loc_145><loc_224>DE 99199 MUSTERHAUSEN</text>
+<text><loc_41><loc_232><loc_170><loc_238>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_245><loc_76><loc_251>Käufer:</section_header_level_1>
+<text><loc_41><loc_252><loc_149><loc_258>Nummer : 009420</text>
+<text><loc_41><loc_259><loc_127><loc_265>MUSTER-KUNDE GMBH</text>
+<text><loc_41><loc_266><loc_101><loc_272>KUNDENWEG 88</text>
+<text><loc_41><loc_273><loc_140><loc_279>DE 40235 DUESSELDORF</text>
+<text><loc_41><loc_294><loc_194><loc_300>Qualifizierung der Textart: AAK</text>
+<text><loc_41><loc_301><loc_262><loc_307>Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_41><loc_314><loc_194><loc_320>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_321><loc_140><loc_327>MUSTERLIEFERANT GMBH</text>
+<text><loc_41><loc_328><loc_127><loc_334>BAHNHOFSTRASSE 99</text>
+<text><loc_41><loc_335><loc_130><loc_341>99199 MUSTERHAUSEN</text>
+<text><loc_41><loc_342><loc_122><loc_348>Geschäftsführung:</text>
+<text><loc_41><loc_349><loc_127><loc_355>Max Mustermann</text>
+<text><loc_41><loc_356><loc_145><loc_362>USt-IdNr: DE123456789</text>
+<text><loc_41><loc_363><loc_149><loc_369>Telefon: +49 932 431 0</text>
+<text><loc_41><loc_370><loc_149><loc_376>www.musterleiferant.de</text>
+<text><loc_41><loc_377><loc_125><loc_383>HBR Nr. 372876</text>
+<text><loc_41><loc_384><loc_125><loc_390>Amtsgericht Musterstadt</text>
+<text><loc_41><loc_390><loc_125><loc_396>GLN 4304171000002</text>
+<text><loc_41><loc_414><loc_115><loc_420>Bei Rückfragen:</text>
+<text><loc_41><loc_421><loc_159><loc_427>Telefon: +49 932 431 500</text>
+<text><loc_41><loc_427><loc_228><loc_433>E-Mail : max.muster@musterlieferant.de</text>
+<text><loc_41><loc_453><loc_218><loc_459>Ursprungsbeleg-Nr : R87654321012345</text>
+<text><loc_41><loc_460><loc_214><loc_466>Reklamationsnummer : REKLA-2018-235</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_41><loc_54><loc_121><loc_72>Warenempfänger GLN 430417088093 MUSTER-MARKT</text>
+<text><loc_41><loc_80><loc_115><loc_92>HAUPTSTRASSE 44 31157 SARSTEDT</text>
+<text><loc_41><loc_100><loc_121><loc_106>Abteilung : 8211</text>
+<otsl><loc_42><loc_123><loc_458><loc_276><fcel>Art-Nr-Kunde<fcel>Pos<fcel>Art-Nr-Lief.<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl><fcel>(Art)<ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>1<fcel>Zitronensäure<fcel>100ml<ecel><fcel>1,00<fcel>-5 Stk 19 % VAT (S)<fcel>-5,00<ecel><nl><fcel>ZS997<fcel>100<ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>4123456000014<ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>(GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 1,00<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Verpackung: Flasche<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>VKE/Geb: 1<ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>2<fcel>Gelierzucker<fcel>1,45<fcel>-2 Stk<fcel>7 % VAT (S)<fcel>-2,90<ecel><ecel><nl><fcel>GZ250<fcel>Extra 250g<ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>4123456000021<ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>(GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 1,50  Abschlag : 0,05<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Verpackung: Karton<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>VKE/Geb: 1<ecel><ecel><ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_41><loc_320><loc_130><loc_326>Zu- und Abschläge:</section_header_level_1>
+<otsl><loc_41><loc_334><loc_458><loc_425><fcel>Art<fcel>%Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<nl><fcel>Rechnungsrabatt 1<ecel><ecel><ecel><ecel><nl><fcel>Abschlag-2,00% Basisbetrag:<ecel><fcel>19 % VAT (S)<fcel>0,10<ecel><nl><fcel>-5,00, MwSt. % 19,0<ecel><ecel><ecel><ecel><nl><fcel>Rechnungsrabatt 1<ecel><ecel><ecel><ecel><nl><fcel>Abschlag-2,00% Basisbetrag:<ecel><fcel>7 % VAT (S)<fcel>0,06<ecel><nl><fcel>-2,90, MwSt. % 7,0<ecel><ecel><ecel><ecel><nl><fcel>Rechnungsrabatt 2<ecel><ecel><ecel><ecel><nl><fcel>AbschlagBasisbetrag: -5,00,<ecel><ecel><ecel><ecel><nl><fcel>MwSt. % 19,0<ecel><ecel><ecel><ecel><nl><fcel>Rechnungsrabatt 2<ecel><ecel><ecel><ecel><nl><fcel>AbschlagBasisbetrag: -2,90,<ecel><ecel><ecel><ecel><nl><fcel>MwSt. % 7,0<ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_41><loc_439><loc_179><loc_445>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<page_footer><loc_44><loc_453><loc_317><loc_459>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag</page_footer>
+<page_footer><loc_338><loc_453><loc_368><loc_459>USt. %</page_footer>
+<page_footer><loc_396><loc_453><loc_451><loc_459>USt.-Betrag</page_footer>
+</doctag>
+===== PAGE 3 =====
+<doctag><otsl><loc_41><loc_34><loc_459><loc_139><fcel>Art (Kategorie) Warenwert<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (S)<fcel>-4,85<fcel>19<fcel>-0,92<nl><fcel>VAT (S)<fcel>-2,82<fcel>7<fcel>-0,20<nl><fcel>Belegsummen:<ecel><ecel><ecel><nl><ecel><fcel>Positionssumme<fcel>-7,90<ecel><nl><ecel><fcel>Gesamtbetrag der Zuschläge<fcel>0,00<ecel><nl><ecel><fcel>Gesamtbetrag der Abschläge<fcel>0,23<ecel><nl><ecel><fcel>Rechnungssumme ohne USt.<fcel>-7,67<ecel><nl><ecel><fcel>Steuerbetrag<fcel>-1,12<ecel><nl><ecel><fcel>Bruttosumme<fcel>-8,79<ecel><nl><ecel><fcel>Erhaltene Anzahlungen<fcel>-0,00<ecel><nl><ecel><fcel>Zahlbetrag<fcel>-8,79<ecel><nl></otsl>
+</doctag>

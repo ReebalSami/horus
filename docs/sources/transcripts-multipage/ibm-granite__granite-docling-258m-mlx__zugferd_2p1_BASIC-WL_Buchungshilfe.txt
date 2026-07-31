@@ -1,0 +1,82 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_BASIC-WL_Buchungshilfe
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  12.73s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_278><loc_67>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version : 2.1 vom 24.03.2020 Stylesheet-Version: 2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019 (c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_82><loc_360><loc_91>Buchungshilfe - KEINE Rechnung Nr. 471102 vom 13.11.2019</section_header_level_1>
+<text><loc_37><loc_112><loc_216><loc_119>Anwendungsempfehlung : urn:factur-x.eu:1p0:basicwl</text>
+<text><loc_37><loc_119><loc_69><loc_126>Währung</text>
+<text><loc_37><loc_133><loc_146><loc_140>Liefer- und Leistungsdatum</text>
+<text><loc_137><loc_133><loc_177><loc_140>: 12.11.2019</text>
+<section_header_level_1><loc_37><loc_168><loc_75><loc_174>Verkäufer:</section_header_level_1>
+<text><loc_37><loc_181><loc_143><loc_208>Lieferant GmbH Handelsname: 99999999800010 Lieferantenstraße 20 DE 80333 München</text>
+<text><loc_37><loc_215><loc_130><loc_221>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_37><loc_228><loc_66><loc_235>Käufer:</section_header_level_1>
+<text><loc_37><loc_242><loc_143><loc_275>Kunden AG Mitte Handelsname: 78787878400035 Hans Muster Kundenstraße 15 DE 69876 Frankfurt</text>
+<text><loc_37><loc_295><loc_371><loc_302>Zahlbar innerhalb 30 Tagen netto bis 04.04.2020, 3% Skonto innerhalb 10 Tagen bis 15.03.2020.</text>
+<text><loc_41><loc_310><loc_110><loc_323>Art-Nr-Kunde Art-Nr-Lief.</text>
+<text><loc_41><loc_323><loc_74><loc_329>Art-Nr</text>
+<text><loc_41><loc_329><loc_60><loc_336>(Art)</text>
+<text><loc_37><loc_351><loc_117><loc_358>Zahlungsbedingungen:</text>
+<text><loc_155><loc_365><loc_203><loc_372>Beschreibung</text>
+<text><loc_37><loc_408><loc_142><loc_415>Umsatzsteueraufschlüsselung:</text>
+<text><loc_37><loc_429><loc_105><loc_436>VAT (S)</text>
+<text><loc_37><loc_445><loc_88><loc_452>Belegsummen:</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_429><loc_171><loc_436>Warenwert</text>
+<text><loc_129><loc_
+===== PAGE 2 =====
+<doctag><text><loc_250><loc_35><loc_345><loc_42>Gesamtbetrag der Zuschlage</text>
+<text><loc_446><loc_35><loc_462><loc_42>0,00</text>
+<text><loc_250><loc_44><loc_345><loc_51>Gesamtbetrag der Abschläge</text>
+<text><loc_446><loc_44><loc_462><loc_51>-0,00</text>
+<text><loc_250><loc_53><loc_351><loc_60>Rechnungssumme ohne USt.</text>
+<text><loc_446><loc_53><loc_462><loc_60>198,00</text>
+<text><loc_250><loc_62><loc_293><loc_69>Steuerbetrag</text>
+<text><loc_446><loc_62><loc_462><loc_69>37,62</text>
+<text><loc_250><loc_71><loc_299><loc_78>Bruttosumme</text>
+<text><loc_446><loc_71><loc_462><loc_78>235,62</text>
+<text><loc_250><loc_80><loc_327><loc_87>Erhaltene Anzahlungen</text>
+<text><loc_250><loc_89><loc_290><loc_96>Zahlbetrag</text>
+<text><loc_446><loc_89><loc_462><loc_96>235,62</text>
+</doctag>

@@ -1,0 +1,55 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  Facture_DOM_MINIMUM
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  9.06s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><picture><loc_26><loc_19><loc_59><loc_40><logo></picture>
+<text><loc_93><loc_19><loc_330><loc_30>Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France +33 4 50 44 68 99 -</text>
+<text><loc_93><loc_29><loc_377><loc_36>http://www.aubonmoulin.fr TVA : FR11999999998 - SIRET : 9999999800010 - APE : 4778C - SARL au capital de 120 000,00 €</text>
+<section_header_level_1><loc_26><loc_55><loc_189><loc_67>Facture FA-2017-0009</section_header_level_1>
+<section_header_level_1><loc_30><loc_73><loc_113><loc_80>Adresse de livraison</section_header_level_1>
+<text><loc_30><loc_83><loc_150><loc_125>Hôtel Saint Denis 42 rue du stade 97400 Saint Denis de la réunion Ile de la Réunion +33 2 62 94 26 00 book@hotelsaintdenis.re</text>
+<text><loc_27><loc_132><loc_89><loc_139>Date de facture</text>
+<text><loc_27><loc_142><loc_124><loc_149>Conditions de paiement</text>
+<text><loc_27><loc_152><loc_89><loc_159>Date d'échéance</text>
+<text><loc_27><loc_162><loc_89><loc_169>Votre référence</text>
+<text><loc_27><loc_172><loc_76><loc_179>Réf. marché</text>
+<text><loc_27><loc_182><loc_76><loc_189>N° TVA client</text>
+<text><loc_27><loc_192><loc_69><loc_199>Incoterms</text>
+<text><loc_27><loc_233><loc_113><loc_240>Nougat de l'Abbaye 250g</text>
+<text><loc_27><loc_244><loc_112><loc_251>Biscuits aux raisins 300g</text>
+<text><loc_27><loc_254><loc_112><loc_261>Huile d'olive à l'ancienne</text>
+<otsl><loc_24><loc_265><loc_255><loc_297></otsl>
+<text><loc_27><loc_297><loc_56><loc_303>Vir SEPA</text>
+<text><loc_27><loc_314><loc_66><loc_321>Notes</text>
+<text><loc_86><loc_314><loc_236><loc_321>Franco de port (Commande > 300 € HT)</text>
+<text><loc_27><loc_334><loc_76><loc_341>Règlement</text>
+<text><loc_27><loc_350><loc_201><loc_355>Exonération de TVA selon article 262 l du Code général des impôts</text>
+<text><loc_273><loc_81><loc_350><loc_116>Hôtel Saint Denis Stéphanie Hoarau 42 rue du stade 97400 Saint Denis Ile de la Réunion</text>
+<section_header_level_1><loc_274><loc_132><loc_355><loc_139>Contact commercial</section_header_level_1>
+<text><loc_273><loc_142><loc_354><loc_166>Tony Dubois +33 4 72 07 08 56 +33 6 11 22 33 44</text>
+<text><loc_273><loc_166><loc_390><loc_173>tony.dubois@aubonmoulin.fr</text>
+<text><loc_273><loc_83><loc_350><loc_120>Stéphanie Hoarau 42 rue du stade 97400 Saint Denis Ile de la Réunion</text>
+<text><loc_273><loc_132><loc_355><loc_139>Contact commercial</text>
+<text><loc_273><loc_142><loc_354><loc_166>Tony Dubois +33 4 72 07 08 56 +33 6 11 22 33 44</text>
+<text><loc_273><loc_166><loc_390><loc_173>tony.dubois@aubonmoulin.fr</text>
+<otsl><loc_25><loc_217><loc_474><loc_267></otsl>
+<otsl><loc_25><loc_268><loc_254><loc_298></otsl>
+<text><loc_273><loc_173><loc_350><loc_180>WELCOME_PACK_2017</text>
+<text><loc_273><loc_183><loc_350><loc_190>FR90343434346</text>
+<text><loc_273><loc_193><loc_350><loc_199>RENDU DROITS NON</text>
+<text><loc_273><loc_200><loc_319><loc_206>ACQUITTÉS</text>
+<text><loc_273><loc_200><loc_319><loc_206>ACQUITTÉS</text>
+<text><loc_273><loc_200><loc_319><loc_206>ACQUITTÉS</text>
+<text><loc_273><loc_200><loc_319><loc_206>ACQUITTÉS</text>
+<text><loc_273><loc_200><loc_319><loc_206>ACQUITTÉS</text>
+<otsl><loc_323><loc_268><loc_474><loc_308></otsl>
+<page_footer><loc_235><loc_477><loc_266><loc_483>Page 1 / 1</page_footer>
+<picture><loc_428><loc_21><loc_449><loc_36></picture>
+</doctag>

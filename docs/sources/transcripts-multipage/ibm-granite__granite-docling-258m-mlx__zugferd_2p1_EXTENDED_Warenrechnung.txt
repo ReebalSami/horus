@@ -1,0 +1,126 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EXTENDED_Warenrechnung
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  20.22s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version:  2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_36><loc_56><loc_115><loc_63>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_80><loc_331><loc_91>Handelsrechnung Nr. R87654321012345 vom 06.08.2018</section_header_level_1>
+<text><loc_37><loc_111><loc_92><loc_118>Testkennzeichen</text>
+<text><loc_121><loc_111><loc_139><loc_118>: true</text>
+<text><loc_37><loc_118><loc_350><loc_125>Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended</text>
+<text><loc_37><loc_125><loc_66><loc_132>Wahrung</text>
+<text><loc_121><loc_125><loc_141><loc_132>: EUR</text>
+<text><loc_37><loc_139><loc_99><loc_146>Liefer- und Leistungsdatum</text>
+<text><loc_121><loc_139><loc_177><loc_146>: 05.08.2018</text>
+<text><loc_37><loc_160><loc_72><loc_167>Bestellung</text>
+<text><loc_121><loc_160><loc_168><loc_167>: B123456789</text>
+<text><loc_37><loc_167><loc_94><loc_174>Weitere Referenz</text>
+<text><loc_121><loc_167><loc_233><loc_174>: A456123, Art der Referenz: 130</text>
+<section_header_level_1><loc_37><loc_187><loc_75><loc_194>Verkäufer:</section_header_level_1>
+<text><loc_37><loc_194><loc_179><loc_231>Nummer : 549910 Globale Nummer: 4333741000005 (GWIN) MUSTERLIEFERANT GMBH BAHNOFSTRASSE 99 DE 99199 MUSTERHAUSEN</text>
+<text><loc_37><loc_236><loc_67><loc_243>Telefon</text>
+<text><loc_75><loc_236><loc_135><loc_243>+49 932 431 500</text>
+<text><loc_37><loc_243><loc_67><loc_249>E-Mail</text>
+<text><loc_75><loc_243><loc_202><loc_249>: max.mustermann@musterlieferant.de</text>
+<text><loc_37><loc_249><loc_131><loc_256>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_37><loc_262><loc_64><loc_269>Käufer:</section_header_level_1>
+<text><loc_37><loc_269><loc_179><loc_303>Nummer : 009420 Globale Nummer: 4304171000002 (GWIN) MUSTER-KUNDE GMBH KUNDENWEG 88 DE 40235 DUESSELDORF</text>
+<section_header_level_1><loc_37><loc_315><loc_153><loc_322>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_37><loc_328><loc_179><loc_363>Globale Nummer: 4304171088093 (GWIN) MUSTER-MARKT 8211 HAUPTSTRASSE 44 DE 31157 SARSTEDT</text>
+<section_header_level_1><loc_37><loc_375><loc_168><loc_382>Abweichender Rechnungsempfänger:</section_header_level_1>
+<text><loc_37><loc_382><loc_179><loc_416>Nummer : 009420 Globale Nummer: 4304171000002 (GWIN) MUSTER-KUNDE GMBH KUNDENWEG 88 DE 40235 DUESSELDORF</text>
+<text><loc_37><loc_429><loc_251><loc_443>Qualifizierung der Textart: AAK, Qualifizierung des Textes: ST3 Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_37><loc_449><loc_251><loc_456>Qualifizierung der Textart: AAI, Qualifizierung des Textes: EEV</text>
+<text><loc_37><loc_456><loc_387><loc_463>Der Verkäufer bleibt Eigentümer der Waren bis zu vollständigen Erfüllung der Kaufpreisforderung.</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_37><loc_41><loc_150><loc_129>Qualifizierung der Textart: REG MUSTERLIEFERANT GMBH BAHNFOSTRASSE 99 99199 MUSTERHAUSEN Geschäftsführung: Max Mustermann USt-IdNr: DE123456789 Telefon: +49 932 431 0 www.musterlieferant.de HRB Nr. 372876 Amtsgericht Musterstadt GLN 430417100000 WEEE-Reg-Nr.: DE87654321</text>
+<text><loc_37><loc_148><loc_104><loc_154>Leergutwert: 46,50</text>
+<text><loc_37><loc_168><loc_410><loc_174>Wichtige Information: Bei Bestellungen bis zum 19.12. ist die Auslieferung bis spätestens 23.12. garantiert.</text>
+<otsl><loc_41><loc_182><loc_464><loc_462></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><text><loc_38><loc_90><loc_45><loc_96>5</text>
+<text><loc_38><loc_197><loc_45><loc_203>(GTIN)</text>
+<text><loc_38><loc_184><loc_45><loc_190>6</text>
+<text><loc_38><loc_232><loc_45><loc_238>(GTIN)</text>
+<text><loc_38><loc_298><loc_45><loc_304>6</text>
+<text><loc_38><loc_335><loc_45><loc_341>6</text>
+<text><loc_38><loc_370><loc_45><loc_376>7</text>
+<text><loc_38><loc_402><loc_45><loc_408>7</text>
+<text><loc_38><loc_428><loc_45><loc_434>7</text>
+<text><loc_38><loc_456><loc_45><loc_462>7</text>
+<text><loc_38><loc_465><loc_45><loc_471>7</text>
+<text><loc_38><loc_475><loc_45><loc_481>7</text>
+<text><loc_38><loc_483><loc_45><loc_489>7</text>
+<text><loc_38><loc_492><loc_45><loc_498>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7</text>
+<text><loc_38><loc_499><loc_45><loc_499>7
+===== PAGE 4 =====
+<doctag><section_header_level_1><loc_37><loc_48><loc_142><loc_55>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_36><loc_62><loc_464><loc_166></otsl>
+</doctag>

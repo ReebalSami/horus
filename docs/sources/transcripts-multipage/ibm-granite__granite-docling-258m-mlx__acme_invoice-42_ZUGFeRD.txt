@@ -1,0 +1,33 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  acme_invoice-42_ZUGFeRD
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  4.93s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_59><loc_75><loc_219><loc_80>Acme GmbH | Europa-Allee 1980 | 60486 Frankfurt,</text>
+<text><loc_59><loc_88><loc_146><loc_117>Herr Karl E. Coyote Uferstraße 113 88045 Friedrichshafen</text>
+<picture><loc_327><loc_23><loc_470><loc_72></picture>
+<text><loc_274><loc_126><loc_394><loc_132>Rechnungsdatum: 31.01.2014</text>
+<text><loc_273><loc_134><loc_429><loc_140>Liefer- bzw. Leistungsdatum: 13.02.2014</text>
+<text><loc_344><loc_141><loc_429><loc_148>Ust-IdNr.: DE123456789</text>
+<section_header_level_1><loc_59><loc_165><loc_143><loc_172>Rechnung Nr. 42</section_header_level_1>
+<text><loc_59><loc_194><loc_423><loc_208>Wir bedanken uns für die gute Zusammenarbeit und stellen Ihnen vereinbarungsgemäß folgende Lieferungen und Leistungen in Rechnung:</text>
+<otsl><loc_59><loc_231><loc_442><loc_316></otsl>
+<text><loc_59><loc_338><loc_183><loc_345>Die Rechnung ist sofort fällig.</text>
+<text><loc_59><loc_352><loc_387><loc_359>Bitte überweisen Sie den Rechnungsbetrag ohne Abzüge auf unser Bankkonto.</text>
+<text><loc_59><loc_451><loc_90><loc_457>Telefon:</text>
+<text><loc_101><loc_451><loc_153><loc_457>01234/987654</text>
+<text><loc_59><loc_458><loc_75><loc_464>Fax:</text>
+<text><loc_101><loc_458><loc_153><loc_464>01234/987655</text>
+<text><loc_59><loc_465><loc_80><loc_471>Email:</text>
+<text><loc_101><loc_465><loc_157><loc_471>hallo@acme.de</text>
+<text><loc_59><loc_473><loc_80><loc_479>Web:</text>
+<text><loc_101><loc_473><loc_153><loc_479>www.acme.de</text>
+<text><loc_226><loc_451><loc_338><loc_471>Acme GmbH Volksbank Frankfurt BIC: FFVBDEFF</text>
+<text><loc_226><loc_473><loc_354><loc_479>IBAN: DE34 5019 0000 0012 3456 78</text>
+</doctag>

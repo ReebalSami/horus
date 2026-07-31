@@ -1,0 +1,16 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  ZUGFeRD_1p0_BASIC_Rechnungskorrektur
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  2.47s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_14><loc_189><loc_20><loc_245>ZUG-Réd Bespielecummaged Extended, Copyright AY v. E. 2013</text>
+<text><loc_33><loc_403><loc_215><loc_408>Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<otsl><loc_29><loc_41><loc_481><loc_472></otsl>
+<picture><loc_427><loc_11><loc_476><loc_27><logo></picture>
+</doctag>

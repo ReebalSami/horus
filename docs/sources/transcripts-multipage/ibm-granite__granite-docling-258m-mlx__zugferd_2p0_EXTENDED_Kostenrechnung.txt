@@ -1,0 +1,67 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EXTENDED_Kostenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  11.33s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_59><loc_405><loc_78>Handelsrechnung Nr. KR87654321012 vom 06.10.2018 KOSTENRECHNUNG</section_header_level_1>
+<code><loc_41><loc_99><loc_355><loc_123><_YAML_>Testkennzeichen      : true
+  Anwendungsempfehlung :
+  urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended
+</code>
+<code><loc_41><loc_123><loc_355><loc_147><_YAML_>Rechnungswahrung     : EUR
+
+Liefer- und Leistungdatum    : 30.09.2018
+</code>
+<code><loc_41><loc_160><loc_415><loc_166><_YAML_>Weitere Referenz:
+                        : A777123, Art der Referenz: Rechnungsdatenblatt
+</code>
+<section_header_level_1><loc_41><loc_180><loc_92><loc_186>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_187><loc_224><loc_200>Nummer : 549910 Globale Nummer : 433741000005 (GTIN)</text>
+<text><loc_41><loc_201><loc_224><loc_207>MUSTERLIEFERANT GMBH</text>
+<text><loc_41><loc_208><loc_128><loc_214>BAHNHOFSTRASSE 99</text>
+<text><loc_41><loc_215><loc_148><loc_221>DE 99199 MUSTERHAUSEN</text>
+<text><loc_41><loc_228><loc_224><loc_234>Telefon : +49 932 431 500</text>
+<text><loc_41><loc_235><loc_284><loc_241>E-Mail : max.mustermann@musterlieferant.de</text>
+<text><loc_41><loc_242><loc_184><loc_248>Steuernummer : 201/113/40209</text>
+<section_header_level_1><loc_41><loc_255><loc_173><loc_261>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_41><loc_262><loc_224><loc_288>Nummer : 339420 Globale Nummer: 4304171000002 (GTIN) MUSTER-KUNDE GMBH KUNDENWEG 88</text>
+<text><loc_41><loc_289><loc_143><loc_295>DE 40235 DUESSELDORF</text>
+<section_header_level_1><loc_41><loc_309><loc_183><loc_315>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_41><loc_323><loc_224><loc_329>Globale Nummer: 430417108093 (GTIN)</text>
+<text><loc_41><loc_330><loc_103><loc_336>MUSTER-MARKT</text>
+<text><loc_41><loc_337><loc_64><loc_343>7322</text>
+<text><loc_41><loc_344><loc_128><loc_350>HAUPTSTRASSE 44</text>
+<text><loc_41><loc_351><loc_128><loc_357>DE 31157 SARSTEDT</text>
+<section_header_level_1><loc_41><loc_370><loc_204><loc_376>Abweichender Rechnungsempfänger:</section_header_level_1>
+<text><loc_41><loc_377><loc_224><loc_399>Nummer : 339420 Globale Nummer: 4304171000002 (GTIN) MUSTER-KUNDE GMBH KUNDENWEG 88</text>
+<text><loc_41><loc_400><loc_143><loc_406>DE 40235 DUESSELDORF</text>
+<text><loc_41><loc_422><loc_431><loc_436>Qualifizierung der Textart: Price conditions , Qualifizierung des Textes: ST3 Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_40><loc_443><loc_444><loc_457>Qualifizierung der Textart: Additional sale/purchase conditions , Qualifizierung des Textes: EEV</text>
+<text><loc_40><loc_458><loc_429><loc_471>Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_42><loc_20><loc_294><loc_25>Qualifizierung der Textart: Regulatory information</text>
+<text><loc_42><loc_27><loc_144><loc_32>MUSTERLIEFERANT GMBH</text>
+<text><loc_42><loc_34><loc_128><loc_39>BAHNHOFSTRASSE 99</text>
+<text><loc_42><loc_41><loc_133><loc_46>99199 MUSTERHAUSEN</text>
+<text><loc_42><loc_48><loc_125><loc_53>Geschäftsführung:</text>
+<text><loc_42><loc_55><loc_125><loc_60>Max Mustermann</text>
+<text><loc_42><loc_62><loc_148><loc_67>USt-IdNr: DE123456789</text>
+<text><loc_42><loc_69><loc_144><loc_74>Telefon: +49 932 431 0</text>
+<text><loc_42><loc_76><loc_144><loc_81>www.musterlieferant.de</text>
+<text><loc_42><loc_83><loc_113><loc_88>HRB Nr. 372876</text>
+<text><loc_42><loc_90><loc_158><loc_95>Amtsgericht Musterstadt</text>
+<text><loc_42><loc_97><loc_144><loc_102>GLN 4304171000002</text>
+<otsl><loc_40><loc_115><loc_459><loc_472></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_42><loc_37><loc_142><loc_44>Zahlungsbedingungen:</section_header_level_1>
+<otsl><loc_41><loc_51><loc_459><loc_252></otsl>
+</doctag>

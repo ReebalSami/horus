@@ -1,0 +1,34 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  MustangGnuaccountingBeispielRE-20140703_502
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  5.78s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_52><loc_45><loc_95><loc_52>2014-07-03</page_header>
+<text><loc_83><loc_99><loc_206><loc_103>Bei Spiel GmbH ● Ecke 12 ● 12345 Stadthausen</text>
+<section_header_level_1><loc_58><loc_107><loc_121><loc_117>Theodor Est</section_header_level_1>
+<text><loc_58><loc_126><loc_108><loc_134>Bahnstr. 42</text>
+<text><loc_58><loc_151><loc_129><loc_160>88802 Spielreis</text>
+<section_header_level_1><loc_46><loc_208><loc_112><loc_217>Ihre Nummer:2</section_header_level_1>
+<section_header_level_1><loc_46><loc_236><loc_254><loc_245>Rechnung # RE-20140703/502 vom 03.07.2014</section_header_level_1>
+<otsl><loc_46><loc_252><loc_440><loc_323><ched>#<ched>Produkt<ched>USt<ched>Einzelpreis<ched>Summe<nl><fcel>1,00<fcel>Künstlerische Gestaltung  (Stunde): Einer  Beispiegelrechnung<fcel>7%<fcel>160,00 €<fcel>160,00 €<nl><fcel>400,00<fcel>Luftballon: Bunt, ca. 500ml<fcel>19%<fcel>0,79 €<fcel>316,00 €<nl><fcel>200,00<fcel>Heiße Luft pro Liter:<fcel>19%<fcel>0,10 €<fcel>20,00 €<nl></otsl>
+<text><loc_46><loc_323><loc_149><loc_332>Summe netto: 496,00 €</text>
+<text><loc_46><loc_332><loc_136><loc_341>Zuzügl. USt: 75,04 €</text>
+<section_header_level_1><loc_46><loc_350><loc_236><loc_359>Bitte überweisen Sie bis zum 24.07.2014:</section_header_level_1>
+<text><loc_46><loc_359><loc_163><loc_368>Summe inkl. USt: 571,04 €</text>
+<text><loc_46><loc_376><loc_158><loc_385>Powered by GnuAccounting</text>
+<picture><loc_367><loc_29><loc_427><loc_75><bar_chart></picture>
+<text><loc_368><loc_78><loc_424><loc_85>Bei Spiel GmbH</text>
+<text><loc_368><loc_89><loc_422><loc_95>Ecke 12</text>
+<text><loc_368><loc_98><loc_422><loc_104>12345 Stadthausen</text>
+<text><loc_368><loc_112><loc_422><loc_118>for (555) 23 78 -0</text>
+<text><loc_368><loc_121><loc_422><loc_127>fax (555) 23 78 -51</text>
+<text><loc_368><loc_135><loc_423><loc_141>info@localhost.local</text>
+<text><loc_368><loc_145><loc_410><loc_151>http://localhost/</text>
+<page_footer><loc_350><loc_453><loc_437><loc_499>US-ID: DE136695976 IBAN DE88 2008 0000 0970 3757 00 BIC COBADEFFXXX Commerzbank Frankfurt</page_footer>
+</doctag>

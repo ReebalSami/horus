@@ -1,0 +1,71 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EN16931_Elektron
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  12.47s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_41><loc_38><loc_394><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</page_header>
+<section_header_level_1><loc_41><loc_60><loc_345><loc_68>Baurechnung Nr. 181301674 vom 25.04.2018</section_header_level_1>
+<text><loc_42><loc_92><loc_262><loc_98>Geschäftsprozess : Baurechnung</text>
+<text><loc_42><loc_98><loc_274><loc_104>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_42><loc_112><loc_157><loc_118>Rechnungswährung :</text>
+<text><loc_157><loc_112><loc_173><loc_118>EUR</text>
+<text><loc_42><loc_145><loc_254><loc_151>Liefer- und Leistungsdatum : 06.03.2018</text>
+<text><loc_42><loc_159><loc_304><loc_165>Referenz des Käufers : Liselotte Müller-Lüdenscheidt</text>
+<text><loc_42><loc_166><loc_294><loc_172>Zahlungsreferenz : Rechnung 181301674</text>
+<text><loc_42><loc_173><loc_219><loc_179>Buchungsreferenz : 420</text>
+<text><loc_42><loc_187><loc_395><loc_193>Weitere Referenzes : 13130162, Art der Referenz: Referenzpapier</text>
+<text><loc_42><loc_194><loc_386><loc_200>Weitere Referenz : 42389, Art der Referenz: Referenzpapier</text>
+<section_header_level_1><loc_41><loc_214><loc_92><loc_220>Verkäufer:</section_header_level_1>
+<section_header_level_1><loc_42><loc_228><loc_194><loc_234>ELEKTRON Industrieservice GmbH</section_header_level_1>
+<text><loc_42><loc_235><loc_138><loc_241>Erfurter Strasse 13</text>
+<text><loc_42><loc_242><loc_138><loc_248>DE 74465 Demoort</text>
+<text><loc_42><loc_255><loc_173><loc_261>USt.-Id.-Nr. : DE136695976</text>
+<section_header_level_1><loc_42><loc_268><loc_173><loc_274>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_42><loc_275><loc_148><loc_281>Nummer : 16259</text>
+<text><loc_42><loc_282><loc_154><loc_288>ConsultingService GmbH</text>
+<text><loc_42><loc_289><loc_108><loc_295>Musterstr. 18</text>
+<text><loc_42><loc_296><loc_133><loc_302>DE 76138 Karlsruhe</text>
+<text><loc_42><loc_322><loc_209><loc_328>Rapport-Nr.: 42389 vom 08.03.2018</text>
+<text><loc_41><loc_335><loc_451><loc_368>Im 2. OG BT1 Besprechungsraum eine Bemerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesagt. Beamerhalterung zur Montage ausgeinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.</text>
+<otsl><loc_41><loc_376><loc_458><loc_453><fcel>Art-Nr-Kunde<fcel>Pos Art-Nr-Lief.<fcel>Beschreibung Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions- betrag ohne USt.<nl><fcel>Art-Nr (Art)<fcel>TGA<fcel>43,2000<fcel>3 St<fcel>19 %<fcel>129,60<nl><fcel>01<fcel>TGA Obermonteur/Monteur Bruttopreis : 43,2000<lcel><lcel><lcel><lcel><nl><fcel>01 Beamermontage Für die doppelte Verlegung, falls erforderlich.<lcel><lcel><lcel><lcel><lcel><nl></otsl>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_46><loc_34><loc_56><loc_40>02</text>
+<text><loc_121><loc_34><loc_156><loc_40>Beamer-</text>
+<text><loc_223><loc_34><loc_263><loc_40>122,5000</text>
+<text><loc_306><loc_34><loc_332><loc_40>1 H87</text>
+<text><loc_373><loc_34><loc_393><loc_40>19 %</text>
+<text><loc_428><loc_34><loc_458><loc_40>122,50</text>
+<text><loc_121><loc_41><loc_156><loc_47>Deckenhalterung</text>
+<text><loc_135><loc_49><loc_243><loc_55>Bruttopreis :122,5000</text>
+<text><loc_133><loc_62><loc_234><loc_68>02 Außerhalb Angebot</text>
+<section_header_level_1><loc_41><loc_99><loc_142><loc_105>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_42><loc_113><loc_103><loc_119>Beschreibung</section_header_level_1>
+<text><loc_42><loc_121><loc_169><loc_127>Zahlbar sofort rein netto</text>
+<section_header_level_1><loc_42><loc_142><loc_103><loc_148>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_155><loc_284><loc_161>Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG</text>
+<text><loc_42><loc_168><loc_199><loc_174>IBAN : DE5467894567876500</text>
+<section_header_level_1><loc_42><loc_198><loc_153><loc_204>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_211><loc_458><loc_236><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<fcel>252,10<fcel>19<fcel>47,90<ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_235><loc_103><loc_241>Belegsummen:</section_header_level_1>
+<section_header_level_1><loc_242><loc_242><loc_312><loc_248>Positionssumme</section_header_level_1>
+<text><loc_242><loc_250><loc_373><loc_256>Gesamtbetrag der Zuschläge</text>
+<text><loc_242><loc_258><loc_373><loc_264>Gesamtbetrag der Abschläge</text>
+<text><loc_242><loc_266><loc_373><loc_272>Rechnungssumme ohne USt.</text>
+<text><loc_242><loc_274><loc_318><loc_280>Steuerbetrag in</text>
+<text><loc_257><loc_282><loc_298><loc_288>Bruttosumme</text>
+<text><loc_257><loc_290><loc_348><loc_296>Erhaltene Anzahlungen</text>
+<text><loc_242><loc_298><loc_292><loc_304>Zahlbetrag</text>
+<text><loc_257><loc_304><loc_292><loc_310>Zahlbetrag</text>
+<text><loc_427><loc_304><loc_458><loc_310>300,00</text>
+<text><loc_427><loc_304><loc_458><loc_310>300,00</text>
+<text><loc_427><loc_304><loc_458><loc_310>300,00</text>
+<text><loc_427><loc_304><loc_458><loc_310>300,00</text>
+<text><loc_427><loc_304><loc_458><loc_310>300,00</text>
+</doctag>

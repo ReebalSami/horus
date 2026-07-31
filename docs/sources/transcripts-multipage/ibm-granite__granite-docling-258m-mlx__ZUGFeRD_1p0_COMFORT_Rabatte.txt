@@ -1,0 +1,51 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  ZUGFeRD_1p0_COMFORT_Rabatte
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  9.30s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_32><loc_24><loc_80><loc_28>Rechnungsersteller</text>
+<text><loc_42><loc_32><loc_123><loc_64>Lieferant GmbH Lieferantenstraße 20 80333 München Deutschland</text>
+<text><loc_42><loc_74><loc_113><loc_79>GLN: 4000001123452</text>
+<text><loc_32><loc_81><loc_87><loc_85>Rechnungsempfänger</text>
+<text><loc_32><loc_89><loc_103><loc_94>Kunden AG Mitte</text>
+<text><loc_32><loc_97><loc_87><loc_102>Hans Muster</text>
+<text><loc_32><loc_105><loc_103><loc_111>Kundenstraße 15</text>
+<text><loc_32><loc_113><loc_103><loc_119>69876 Frankfurt</text>
+<text><loc_32><loc_122><loc_87><loc_128>Deutschland</text>
+<text><loc_32><loc_131><loc_103><loc_136>GLN: 4000001987658</text>
+<text><loc_40><loc_146><loc_117><loc_152>Ihr Zeichen: AB-312</text>
+<text><loc_151><loc_146><loc_281><loc_152>Ihr USt.-IdentNr.: DE234567890</text>
+<otsl><loc_31><loc_163><loc_485><loc_414><fcel>Unsere Pos Art.Nr.<fcel>Ihr Art.Nr.<fcel>Artikelle beschreibung<fcel>Menge Einheit<fcel>Preis/ Einheit<fcel>Entgelt<fcel>USt. %<nl><fcel>Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2013-51112 in Rechnung zu stellen:<lcel><lcel><lcel><lcel><lcel><lcel><nl><fcel>1 KR3M<fcel>55T01<fcel>Kunstrasen grün 3m breit 3,00<fcel>m²<fcel>4,00<fcel>12,00<fcel>19<nl><ecel><fcel>300 cm x 100 cm GTIN: 4012345001235<ecel><ecel><ecel><ecel><ecel><nl><fcel>2 SFK5<fcel>55T02<fcel>Schweinesteak aus Deutschland GTIN: 4000050986428<fcel>5,000<fcel>kg<fcel>5,50<fcel>7<nl><fcel>3 GTRWA5<fcel>55T03<fcel>Minerwasser Medium 12 x 1,0l PET GTIN: 4000001234561<fcel>20<fcel>Stk.<fcel>5,49<fcel>109,80<nl><fcel>4 PFA5<fcel>55T04<fcel>Pfand nicht rabattierfähig GTIN: 4000001234578<fcel>20<fcel>Stk.<fcel>2,77<fcel>55,46<nl><ecel><ecel><fcel>Zwischensumme<fcel>10%<fcel>von<fcel>147,30<fcel>202,76<nl><ecel><ecel><fcel>abzgl. Sondernachlass zzgl. Versandkosten<ecel><ecel><ecel><fcel>-14,73<nl><ecel><ecel><ecel><ecel><ecel><ecel><fcel>5,80<nl><fcel>Rechnungssumme Netto (exkl. USt.)<lcel><lcel><lcel><lcel><lcel><lcel><nl><ecel><ecel><fcel>zzgl. Umsatzsteuer<fcel>7%<fcel>von<fcel>129,37<fcel>193,83<nl><ecel><ecel><fcel>zzgl. Umsatzsteuer<fcel>19%<fcel>von<fcel>64,46<fcel>12,25<nl><ecel><ecel><fcel>Sume Umsatzsteuer<ecel><ecel><ecel><fcel>21,31<nl><fcel>Rechnungssumme Brutto (inkl. USt.)<lcel><lcel><lcel><lcel><lcel><lcel><nl><fcel>Bereits bezahlt<lcel><lcel><lcel><lcel><lcel><lcel><nl><fcel>Offener Betrag<lcel><lcel><lcel><lcel><lcel><lcel><nl></otsl>
+<text><loc_32><loc_433><loc_90><loc_438>Zahlungsinformationen:</text>
+<text><loc_32><loc_439><loc_401><loc_446>Zahlbar innerhalb 30 Tagen netto bis 04.07.2013, 3% Skonto innerhalb 10 Tagen bis 15.06.2013</text>
+<text><loc_32><loc_455><loc_83><loc_459>Bank-/Steuerinformationen</text>
+<text><loc_32><loc_465><loc_52><loc_470>Konton.:</text>
+<text><loc_32><loc_473><loc_42><loc_478>BLZ:</text>
+<text><loc_32><loc_481><loc_60><loc_485>Bankname:</text>
+<text><loc_72><loc_465><loc_138><loc_470>1234 5678 90</text>
+<text><loc_72><loc_473><loc_138><loc_478>700 901 00</text>
+<text><loc_72><loc_481><loc_144><loc_486>Hausbank München</text>
+<text><loc_151><loc_465><loc_173><loc_470>IBAN-Nr.:</text>
+<text><loc_151><loc_473><loc_185><loc_478>GENODEF1M04</text>
+<text><loc_151><loc_481><loc_180><loc_486>Geschäftsf.:</text>
+<text><loc_192><loc_465><loc_302><loc_470>DE08 7009 0100 1234 5678 90</text>
+<text><loc_192><loc_473><loc_247><loc_478>GENODEF1M04</text>
+<text><loc_192><loc_481><loc_230><loc_486>Hans Muster</text>
+<text><loc_323><loc_465><loc_354><loc_470>Handelsreg.:</text>
+<text><loc_323><loc_473><loc_354><loc_478>USt-Identnr.:</text>
+<text><loc_323><loc_481><loc_347><loc_486>Steuernr.:</text>
+<text><loc_382><loc_465><loc_432><loc_470>H A 123</text>
+<text><loc_382><loc_473><loc_433><loc_478>DE123456789</text>
+<text><loc_382><loc_481><loc_434><loc_486>201/113/40209</text>
+<text><loc_452><loc_44><loc_483><loc_51>471102</text>
+<text><loc_452><loc_53><loc_483><loc_59>05.06.2013</text>
+<text><loc_452><loc_61><loc_483><loc_67>03.06.2013</text>
+<text><loc_452><loc_69><loc_483><loc_75>GE2020211</text>
+<text><loc_406><loc_77><loc_483><loc_83>GE2020211 GE2020211</text>
+<text><loc_452><loc_85><loc_

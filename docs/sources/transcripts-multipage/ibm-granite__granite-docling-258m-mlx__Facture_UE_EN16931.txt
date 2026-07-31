@@ -1,0 +1,54 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  Facture_UE_EN16931
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  8.75s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><picture><loc_26><loc_19><loc_59><loc_40><logo></picture>
+<text><loc_93><loc_19><loc_346><loc_30>Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France +33 4 50 44 68 99 -</text>
+<text><loc_93><loc_29><loc_393><loc_36>http://www.aubonmoulin.fr TVA : FR11999999998 - SIRET : 9999999800010 - APE : 4778C - SARL au capital de 120 000,00 €</text>
+<section_header_level_1><loc_26><loc_55><loc_187><loc_67>Invoice FA-2017-0008</section_header_level_1>
+<section_header_level_1><loc_31><loc_72><loc_99><loc_80>Delivery Address</section_header_level_1>
+<text><loc_31><loc_82><loc_113><loc_113>Me gusta olive 87 camino de la calor 41700 Dos Hermanas Spain</text>
+<text><loc_31><loc_113><loc_108><loc_120>+34 954 93 12 29</text>
+<text><loc_31><loc_120><loc_136><loc_127>contact@megustaolive.es</text>
+<text><loc_28><loc_133><loc_78><loc_140>Invoice Date</text>
+<text><loc_130><loc_133><loc_171><loc_140>11/03/2017</text>
+<text><loc_28><loc_143><loc_90><loc_150>Payment Terms</text>
+<text><loc_130><loc_143><loc_218><loc_157>30% advance payment, balance at 30 days</text>
+<text><loc_28><loc_161><loc_65><loc_168>Due Date</text>
+<text><loc_130><loc_161><loc_171><loc_168>12/03/2017</text>
+<text><loc_28><loc_171><loc_90><loc_178>Your Reference</text>
+<text><loc_130><loc_171><loc_185><loc_178>COMPRA0832</text>
+<text><loc_28><loc_181><loc_90><loc_188>Agreement Ref.</text>
+<text><loc_130><loc_181><loc_185><loc_188>FROLIVE2017</text>
+<text><loc_28><loc_191><loc_120><loc_198>Customer VAT Number</text>
+<text><loc_130><loc_191><loc_184><loc_198>ESA12345674</text>
+<text><loc_28><loc_201><loc_69><loc_208>Incoterms</text>
+<text><loc_130><loc_201><loc_236><loc_208>DELIVERED DUTY UNPAID</text>
+<otsl><loc_25><loc_215><loc_475><loc_264></otsl>
+<otsl><loc_25><loc_266><loc_255><loc_308></otsl>
+<otsl><loc_25><loc_313><loc_255><loc_328></otsl>
+<otsl><loc_25><loc_333><loc_255><loc_348></otsl>
+<text><loc_26><loc_351><loc_293><loc_356>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_357>French VAT exemption according to articles 262 ter l (for products) and/or 283-2 (for services) of "CGI"</text>
+<text><loc_26><loc_352><loc_293><loc_

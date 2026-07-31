@@ -1,0 +1,82 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EXTENDED_InnergemeinschLieferungMehrereBestellungen
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  12.17s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_60><loc_368><loc_68>Handelsrechnung Nr. 47110818 vom 31.10.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_246><loc_97>Geschäftsprozess : Beispielgeschäftsprozess</text>
+<text><loc_41><loc_98><loc_371><loc_104>Anwendungsempfehlung :</text>
+<text><loc_41><loc_104><loc_355><loc_111>urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc_124>Rechnungswährung :</text>
+<text><loc_41><loc_118><loc_173><loc
+===== PAGE 2 =====
+<doctag><otsl><loc_41><loc_31><loc_459><loc_179></otsl>
+<section_header_level_1><loc_42><loc_200><loc_142><loc_206>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_42><loc_215><loc_104><loc_220>Beschreibung</text>
+<text><loc_327><loc_215><loc_378><loc_220>Fälligkeit</text>
+<text><loc_402><loc_215><loc_458><loc_220>Teilzahlung</text>
+<text><loc_327><loc_222><loc_378><loc_227>30.11.2018</text>
+<section_header_level_1><loc_42><loc_245><loc_103><loc_250>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_258><loc_285><loc_263>Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG</text>
+<text><loc_42><loc_271><loc_279><loc_277>Kontoname : Global Supplies Financial Services</text>
+<text><loc_42><loc_278><loc_219><loc_284>IBAN : DE12 1234 4321 9876 00</text>
+<section_header_level_1><loc_42><loc_306><loc_153><loc_312>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_322><loc_459><loc_364></otsl>
+<section_header_level_1><loc_42><loc_376><loc_103><loc_381>Belegsummen:</section_header_level_1>
+<otsl><loc_246><loc_384><loc_459><loc_443></otsl>
+</doctag>

@@ -1,0 +1,125 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_BASIC_Rechnungskorrektur
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  21.50s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_394><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_60><loc_405><loc_68>Rechnungskorrektur Nr. RK21012345 vom 16.09.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_451><loc_97>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic</text>
+<text><loc_41><loc_105><loc_172><loc_110>Rechnungswährung : EUR</text>
+<text><loc_41><loc_139><loc_254><loc_144>Liefer- und Leistungsdatum : 05.08.2018</text>
+<section_header_level_1><loc_41><loc_173><loc_92><loc_178>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_186><loc_143><loc_198>GLN 4333741000005 Lief-Nr: 549910</text>
+<text><loc_41><loc_200><loc_143><loc_205>MUSTERLIEFERANT GMBH</text>
+<text><loc_42><loc_214><loc_147><loc_226>BAHNHOFSTRASSE 99 DE 99199 MUSTERHAUSEN</text>
+<text><loc_42><loc_234><loc_173><loc_240>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_247><loc_172><loc_253>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_42><loc_261><loc_127><loc_266>GLN 4304171000002</text>
+<text><loc_42><loc_268><loc_138><loc_273>Kunden-Nr. : 009420</text>
+<text><loc_42><loc_275><loc_127><loc_280>MUSTER-KUNDE GMBH</text>
+<text><loc_42><loc_288><loc_102><loc_293>KUNDENWEG 88</text>
+<text><loc_42><loc_295><loc_143><loc_300>DE 40235 DUESSELDORF</text>
+<text><loc_41><loc_323><loc_268><loc_328>Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_41><loc_343><loc_143><loc_366>MUSTERLIEFERANT GMBH BAHNHOFSTRASSE 99 99199 MUSTERHAUSEN</text>
+<text><loc_41><loc_368><loc_127><loc_373>Geschäftsführung:</text>
+<text><loc_42><loc_375><loc_129><loc_380>Max Mustermann</text>
+<text><loc_42><loc_382><loc_151><loc_387>USt-IdNr: DE123456789</text>
+<text><loc_42><loc_389><loc_153><loc_394>Telefon: +49 932 431 0</text>
+<text><loc_42><loc_396><loc_153><loc_401>www.musterlieferant.de</text>
+<text><loc_42><loc_403><loc_143><loc_408>HRB Nr. 372876</text>
+<text><loc_42><loc_410><loc_143><loc_415>Amtsgericht Musterstadt</text>
+<text><loc_42><loc_416><loc_127><loc_421>GLN 4304171000002</text>
+<text><loc_42><loc_440><loc_147><loc_445>Bei Rückfragen:</text>
+<text><loc_42><loc_446><loc_151><loc_451>Telefon: +49 932 431 500</text>
+<text><loc_42><loc_453><loc_234><loc_458>E-Mail : max.muster@musterlieferant.de</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_42><loc_48><loc_123><loc_68>Warenempfänger GLN 430417088093</text>
+<text><loc_42><loc_75><loc_117><loc_88>Hauptstrasse 44 31157 SARSTEDT</text>
+<text><loc_42><loc_96><loc_123><loc_102>Abteilung : 8211</text>
+<text><loc_42><loc_129><loc_110><loc_135>Bestell-Nr</text>
+<text><loc_139><loc_129><loc_198><loc_135>: B123456789</text>
+<text><loc_42><loc_136><loc_110><loc_142>Bestell-Datum</text>
+<text><loc_139><loc_136><loc_198><loc_142>: 01.08.2018</text>
+<text><loc_42><loc_150><loc_117><loc_155>Lieferschein-Nr</text>
+<text><loc_139><loc_150><loc_223><loc_155>: L87654321012345</text>
+<text><loc_42><loc_156><loc_123><loc_162>Lieferschein-Datum</text>
+<text><loc_139><loc_156><loc_198><loc_162>: 05.08.2018</text>
+<text><loc_42><loc_163><loc_123><loc_169>Ursprungsbeleg-Nr</text>
+<text><loc_139><loc_163><loc_223><loc_169>: R87654321012345</text>
+<text><loc_42><loc_170><loc_123><loc_176>Reklamationsnummer</text>
+<text><loc_139><loc_170><loc_218><loc_176>: REKLA-2018-235</text>
+<text><loc_42><loc_196><loc_133><loc_208>Rechnungsempfänger GLN 4304171000002</text>
+<text><loc_42><loc_209><loc_128><loc_215>MUSTER-KUNDE GMBH</text>
+<text><loc_42><loc_223><loc_117><loc_228>KUNDENWEG 88</text>
+<text><loc_42><loc_229><loc_128><loc_235>40235 DUESSELDORF</text>
+<text><loc_42><loc_236><loc_138><loc_242>Kunden-Nr. : 009420</text>
+<otsl><loc_41><loc_257><loc_458><loc_453><fcel>Art-Nr-Kunde  Art-Nr-Lief. Pos Art-Nr<fcel>Bestreibung  Beschreibung  Nettopreis<fcel>Menge  USt.<fcel>Positions- betrag  ohne  USt.<nl><fcel>1<fcel>GTIN<fcel>1,0000<fcel>-5 Stk 19 %<fcel>-5,00<nl><ecel><fcel>412345600014<ecel><ecel><ecel><nl><ecel><fcel>Art-Nr- Lieferant<ecel><ecel><ecel><nl><ecel><fcel>Zitronensäure<ecel><ecel><ecel><nl><ecel><fcel>100ml<ecel><ecel><ecel><nl><ecel><fcel>Verpackung:<ecel><ecel><ecel><nl><ecel><fcel>Flasche<ecel><ecel><ecel><nl><ecel><fcel>VKE/Geb: 1<ecel><ecel><ecel><nl><fcel>2<fcel>GTIN<fcel>1,4500<fcel>-2 Stk<fcel>7 %<fcel>-2,90<nl><ecel><fcel>412345600021<ecel><ecel><ecel><nl><ecel><fcel>Art-Nr- Lieferant<ecel><ecel><ecel><nl><ecel><fcel>GZ250<ecel><ecel><ecel><nl><ecel><fcel>Gelierzucker<ecel><ecel><ecel><nl><ecel><fcel>Extra 250g<ecel><ecel><ecel><nl><ecel><fcel>Verpackung:<ecel><ecel><ecel><nl><ecel><fcel>Karton<ecel><ecel><ecel><nl><ecel><fcel>VKE/Geb: 1<ecel><ecel><ecel><nl></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_42><loc_62><loc_133><loc_69>Zu- und Abschläge:</section_header_level_1>
+<section_header_level_1><loc_42><loc_75><loc_74><loc_82>Art</section_header_level_1>
+<text><loc_42><loc_86><loc_165><loc_92>Abschlag Rechnungsrabatt</text>
+<text><loc_42><loc_94><loc_165><loc_100>Abschlag Rechnungsrabatt</text>
+<text><loc_42><loc_115><loc_153><loc_122>Art (Kategorie)</text>
+<text><loc_42><loc_128><loc_117><loc_134>Umsatzsteuer</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc_165><loc_134>Umsatzsteuer (S)</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc_165><loc_134>Umsatzsteuer (S)</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc_165><loc_134>Umsatzsteuer (S)</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc_165><loc_134>Umsatzsteuer (S)</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc_165><loc_134>Umsatzsteuer (S)</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc_165><loc_134>Umsatzsteuer (S)</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc_165><loc_134>Umsatzsteuer (S)</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc_165><loc_134>Umsatzsteuer (S)</text>
+<text><loc_42><loc_138><loc_117><loc_144>Umsatzsteuer</text>
+<text><loc_42><loc_148><loc_117><loc_154>Belegsummen:</text>
+<text><loc_42><loc_86><loc_165><loc_92>Art % Basisbetrag</text>
+<text><loc_42><loc_94><loc_165><loc_100>Art % Basisbetrag %</text>
+<text><loc_42><loc_115><loc_165><loc_122>Art (Kategorie) %</text>
+<text><loc_42><loc_128><loc

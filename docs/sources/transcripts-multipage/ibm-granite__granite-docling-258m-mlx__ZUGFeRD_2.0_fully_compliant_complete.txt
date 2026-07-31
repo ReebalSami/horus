@@ -1,0 +1,46 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  ZUGFeRD_2.0_fully_compliant_complete
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  7.58s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_10><loc_14><loc_85><loc_33>Symtrax</text>
+<text><loc_92><loc_14><loc_177><loc_43>Die Vordefinierte Firma Waldstrasse 86-90 13403 Berlin Deutschland</text>
+<text><loc_209><loc_14><loc_307><loc_43>Tel: +49 (030) 41092-0 Fax: +49 (030) 41092-111 email: info@vordefiniert.de UStID#DE12345618938</text>
+<text><loc_375><loc_14><loc_451><loc_31>Seite 1 von 1 20.03.2018 17:09:28</text>
+<section_header_level_1><loc_360><loc_43><loc_450><loc_60>Rechnung</section_header_level_1>
+<text><loc_13><loc_74><loc_59><loc_108>Firma Elektromarkt Bamby Adlerstrasse 452 D-07545 GERA</text>
+<text><loc_186><loc_74><loc_230><loc_81>Information</text>
+<text><loc_186><loc_81><loc_240><loc_88>Belegnummer</text>
+<text><loc_186><loc_88><loc_239><loc_95>Belegdatum</text>
+<text><loc_186><loc_95><loc_255><loc_102>Lieferscheinnr./-datum</text>
+<text><loc_186><loc_102><loc_255><loc_109>Nummer/Datum</text>
+<text><loc_186><loc_109><loc_239><loc_116>Bestellnummer</text>
+<text><loc_186><loc_116><loc_251><loc_123>Kunden Nummer</text>
+<text><loc_186><loc_123><loc_235><loc_130>Währung</text>
+<text><loc_305><loc_74><loc_327><loc_81>90005178</text>
+<text><loc_305><loc_81><loc_344><loc_88>07.01.1997</text>
+<text><loc_305><loc_88><loc_345><loc_95>80003371</text>
+<text><loc_305><loc_95><loc_408><loc_102>4970 (03.01.1997)</text>
+<text><loc_305><loc_102><loc_395><loc_109>EB-653421 (03.01.1997)</text>
+<text><loc_305><loc_109><loc_398><loc_116>1175</text>
+<text><loc_305><loc_116><loc_323><loc_123>DEM</text>
+<text><loc_186><loc_123><loc_235><loc_130>Währung</text>
+<text><loc_305><loc_123><loc_323><loc_130>DEM</text>
+<otsl><loc_11><loc_231><loc_455><loc_377></otsl>
+<text><loc_234><loc_383><loc_451><loc_391>-----------------------------------------------------------------------</text>
+<text><loc_234><loc_393><loc_451><loc_400>Total Before Tax 32.838,00</text>
+<text><loc_234><loc_408><loc_283><loc_415>Total Tax</text>
+<text><loc_416><loc_408><loc_451><loc_415>4.925,70</text>
+<text><loc_234><loc_423><loc_321><loc_431>Total Amount (DEM)</text>
+<text><loc_416><loc_423><loc_451><loc_431>37.763,70</text>
+<text><loc_234><loc_431><loc_451><loc_439>-----------------------------------------------------------------------</text>
+<text><loc_42><loc_460><loc_421><loc_470>Friedrich-Wagner-Straße 16 · D-60318 Frankfurt/M · Postfach 16 05 29 D-60070 Frankfurt/M · Telefon (0 69) 99-0 · Telefax (0 69) 99 12 77· Internet: IDESAG@SAP-AG.COM Volksbank Frankfurt · (BLZ 699922 99) 50 4999 09 SWIFT DXXX DE 6K · Postbank Karlsruhe · (BLZ 660 900 99) 999 366-999</text>
+<text><loc_50><loc_470><loc_414><loc_476>Dresdner Bank Frankfurt (BLZ 69 800 99) 49999 111 00 SWIFT DRES DE FF 699 · Deutsche Bank Hamburg (BLZ 699 700 99) 099 55555 SWIFT DEUT DE SM 699</text>
+<text><loc_405><loc_14><loc_451><loc_31>20.03.2018 17:09:28</text>
+</doctag>

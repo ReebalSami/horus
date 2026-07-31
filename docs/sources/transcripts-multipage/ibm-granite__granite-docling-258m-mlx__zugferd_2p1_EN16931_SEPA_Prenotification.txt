@@ -1,0 +1,90 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_SEPA_Prenotification
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  12.62s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_345><loc_71><_unknown_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+        ZUGFeRD-Version   : 2.1 vom 24.03.2020
+        Stylesheet-Version: 2.0 vom 18.10.2018
+        Codelisten-Version: 3.0 vom 15.11.2019
+        (c) AWV e.V. 2020</code>
+<section_header_level_1><loc_41><loc_85><loc_344><loc_93>Handelsrechnung Nr. 471102 vom 05.03.2018</section_header_level_1>
+<code><loc_41><loc_115><loc_268><loc_139><_unknown_>Anwendungsempfehlung : urn:cen.eu:en16931:2017
+            Währung              : EUR</code>
+<section_header_level_1><loc_41><loc_171><loc_91><loc_177>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_178><loc_217><loc_184>Nummer : 549910</text>
+<text><loc_41><loc_185><loc_217><loc_191>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_41><loc_192><loc_126><loc_198>Lieferant GmbH</text>
+<text><loc_41><loc_199><loc_140><loc_205>Lieferantenstraße 20</text>
+<text><loc_41><loc_206><loc_121><loc_212>DE 80333 München</text>
+<text><loc_41><loc_220><loc_179><loc_225>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_226><loc_170><loc_232>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_239><loc_76><loc_245>Käufer:</section_header_level_1>
+<text><loc_41><loc_246><loc_179><loc_252>Nummer : GE2020211</text>
+<text><loc_41><loc_253><loc_116><loc_259>Kunden AG Mitte</text>
+<text><loc_41><loc_260><loc_116><loc_266>Kundenstraße 15</text>
+<text><loc_41><loc_267><loc_130><loc_272>DE 69876 Frankfurt</text>
+<text><loc_41><loc_292><loc_321><loc_298>Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.</text>
+<text><loc_41><loc_305><loc_195><loc_311>Qualifizierung der Textart: AAK</text>
+<text><loc_41><loc_312><loc_257><loc_318>Es bestehen Rabatt- und Bonusvereinbarungen.</text>
+<text><loc_41><loc_326><loc_195><loc_332>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_333><loc_126><loc_339>Lieferant GmbH</text>
+<text><loc_41><loc_340><loc_140><loc_346>Lieferantenstraße 20</text>
+<text><loc_41><loc_347><loc_106><loc_353>80333 München</text>
+<text><loc_41><loc_354><loc_96><loc_360>Deutschland</text>
+<text><loc_41><loc_361><loc_179><loc_367>Geschäftsführer: Hans Muster</text>
+<text><loc_41><loc_368><loc_189><loc_374>Handelsregisternummer: H A 123</text>
+<text><loc_41><loc_395><loc_121><loc_401>Art-Nr-Kunde</text>
+<text><loc_41><loc_402><loc_189><loc_408>Art-Nr-Lief. Beschreibung</text>
+<text><loc_41><loc_409><loc_76><loc_416>Pos</text>
+<text><loc_41><loc_416><loc_76><loc_422>(Art)</text>
+<text><loc_41><loc_423><loc_65><loc_429>1</text>
+<text><loc_129><loc_423><loc_189><loc_429>Trennblätter</text>
+<text><loc_235><loc_423><loc_254><loc_429>9,90</text>
+<text><loc_300><loc_423><loc_391><loc_429>20 Stk 19 % VAT (S)</text>
+<text><loc_424><loc_423><loc_458><loc_429>198,00</text>
+<text><loc_41><loc_430><loc_126><loc_436>TB100A4 A4</text>
+<text><loc_41><loc_437><loc_126><loc_443>4012345001235</text>
+<text><loc_41><loc_444><loc_76><loc_450>(GLN)</text>
+<text><loc_138><loc_449><loc_224><loc_455>Bruttopreis : 9,90</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_49><loc_42><loc_53><loc_48>2</text>
+<text><loc_42><loc_49><loc_127><loc_54>ARNR2</text>
+<text><loc_132><loc_49><loc_162><loc_54>Banane</text>
+<text><loc_42><loc_55><loc_127><loc_61>4000050986428</text>
+<text><loc_42><loc_62><loc_73><loc_68>(GLN)</text>
+<text><loc_138><loc_55><loc_162><loc_61>50</text>
+<text><loc_138><loc_62><loc_225><loc_68>Bruttopreis : 5,50</text>
+<text><loc_138><loc_70><loc_225><loc_76>5,50</text>
+<section_header_level_1><loc_41><loc_106><loc_140><loc_112>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_150><loc_121><loc_209><loc_127>Beschreibung</section_header_level_1>
+<text><loc_42><loc_128><loc_297><loc_141>Der Betrag in Höhe von EUR 529,87 wird am 20.03.2018 von Ihrem Konto per SEPA-Lastschrift eingezogen.</text>
+<section_header_level_1><loc_41><loc_162><loc_101><loc_168>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_175><loc_166><loc_181>Zahlungstyp (codiert): 59</text>
+<text><loc_42><loc_182><loc_263><loc_188>Käufer-IBAN : DE21860000000086001055</text>
+<section_header_level_1><loc_41><loc_210><loc_179><loc_216>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_224><loc_458><loc_245><fcel>Art (Kategorie) Warenwert<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (S)<fcel>275,00<fcel>7<nl><fcel>VAT (S)<fcel>198,00<fcel>19<nl></otsl>
+<section_header_level_1><loc_42><loc_256><loc_101><loc_262>Belegsummen:</section_header_level_1>
+<section_header_level_1><loc_246><loc_262><loc_315><loc_268>Positionssumme</section_header_level_1>
+<text><loc_246><loc_271><loc_374><loc_277>Gesamtbetrag der Zuschläge</text>
+<text><loc_428><loc_271><loc_457><loc_277>0,00</text>
+<text><loc_246><loc_280><loc_374><loc_286>Gesamtbetrag der Abschläge</text>
+<text><loc_428><loc_280><loc_457><loc_286>-0,00</text>
+<text><loc_246><loc_289><loc_374><loc_295>Rechnungssumme ohne USt.</text>
+<text><loc_428><loc_289><loc_457><loc_295>473,00</text>
+<text><loc_246><loc_298><loc_306><loc_304>Steuerbetrag</text>
+<text><loc_428><loc_298><loc_457><loc_304>56,87</text>
+<text><loc_246><loc_307><loc_301><loc_312>Bruttosumme</text>
+<text><loc_428><loc_307><loc_457><loc_312>529,87</text>
+<text><loc_246><loc_316><loc_350><loc_321>Erhaltene Anzahlungen</text>
+<text><loc_428><loc_316><loc_457><loc_321>-0,00</text>
+<text><loc_246><loc_324><loc_296><loc_330>Zahlbetrag</text>
+<text><loc_428><loc_324><loc_457><loc_330>529,87</text>
+</doctag>

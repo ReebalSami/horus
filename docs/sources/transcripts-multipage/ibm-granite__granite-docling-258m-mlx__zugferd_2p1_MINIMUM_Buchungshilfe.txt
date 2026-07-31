@@ -1,0 +1,44 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_MINIMUM_Buchungshilfe
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  6.04s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_68>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version : 2.1 vom 24.03.2020 Stylesheet-Version: 2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019 (c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_82><loc_361><loc_92>Buchungshilfe - KEINE Rechnung Nr. 471102 vom 05.03.2020</section_header_level_1>
+<text><loc_36><loc_113><loc_223><loc_119>Anwendungsempfehlung : urn:factur-x.eu:1p0:minimum</text>
+<text><loc_37><loc_120><loc_69><loc_126>Währung</text>
+<text><loc_112><loc_120><loc_116><loc_126>:</text>
+<text><loc_116><loc_120><loc_116><loc_126>EUR</text>
+<section_header_level_1><loc_36><loc_161><loc_75><loc_167>Verkäufer:</section_header_level_1>
+<text><loc_36><loc_174><loc_105><loc_194>Lieferant GmbH Lieferantenstraße 20 DE 80333 München</text>
+<text><loc_37><loc_201><loc_141><loc_207>Steuernummer : 201/113/40209</text>
+<text><loc_37><loc_207><loc_131><loc_214>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_37><loc_221><loc_65><loc_227>Käufer:</section_header_level_1>
+<text><loc_37><loc_234><loc_104><loc_260>Kunden AG Mitte Hans Muster Kundenstraße 15 DE 69876 Frankfurt</text>
+<text><loc_41><loc_277><loc_108><loc_305>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)</text>
+<text><loc_127><loc_284><loc_175><loc_291>Beschreibung</text>
+<text><loc_208><loc_284><loc_246><loc_291>Nettopreis</text>
+<text><loc_299><loc_284><loc_323><loc_291>Menge</text>
+<text><loc_369><loc_284><loc_392><loc_291>Steuer</text>
+<text><loc_437><loc_284><loc_462><loc_291>Entgelt</text>
+<section_header_level_1><loc_37><loc_347><loc_88><loc_353>Belegsummen:</section_header_level_1>
+<text><loc_250><loc_353><loc_307><loc_360>Positionssumme</text>
+<text><loc_439><loc_353><loc_462><loc_360>198,00</text>
+<text><loc_250><loc_362><loc_347><loc_369>Gesamtbetrag der Zuschläge</text>
+<text><loc_250><loc_370><loc_345><loc_377>Gesamtbetrag der Abschläge</text>
+<text><loc_250><loc_379><loc_353><loc_386>Rechnungssumme ohne USt.</text>
+<text><loc_439><loc_379><loc_462><loc_386>198,00</text>
+<text><loc_250><loc_388><loc_292><loc_395>Steuerbetrag</text>
+<text><loc_439><loc_388><loc_462><loc_395>37,62</text>
+<text><loc_250><loc_397><loc_299><loc_404>Bruttosumme</text>
+<text><loc_439><loc_397><loc_462><loc_404>235,62</text>
+<text><loc_250><loc_407><loc_330><loc_414>Erhaltene Anzahlungen</text>
+<text><loc_250><loc_416><loc_292><loc_423>Zahlbetrag</text>
+<text><loc_439><loc_416><loc_462><loc_423>235,62</text>
+</doctag>

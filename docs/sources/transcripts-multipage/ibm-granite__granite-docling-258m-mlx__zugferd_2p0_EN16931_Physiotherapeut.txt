@@ -1,0 +1,59 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  10.63s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_41><loc_38><loc_393><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</page_header>
+<section_header_level_1><loc_41><loc_60><loc_352><loc_68>Handelsrechnung Nr. R18-31 vom 03.10.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_269><loc_96>Anwendungsempfehlung : urn:ce.eu:en16931:2017</text>
+<text><loc_41><loc_104><loc_156><loc_110>Rechnungswährung :</text>
+<text><loc_148><loc_104><loc_173><loc_110>EUR</text>
+<section_header_level_1><loc_41><loc_167><loc_92><loc_172>Verkäufer:</section_header_level_1>
+<section_header_level_1><loc_42><loc_180><loc_128><loc_186>Physiotherapeutin</section_header_level_1>
+<text><loc_42><loc_187><loc_118><loc_200>Tanja Tinder Musterstraße 12</text>
+<text><loc_42><loc_208><loc_153><loc_213>DE 12345 Beispielstadt</text>
+<text><loc_42><loc_221><loc_93><loc_227>Telefon</text>
+<text><loc_108><loc_221><loc_178><loc_227>: 015119630027</text>
+<text><loc_42><loc_228><loc_93><loc_234>E-Mail</text>
+<text><loc_108><loc_228><loc_284><loc_234>: tanja.tinder@beispiel-provider.de</text>
+<text><loc_42><loc_235><loc_173><loc_241>US-Id.-Nr. : DE136695976</text>
+<section_header_level_1><loc_41><loc_248><loc_173><loc_254>Käufer/Leistungsempfänger:</section_header_level_1>
+<section_header_level_1><loc_42><loc_261><loc_123><loc_267>Liselotte Müller</section_header_level_1>
+<text><loc_42><loc_268><loc_133><loc_273>Rechnungsstraße 12</text>
+<text><loc_42><loc_281><loc_153><loc_286>DE 12345 Beispielstadt</text>
+<otsl><loc_41><loc_302><loc_459><loc_436><ched>Art-Nr-Kunde<ched>Pos<ched>Art-Nr-Lief. Beschreibung<ched>Nettopreis<ched>Menge<ched>USt.<ched>Positions- betrag ohne USt.<nl><fcel>0<fcel>Physiotherapie<fcel>26,0000<fcel>10 Stk<fcel>0 %<fcel>260,0000<ecel><nl><ecel><fcel>Behandlungen aufgrund der Verordnung von Frau Dr.  Heilerin vom 05.09.2018 an folgenden Terminen:  11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018;  27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018;  22.10.2018; 30.10.2018<ecel><ecel><ecel><ecel><ecel><nl><fcel>1<fcel>Hausbesuch<fcel>12,0000<fcel>10 Stk<fcel>0 %<fcel>120,0000<ecel><nl><ecel><fcel>An folgenden Terminen: 11.09.2018; 14.09.2018;  19.09.2018;  24.09.2018; 27.09.2018; 11.10.2018;  15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018<ecel><ecel><ecel><ecel><ecel><nl></otsl>
+</doctag>
+===== PAGE 2 =====
+<doctag><section_header_level_1><loc_42><loc_41><loc_143><loc_47>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_42><loc_55><loc_103><loc_61>Beschreibung</section_header_level_1>
+<text><loc_42><loc_63><loc_285><loc_76>Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.</text>
+<section_header_level_1><loc_42><loc_91><loc_103><loc_97>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_105><loc_293><loc_111>Zahlungstyp (codiert): 30 - per Überweisung (SEPA)</text>
+<text><loc_42><loc_119><loc_103><loc_125>Kontoname</text>
+<text><loc_99><loc_119><loc_168><loc_125>: Tanja Tinder</text>
+<text><loc_42><loc_126><loc_78><loc_132>IBAN</text>
+<text><loc_99><loc_126><loc_219><loc_132>: DE0212030000000202051</text>
+<section_header_level_1><loc_42><loc_153><loc_153><loc_159>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_168><loc_458><loc_210><fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (E)<ecel><ecel><ecel><ecel><ecel><nl><fcel>Steuerfreie<ecel><ecel><ecel><ecel><ecel><nl><fcel>Leistungen nach §4<ecel><ecel><ecel><ecel><ecel><nl><fcel>Nr. 14 UStG<ecel><ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_217><loc_103><loc_223>Belegsummen:</section_header_level_1>
+<section_header_level_1><loc_247><loc_224><loc_318><loc_230>Positionssumme</section_header_level_1>
+<text><loc_428><loc_224><loc_458><loc_230>380,00</text>
+<text><loc_247><loc_232><loc_378><loc_238>Gesamtbetrag der Zuschläge</text>
+<text><loc_247><loc_239><loc_378><loc_245>Gesamtbetrag der Abschläge</text>
+<text><loc_247><loc_247><loc_367><loc_253>Rechnungssumme ohne USt.</text>
+<text><loc_247><loc_255><loc_323><loc_261>Steuerbetrag in</text>
+<text><loc_387><loc_255><loc_403><loc_261>EUR</text>
+<text><loc_402><loc_255><loc_458><loc_261>0,00</text>
+<text><loc_247><loc_263><loc_302><loc_269>Bruttosumme</text>
+<text><loc_387><loc_263><loc_458><loc_269>380,00</text>
+<text><loc_247><loc_271><loc_353><loc_277>Erhaltene Anzahlungen</text>
+<text><loc_247><loc_279><loc_298><loc_285>Zahlbetrag</text>
+<text><loc_387><loc_279><loc_458><loc_285>380,00</text>
+<text><loc_428><loc_281><loc_458><loc_286>380,00</text>
+</doctag>

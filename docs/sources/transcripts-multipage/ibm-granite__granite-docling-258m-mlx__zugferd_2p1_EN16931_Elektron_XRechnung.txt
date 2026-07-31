@@ -1,0 +1,100 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Elektron_XRechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  14.60s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_340><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version : 2.1 vom 24.03.2020</text>
+<text><loc_41><loc_56><loc_228><loc_62>Stylesheet-Version: 2.0 vom 18.10.2018</text>
+<text><loc_41><loc_62><loc_228><loc_68>Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_41><loc_68><loc_115><loc_74>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_41><loc_85><loc_336><loc_93>Baurechnung Nr. 181301674 vom 25.04.2018</section_header_level_1>
+<text><loc_41><loc_116><loc_366><loc_130>Geschäftsprozess : Burechnung Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:xoevde:kosit:standard:xrechnung_1.2</text>
+<text><loc_41><loc_131><loc_151><loc_136>Währung : EUR</text>
+<text><loc_41><loc_146><loc_201><loc_152>Liefer- und Leistungdatum : 06.03.2018</text>
+<text><loc_41><loc_160><loc_250><loc_166>Referenz des Käufers : 04011000-12345-34</text>
+<text><loc_41><loc_167><loc_287><loc_173>Zahlungsreferenz : Rechnung 181301674</text>
+<text><loc_41><loc_174><loc_228><loc_180>Buchungsreferenz : 420</text>
+<text><loc_41><loc_189><loc_366><loc_195>Weitere Referenz : Aufmass, Art der Referenz: 916</text>
+<text><loc_41><loc_196><loc_386><loc_202>Weitere Referenz : ElektronRapport, Art der Referenz: 916</text>
+<section_header_level_1><loc_41><loc_218><loc_91><loc_223>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_231><loc_217><loc_237>Globale Nummer: 4000001123452 (GTIN)</text>
+<section_header_level_1><loc_41><loc_238><loc_190><loc_243>ELEKTRON Industrieservice GmbH</section_header_level_1>
+<text><loc_41><loc_245><loc_131><loc_250>Max Mustermann</text>
+<text><loc_41><loc_251><loc_131><loc_256>Muster-Einkauf</text>
+<text><loc_41><loc_258><loc_135><loc_263>Erfurter Strasse 13</text>
+<text><loc_41><loc_265><loc_121><loc_270>DE 74465 Demouf</text>
+<text><loc_41><loc_279><loc_91><loc_284>Telefon</text>
+<text><loc_41><loc_285><loc_199><loc_291>E-Mail : Max@Mustermann.de</text>
+<text><loc_41><loc_292><loc_179><loc_297>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_299><loc_169><loc_304>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_313><loc_91><loc_318>Käufer:</section_header_level_1>
+<text><loc_41><loc_320><loc_149><loc_325>Nummer : 16259</text>
+<text><loc_41><loc_327><loc_150><loc_332>ConsultingService GmbH</text>
+<text><loc_41><loc_333><loc_106><loc_339>Musterstr. 18</text>
+<text><loc_41><loc_340><loc_130><loc_345>DE 76138 Karlsruhe</text>
+<text><loc_41><loc_367><loc_204><loc_372>Rapport-Nr.: 42389 vom 08.03.2018</text>
+<text><loc_41><loc_380><loc_454><loc_412>Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.</text>
+<text><loc_41><loc_421><loc_135><loc_426>Art-Nr-Kunde</text>
+<text><loc_41><loc_428><loc_135><loc_433>Art-Nr-Lief.</text>
+<text><loc_41><loc_434><loc_135><loc_439>Art-Nr</text>
+<text><loc_41><loc_440><loc_86><loc_446>(Art)</text>
+<text><loc_41><loc_448><loc_131><loc_453>TGA</text>
+<text><loc_244><loc_448><loc_268><loc_453>43,20</text>
+<text><loc_301><loc_448><loc_394><loc_453>3 Std119 % VAT (S)</text>
+<text><loc_429><loc_448><loc_458><loc_453>129,60</text>
+<text><loc_41><loc_455><loc_207><loc_460>Obermonteur/Monteur</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_42><loc_40><loc_58><loc_47>01</text>
+<text><loc_42><loc_47><loc_58><loc_53>01</text>
+<text><loc_133><loc_35><loc_229><loc_41>Bruttopreis : 43,20</text>
+<text><loc_133><loc_43><loc_211><loc_49>01 Beamermontage</text>
+<text><loc_133><loc_50><loc_364><loc_56>Für die doppelte Verlegung, falls erforderlich.</text>
+<text><loc_119><loc_71><loc_154><loc_77>Beamer-</text>
+<text><loc_229><loc_71><loc_259><loc_77>122,50</text>
+<text><loc_304><loc_71><loc_392><loc_77>1 H87 19 % VAT (S)</text>
+<text><loc_429><loc_71><loc_458><loc_77>122,50</text>
+<text><loc_119><loc_78><loc_194><loc_84>Deckenhaltung</text>
+<text><loc_133><loc_86><loc_234><loc_92>Bruttopreis : 122,50</text>
+<text><loc_42><loc_94><loc_58><loc_100>02</text>
+<text><loc_133><loc_94><loc_234><loc_100>02 Außerhalb Angebot</text>
+<section_header_level_1><loc_41><loc_130><loc_140><loc_136>Zahlungsbedingungen:</section_header_level_1>
+<text><loc_149><loc_144><loc_209><loc_150>Beschreibung</text>
+<text><loc_327><loc_144><loc_436><loc_150>Fälligkeit Teilzahlung</text>
+<text><loc_42><loc_151><loc_165><loc_157>Zahlbar sofort rein netto</text>
+<section_header_level_1><loc_42><loc_173><loc_100><loc_179>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_186><loc_165><loc_192>Zahlungstyp (codiert): 58</text>
+<text><loc_42><loc_199><loc_126><loc_205>Verkäufer-IBAN</text>
+<text><loc_144><loc_199><loc_243><loc_205>: DE5467894567876500</text>
+<section_header_level_1><loc_41><loc_228><loc_179><loc_234>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<text><loc_42><loc_242><loc_332><loc_248>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag</text>
+<text><loc_42><loc_249><loc_76><loc_255>VAT (S)</text>
+<text><loc_287><loc_249><loc_317><loc_255>252,10</text>
+<text><loc_378><loc_249><loc_387><loc_255>19</text>
+<text><loc_411><loc_249><loc_421><loc_255>47,90</text>
+<section_header_level_1><loc_42><loc_264><loc_100><loc_270>Belegsummen:</section_header_level_1>
+<text><loc_246><loc_272><loc_315><loc_278>Positionssumme</text>
+<text><loc_428><loc_272><loc_457><loc_278>252,10</text>
+<text><loc_246><loc_280><loc_374><loc_286>Gesamtbetrag der Zuschläge</text>
+<text><loc_432><loc_280><loc_457><loc_286>0,00</text>
+<text><loc_246><loc_288><loc_374><loc_294>Gesamtbetrag der Abschläge</text>
+<text><loc_432><loc_288><loc_457><loc_294>-0,00</text>
+<text><loc_246><loc_297><loc_363><loc_303>Rechnungssumme ohne USt.</text>
+<text><loc_432><loc_297><loc_457><loc_303>252,10</text>
+<text><loc_246><loc_305><loc_306><loc_311>Steuerbetrag</text>
+<text><loc_432><loc_305><loc_457><loc_311>47,90</text>
+<text><loc_246><loc_314><loc_301><loc_320>Bruttosumme</text>
+<text><loc_432><loc_314><loc_457><loc_320>300,00</text>
+<text><loc_246><loc_323><loc_350><loc_329>Erhaltene Anzahlungen</text>
+<text><loc_432><loc_323><loc_457><loc_329>-0,00</text>
+<text><loc_246><loc_331><loc_296><loc_337>Zahlbetrag</text>
+<text><loc_428><loc_331><loc_457><loc_337>300,00</text>
+<text><loc_42><loc_144><loc_165><loc_150>Zahlbar sofort rein netto</text>
+<text><loc_133><loc_47><loc_364><loc_53>Für die doppelte Verlegung, falls erforderlich.</text>
+</doctag>

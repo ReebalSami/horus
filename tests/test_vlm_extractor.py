@@ -95,30 +95,41 @@ def test_concrete_extractors_satisfy_protocol() -> None:
 # member (pilot-13.yaml working_models excludes it).
 _ADR_032_CONTROLLED_PAIR_MPS = "ibm-granite/granite-docling-258M"
 
+# The ADR-054 GPU reader-bake-off lead candidate — the MinerU 3.3-release
+# checkpoint (2604 stability fixes + native multilingual OCR), same arch and
+# wiring as the 2604 Cat-1 entry. NOT an ADR-009 evaluation-cohort member;
+# registered only so the #114 bake-off can run it via the manifest.
+_ADR_054_BAKEOFF_CANDIDATE = "opendatalab/MinerU2.5-Pro-2605-1.2B"
+
+_NON_COHORT_ENTRIES = {_ADR_032_CONTROLLED_PAIR_MPS, _ADR_054_BAKEOFF_CANDIDATE}
+
 
 def test_cohort_manifest_membership() -> None:
-    """10 ADR-009 §3.1 cohort models + 1 ADR-032 H8 controlled-pair MPS variant."""
+    """10 ADR-009 §3.1 cohort models + ADR-032 MPS pair + ADR-054 bake-off candidate."""
     from horus.vlm_extractor import COHORT_MANIFEST
 
-    assert _ADR_032_CONTROLLED_PAIR_MPS in COHORT_MANIFEST
-    adr009_cohort = set(COHORT_MANIFEST) - {_ADR_032_CONTROLLED_PAIR_MPS}
+    assert _NON_COHORT_ENTRIES <= set(COHORT_MANIFEST)
+    adr009_cohort = set(COHORT_MANIFEST) - _NON_COHORT_ENTRIES
     assert len(adr009_cohort) == 10, "ADR-009 §3.1 defines exactly 10 cohort models"
-    assert len(COHORT_MANIFEST) == 11, "10 ADR-009 cohort + 1 ADR-032 controlled-pair"
+    assert len(COHORT_MANIFEST) == 12, (
+        "10 ADR-009 cohort + 1 ADR-032 controlled-pair + 1 ADR-054 bake-off candidate"
+    )
 
 
 def test_cohort_manifest_category_distribution() -> None:
     """The 10 ADR-009 §3.1 cohort models: 3 in Cat 1, 3 in Cat 2, 4 in Cat 3.
 
-    The ADR-032 H8 controlled-pair MPS variant is excluded from the count — it
-    is the same model as the granite-MLX Cat-1 entry, registered only for the
-    MLX-vs-MPS backend comparison, not an ADR-009 cohort member.
+    The ADR-032 H8 controlled-pair MPS variant and the ADR-054 bake-off
+    candidate are excluded from the count — neither is an ADR-009 cohort member
+    (the former is a backend-comparison duplicate; the latter is the #114 GPU
+    reader-bake-off checkpoint).
     """
     from horus.vlm_extractor import COHORT_MANIFEST
 
     categories = [
         entry["category"]
         for model_id, entry in COHORT_MANIFEST.items()
-        if model_id != _ADR_032_CONTROLLED_PAIR_MPS
+        if model_id not in _NON_COHORT_ENTRIES
     ]
     assert categories.count(1) == 3, "Cat 1 (End-to-end doc-VLMs) must have 3 models"
     assert categories.count(2) == 3, "Cat 2 (Architecturally innovative) must have 3 models"

@@ -1,0 +1,48 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_BASIC-WL_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  8.50s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version:  2.0 vom 18.10.2018 Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_36><loc_57><loc_99><loc_64>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_80><loc_271><loc_91>Handelsrechnung Nr. 471102 vom 13.11.2019</section_header_level_1>
+<text><loc_37><loc_112><loc_216><loc_119>Anwendungsempfehlung : urn:factur-x.eu:1p0:basicwl</text>
+<text><loc_37><loc_119><loc_85><loc_126>Währung</text>
+<text><loc_111><loc_119><loc_116><loc_126>:</text>
+<text><loc_36><loc_140><loc_99><loc_147>Zahlungsreferenz</text>
+<text><loc_111><loc_140><loc_164><loc_147>: FA-2017-0010</text>
+<text><loc_37><loc_154><loc_72><loc_161>Bestellung</text>
+<text><loc_111><loc_154><loc_135><loc_161>: PO445</text>
+<text><loc_37><loc_161><loc_62><loc_168>Vertrag</text>
+<text><loc_111><loc_161><loc_150><loc_168>: MSPE2017</text>
+<section_header_level_1><loc_37><loc_181><loc_75><loc_188>Verkäufer:</section_header_level_1>
+<text><loc_37><loc_195><loc_143><loc_222>Lieferant GmbH Handelsname: 9999999800010 Lieferantenstraße 20 DE 80333 München</text>
+<text><loc_37><loc_228><loc_130><loc_235>USt.-Id.-Nr.: DE123456789</text>
+<section_header_level_1><loc_37><loc_241><loc_64><loc_248>Käufer:</section_header_level_1>
+<text><loc_37><loc_254><loc_143><loc_281>Ma jolie boutique Handelsname: 78787878400035 35 rue de la République FR 69001 Lyon</text>
+<text><loc_37><loc_287><loc_139><loc_294>USt.-Id.-Nr.: DE19787878784</text>
+<text><loc_37><loc_308><loc_371><loc_315>Zahlbar innerhalb 30 Tagen netto bis 04.04.2020, 3% Skonto innerhalb 10 Tagen bis 15.03.2020.</text>
+<text><loc_41><loc_323><loc_108><loc_350>Art-Nr-Kunde Art-Nr-Lief. Pos Art-Nr (Art)</text>
+<text><loc_127><loc_332><loc_175><loc_339>Beschreibung</text>
+<text><loc_209><loc_332><loc_246><loc_339>Nettopreis</text>
+<text><loc_369><loc_332><loc_391><loc_339>Menge</text>
+<text><loc_437><loc_332><loc_462><loc_339>Entgelt</text>
+<text><loc_37><loc_364><loc_118><loc_371>Zahlungsbedingungen:</text>
+<text><loc_155><loc_377><loc_203><loc_384>Beschreibung</text>
+<text><loc_340><loc_377><loc_375><loc_392>Fälligkeit 13.12.2017</text>
+<text><loc_407><loc_377><loc_448><loc_384>Teilzahlung</text>
+<text><loc_37><loc_407><loc_83><loc_414>Zahlungsart:</text>
+<text><loc_37><loc_421><loc_121><loc_428>Zahlungstyp (codiert): 30</text>
+<text><loc_37><loc_434><loc_92><loc_441>Verkäufer-IBAN</text>
+<text><loc_106><loc_434><loc_224><loc_441>: DE20142124212421242124</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><section_header_level_1><loc_37><loc_40><loc_142><loc_49>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_36><loc_57><loc_463><loc_159></otsl>
+</doctag>

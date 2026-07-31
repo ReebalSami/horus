@@ -1,0 +1,53 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EN16931_2_Teilrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  25.76s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_389><loc_44>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_41><loc_59><loc_352><loc_68>Handelsrechnung Nr. 471113 vom 13.06.2018</section_header_level_1>
+<text><loc_41><loc_91><loc_274><loc_97>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_104><loc_173><loc_110>Rechnungswährung : EUR</text>
+<text><loc_41><loc_140><loc_254><loc_145>Liefer- und Leistungsdatum : 03.06.2018</text>
+<text><loc_41><loc_160><loc_274><loc_165>Bestellung : 2018-471331</text>
+<section_header_level_1><loc_41><loc_180><loc_92><loc_186>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_194><loc_223><loc_200>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_41><loc_201><loc_113><loc_207>Lieferant GmbH</text>
+<text><loc_41><loc_208><loc_143><loc_214>Lieferantenstraße 20</text>
+<text><loc_41><loc_215><loc_123><loc_221>DE 80333 München</text>
+<text><loc_41><loc_229><loc_183><loc_234>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_235><loc_173><loc_241>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_248><loc_173><loc_254>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_41><loc_255><loc_153><loc_260>Nummer : GE2020211</text>
+<text><loc_41><loc_262><loc_223><loc_267>Globale Nummer: 4000001987658 (GTIN)</text>
+<text><loc_41><loc_269><loc_118><loc_274>Kunden AG Mitte</text>
+<text><loc_41><loc_275><loc_118><loc_281>Kundenstraße 15</text>
+<text><loc_41><loc_282><loc_132><loc_287>DE 69876 Frankfurt</text>
+<text><loc_41><loc_315><loc_329><loc_321>Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.</text>
+<text><loc_41><loc_343><loc_264><loc_349>Qualifizierung der Textart : Price conditions</text>
+<text><loc_41><loc_356><loc_262><loc_362>Es bestehen Rabatt- und Bonusvereinbarungen.</text>
+<text><loc_41><loc_383><loc_295><loc_389>Qualifizierung der Textart : Regulatory information</text>
+<text><loc_41><loc_390><loc_113><loc_395>Lieferant GmbH</text>
+<text><loc_41><loc_397><loc_143><loc_402>Lieferantenstraße 20</text>
+<text><loc_41><loc_404><loc_107><loc_409>80333 München</text>
+<text><loc_41><loc_410><loc_113><loc_416>Deutschland</text>
+<text><loc_41><loc_417><loc_183><loc_422>Geschäftsführer: Hans Muster</text>
+<text><loc_41><loc_424><loc_194><loc_429>Handelsregisternummer: H A 123</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><otsl><loc_41><loc_60><loc_459><loc_166><fcel>Pos Art-Nr-Kunde Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions- betrag<nl><fcel>Art-Nr-Lief.<ecel><ecel><ecel><fcel>ohne<nl><fcel>Art-Nr<ecel><ecel><ecel><fcel>USt.<nl><fcel>(Art)<ecel><ecel><ecel><ecel><nl><fcel>1<fcel>Schweinesteak<fcel>5,5000<fcel>4 kg<fcel>22,00<nl><fcel>SFK5<ecel><ecel><ecel><ecel><nl><fcel>4000050986428<ecel><ecel><ecel><ecel><nl><fcel>(GLN)<ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis :5,5000<ecel><ecel><ecel><nl><fcel>Bestellt wurden 5 kg Schweinesteak. Mit dieser<ecel><ecel><ecel><ecel><nl><fcel>Rechnung werden die nachgelieferten 4 kg Steuerbet.<ecel><ecel><ecel><ecel><nl><fcel>berechnet.<ecel><ecel><ecel><ecel><nl><fcel>Schweinesteak aus Deutschland<ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_42><loc_187><loc_142><loc_193>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_42><loc_201><loc_103><loc_207>Beschreibung</section_header_level_1>
+<text><loc_42><loc_208><loc_300><loc_221>Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3% Skonto innerhalb 10 Tagen bis 15.06.2018</text>
+<section_header_level_1><loc_42><loc_253><loc_153><loc_259>Steueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_266><loc_459><loc_355><fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl><fcel>Umsatzsteuer (S)<fcel>22,00<ecel><fcel>7<fcel>1,54<nl><fcel>Belegsummen:<ecel><ecel><ecel><fcel>22,00<nl><ecel><fcel>Positionssumme<ecel><ecel><ecel><nl><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><ecel><ecel><nl><ecel><fcel>Gesamtbetrag der Abschläge<ecel><ecel><ecel><nl><ecel><fcel>Rechnungssumme ohne USt.<ecel><ecel><fcel>22,00<nl><ecel><fcel>Steuerbetrag in<fcel>EUR<fcel>1,54<ecel><nl><ecel><fcel>Bruttosumme<ecel><ecel><fcel>23,54<nl><ecel><fcel>Erhaltene Anzahlungen<ecel><ecel><ecel><nl><ecel><fcel>Zahlbetrag<fcel>23,54<ecel><ecel><nl></otsl>
+<text><loc_246><loc_356><loc_298><loc_361>Zahlbetrag</text>
+<text><loc_432><loc_356><loc_457><loc_361>23,54</text>
+<text><loc_246><loc_356><loc_298><loc_361>Zahlbetrag</text>
+<text><loc_432><loc_356><loc_457><loc_361>23,54</text>
+</doctag>

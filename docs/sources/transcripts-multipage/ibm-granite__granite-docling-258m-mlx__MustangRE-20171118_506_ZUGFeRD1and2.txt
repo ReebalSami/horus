@@ -1,0 +1,40 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  MustangRE-20171118_506_ZUGFeRD1and2
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  6.20s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><page_header><loc_54><loc_34><loc_99><loc_40>2017-11-18</page_header>
+<text><loc_86><loc_92><loc_212><loc_96>Bei Spiel GmbH · Ecke 12 · 12345 Stadthausen</text>
+<section_header_level_1><loc_59><loc_100><loc_127><loc_110>Theodor Est</section_header_level_1>
+<text><loc_59><loc_117><loc_113><loc_126>Bahnstr. 42</text>
+<text><loc_59><loc_140><loc_136><loc_149>88802 Spielkreis</text>
+<section_header_level_1><loc_47><loc_183><loc_131><loc_191>Kundennummer:2</section_header_level_1>
+<text><loc_47><loc_207><loc_260><loc_223>Rechnung # RE-20171118/506 von 18.11.2017 Leistungsdatum 17.11.2017</text>
+<otsl><loc_47><loc_230><loc_453><loc_294><ched>Menge<ched>Produkt<ched>USt.<ched>Preis<ched>Gesamtbetrag<nl><fcel>1.00<fcel>Künstlerische Gestaltung  (Stunde): Einer  Beispielrechnung<fcel>7%<fcel>160,00 €<fcel>160,00 €<nl><fcel>400,00<fcel>Luftballon: Bunt, ca. 500ml<fcel>19%<fcel>0,79 €<fcel>316,00 €<nl><fcel>200,00<fcel>Heiße Luft pro Liter:<fcel>19%<fcel>0,10 €<fcel>20,00 €<nl></otsl>
+<text><loc_47><loc_294><loc_148><loc_302>Nettobetrag: 496,00 €</text>
+<section_header_level_1><loc_47><loc_309><loc_157><loc_317>zuzüglich Umsatzsteuer</section_header_level_1>
+<otsl><loc_47><loc_317><loc_241><loc_355><ched>USt. Satz<ched>Nettopreis<ched>Ust.-Betrag<nl><fcel>7%<fcel>160,00 €<fcel>11,20 €<nl><fcel>19%<fcel>336,00 €<fcel>63,84 €<nl></otsl>
+<text><loc_47><loc_355><loc_159><loc_363>Gesamtbetrag: 571,04 €</text>
+<section_header_level_1><loc_47><loc_386><loc_246><loc_395>Bitte überweisen Sie bis zum 09.12.2017.</section_header_level_1>
+<text><loc_47><loc_401><loc_163><loc_408>Powered by GnuAccounting</text>
+<picture><loc_377><loc_27><loc_439><loc_69><screenshot></picture>
+<text><loc_379><loc_73><loc_439><loc_80>Bei Spiel GmbH</text>
+<text><loc_379><loc_83><loc_419><loc_89>Ecke 12</text>
+<text><loc_379><loc_92><loc_436><loc_97>12345 Stadthausen</text>
+<text><loc_379><loc_106><loc_435><loc_111>fon (555) 23 78 -0</text>
+<text><loc_379><loc_115><loc_437><loc_120>fax (555) 23 78 -51</text>
+<text><loc_379><loc_126><loc_437><loc_131>info@localhost.local</text>
+<text><loc_379><loc_135><loc_424><loc_140>http://localhost/</text>
+<page_footer><loc_233><loc_457><loc_268><loc_463>Seite 1/1</page_footer>
+<page_footer><loc_360><loc_428><loc_442><loc_433>US-ID: DE136695976</page_footer>
+<text><loc_360><loc_437><loc_442><loc_442>IBAN DE88200800000970375700</text>
+<text><loc_360><loc_446><loc_421><loc_450>BIC COBADEFFXXX</text>
+<text><loc_360><loc_454><loc_454><loc_464>Commerzbank vormals Dresdner Bank</text>
+<page_footer><loc_360><loc_468><loc_454><loc_472>Kontoinhaber: Max Mustermann</page_footer>
+</doctag>

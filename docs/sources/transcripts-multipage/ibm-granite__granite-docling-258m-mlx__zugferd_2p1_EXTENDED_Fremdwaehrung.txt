@@ -1,0 +1,50 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EXTENDED_Fremdwaehrung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  9.58s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_48>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020</text>
+<text><loc_36><loc_48><loc_170><loc_55>Stylesheet-Version:  2.0 vom 18.10.2018</text>
+<text><loc_36><loc_55><loc_169><loc_61>Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_36><loc_61><loc_99><loc_68>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_82><loc_285><loc_92>Handelsrechnung Nr. 47110815 vom 31.10.2018</section_header_level_1>
+<text><loc_36><loc_112><loc_110><loc_119>Geschäftsprozess</text>
+<text><loc_120><loc_112><loc_206><loc_119>: Beispielgeschäftsprozess</text>
+<text><loc_36><loc_119><loc_350><loc_126>Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended</text>
+<text><loc_36><loc_126><loc_65><loc_133>Währung</text>
+<text><loc_120><loc_126><loc_141><loc_133>: GBP</text>
+<text><loc_36><loc_140><loc_109><loc_147>Abrechnungszeitraum</text>
+<text><loc_132><loc_140><loc_223><loc_147>: 01.10.2018 bis 31.10.2018</text>
+<text><loc_36><loc_175><loc_75><loc_182>Verkäufer:</text>
+<text><loc_36><loc_182><loc_119><loc_189>Nummer : 12345676</text>
+<text><loc_36><loc_189><loc_118><loc_196>Rohstoff AG Salzgitter</text>
+<text><loc_36><loc_196><loc_81><loc_203>Marktstr. 153</text>
+<text><loc_36><loc_203><loc_103><loc_210>DE 38226 Salzgitter</text>
+<text><loc_36><loc_216><loc_130><loc_223>USt.-Id.-Nr. : DE123456789</text>
+<text><loc_36><loc_229><loc_65><loc_236>Käufer:</text>
+<text><loc_36><loc_236><loc_164><loc_263>Nummer : 75969813 Metallbau Leipzig GmbH & Co. KG Pappelallee 15 Hof 3 DE 12345 Leipzig</text>
+<text><loc_36><loc_278><loc_165><loc_285>Abweichender Warenempfänger:</text>
+<text><loc_36><loc_285><loc_164><loc_320>Nummer : 75969815 Metallbau Leipzig GmbH & Co. KG Eichenpromenade 37 Tor 1 DE 12347 Metallstadt</text>
+<section_header_level_1><loc_36><loc_333><loc_162><loc_340>Abweichender Zahlungsempfänger:</section_header_level_1>
+<text><loc_36><loc_347><loc_165><loc_374>Globale Nummer: 432156789 (DUNS) Global Supplies Financial Services Friedrichstraße 165 DE 12345 Berlin</text>
+<text><loc_36><loc_388><loc_147><loc_419>Qualifizierung der Textart: REG Mitglieder der Geschäftsleitung H. Meier Geschäftsführer T. Müller Prokurist</text>
+<text><loc_36><loc_419><loc_129><loc_426>HRB Braunschweig 12345</text>
+<text><loc_36><loc_432><loc_155><loc_439>Qualifizierung der Textart: AAI</text>
+<text><loc_36><loc_439><loc_277><loc_446>Vom 17. Dezember 2018 bis 6. Januar 2019 haben wir Betriebsferien.</text>
+<text><loc_36><loc_452><loc_144><loc_459>Qualifizierung der Textart: TXD</text>
+<text><loc_36><loc_459><loc_421><loc_465>Aus konzern-internen Gründen wird der Steuerbetrag sowohl in der Rechungswährung (EUR) als auch in der</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_37><loc_34><loc_157><loc_41>Buchwährung (GBP) ausgegeben.</text>
+<otsl><loc_37><loc_48><loc_464><loc_461></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><text><loc_250><loc_35><loc_328><loc_50>Erhaltene Anzahlungen Zahlbetrag</text>
+<text><loc_436><loc_35><loc_461><loc_50>-500,00 521,91</text>
+</doctag>

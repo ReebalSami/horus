@@ -1,0 +1,124 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EXTENDED_Rechnungskorrektur
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  17.69s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_36><loc_34><loc_276><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version: 2.1 vom 24.03.2020 Stylesheet-Version:  2.0 vom 18.10.2018</text>
+<text><loc_36><loc_56><loc_169><loc_62>Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_36><loc_62><loc_99><loc_69>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_37><loc_82><loc_321><loc_92>Rechnungskorrektur Nr. RK21012345 vom 16.09.2018</section_header_level_1>
+<text><loc_37><loc_112><loc_106><loc_118>Testkennzeichen</text>
+<text><loc_118><loc_112><loc_121><loc_118>:</text>
+<text><loc_121><loc_112><loc_121><loc_118>true</text>
+<text><loc_37><loc_118><loc_110><loc_125>Geschäftsprozess</text>
+<text><loc_118><loc_118><loc_190><loc_125>: Beispielgeschäftsprozess</text>
+<text><loc_37><loc_125><loc_120><loc_132>Anwendungsempfehl: urn:cen.eu:en</text>
+<text><loc_120><loc_125><loc_125><loc_132>urn</text>
+<text><loc_125><loc_125><loc_190><loc_132>:e.cn.eu:en</text>
+<text><loc_37><loc_132><loc_69><loc_139>Währung</text>
+<text><loc_118><loc_132><loc_125><loc_139>: EUR</text>
+<text><loc_37><loc_147><loc_130><loc_153>Liefer- und Leistungsdatum</text>
+<text><loc_130><loc_147><loc_178><loc_153>: 05.08.2018</text>
+<text><loc_37><loc_168><loc_72><loc_174>Bestellung</text>
+<text><loc_121><loc_168><loc_168><loc_174>: B123456789</text>
+<text><loc_37><loc_174><loc_94><loc_181>Weitere Referenz</text>
+<text><loc_121><loc_174><loc_264><loc_181>: REKLA-2018-235, Art der Referenz: 130</text>
+<text><loc_37><loc_181><loc_94><loc_188>Weitere Referenz</text>
+<text><loc_121><loc_181><loc_265><loc_188>: R87654321012345, Art der Referenz: 130</text>
+<section_header_level_1><loc_37><loc_200><loc_75><loc_207>Verkäufer:</section_header_level_1>
+<text><loc_37><loc_207><loc_179><loc_242>Nummer : 549910 Globale Nummer: 4333741000005 (GTX) MUSTERLIEFERANT GMBH BAHNHFOSSTRASSE 99 DE 99199 MUSTERHAUSEN</text>
+<text><loc_37><loc_248><loc_69><loc_255>Telefon</text>
+<text><loc_73><loc_248><loc_134><loc_255>: +49 932 421 500</text>
+<text><loc_37><loc_255><loc_69><loc_262>E-Mail</text>
+<text><loc_73><loc_255><loc_202><loc_262>: max.mustermann@musterlieferant.de</text>
+<text><loc_37><loc_262><loc_130><loc_269>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_37><loc_275><loc_65><loc_282>Käufer:</section_header_level_1>
+<text><loc_37><loc_282><loc_179><loc_316>Nummer : 009420 Globale Nummer: 4304171000002 (GTX) MUSTER-KUNDE GMBH KUNDENWEG 88 DE 40235 DUESSELDORF</text>
+<section_header_level_1><loc_37><loc_328><loc_153><loc_334>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_37><loc_341><loc_179><loc_375>Globale Nummer: 4304171088093 (GTX) MUSTER-MARKT 8211 HAUPTSTRASSE 44 DE 31157 SARSTEDT</text>
+<section_header_level_1><loc_37><loc_388><loc_168><loc_395>Abweichender Rechnungsempfänger:</section_header_level_1>
+<text><loc_37><loc_395><loc_179><loc_429>Nummer : 009420 Globale Nummer: 4304171000002 (GTX) MUSTER-KUNDE GMBH KUNDENWEG 88 DE 40235 DUESSELDORF</text>
+<text><loc_37><loc_442><loc_251><loc_448>Qualifizierung der Textart: AAK, Qualifizierung des Textes: ST3</text>
+<text><loc_37><loc_448><loc_206><loc_455>Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_37><loc_32><loc_147><loc_47>Qualifizierung der Textart:</text>
+<text><loc_37><loc_47><loc_147><loc_117>MUSTERLIEFERANT GMBH BAHNHFSTRASSE 99 99199 MUSTERHAUSEN Geschäftsführung: Max Mustermann USt-IdNr: DE123456789 Telefon: +49 932 431 0</text>
+<text><loc_37><loc_127><loc_127><loc_136>Pos</text>
+<text><loc_37><loc_136><loc_47><loc_145>1</text>
+<text><loc_37><loc_145><loc_47><loc_154>2</text>
+<text><loc_37><loc_154><loc_47><loc_163>3</text>
+<text><loc_37><loc_163><loc_47><loc_172>4</text>
+<text><loc_37><loc_172><loc_47><loc_181>5</text>
+<text><loc_37><loc_181><loc_47><loc_190>6</text>
+<text><loc_37><loc_190><loc_47><loc_199>7</text>
+<text><loc_37><loc_199><loc_47><loc_208>8</text>
+<text><loc_37><loc_208><loc_47><loc_217>9</text>
+<text><loc_37><loc_217><loc_47><loc_226>10</text>
+<text><loc_37><loc_226><loc_47><loc_235>11</text>
+<text><loc_37><loc_235><loc_47><loc_244>12</text>
+<text><loc_37><loc_244><loc_47><loc_253>13</text>
+<text><loc_37><loc_253><loc_47><loc_262>14</text>
+<text><loc_37><loc_262><loc_47><loc_271>15</text>
+<text><loc_37><loc_271><loc_47><loc_280>16</text>
+<text><loc_37><loc_280><loc_47><loc_289>17</text>
+<text><loc_37><loc_289><loc_47><loc_298>18</text>
+<text><loc_37><loc_298><loc_47><loc_307>19</text>
+<text><loc_37><loc_307><loc_47><loc_315>20</text>
+<text><loc_37><loc_315><loc_47><loc_324>21</text>
+<text><loc_37><loc_324><loc_47><loc_333>22</text>
+<text><loc_37><loc_333><loc_47><loc_342>23</text>
+<text><loc_37><loc_342><loc_47><loc_351>24</text>
+<text><loc_37><loc_351><loc_47><loc_360>25</text>
+<text><loc_37><loc_360><loc_47><loc_369>26</text>
+<text><loc_37><loc_369><loc_47><loc_378>27</text>
+<text><loc_37><loc_378><loc_47><loc_387>28</text>
+<text><loc_37><loc_387><loc_47><loc_396>29</text>
+<text><loc_37><loc_396><loc_47><loc_405>30</text>
+<text><loc_37><loc_405><loc_47><loc_414>31</text>
+<text><loc_37><loc_414><loc_47><loc_423>32</text>
+<text><loc_37><loc_423><loc_47><loc_432>33</text>
+<text><loc_37><loc_432><loc_47><loc_441>34</text>
+<text><loc_37><loc_441><loc_47><loc_450>35</text>
+<text><loc_37><loc_450><loc_47><loc_459>36</text>
+<text><loc_37><loc_459><loc_47><loc_468>37</text>
+<text><loc_37><loc_468><loc_47><loc_477>38</text>
+<text><loc_37><loc_477><loc_47><loc_486>39</text>
+<text><loc_37><loc_486><loc_47><loc_495>40</text>
+<text><loc_37><loc_495><loc_47><loc_504>41</text>
+<text><loc_37><loc_504><loc_47><loc_512>42</text>
+<text><loc_37><loc_512><loc_47><loc_521>43</text>
+<text><loc_37><loc_521><loc_47><loc_530>44</text>
+<text><loc_37><loc_530><loc_47><loc_440>44</text>
+<text><loc_37><loc_440><loc_47><loc_449>45</text>
+<text><loc_37><loc_449><loc_47><loc_458>46</text>
+<text><loc_37><loc_458><loc_47><loc_466>47</text>
+<text><loc_37><loc_466><loc_47><loc_475>48</text>
+<text><loc_37><loc_475><loc_47><loc_484>49</text>
+<text><loc_37><loc_484><loc_47><loc_492>50</text>
+<text><loc_37><loc_492><loc_47><loc_500>51</text>
+<text><loc_37><loc_500><loc_47><loc_508>52</text>
+<text><loc_37><loc_508><loc_47><loc_517>53</text>
+<text><loc_37><loc_517><loc_47><loc_476>53</text>
+<text><loc_37><loc_476><loc_47><loc_485>54</text>
+<text><loc_37><loc_485><loc_47><loc_493>55</text>
+<text><loc_37><loc_493><loc_47><loc_502>56</text>
+<text><loc_37><loc_502><loc_47><loc_510>57</text>
+<text><loc_37><loc_510><loc_47><loc_419>57</text>
+<text><loc_37><loc_419><loc_47><loc_428>58</text>
+<text><loc_37><loc_428><loc_47><loc_437>59</text>
+<text><loc_37><loc_437><loc_47><loc_446>60</text>
+<text><loc_37><loc_446><loc_47><loc_455>61</text>
+<text><loc_37><loc_455><loc_47><loc_464>62</text>
+<text><loc_37><loc_464><loc_47><loc_473>63</text>
+<text><loc_37><loc_473><loc_47><loc_481>64</text>
+<text><loc_37
+===== PAGE 3 =====
+<doctag><otsl><loc_250><loc_35><loc_462><loc_59></otsl>
+</doctag>

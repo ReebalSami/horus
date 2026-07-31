@@ -1,0 +1,90 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_Reisekostenabrechnung_XRechnung_embedded
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  16.76s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><code><loc_41><loc_37><loc_341><loc_70><_unknown_>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+        ZUGFeRD-Version   : 2.1 vom 24.03.2020
+        Stylesheet-Version: 2.0 vom 18.10.2018
+        Codelisten-Version: 3.0 vom 15.11.2019
+        (c) AWV e.V. 2020</code>
+<section_header_level_1><loc_41><loc_84><loc_344><loc_93>Handelsrechnung Nr. 280081 vom 13.07.2018</section_header_level_1>
+<text><loc_41><loc_115><loc_366><loc_129>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:xoevde:kosit:standard:xrechnung_1.2</text>
+<text><loc_41><loc_129><loc_169><loc_136>Währung : EUR</text>
+<text><loc_41><loc_142><loc_322><loc_149>Abrechnungszeitraum : 09.07.2018 bis 11.07.2018</text>
+<text><loc_41><loc_155><loc_282><loc_162>Referenz des Käufers : 04011000-12345-34</text>
+<text><loc_41><loc_169><loc_386><loc_176>Weitere Referenzes : Hotelrechung, Art der Referenz: 916</text>
+<text><loc_41><loc_176><loc_405><loc_183>Weitere Referenzes : Taxi-Nue-und-Berlin, Art der Referenz: 916</text>
+<section_header_level_1><loc_41><loc_197><loc_91><loc_203>Verkäufer:</section_header_level_1>
+<text><loc_41><loc_210><loc_218><loc_217>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_41><loc_217><loc_126><loc_224>Lieferant GmbH</text>
+<text><loc_41><loc_224><loc_110><loc_230>Max Mustermann</text>
+<text><loc_41><loc_230><loc_110><loc_237>Muster-Einkauf</text>
+<text><loc_41><loc_237><loc_140><loc_244>Lieferantenstraße 20</text>
+<text><loc_41><loc_244><loc_120><loc_250>DE 80333 München</text>
+<text><loc_41><loc_258><loc_110><loc_265>Telefon :</text>
+<text><loc_41><loc_265><loc_199><loc_272>E-Mail : Max@Mustermann.de</text>
+<text><loc_41><loc_272><loc_179><loc_278>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_278><loc_170><loc_285>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_291><loc_76><loc_298>Käufer:</section_header_level_1>
+<text><loc_41><loc_298><loc_164><loc_305>Nummer : GE2020211</text>
+<text><loc_41><loc_305><loc_116><loc_312>Kunden AG Mitte</text>
+<text><loc_41><loc_312><loc_116><loc_319>Kundenstraße 15</text>
+<text><loc_41><loc_319><loc_130><loc_325>DE 69876 Frankfurt</text>
+<section_header_level_1><loc_41><loc_338><loc_179><loc_345>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_41><loc_352><loc_140><loc_358>Musterfirma Nürnberg</text>
+<text><loc_41><loc_358><loc_120><loc_365>Am Bahnhof 42</text>
+<text><loc_41><loc_365><loc_126><loc_372>DE 75319 Nürnberg</text>
+<text><loc_41><loc_383><loc_194><loc_390>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_390><loc_287><loc_397>Listelotte Müllermann, Kumpelstr. 54, 12345 Berlin</text>
+<text><loc_41><loc_397><loc_189><loc_404>Handelsregisternummer: H A 713</text>
+<text><loc_41><loc_418><loc_218><loc_425>Qualifizierung der Textart: AAI</text>
+<text><loc_41><loc_425><loc_218><loc_432>Flug wurde vom Auftraggeber gebucht.</text>
+<text><loc_41><loc_445><loc_194><loc_452>Qualifizierung der Textart: AAI</text>
+<text><loc_41><loc_452><loc_209><loc_459>Reise: Musterreisekostenabrechnung</text>
+<text><loc_41><loc_459><loc_174><loc_466>Zweck: Workshop in Nürnberg</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_42><loc_34><loc_159><loc_39>Land: Deutschland</text>
+<text><loc_42><loc_40><loc_160><loc_46>Strecke: Berlin - Berlin</text>
+<otsl><loc_43><loc_62><loc_458><loc_236><fcel>Art-Nr-Kunde<fcel>Pos<fcel>Art-Nr-Lief.<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl><fcel>1<fcel>Übernachtung.<fcel>158,88<fcel>1 Stk<fcel>7 % VAT (S)<fcel>158,88<ecel><ecel><nl><ecel><fcel>2<fcel>Nächte<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Hotel<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 170,00<ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>2<fcel>Verpflegung<fcel>11,76<fcel>1 Stk 19 % VAT (S)<fcel>11,76<ecel><ecel><ecel><nl><ecel><fcel>Frühstück<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 14,00<ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>3<fcel>Fahrtkosten,<fcel>23,36<fcel>1 Stk 7 % VAT (S)<fcel>23,36<ecel><ecel><ecel><nl><ecel><fcel>Taxi Berlin<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 25,00<ecel><ecel><ecel><ecel><ecel><ecel><nl><fcel>4<fcel>Fahrtkosten,<fcel>20,09<fcel>1 Stk 7 % VAT (S)<fcel>20,09<ecel><ecel><ecel><nl><ecel><fcel>Taxi<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Nürnberg<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 21,50<ecel><ecel><ecel><ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_41><loc_268><loc_140><loc_274>Zahlungsbedingungen:</section_header_level_1>
+<section_header_level_1><loc_150><loc_283><loc_209><loc_288>Beschreibung</section_header_level_1>
+<text><loc_42><loc_290><loc_293><loc_302>Zahlbar innerhalb 30 Tagen netto bis 12.08.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018</text>
+<section_header_level_1><loc_41><loc_319><loc_101><loc_324>Zahlungsart:</section_header_level_1>
+<text><loc_42><loc_332><loc_184><loc_337>Zahlung per SEPA Überweisung.</text>
+<text><loc_42><loc_338><loc_184><loc_344>Zahlungstyp (codiert): 58</text>
+<text><loc_42><loc_352><loc_152><loc_357>Verkäufer-Kontoname</text>
+<text><loc_152><loc_352><loc_182><loc_357>: Kunden AG</text>
+<text><loc_42><loc_358><loc_152><loc_364>Verkäufer-IBAN</text>
+<text><loc_152><loc_358><loc_263><loc_364>: DE0212030000000202051</text>
+<text><loc_42><loc_365><loc_152><loc_371>Verkäufer-BIC</text>
+<text><loc_152><loc_365><loc_208><loc_371>: BYLADEM1001</text>
+<section_header_level_1><loc_41><loc_393><loc_179><loc_398>Umsatzsteueraufschlüsselung:</section_header_level_1>
+<otsl><loc_41><loc_406><loc_458><loc_430><fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (S)<fcel>202,33<fcel>7<nl><fcel>VAT (S)<fcel>11,76<fcel>19<nl></otsl>
+<section_header_level_1><loc_41><loc_437><loc_101><loc_442>Belegsummen:</section_header_level_1>
+<text><loc_246><loc_445><loc_315><loc_450>Positionssumme</text>
+<text><loc_428><loc_445><loc_456><loc_450>214,09</text>
+<text><loc_246><loc_453><loc_374><loc_458>Gesamtbetrag der Zuschläge</text>
+<text><loc_438><loc_453><loc_456><loc_458>0,00</text>
+</doctag>
+===== PAGE 3 =====
+<doctag><text><loc_246><loc_34><loc_374><loc_40>Gesamtbetrag der Abschläge</text>
+<text><loc_429><loc_34><loc_456><loc_40>-0,00</text>
+<text><loc_246><loc_43><loc_364><loc_49>Rechnungssumme ohne USt.</text>
+<text><loc_429><loc_43><loc_456><loc_49>214,09</text>
+<text><loc_246><loc_52><loc_305><loc_58>Steuerbetrag</text>
+<text><loc_429><loc_52><loc_456><loc_58>16,39</text>
+<text><loc_246><loc_61><loc_300><loc_67>Bruttosumme</text>
+<text><loc_429><loc_61><loc_456><loc_67>230,48</text>
+<text><loc_246><loc_70><loc_349><loc_76>Erhaltene Anzahlungen</text>
+<text><loc_429><loc_70><loc_456><loc_76>-0,00</text>
+<text><loc_246><loc_79><loc_296><loc_85>Zahlbetrag</text>
+<text><loc_429><loc_79><loc_456><loc_85>230,48</text>
+</doctag>

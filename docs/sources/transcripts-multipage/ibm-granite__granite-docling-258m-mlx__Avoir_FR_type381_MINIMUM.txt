@@ -1,0 +1,45 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  Avoir_FR_type381_MINIMUM
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  6.07s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><picture><loc_26><loc_19><loc_59><loc_40><logo></picture>
+<text><loc_93><loc_19><loc_346><loc_30>Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France</text>
+<text><loc_93><loc_29><loc_346><loc_36>+33 4 50 44 68 99 - http://www.aubonmoulin.fr</text>
+<text><loc_93><loc_35><loc_393><loc_41>TVA : FR11999999998 - SIRET : 9999999800010 - APE : 4778C - SARL au capital de 120 000,00 €</text>
+<section_header_level_1><loc_26><loc_55><loc_172><loc_67>Avoir AV-2017-0005</section_header_level_1>
+<section_header_level_1><loc_30><loc_73><loc_113><loc_80>Adresse de livraison</section_header_level_1>
+<text><loc_30><loc_83><loc_120><loc_120>Ma jolie boutique 35 rue de la République 69001 Lyon France +33 4 72 07 08 55</text>
+<text><loc_30><loc_120><loc_135><loc_127>sav@majolieboutique.net</text>
+<text><loc_28><loc_133><loc_89><loc_140>Date de facture</text>
+<text><loc_130><loc_133><loc_171><loc_140>16/11/2017</text>
+<text><loc_28><loc_143><loc_124><loc_150>Conditions de paiement</text>
+<text><loc_130><loc_143><loc_202><loc_150>Paiement immédiat</text>
+<text><loc_28><loc_153><loc_95><loc_160>Date d'échéance</text>
+<text><loc_130><loc_153><loc_171><loc_160>16/11/2017</text>
+<text><loc_28><loc_163><loc_90><loc_170>Votre référence</text>
+<text><loc_130><loc_163><loc_156><loc_170>PO445</text>
+<text><loc_28><loc_173><loc_76><loc_180>Réf. marché</text>
+<text><loc_130><loc_173><loc_172><loc_180>MSPE2017</text>
+<text><loc_28><loc_183><loc_76><loc_190>Facture liée</text>
+<text><loc_130><loc_183><loc_183><loc_190>FA-2017-0010</text>
+<text><loc_28><loc_193><loc_81><loc_200>N° TVA client</text>
+<text><loc_130><loc_193><loc_192><loc_200>FR19787878784</text>
+<otsl><loc_25><loc_208><loc_474><loc_245></otsl>
+<otsl><loc_25><loc_247><loc_255><loc_273></otsl>
+<text><loc_42><loc_287><loc_66><loc_294>Notes</text>
+<text><loc_86><loc_287><loc_356><loc_294>Avoir suite à bidon 10L d'huile d'olive percé et carton de nougat renversé</text>
+<page_footer><loc_235><loc_477><loc_266><loc_483>Page 1 / 1</page_footer>
+<text><loc_274><loc_80><loc_372><loc_116>Ma jolie boutique Alexandre Payet 35 rue de la République 69001 Lyon France</text>
+<section_header_level_1><loc_274><loc_133><loc_354><loc_140>Contact commercial</section_header_level_1>
+<text><loc_274><loc_143><loc_354><loc_166>Tony Dubois +33 4 72 07 08 56 +33 6 11 22 33 44</text>
+<text><loc_274><loc_166><loc_390><loc_173>tony.dubois@aubonmoulin.fr</text>
+<text><loc_274><loc_83><loc_372><loc_120>Ma jolie boutique Alexandre Payet 35 rue de la République 69001 Lyon France</text>
+<picture><loc_428><loc_21><loc_449><loc_36><logo></picture>
+</doctag>

@@ -1,0 +1,139 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p0_EXTENDED_Warenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  23.64s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_40><loc_38><loc_315><loc_43>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen</text>
+<section_header_level_1><loc_40><loc_55><loc_340><loc_69>Handelsrechnung Nr. R87654321012345 vom 06.08.2018 WARENRECHNUNG</section_header_level_1>
+<code><loc_40><loc_86><loc_380><loc_98><_YAML_>Testkennzeichen      : true
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended
+
+Rechnungswahrung     : EUR
+</code>
+<text><loc_40><loc_125><loc_208><loc_131>Liefer- und Leistungsdatum : 05.08.2018</text>
+<text><loc_40><loc_144><loc_208><loc_150>Bestellung : B123456789</text>
+<text><loc_40><loc_150><loc_336><loc_156>Weitere Referenz : A456123, Art der Referenz: Rechnungsdatenblatt</text>
+<section_header_level_1><loc_40><loc_167><loc_81><loc_172>Verkäufer:</section_header_level_1>
+<text><loc_40><loc_172><loc_183><loc_178>Nummer : 549910</text>
+<text><loc_40><loc_178><loc_183><loc_183>Globale Nummer: 4333741000005 (STIN)</text>
+<text><loc_40><loc_183><loc_121><loc_188>MUSTERLIEFERANT GMBH</text>
+<text><loc_40><loc_189><loc_120><loc_194>BAHNHOFSTRASSE 99</text>
+<text><loc_40><loc_194><loc_125><loc_199>DE 99199 MUSTERHAUSEN</text>
+<text><loc_40><loc_205><loc_73><loc_210>Telefon</text>
+<text><loc_40><loc_210><loc_193><loc_215>E-Mail : max.mustermann@musterlieferant.de</text>
+<text><loc_40><loc_216><loc_232><loc_221>USt.-Id.-Nr. DE123456789</text>
+<section_header_level_1><loc_40><loc_227><loc_145><loc_232>Käufer/Leistungsempfänger:</section_header_level_1>
+<text><loc_40><loc_232><loc_73><loc_237>Nummer</text>
+<text><loc_40><loc_237><loc_183><loc_242>Globale Nummer: 4304171000002 (STIN)</text>
+<text><loc_40><loc_243><loc_108><loc_248>MUSTER-KUNDE GMBH</text>
+<text><loc_40><loc_248><loc_108><loc_253>KUNDENWEG 88</text>
+<text><loc_40><loc_253><loc_120><loc_258>DE 40235 DUESSELDORF</text>
+<section_header_level_1><loc_40><loc_269><loc_153><loc_274>Abweichender Warenempfänger:</section_header_level_1>
+<text><loc_40><loc_280><loc_183><loc_285>Globale Nummer: 4304171088093 (STIN)</text>
+<text><loc_40><loc_285><loc_89><loc_290>MUSTER-MARKT</text>
+<text><loc_40><loc_290><loc_73><loc_295>8211</text>
+<text><loc_40><loc_295><loc_108><loc_300>HAUPTSTRASSE 44</text>
+<text><loc_40><loc_300><loc_108><loc_305>DE 31157 SARSTEDT</text>
+<section_header_level_1><loc_40><loc_317><loc_168><loc_322>Abweichender Rechnungsempfänger:</section_header_level_1>
+<text><loc_40><loc_322><loc_73><loc_327>Nummer</text>
+<text><loc_40><loc_327><loc_183><loc_332>Globale Nummer: 4304171000002 (STIN)</text>
+<text><loc_40><loc_332><loc_108><loc_337>MUSTER-KUNDE GMBH</text>
+<text><loc_40><loc_337><loc_73><loc_342>KUNDENWEG 88</text>
+<text><loc_40><loc_342><loc_120><loc_347>DE 40235 DUESSELDORF</text>
+<text><loc_40><loc_359><loc_348><loc_369>Qualifizierung der Textart: Price conditions , Qualifizierung des Textes: ST3 Es bestehen Rabatt- oder Bonusvereinbarungen.</text>
+<text><loc_40><loc_375><loc_424><loc_385>Qualifizierung der Textart: Additional sale/purchase conditions , Qualifizierung des Textes: EEV Der Verkäufer bleibt Eigentümer der Waren bis zu vollständigen Erfüllung der Kaufpreisforderung.</text>
+<text><loc_40><loc_391><loc_240><loc_396>Qualifizierung der Textart: Regulatory information</text>
+<text><loc_40><loc_396><loc_208><loc_401>MUSTERLIEFERANT GMBH</text>
+<text><loc_40><loc_401><loc_108><loc_406>BAHNHOFSTRASSE 99</text>
+<text><loc_40><loc_406><loc_113><loc_411>99199 MUSTERHAUSEN</text>
+<text><loc_40><loc_411><loc_120><loc_416>Geschäftsführung:</text>
+<text><loc_40><loc_416><loc_108><loc_421>Max Mustermann</text>
+<text><loc_40><loc_421><loc_108><loc_426>USt-IdNr: DE123456789</text>
+<text><loc_40><loc_426><loc_125><loc_431>Telefon: +49 932 431 0</text>
+<text><loc_40><loc_431><loc_130><loc_436>www.musterlieferant.de</text>
+<text><loc_40><loc_436><loc_108><loc_441>HRB Nr. 372876</text>
+<text><loc_40><loc_441><loc_132><loc_446>Amtsgericht Musterstadt</text>
+<text><loc_40><loc_446><loc_132><loc_451>GLN 4304171000002</text>
+<text><
+===== PAGE 2 =====
+<doctag><page_header><loc_40><loc_45><loc_113><loc_50>Leergutwert: 46,50</page_header>
+<text><loc_40><loc_62><loc_423><loc_71>Wichtige Information: Bei Bestellungen bis zum 19.12. ist die Auslieferung bis spätestens 23.12. garantiert.</text>
+<otsl><loc_40><loc_76><loc_460><loc_458><fcel>Art-Nr-Kunde<fcel>Art-Nr-Lief.<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positons- betrag ohne USt.<nl><fcel>Pos<fcel>Art-Nr<fcel>Beschreibung<fcel>1,0000<fcel>100 Stk<fcel>19 %<fcel>100,00<nl><fcel>1<fcel>Zitronensäure<fcel>100ml<ecel><ecel><ecel><ecel><nl><fcel>ZS997 4123456000014 (GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 1,0000<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>* Anzahl Packstücke: 4 Karton<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Weitere Eigenschaften:<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Verpackungsart: = BO<ecel><ecel><ecel><ecel><ecel><nl><fcel>2<fcel>Gelierzucker Extra 250g<fcel>1,4500<fcel>50 Stk<fcel>7 %<fcel>72,50<ecel><nl><fcel>GZ250 4123456000021 (GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Artikelabatt<fcel>Artikelabatt<fcel>Abschlag :0,0200<fcel>2<ecel><ecel><nl><ecel><fcel>Bruttopreis : 1,5000 Abschlag :0,0300<fcel>1<fcel>Artikelrabatt<fcel>0,0200<ecel><ecel><nl><ecel><ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>* Anzahl Packstücke: 1 Karton<ecel><ecel><ecel><ecel><ecel><nl><fcel>3<fcel>Gelierzucker Extra 250g<fcel>0,0000<fcel>10 Stk<fcel>7 %<fcel>0,00<ecel><nl><fcel>GZ250 4123456000021 (GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 0,0000<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Artikel wie vereinbart ohne Berechnung * Anzahl Packstücke: 1 Karton<ecel><ecel><ecel><ecel><ecel><nl><fcel>4<fcel>Bierbrau Pils 20/0500<fcel>12,0000<fcel>15 Stk<fcel>19 %<fcel>180,00<ecel><nl><fcel>2031 4100130013294 (GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 12,0000<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>EAN-VKE: 4100130913297 * Anzahl Packstücke: 20 Flasche<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Weitere Eigenschaften:<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Verpackung: = Kiste<ecel><ecel><ecel><ecel><ecel><nl><fcel>5<fcel>Leergutpfand 20 x 0,5l<fcel>3,1000<fcel>15 Stk<fcel>19 %<fcel>46,50<ecel><nl><fcel>1805 2001015001325 (GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Bruttopreis : 3,1000<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>* Anzahl Packstücke: 1 Getränkekiste<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Weitere Eigenschaften:<ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>Verpackung: = unverpackt<ecel><ecel><ecel><ecel><ecel><nl><fcel>6<fcel>Mischpalette Joghurt Karton 3<fcel>29,1000<fcel>2 Stk<fcel>7 %<fcel>58,20<ecel><nl><fcel>MP107 4123456000038 (GTIN)<ecel><ecel><ecel><ecel><ecel><ecel><nl><ecel><fcel>* Anzahl Packstücke: 1 Palette<ecel><ecel><ecel><ecel><ecel><nl></otsl>
+</doctag>
+===== PAGE 3 =====
+<doctag><section_header_level_1><loc_113><loc_34><loc_201><loc_39>Weitere Eigenschaften:</section_header_level_1>
+<text><loc_113><loc_46><loc_192><loc_50>Verpackung: = Karton</text>
+<otsl><loc_112><loc_57><loc_444><loc_100></otsl>
+<section_header_level_1><loc_41><loc_118><loc_121><loc_123>Zahlungsbedingungen:</section_header_level_1>
+<otsl><loc_40><loc_128><loc_460><loc_224></otsl>
+<section_header_level_1><loc_41><loc_231><loc_115><loc_236>Art (Kategorie)</section_header_level_1>
+<text><loc_41><loc_237><loc_108><loc_242>Umsatzsteuer  (S)</text>
+<text><loc_187><loc_237><loc_212><loc_242>326,50</text>
+<text><loc_41><loc_244><loc_108><loc_249>Umsatzsteuer  (S)</text>
+<text><loc_187><loc_244><loc_212><loc_249>130,70</text>
+<text><loc_41><loc_256><loc_89><loc_261>Belegnummer:</text>
+<text><loc_187><loc_256><loc_256><loc_261>Positionssumme</text>
+<text><loc_257><loc_256><loc_344><loc_261>457,20</text>
+<text><loc_41><loc_263><loc_108><loc_268>Gesamtbetrag der</text>
+<text><loc_114><loc_263><loc_256><loc_268>Zuschlage 3,00</text>
+<text><loc_41><loc_270><loc_108><loc_275>Gesamtbetrag der</text>
+<text><loc_114><loc_270><loc_256><loc_275>Rechnungssumme ohne USt.</text>
+<text><loc_257><loc_270><loc_344><loc_275>448,99</text>
+<text><loc_41><loc_277><loc_108><loc_282>Steuerbetrag in</text>
+<text><loc_114><loc_277><loc_256><loc_282>Steuerbetrag in EUR</text>
+<text><loc_257><loc_277><loc_344><loc_282>70,00</text>
+<text><loc_41><loc_284><loc_108><loc_289>Bruttosumme</text>
+<text><loc_257><loc_284><loc_344><loc_289>518,99</text>
+<text><loc_41><loc_291><loc_108><loc_296>Erhaltene Anzahlungen</text>
+<text><loc_257><loc_291><loc_344><loc_296>-0,00</text>
+<text><loc_41><loc_298><loc_108><loc_303>Zahlbetrag</text>
+<text><loc_257><loc_298><loc_344><loc_303>518,99</text>
+<text><loc_41><loc_305><loc_108><loc_310>Zahlbetrag</text>
+<text><loc_257><loc_305><loc_344><loc_310></text>
+<text><loc_41><loc_312><loc_108><loc_317>Zahlbetrag</text>
+<text><loc_257><loc_312><loc_344><loc_317></text>
+<text><loc_257><loc_318><loc_344><loc_323></text>
+<text><loc_257><loc_324><loc_344><loc_329></text>
+<text><loc_257><loc_330><loc_344><loc_335></text>
+<text><loc_257><loc_336><loc_344><loc_341></text>
+<text><loc_257><loc_342><loc_344><loc_347></text>
+<text><loc_257><loc_348><loc_344><loc_353></text>
+<text><loc_257><loc_355><loc_344><loc_360></text>
+<text><loc_257><loc_362><loc_344><loc_367></text>
+<text><loc_257><loc_368><loc_344><loc_373></text>
+<text><loc_257><loc_375><loc_344><loc_380></text>
+<text><loc_257><loc_382><loc_344><loc_387></text>
+<text><loc_257><loc_389><loc_344><loc_394></text>
+<text><loc_257><loc_396><loc_344><loc_401></text>
+<text><loc_257><loc_403><loc_344><loc_408></text>
+<text><loc_257><loc_410><loc_344><loc_415></text>
+<text><loc_257><loc_417><loc_344><loc_422></text>
+<text><loc_257><loc_424><loc_344><loc_429></text>
+<text><loc_257><loc_431><loc_344><loc_436></text>
+<text><loc_257><loc_438><loc_344><loc_443></text>
+<text><loc_257><loc_445><loc_344><loc_450></text>
+<text><loc_257><loc_452><loc_344><loc_457></text>
+<text><loc_257><loc_459><loc_344><loc_464></text>
+<text><loc_257><loc_467><loc_344><loc_472></text>
+<text><loc_257><loc_475><loc_344><loc_480></text>
+<text><loc_257><loc_482><loc_344><loc_487></text>
+<text><loc_257><loc_489><loc_344><loc_494></text>
+<text><loc_257><loc_495><loc_344><loc_500></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><loc_499></text>
+<text><loc_257><loc_500><loc_344><

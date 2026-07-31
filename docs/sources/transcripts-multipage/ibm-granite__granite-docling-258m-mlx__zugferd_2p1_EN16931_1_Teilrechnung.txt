@@ -1,0 +1,101 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    ibm-granite/granite-docling-258M-mlx
+# Invoice:  zugferd_2p1_EN16931_1_Teilrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  19.81s total
+# Adapter:  regex
+# Prompt:   Convert this page to docling.
+
+===== PAGE 1 =====
+<doctag><text><loc_41><loc_38><loc_341><loc_56>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen ZUGFeRD-Version : 2.1 vom 24.03.2020</text>
+<text><loc_41><loc_55><loc_228><loc_62>Stylesheet-Version: 2.0 vom 18.10.2018</text>
+<text><loc_41><loc_62><loc_228><loc_68>Codelisten-Version: 3.0 vom 15.11.2019</text>
+<text><loc_41><loc_68><loc_140><loc_74>(c) AWV e.V. 2020</text>
+<section_header_level_1><loc_41><loc_85><loc_343><loc_94>Handelsrechnung Nr. 471102 vom 05.06.2018</section_header_level_1>
+<text><loc_41><loc_115><loc_268><loc_121>Anwendungsempfehlung : urn:cen.eu:en16931:2017</text>
+<text><loc_41><loc_122><loc_155><loc_128>Wahrung : EUR</text>
+<text><loc_41><loc_136><loc_248><loc_142>Liefer- und Leistungsdatum : 03.06.2018</text>
+<text><loc_41><loc_157><loc_95><loc_163>Bestellung</text>
+<text><loc_41><loc_178><loc_91><loc_184>Verkäufer:</text>
+<text><loc_41><loc_185><loc_201><loc_191>Nummer : 549910</text>
+<text><loc_41><loc_192><loc_218><loc_198>Globale Nummer: 4000001123452 (GTIN)</text>
+<text><loc_41><loc_199><loc_126><loc_205>Lieferant GmbH</text>
+<text><loc_41><loc_206><loc_140><loc_212>Lieferantenstraße 20</text>
+<text><loc_41><loc_213><loc_121><loc_219>DE 80333 München</text>
+<text><loc_41><loc_226><loc_179><loc_232>Steuernummer : 201/113/40209</text>
+<text><loc_41><loc_233><loc_170><loc_239>USt.-Id.-Nr. : DE123456789</text>
+<section_header_level_1><loc_41><loc_246><loc_76><loc_252>Käufer:</section_header_level_1>
+<text><loc_41><loc_253><loc_164><loc_259>Nummer : GE2020211</text>
+<text><loc_41><loc_260><loc_116><loc_266>Kunden AG Mitte</text>
+<text><loc_41><loc_267><loc_116><loc_273>Kundenstraße 15</text>
+<text><loc_41><loc_274><loc_130><loc_280>DE 69876 Frankfurt</text>
+<text><loc_41><loc_299><loc_321><loc_305>Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.</text>
+<text><loc_41><loc_312><loc_194><loc_318>Qualifizierung der Textart: AAK</text>
+<text><loc_41><loc_319><loc_257><loc_325>Es bestehen Rabatt- und Bonusvereinbarungen.</text>
+<text><loc_41><loc_332><loc_194><loc_338>Qualifizierung der Textart: REG</text>
+<text><loc_41><loc_339><loc_126><loc_345>Lieferant GmbH</text>
+<text><loc_41><loc_346><loc_140><loc_352>Lieferantenstraße 20</text>
+<text><loc_41><loc_353><loc_106><loc_359>80333 München</text>
+<text><loc_41><loc_360><loc_104><loc_366>Deutschland</text>
+<text><loc_41><loc_367><loc_179><loc_373>Geschäftsführer: Hans Muster</text>
+<text><loc_41><loc_374><loc_189><loc_380>Handelsregisternummer: H A 123</text>
+<text><loc_41><loc_394><loc_121><loc_400>Art-Nr-Kunde</text>
+<text><loc_41><loc_401><loc_189><loc_407>Pos Art-Nr-Lief. Beschreibung</text>
+<text><loc_41><loc_408><loc_91><loc_414>Art-Nr</text>
+<text><loc_41><loc_415><loc_91><loc_421>(Art)</text>
+<text><loc_41><loc_423><loc_164><loc_429>Kunstrassen</text>
+<text><loc_41><loc_430><loc_166><loc_435>KR3M</text>
+<text><loc_41><loc_436><loc_164><loc_442>4012345001235 breit</text>
+<text><loc_41><loc_443><loc_76><loc_449>(GLN)</text>
+<text><loc_41><loc_451><loc_307><loc_457>Bruttopreis : 4,00 Abschlag : 0,67</text>
+<text><loc_41><loc_458><loc_379><loc_464>1 Wir erlauben uns Ihnen folgende Positionen aus der</text>
+</doctag>
+===== PAGE 2 =====
+<doctag><text><loc_133><loc_34><loc_368><loc_40>Lieferung Nr. 2018-51112 in Rechnung zu stellen:</text>
+<text><loc_133><loc_48><loc_202><loc_54>300cm x 100 cm</text>
+<text><loc_129><loc_63><loc_194><loc_69>Schweinesteak</text>
+<text><loc_238><loc_63><loc_258><loc_69>5,50</text>
+<text><loc_308><loc_63><loc_393><loc_69>1 kg 7 % VAT (S)</text>
+<text><loc_438><loc_63><loc_458><loc_69>5,50</text>
+<text><loc_61><loc_70><loc_124><loc_90>SFK5 4000050986428 (GLN)</text>
+<text><loc_136><loc_91><loc_224><loc_97>Bruttopreis : 5,50</text>
+<text><loc_49><loc_99><loc_55><loc_105>2</text>
+<text><loc_132><loc_99><loc_379><loc_125>Bestellt wurden 5 kg Schweinesteak. Mit dieser Rechnung werden nur die bereits gelieferten Steaks berechnet. Die noch offenen 4 kg Schweinsteak werden separat geliefert und berechnet.</text>
+<text><loc_132><loc_134><loc_276><loc_140>Schweinesteak aus Deutschland</text>
+<text><loc_47><loc_149><loc_55><loc_155>3</text>
+<text><loc_129><loc_149><loc_194><loc_155>Mineralvasser</text>
+<text><loc_238><loc_149><loc_258><loc_155>5,49</text>
+<text><loc_298><loc_149><loc_393><loc_155>20 Stk 7 % VAT (S)</text>
+<text><loc_428><loc_149><loc_458><loc_155>109,80</text>
+<text><loc_47><loc_156><loc_55><loc_162>GTRWA5</text>
+<text><loc_129><loc_156><loc_194><loc_162>Medium</text>
+<text><loc_48><loc_163><loc_194><loc_169>4000001234561 12 x 1,01 PET</text>
+<text><loc_48><loc_170><loc_78><loc_176>(GLN)</text>
+<text><loc_138><loc_176><loc_224><loc_182>Bruttopreis : 5,49</text>
+<text><loc_48><loc_199><loc_55><loc_205>4</text>
+<text><loc_132><loc_199><loc_158><loc_205>Pfand</text>
+<text><loc_220><loc_199><loc_240><loc_205>2,77</text>
+<text><loc_288><loc_199><loc_387><loc_205>20 Stk 19 % VAT (S)</text>
+<text><loc_434><loc_199><loc_458><loc_205>55,46</text>
+<text><loc_48><loc_206><loc_127><loc_226>PFA5 4000001234578 (GLN)</text>
+<text><loc_138><loc_227><loc_224><loc_233>Bruttopreis : 2,77</text>
+<section_header_level_1><loc_41><loc_265><loc_140><loc_271>Zahlungsbedingungen:</section_header_level_1>
+<otsl><loc_41><loc_278><loc_458><loc_292><fcel>Beschreibung<ecel><fcel>Fälligkeit<fcel>Teilzahlung<nl><fcel>Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3%<ecel><ecel><ecel><nl><fcel>Skonto innerhalb 10 Tagen bis 15.06.2018<ecel><ecel><ecel><nl></otsl>
+<section_header_level_1><loc_41><loc_314><loc_130><loc_320>Zu- und Abschläge:</section_header_level_1>
+<otsl><loc_41><loc_327><loc_458><loc_358><fcel>Art % Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<nl><fcel>Abschlag  Sondernachlass<fcel>10,00<fcel>19 % VAT (S)<fcel>-1,00<nl><fcel>Abschlag  Sondernachlass<fcel>115,30<fcel>17 % VAT (S)<fcel>-8,07<nl><fcel>Zuschlag  Versandkosten<fcel>115,30<fcel>7 % VAT (S)<fcel>5,80<nl></otsl>
+<section_header_level_1><loc_41><loc_374><loc_180><loc_380>Umsatzsteueraufschläusung:</section_header_level_1>
+<otsl><loc_41><loc_387><loc_458><loc_408><fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl><fcel>VAT (S)<fcel>113,03<fcel>7<nl><fcel>VAT (S)<fcel>64,46<fcel>19<nl></otsl>
+<section_header_level_1><loc_41><loc_417><loc_101><loc_423>Belegsummen:</section_header_level_1>
+<otsl><loc_41><loc_424><loc_458><loc_464><ecel><fcel>Positionssumme<lcel><fcel>180,76<nl><ecel><fcel>Gesamtbetrag der Zuschläge<fcel>5,80<ecel><nl><ecel><fcel>Gesamtbetrag der Abschläge<fcel>-9,07<ecel><nl><ecel><fcel>Rechnungssumme ohne USt.<fcel>177,49<ecel><nl><ecel><fcel>Steuerbetrag<fcel>20,16<ecel><nl></otsl>
+<text><loc_133><loc_34><loc_368><loc_40>Lieferung Nr. 2018-51112 in Rechnung zu stellen:</text>
+</doctag>
+===== PAGE 3 =====
+<doctag><text><loc_247><loc_34><loc_300><loc_40>Bruttosumme</text>
+<text><loc_427><loc_34><loc_457><loc_40>197,65</text>
+<text><loc_247><loc_44><loc_350><loc_50>Erhaltene Anzahlungen</text>
+<text><loc_427><loc_44><loc_457><loc_50>-50,00</text>
+<text><loc_247><loc_52><loc_296><loc_58>Zahlbetrag</text>
+<text><loc_427><loc_52><loc_457><loc_58>147,65</text>
+</doctag>
