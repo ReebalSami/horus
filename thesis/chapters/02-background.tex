@@ -1,0 +1,38 @@
+\chapter{Background}
+\label{ch:background}
+
+% Scope: the foundations a reader needs. Keep tutorial, not novel. Cite sources;
+% archive every cited source under docs/sources/ per horus-source-archival.
+
+\section{OCR-Free Document Understanding and Vision-Language Models}
+\label{sec:bg-vlm}
+
+% TODO: from OCR + layout models (Donut \cite{kim2022donut},
+% LayoutLMv3 \cite{huang2022layoutlmv3}) to the late-2025 specialised document
+% VLM wave (Granite-Docling \cite{granitedocling}, olmOCR-2 \cite{olmocr2},
+% Docling \cite{docling2025}). DocTags vs. free text vs. JSON outputs.
+
+\section{German Electronic Invoicing: ZUGFeRD, XRechnung, EN~16931}
+\label{sec:bg-einvoicing}
+
+% TODO: the e-invoicing mandate; hybrid PDF/A-3 + embedded CII XML; EN 16931
+% business terms (BT-*); \S14 UStG Pflichtangaben; \S33 UStDV Kleinbetrag.
+% This grounds the "embedded XML as free ground truth" evaluation loop.
+
+\section{Knowledge Graphs and Graph-Augmented Retrieval}
+\label{sec:bg-kg}
+
+% KEEP THIS SECTION SHORT (roughly 1-1.5 pages). These layers were designed but
+% not built (Ch.~\ref{ch:system-design}, Ch.~\ref{ch:limitations-future-work}), so
+% the reader needs only enough background to follow the design rationale -- not a
+% full survey. Resist expanding it: depth here would imply a contribution that
+% this thesis does not make.
+% TODO: \ac{KG} basics; entity resolution; graph-augmented retrieval
+% \cite{edge2024graphrag} and lighter hybrids; the reported \ac{RAG} vs.\ graph
+% \ac{RAG} trade-off \cite{han2025}.
+
+\section{Evaluation Foundations}
+\label{sec:bg-eval}
+
+% TODO: precision/recall/\ac{F1}; field-level vs. document-level; pre-registration
+% and HARKing \cite{kerr1998}; reproducibility (experiment tracking, seeding).

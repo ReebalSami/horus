@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet clean
+.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet thesis thesis-clean clean
 
 # Default target — list available commands.
 help:
@@ -26,6 +26,8 @@ help:
 	@echo "  app             Streamlit observability dashboard (ADR-036, #103; read-only; APP_PORT=<n> overrides 8501)"
 	@echo "  heldout-index   (re)write data/self-collected/index.json for the held-out Belege set (ADR-040; LOCAL-ONLY)"
 	@echo "  heldout-datasheet  write the SANITIZED tracked datasheet for the held-out set (ADR-040; OUT=path to override)"
+	@echo "  thesis          build the thesis PDF via latexmk (-> thesis/_build/main.pdf; needs TeX Live/MacTeX, not uv)"
+	@echo "  thesis-clean    remove thesis LaTeX build artifacts (thesis/_build)"
 	@echo "  clean           remove build artifacts and caches"
 
 install:
@@ -432,6 +434,18 @@ heldout-index:
 
 heldout-datasheet:
 	uv run python scripts/heldout_manifest.py datasheet $(if $(OUT),--out "$(OUT)")
+
+# Thesis manuscript (ADR-054). LaTeX (FH Wedel template, adapted to English),
+# built with latexmk (pdflatex + biber). Self-contained: needs TeX Live/MacTeX,
+# NOT uv. Sources in thesis/; output thesis/_build/main.pdf. See thesis/README.md.
+thesis:
+	@command -v latexmk >/dev/null 2>&1 || (echo "ERROR: latexmk not found. Install MacTeX (https://www.tug.org/mactex/) or run: brew install --cask mactex-no-gui" && exit 1)
+	cd thesis && latexmk -pdf main.tex
+	@echo "Built: thesis/_build/main.pdf"
+
+thesis-clean:
+	cd thesis && latexmk -C main.tex >/dev/null 2>&1 || true
+	rm -rf thesis/_build
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist

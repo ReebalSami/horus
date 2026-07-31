@@ -14,6 +14,7 @@ This is **HORUS** — *Hybrid OCR-free Reading & Understanding System*. Master's
 - `docs/sources/` — archived primary sources (papers / tool docs / datasets / legal); see `docs/sources/README.md`
 - `docs/prompts/stages/` — phase artifacts (`01-literature.md`, `02-brainstorm.md`, …) per the python-ml-uv phase chain
 - `.windsurf/phases.yaml` — runtime source of truth for `/run-phase` (7-phase chain: `literature → brainstorm → spec → issues → experiment → implement → writeup`)
+- `thesis/` — the master-thesis manuscript (LaTeX; FH Wedel template adapted to **English**). Build with `make thesis` → `thesis/_build/main.pdf`. Structure + provenance + conventions: `thesis/README.md`; authoring decision: **ADR-055**; what the manuscript may claim is frozen by **ADR-054** (Layer 1 only — the knowledge-graph and query layers are design + future work). This is where the `writeup` phase lands; per-chapter status in `docs/prompts/stages/05-writeup.md`.
 
 ## Project-local rules (workspace scope; auto-load on Cascade activation)
 
@@ -70,6 +71,7 @@ Handoff context: `cascade-system/docs/handoffs/cascade-d-master-thesis.md`.
 - `make pilot-13 CFG=configs/pilot-13.yaml` — full (cohort × ZUGFeRD-corpus) sweep with parent/nested MLflow runs (ADR-014; resume-safe via `mlflow.search_runs`)
 - `make mlflow-ui` — browse pilot-13 + cohort-smoke runs in MLflow's local UI at `http://127.0.0.1:8080` (ADR-015; `MLFLOW_UI_PORT=<n>` to override)
 - `make app` — Streamlit observability dashboard: read-only research/eval UI over the local MLflow runs + saved transcripts + CII ground truth, with three surfaces (Overview / Invoice Explorer / Approach Comparison). No model inference in the UI. Entry `app/Home.py`; pages in `app/views/`; read-only data layer in `app/data/` (ADR-036, #103; `APP_PORT=<n>` to override 8501)
+- `make thesis` — build the thesis PDF via latexmk (pdflatex + biber) from `thesis/` → `thesis/_build/main.pdf`; `make thesis-clean` removes build artifacts. Self-contained LaTeX (needs TeX Live/MacTeX, **not** uv). FH Wedel template adapted to English; biblatex `alphabetic` + biber. See ADR-055 + `thesis/README.md`.
 
 ## Pre-loaded thesis context (read-only)
 

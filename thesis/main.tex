@@ -1,0 +1,87 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% HORUS -- Master Thesis (FH Wedel, SS26)
+%% Author: Reebal Sami  -- Supervisor: Prof. Dr. Dennis Saering
+%%
+%% Build:  make thesis        (from the repository root)
+%%   ->    latexmk -pdf       (pdflatex + biber, multi-pass)
+%%   ->    output: thesis/_build/main.pdf
+%%
+%% Structure + provenance: thesis/README.md
+%% Authoring decision:      docs/decisions/ADR-055-thesis-authoring-setup.md
+%% Scope (what may be claimed): docs/decisions/ADR-054-thesis-endgame-...-scope-freeze.md
+%% Adapted from the FH Wedel LaTeX template (github.com/fh-wedel/thesis-template).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[
+    12pt,
+    openright,          % chapters begin on a right-hand page
+    listof=totoc,       % lists in the table of contents
+    bibliography=totoc, % bibliography in the table of contents
+    parskip=full        % paragraphs separated by vertical space
+]{scrreprt}
+
+\input{preamble/header}
+
+\begin{document}
+
+\pagenumbering{Roman}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title page
+\newgeometry{left=3cm,right=2cm,top=2.0cm,bottom=2.0cm}
+\include{preamble/titlepage}
+\restoregeometry
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Front matter, in the order PRESCRIBED by the FH Wedel Richtlinie:
+%   cover -> (confidentiality note) -> contents -> list of figures ->
+%   list of tables -> list of abbreviations -> BODY -> appendix ->
+%   bibliography -> statutory declaration.
+% The abstract is the first BODY element, so it follows below (after
+% \pagenumbering{arabic}) and NOT here. Placing it before the contents -- as the
+% first draft did -- violates the prescribed order. Keeping it after the acronym
+% list also makes \ac{...} macros legal inside the abstract.
+% Wider number columns in the contents lists. Needed because this thesis has a
+% two-digit chapter (ch.10): with KOMA's default width the entry renders as
+% "10.Conclusion" with no space. Figures get extra width for chapters with >= 10
+% figures.
+\DeclareTOCStyleEntry[numwidth=2em]{tocline}{chapter}
+\DeclareTOCStyleEntry[numwidth=3em]{tocline}{section}
+\DeclareTOCStyleEntry[numwidth=3em]{tocline}{figure}
+\DeclareTOCStyleEntry[numwidth=3em]{tocline}{table}
+\tableofcontents
+\listoffigures
+\listoftables
+\include{preamble/acronyms}
+\cleardoublepage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagenumbering{arabic}
+
+% Chapter map per the ADR-055 amendment (2026-07-31), aligned to ADR-054's scope
+% freeze: the three-layer vision survives as ch.4 (design), the unbuilt knowledge
+% graph + query layers are absorbed by ch.9 (limitations + future work). No empty
+% chapters.
+\begin{onehalfspace}
+\include{chapters/00-abstract}
+\include{chapters/01-introduction}
+\include{chapters/02-background}
+\include{chapters/03-related-work}
+\include{chapters/04-system-design}
+\include{chapters/05-methodology}
+\include{chapters/06-results}
+\include{chapters/07-implementation}
+\include{chapters/08-discussion}
+\include{chapters/09-limitations-future-work}
+\include{chapters/10-conclusion}
+
+\appendix
+\include{appendix/appendix}
+\end{onehalfspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\printbibliography{}
+
+% Eidesstattliche Erklaerung (statutory declaration; FH Wedel, incl. AI clause)
+\include{preamble/declaration}
+
+\end{document}

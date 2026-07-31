@@ -1,0 +1,122 @@
+\chapter{Methodology}
+\label{ch:methodology}
+
+% The scientific-correctness backbone. Everything in Sec. "a-priori locks" must
+% be fixed BEFORE results are read (no HARKing, no p-hacking; \cite{kerr1998}).
+
+\section{Pipeline Under Evaluation}
+\label{sec:method-architecture}
+
+% TODO: brief -- the design is in Ch.~\ref{ch:system-design}. State precisely what
+% is measured: the reading stage, the structuring stage, and the deterministic
+% post-processing between them; plus the single-shot variant used as the
+% architectural comparison arm.
+
+\section{Corpus}
+\label{sec:method-data}
+
+% TODO: the German e-invoicing reference corpus \cite{zugferdcorpus} plus
+% programmatically generated invoices; page rendering settings; how document variety
+% (single/multi rate, credit notes, reverse charge, discounts, multi-page) is covered.
+% Document the corpus per the datasheet convention \cite{gebru2018datasheets}.
+% Be explicit that these are born-digital renders, not scans -- the limitation is
+% discussed in Ch.~\ref{ch:limitations-future-work}.
+
+\section{Ground Truth from Embedded Structured Data}
+\label{sec:method-gt}
+
+% TODO: the central methodological device. Hybrid e-invoices carry both a rendered
+% page and an embedded machine-readable representation of the same content, so the
+% reference data is obtained without manual labelling: render the page, hide the
+% embedded data from the model, extract it independently as the reference.
+% Cover: the extraction path, cross-validation of the reference with a second
+% independent tool, and the \ac{EN}~16931 business-term mapping.
+
+\section{Target Schema and Field Registry}
+\label{sec:method-schema}
+
+% TODO: the evaluated field set and how it is declared once, in one registry, that
+% simultaneously drives generation prompts, scoring, and reporting -- so the schema
+% cannot drift between the three. Cover flat fields and the repeating groups
+% (line items, tax breakdown, payment discounts).
+
+\section{Compliance-Aware Evaluation Suite}
+\label{sec:method-metrics}
+
+% TODO (fixed before results were read): per-field precision / recall / \ac{F1},
+% micro and macro; field weighting by legal importance under \S14~\ac{UStG} and
+% \S33~\ac{UStDV}; document-level compliance pass rate; input-tax-deductibility
+% decision accuracy; per-field error analysis.
+% State plainly which metric is the headline and why.
+
+\section{Measurement Validity: Validating the Ruler}
+\label{sec:method-measurement-validity}
+
+% TODO: a distinctive part of this thesis's method, and worth several pages.
+% The problem: the model sees the page while the reference stores canonical values,
+% so a naive string comparison punishes correct answers. Examples of the classes
+% found and corrected:
+%   - controlled-vocabulary codes that never appear in print (the page says
+%     "Umsatzsteuer", the reference stores a category letter);
+%   - values printed together with their label ("Invoice no. 471102" vs "471102");
+%   - optional totals that the reference omits but a model may emit as zero;
+%   - document-level scalars that are ill-defined for some documents (a single
+%     "tax rate" on an invoice carrying two different rates);
+%   - content the page renders as free text while the reference stores it
+%     structurally, or the reverse.
+% Method: each correction is a separate, reviewed change with a recorded rationale
+% and a regression test; corrections may only change REPRESENTATION handling and may
+% never let a genuinely wrong value score as correct. State that discipline
+% explicitly -- it is what separates fixing the ruler from inflating the score.
+% Reference the decision records for the full chain; summarise the taxonomy here.
+
+\section{Sealed Train and Validation Splits}
+\label{sec:method-splits}
+
+% TODO (fixed before results were read): a stratified split sealed before any
+% adaptation work, with fingerprints committed so the partition is auditable after
+% the fact; what stratification variables were used; the guards that keep validation
+% documents out of prompt design and adaptation.
+
+\section{Reading-Quality Proxy}
+\label{sec:method-answerability}
+
+% TODO: to compare candidate readers without running the whole pipeline for each,
+% reading quality is measured directly: for each document, what share of the
+% reference values is recoverable from the transcript (allowing for the usual
+% German formatting variants of dates, decimal separators and account numbers).
+% Report the measured correlation with the end-to-end metric, and be explicit that
+% this is a proxy with a known blind spot -- a value can be present as a string yet
+% unusable if the surrounding structure is destroyed.
+
+\section{Error Attribution Design}
+\label{sec:method-attribution}
+
+% TODO: the three instruments, and why three are needed:
+%   1. re-scoring the SAME stored predictions per field group, to see where the loss
+%      is concentrated without re-running any model;
+%   2. classifying every miss by whether the reference value was findable in the
+%      transcript at all, which separates a reading failure from a structuring one;
+%   3. re-running the identical structuring pass on reference-quality transcripts,
+%      which yields an upper bound on the structuring stage independent of reading.
+% State that all three arms use matched decoding settings, and that instrument 3 is
+% the decisive one because it removes reading from the equation entirely.
+
+\section{Pre-Registration and Honest Reporting}
+\label{sec:method-hypotheses}
+
+% TODO: the hypotheses, their registration dates, and the discipline: predictions
+% recorded before the corresponding data was collected \cite{kerr1998}; each
+% experiment cites the hypothesis it tests or is labelled exploratory; a refuted
+% hypothesis is reported as such. Also state, here rather than late in the thesis,
+% that some registered hypotheses were not evaluated after the scope was narrowed,
+% and point to Ch.~\ref{ch:limitations-future-work}. The full register is in the
+% appendix.
+
+\section{Reproducibility and Hardware}
+\label{sec:method-repro}
+
+% TODO: configuration-as-data (every experiment knob in a versioned configuration
+% file, validated before any model loads), deterministic decoding, seeding,
+% experiment tracking, and the exact local hardware envelope; note where a rented
+% GPU was used and why (one candidate exceeded the local memory envelope).

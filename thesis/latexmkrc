@@ -1,0 +1,15 @@
+# latexmk configuration for the HORUS thesis (ADR-054).
+# Invoked by `make thesis` (which runs `cd thesis && latexmk -pdf main.tex`).
+
+$pdf_mode = 1;            # produce PDF via pdflatex
+$bibtex_use = 2;          # run biber/bibtex as needed, even with warnings
+$out_dir = '_build';      # keep all aux + pdf under thesis/_build/ (gitignored)
+
+$pdflatex = 'pdflatex -interaction=nonstopmode -halt-on-error -file-line-error %O %S';
+
+@default_files = ('main.tex');
+
+# latexmk + -output-directory does NOT auto-create subdirectories for the
+# per-file .aux that \include writes (preamble/, chapters/, appendix/). Create
+# them up front so the build can write preamble/titlepage.aux etc. into _build/.
+system('mkdir', '-p', '_build/preamble', '_build/chapters', '_build/appendix');

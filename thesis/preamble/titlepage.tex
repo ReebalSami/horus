@@ -1,0 +1,71 @@
+%% Title page -- adapted from the FH Wedel template (stuff/Titelseite.tex).
+%%
+%% Personal-data policy (ADR-055 amendment 2026-07-31): the author's name, the
+%% matriculation number, and the examiners' names are committed normally. NO
+%% postal address of the author appears in the manuscript (the FH's own
+%% institutional address below is public template content). If an examiner ever
+%% requires a private address, add it by hand before printing.
+%%
+%% TO FILL before submission -- the only remaining placeholders are marked <...>:
+%%   1. <Matrikelnummer>       matriculation number
+%%   2. <inf?????@stud...>     university e-mail address
+%%   3. second examiner        name + e-mail (optional at registration; confirm
+%%                             with the first examiner before entering)
+%%   4. first examiner e-mail  verify the exact address on the FH staff page
+
+\titlehead{
+    \centering
+    \includegraphics[width=.5\textwidth]{fhw}\\
+    \bigskip
+    \textsc{\Large Department of Computer Science}
+}
+
+\subject{\Large \thesisname}
+\title{\Large \titel}
+\subtitle{\large \untertitel}
+\date{
+    \vspace{-1cm}
+    {\small Submission date:}\\
+    \medskip
+    \Datum
+}
+\author{}
+\publishers{
+
+\vfill
+\normalsize
+
+\raggedright
+{\small Submitted by:} \\
+\smallskip
+{\Large \authorname}\\
+Matriculation number: <Matrikelnummer>\\
+E-Mail: <inf?????@stud.fh-wedel.de>\\
+
+\bigskip
+\bigskip
+
+\begin{minipage}{0.48\linewidth}
+\raggedright
+    {\small First examiner:}\\
+    \smallskip
+    {\Large Prof.\ Dr.\ Dennis S\"aring}\\
+    Fachhochschule Wedel\\
+    Feldstra\ss e 143\\
+    22880 Wedel\\
+    E-Mail: <ds@fh-wedel.de>
+\end{minipage}
+\begin{minipage}{0.5\linewidth}
+\raggedleft
+    {\small Second examiner:}\\
+    \smallskip
+    {\Large <Prof.\ Dr.\ Vorname Nachname>}\\
+    Fachhochschule Wedel\\
+    Feldstra\ss e 143\\
+    22880 Wedel\\
+    E-Mail: <xx@fh-wedel.de>
+\end{minipage}
+
+}
+
+\maketitle
