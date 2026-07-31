@@ -1,0 +1,81 @@
+\chapter{Results}
+\label{ch:results}
+
+% RULES FOR THIS CHAPTER:
+% 1. NEVER hand-copy a number. Tables are \input from thesis/tables/ and figures
+%    \includegraphics from thesis/figures/, both generated from the repository
+%    (MLflow runs + eval reports). See thesis/README.md.
+% 2. Every number must be labelled as either DIAGNOSTIC (in-sample; used while
+%    building the apparatus) or SEALED (held-out split; reportable). An in-sample
+%    number may never be presented as the system's accuracy.
+% 3. Sections marked [PENDING] wait on the reader-selection run; they carry a
+%    visible placeholder so a missing result can never be mistaken for a null one.
+
+\section{Overview of the Result Set}
+\label{sec:res-overview}
+% TODO: one page orienting the reader: which experiments exist, which question each
+% answers, and which are diagnostic vs sealed.
+
+\section{Model Cohort}
+\label{sec:res-cohort}
+% TODO: the evaluated open-weights local document \ac{VLM} cohort and the selection
+% rationale (architecture families, size classes, licence, German capability).
+
+\section{Reading and Structuring: Cohort Comparison}
+\label{sec:res-cohort-comparison}
+% TODO: per-model field \ac{F1} over the corpus. Table: thesis/tables/cohort.tex
+
+\section{Two-Stage versus Single-Shot Architecture}
+\label{sec:res-architecture}
+% TODO: reader+structurer against one model going image -> structured output;
+% per-field failure profiles. This answers sub-question 2 of Sec.~\ref{sec:research-questions}.
+
+\section{Structured-Output Prompting}
+\label{sec:res-structured}
+% TODO: free-form transcript plus deterministic adapter vs. asking the model for
+% \ac{JSON} directly; include the honesty axis (does the model invent values for
+% fields that are absent from the page?).
+
+\section{Efficiency on Local Hardware}
+\label{sec:res-efficiency}
+% TODO: decode throughput and peak memory per model; which models fit the local
+% memory envelope and which do not; the accuracy-versus-cost frontier.
+% Answers sub-question 3.
+
+\section{Measurement Validity}
+\label{sec:res-measurement}
+% TODO: the chain of ground-truth and scoring corrections, and how much apparent
+% model error each one turned out to be. This is a result in its own right: a
+% sizeable part of the initially observed error was scoring artefact, not model
+% failure. Present it as a table of correction -> effect.
+
+\section{Error Attribution: Reading versus Structuring}
+\label{sec:res-attribution}
+% TODO: the decisive experiment. Same structuring model, two inputs: real
+% transcripts vs reference-quality transcripts. The gap between the two bounds how
+% much of the end-to-end error is caused by reading rather than structuring.
+% Report per-field-group decomposition and the share of missing values that are
+% literally absent from the transcript.
+% Table: thesis/tables/attribution.tex
+% Answers sub-question 4 -- and motivates the reader-selection work below.
+
+\section{Reader Selection}
+\label{sec:res-reader-selection}
+% [PENDING] Waits on the reader comparison run (rented GPU session).
+\noindent\textit{[Pending --- reader-comparison results are not yet available.
+This section will report the candidate comparison and the selected reader. No
+number is stated here until the run completes.]}
+
+\section{Re-Baseline with the Selected Reader}
+\label{sec:res-rebaseline}
+% [PENDING] Waits on transcript regeneration with the selected reader.
+\noindent\textit{[Pending --- the end-to-end score after replacing the reader will
+be reported here.]}
+
+\section{Structurer Adaptation}
+\label{sec:res-finetune}
+% [PENDING, CONDITIONAL] Low-rank adaptation of the structurer runs only if the
+% re-baseline stays below the target. If it is not needed, that is itself a
+% reportable result -- say so explicitly rather than omitting the section.
+\noindent\textit{[Pending --- conditional on the re-baseline. If adaptation proves
+unnecessary, this section reports that outcome.]}

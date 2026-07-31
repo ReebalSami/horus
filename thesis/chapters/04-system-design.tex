@@ -1,0 +1,78 @@
+\chapter{System Design}
+\label{ch:system-design}
+
+% PURPOSE OF THIS CHAPTER (per ADR-055 amendment 2026-07-31):
+% The thesis was designed as a three-layer system. ADR-054 froze scope to Layer 1,
+% so Layers 2-3 are presented here as DESIGN ONLY, with an explicit statement that
+% they were not implemented or evaluated. This keeps the architecture motivated and
+% the reporting honest -- it does NOT claim unbuilt work as a contribution.
+% Everything evaluated in this thesis lives in Layer 1 (Sec.~\ref{sec:design-layer1}).
+
+\section{Design Overview}
+\label{sec:design-overview}
+
+% TODO: the three-layer decomposition and why the document-reading layer is the
+% load-bearing one: every downstream layer consumes its output, so its error rate
+% upper-bounds the whole system.
+% Figure: three-layer architecture diagram -> thesis/figures/architecture.pdf
+
+\section{Layer 1: Reading and Structuring}
+\label{sec:design-layer1}
+
+This is the layer implemented and evaluated in this thesis.
+
+\subsection{Two-Stage Architecture: Reader and Structurer}
+\label{sec:design-two-stage}
+% TODO: separation of concerns -- a document \ac{VLM} transcribes the page image
+% (the "reader"), a language model maps that transcript onto the target schema
+% (the "structurer"). Contrast with the single-shot alternative (one model, image
+% straight to \ac{JSON}). Both were built and compared; see Ch.~\ref{ch:results}.
+
+\subsection{Target Schema}
+\label{sec:design-schema}
+% TODO: the extraction target is an \ac{EN}~16931-aligned field set (\ac{BT} codes),
+% covering document header fields, party fields, the VAT breakdown group, the line-item
+% group, and the payment-terms group. Rationale: the norm is the legal interoperability
+% reference for German B2B invoicing, so the schema is externally defined rather than
+% invented for the experiment.
+
+\subsection{Validation and Repair}
+\label{sec:design-validation}
+% TODO: deterministic post-processing -- schema validation, conservative \ac{JSON}
+% repair, and normalisation of representation differences (as-printed vs as-stored).
+% Design principle: repair may never invent a value; an unparseable field stays absent.
+
+\section{Layer 2 (Design Only): Compliance-Aware Knowledge Graph}
+\label{sec:design-layer2}
+
+\emph{Not implemented or evaluated within the scope of this thesis; see
+Chapter~\ref{ch:limitations-future-work}.}
+
+% TODO: the intended design -- extracted invoices become nodes/edges (supplier,
+% customer, invoice, line item, tax rate), entity resolution links repeat suppliers,
+% and compliance properties (mandatory-field completeness, input-tax deductibility)
+% are derived per document. Why a graph: the analytically interesting questions are
+% relational (per-supplier aggregation over time, duplicate detection, cross-document
+% consistency), which flat retrieval expresses poorly.
+
+\section{Layer 3 (Design Only): Analytical Query}
+\label{sec:design-layer3}
+
+\emph{Not implemented or evaluated within the scope of this thesis; see
+Chapter~\ref{ch:limitations-future-work}.}
+
+% TODO: the intended design -- natural-language questions answered over the graph,
+% with a comparison of flat vector retrieval against graph-based retrieval
+% (\ac{RAG} vs graph \ac{RAG}) and a per-question routing strategy.
+
+\section{Scope of This Thesis}
+\label{sec:design-scope}
+
+% TODO (important -- the honesty anchor of the chapter):
+% State plainly which layers were built and measured (Layer 1) and which remain
+% design (Layers 2-3). Explain WHY: the measurement described in
+% Ch.~\ref{ch:results} showed the document-reading step, not the structuring step,
+% to be the binding constraint; fixing that constraint properly was judged more
+% valuable than sketching two further layers on top of an unreliable foundation.
+% Note that the hypotheses covering Layers 2-3 were pre-registered before this
+% decision and are reported as not evaluated -- never silently dropped.

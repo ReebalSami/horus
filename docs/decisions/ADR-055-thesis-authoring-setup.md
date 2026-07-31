@@ -1,11 +1,19 @@
-# ADR-054: Thesis Manuscript Authoring Setup
+# ADR-055: Thesis Manuscript Authoring Setup
+
+> **Note on numbering**: this record was authored as **ADR-054** on
+> `feat/thesis-writing-setup` (2026-06-28). In parallel, `feat/structurer-finetune`
+> independently claimed 054 for the thesis-endgame decision and landed on `main`
+> first, so this record was renumbered to **055** when its branch rebased onto that
+> merge. The renumber changed no substance. This is the post-hoc-renumber fallback
+> prescribed by the ADR numbering protocol for concurrent-branch collisions.
 
 |              |                                                                   |
 | ------------ | ----------------------------------------------------------------- |
-| **Status**   | Accepted                                                          |
+| **Status**   | Accepted (amended 2026-07-31 — see amendment below)               |
 | **Date**     | 2026-06-28                                                        |
 | **Deciders** | Reebal Sami (author); Cascade (`thesis-writing-setup`)            |
 | **Milestone**| Thesis writing (`writeup` phase, `.windsurf/phases.yaml`)         |
+| **Refs**     | ADR-054 (thesis endgame + scope freeze — governs what the manuscript may claim) |
 | **Supersedes** | —                                                               |
 
 ## Context
@@ -99,6 +107,9 @@ Adopt the FH Wedel LaTeX template **adapted to English** under a new top-level
   related-work / methodology) drafted from existing research + ADRs; ch.5
   (extraction) is the deepest-built layer (partial); ch.6–7 (KG / query) are
   scaffolds pending that work; ch.8 (system) partial; ch.9–10 stubbed.
+  **→ superseded by the 2026-07-31 amendment below** (ADR-054's scope freeze
+  removed the KG / query work from thesis scope, so those chapters can never be
+  filled).
 - **`thesis/` as a new top-level dir** invokes the `clean-project-structure`
   ADR-exception (a new top-level path requires an ADR) — this ADR is that record.
 - **Citations**: `references.bib` keys are backed by existing `docs/sources/`
@@ -135,3 +146,74 @@ manuscript outgrows a single-repo layout.
   (documented; not required for the Python toolchain); bib metadata needs a
   verification pass before submission.
 - **Neutral**: Quarto remains for the EDA book; the two coexist.
+
+---
+
+## Amendment 2026-07-31 — scope-freeze alignment + formal-compliance corrections
+
+**Status**: amendment to the *Decision* section's chapter-structure bullet and to
+the formal front/back-matter. Supplements; the location / format / language /
+build-tooling / results-integration decisions above are unchanged and stay in force.
+
+**Trigger**: ADR-054 (authored after this record, landed first) froze thesis scope
+to Layer 1 — the knowledge-graph and analytical-query layers, the cloud comparison
+arm, and template-shift move to future work. The June chapter skeleton was built
+*before* that freeze and therefore carried two chapters ("Knowledge Graph",
+"Analytical Query") that can never be filled, plus a research question spanning all
+three layers. Reviewing the manuscript against the FH Wedel Richtlinie in the same
+pass surfaced three further formal defects.
+
+### 1. Chapter map reshaped to the frozen scope
+
+The three-layer vision is retained as a **System Design** chapter (it motivates the
+architecture and is honest: this was the design, and the foundation layer was built
+and evaluated properly), while the unbuilt layers move into a substantial
+**Limitations and Future Work** chapter. No empty chapters remain.
+
+| # | Chapter | Source |
+|---|---|---|
+| 1 | Introduction | rewritten (softened legal framing, OCR-free naming note, honest hypothesis reporting) |
+| 2 | Background | June scaffold |
+| 3 | Related Work | June scaffold + `docs/sources/papers/` |
+| 4 | System Design | **new** — three-layer architecture; Layer 1 in depth; Layers 2–3 as design-only with an explicit not-evaluated statement |
+| 5 | Methodology | June `04-methodology` |
+| 6 | Results | June `05-extraction`, widened to the full Layer-1 result set |
+| 7 | Implementation and Prototype | June `08-system` |
+| 8 | Discussion | June `09-discussion` |
+| 9 | Limitations and Future Work | **new** — absorbs June `06-knowledge-graph` + `07-query` + ADR-054's descoped list |
+| 10 | Conclusion | June `10-conclusion` |
+
+### 2. Part order corrected to the Richtlinie
+
+The June `main.tex` placed the abstract **before** the table of contents. The
+Richtlinie fixes the order as: cover → (confidentiality note) → contents → list of
+figures → list of tables → list of abbreviations → body → appendix → bibliography →
+statutory declaration. The abstract is the first body element, so it now follows the
+abbreviations list. Side benefit: `\ac{}` acronym macros are legal in the abstract
+again (the June workaround of spelling terms out is removed).
+
+### 3. Statutory declaration replaced with the verbatim required wording
+
+The June text paraphrased the AI-disclosure requirement in a separate paragraph. The
+Richtlinie prescribes one sentence with the AI clause **inline**; that exact wording
+(plus the template's "not previously submitted / not published" sentence) is now
+used verbatim. The appendix continues to document the extent of AI-tool use.
+
+### 4. Personal data on the title page
+
+Decided with the author (2026-07-31): the author's name, **Matriculation number**,
+and the **examiners' names** are committed normally — the repo is public but none of
+this is sensitive, and the May redaction of the supervisor's surname applied to
+repo prose, not to a title page that must legally carry it. **No postal address
+appears in the manuscript at all** (added by hand before printing only if an
+examiner requires it). No git-ignored private-include mechanism is introduced —
+rejected as unnecessary machinery for two public-by-nature values.
+
+### 5. Writing-model note (non-binding, operational)
+
+Chapter drafting runs on **Claude Opus 5 at high/xhigh reasoning effort** (released
+2026-07-24: Fable-5-class intelligence at half the token price, and the current
+leader on independent agentic-knowledge-work benchmarks, which is the closest public
+proxy for long-horizon document authoring). Planning / decision sessions stay on the
+session's own model. Recorded for reproducibility of the authoring process, not as a
+technical dependency — the manuscript is plain LaTeX with no model in its build path.

@@ -8,36 +8,52 @@ German tax advisors (\textit{Steuerberater}), auditors
 (\textit{Wirtschaftspr\"ufer}), and lawyers (\textit{Rechtsanw\"alte}) process
 large volumes of client documents --- incoming invoices
 (\textit{Eingangsrechnungen}) and supporting receipts (\textit{Belege}) --- as a
-daily core activity. Recent progress in document \ac{VLM}s makes it tempting to
-automate this work with cloud services. For these professions, however, that
-path is not merely a data-protection question but a criminal-law one.
+daily core activity. Recent progress in document \acp{VLM} makes it tempting to
+automate this work with cloud services. For these professions, however, the
+question is not only one of data protection: it also touches professional
+secrecy, which is protected by criminal law.
 
-Whereas the \ac{DSGVO} can be satisfied for cloud processing through a data
-processing agreement and EU data residency, the professional-secrecy regime of
-\S203~\ac{StGB} in conjunction with \S62a~\ac{StBerG} imposes a stricter,
-separate requirement: a confidentiality obligation in text form for any external
-service provider that gains access to client data \cite{bstbk2026}. As of early
-2026 the major cloud \ac{LLM} providers do not offer such an agreement, and
-foreign providers additionally fail the comparable-secrecy test of
-\S62a~Abs.~4~\ac{StBerG}. The practical consequence is sharp: for this specific
-professional context, \emph{local} inference is currently the only legally
-watertight option. This thesis takes that constraint as its operational premise
---- not as its research contribution --- and asks what is technically achievable
-\emph{within} it.
+% SUPERVISOR GATE (issue #96): this paragraph was deliberately SOFTENED from an
+% earlier, overstated version that claimed cloud processing is simply forbidden.
+% The nuance below is verified against the federal chamber of tax advisors'
+% guidance and German legal/IT commentary, but a legal claim in a thesis needs
+% human sign-off. Confirm the wording with the supervisor before submission.
+The \ac{DSGVO} can be satisfied for cloud processing through a data-processing
+agreement and EU data residency. Professional secrecy adds a second, separate
+requirement: under \S203~\ac{StGB} together with \S62a~\ac{StBerG}, any external
+service provider who gains access to client data must be bound to
+confidentiality in text form, and foreign providers must additionally satisfy a
+comparable-secrecy test \cite{bstbk2026}. This requirement is not categorically
+unmeetable: at least one major cloud provider offers a contractual amendment
+specifically for holders of professional secrets. Two considerations nevertheless
+keep local processing attractive. First, the providers of the strongest
+general-purpose language models do not currently offer an equivalent amendment.
+Second, and independently of any contract, providers under United States
+jurisdiction remain subject to extraterritorial access powers, which is precisely
+the residual risk the comparable-secrecy test addresses. Local inference removes
+the question rather than managing it: the document never leaves the firm. This
+thesis takes that constraint as its operational premise --- not as its research
+contribution --- and asks what is technically achievable \emph{within} it.
 
 \section{Problem Statement}
 \label{sec:problem}
 
-The constraint rules out the strongest cloud models and confines the system to
-models that run on commodity, on-premise hardware. This raises a concrete
-empirical question: how far do small, locally hosted, open-source document
-\ac{VLM}s --- the wave of specialised models released from late~2025 onward ---
-close the gap to cloud state of the art on the German B2B accounting workflow,
-and where does reasoning over an automatically constructed \ac{KG} add value
-over flat vector retrieval? Prior work on invoice processing with vision models
-\cite{berghaus2025} benchmarked large cloud models but did not include the
-recent specialised open-source document \ac{VLM}s; that omission is the gap this
-thesis addresses.
+Working locally confines the system to models that fit on commodity, on-premises
+hardware. This raises a concrete empirical question: how reliably do small,
+locally hosted, open-weights document \acp{VLM} --- the wave of specialised models
+released from late~2025 onward --- convert German B2B invoices into a structured,
+legally meaningful form? Prior work on invoice processing with vision models
+\cite{berghaus2025} benchmarked large cloud models but did not include the recent
+specialised open-weights document \acp{VLM}; that omission is the gap this thesis
+addresses.
+
+A second problem emerges only once such a system is measured seriously. An
+end-to-end extraction score conflates three very different failure sources: the
+model may fail to \emph{read} the page, it may read correctly but fail to
+\emph{structure} what it read, or the \emph{measurement itself} may be unfair ---
+penalising an answer that is in fact correct as printed. Separating these is a
+prerequisite for spending effort in the right place, and it turns out to change the
+engineering conclusion substantially.
 
 \section{Research Questions}
 \label{sec:research-questions}
@@ -46,15 +62,32 @@ The guiding question of this thesis is:
 
 \begin{quote}
 \itshape
-How well can current open-source local document \acp{VLM} handle the German B2B
-accounting workflow end to end (extraction $\rightarrow$ knowledge graph
-$\rightarrow$ analytical querying), and where does compliance-aware reasoning
-over an automatically constructed knowledge graph beat flat vector retrieval?
+How reliably can current open-weights, locally hosted document \acp{VLM} convert
+German business-to-business invoices into a legally meaningful structured
+representation on commodity on-premises hardware --- and which stage of that
+pipeline limits the achievable reliability?
 \end{quote}
 
-\noindent It is decomposed along the three system layers and made falsifiable
-through a pre-registered hypothesis set (H1--H6, H8;
-see Chapter~\ref{ch:methodology}).
+\noindent It is addressed through four sub-questions:
+
+\begin{enumerate}
+  \item How do recent open-weights document \acp{VLM} compare with one another on
+        German e-invoice field extraction?
+  \item Does splitting the task into a reading stage and a structuring stage
+        outperform a single model that goes from page image straight to
+        structured output?
+  \item What accuracy is attainable inside the memory and throughput envelope of
+        commodity local hardware?
+  \item Where does the residual error actually originate --- in reading, in
+        structuring, or in the measurement?
+\end{enumerate}
+
+\noindent These are made falsifiable through a hypothesis set registered before
+the corresponding data was collected; Chapter~\ref{ch:methodology} states the
+hypotheses and the pre-registration discipline. Part of that set concerns system
+layers that were subsequently placed outside the scope of this thesis; those
+hypotheses are reported as registered-but-not-evaluated in
+Chapter~\ref{ch:limitations-future-work} rather than quietly dropped.
 
 \section{Contributions}
 \label{sec:contributions}
@@ -63,36 +96,58 @@ see Chapter~\ref{ch:methodology}).
 This thesis contributes:
 
 \begin{itemize}
-  \item an evaluation of recent open-source local document \acp{VLM} on
-        German ZUGFeRD-derived invoices, closing the cloud-only gap in
-        \cite{berghaus2025};
-  \item a compliance-aware evaluation suite weighting fields by their legal
-        importance under \S14~\ac{UStG}/\S33~\ac{UStDV}, beyond a single token
-        \ac{F1};
-  \item an image-to-\ac{KG} fidelity study, extending the text-to-\ac{KG}
-        evaluation of \cite{cai2025} to the document-image setting;
-  \item a characterisation of \emph{when} graph retrieval beats flat vector
-        retrieval on German accounting corpora, relating to \cite{han2025}; and
-  \item a privacy-preserving, locally deployable prototype as an engineering
-        artefact.
+  \item an evaluation of recent open-weights local document \acp{VLM} on German
+        e-invoice extraction, closing the cloud-only gap in \cite{berghaus2025};
+  \item a compliance-aware evaluation suite that weights fields by their legal
+        importance under \S14~\ac{UStG}/\S33~\ac{UStDV} rather than treating all
+        fields alike under a single token \ac{F1};
+  \item a \emph{measurement-validity} methodology: a documented chain of
+        ground-truth and scoring corrections that separates genuine model error
+        from scoring artefact --- for instance, cases where the model correctly
+        reproduces what the page shows while the reference stores a different
+        but equivalent representation;
+  \item an \emph{attribution} method that decomposes end-to-end error into a
+        reading share, a structuring share and a measurement share, using
+        reference-quality transcripts as an upper bound on what the structuring
+        stage can achieve; and
+  \item a locally deployable prototype and a reproducible evaluation harness as
+        engineering artefacts.
 \end{itemize}
 
 \section{Scope and Delimitations}
 \label{sec:scope}
 
 This thesis is \emph{not} a startup pitch, a pure \ac{OCR} benchmark, or a
-legal-tech treatise: \S203~\ac{StGB} frames the motivation but is not the
+legal-tech treatise: professional secrecy frames the motivation but is not the
 contribution. It does not claim to beat commercial systems in general; it
 characterises a German-specific cell of the problem space where the local-only
 constraint binds.
 
+The evaluated scope is the document-reading and structuring layer. A knowledge
+graph over the extracted data and natural-language querying over that graph were
+designed (Chapter~\ref{ch:system-design}) but deliberately not built or evaluated;
+so was a direct comparison against cloud models. Chapter~\ref{ch:limitations-future-work}
+states what was left out and why.
+
+\paragraph{A note on terminology.} \emph{\ac{OCR}-free} in this thesis is an
+architectural statement, not a claim about model names: the pipeline contains no
+separate character-recognition engine, and the vision-language model maps page
+pixels directly to output tokens. Several models in the evaluated cohort
+nevertheless carry \ac{OCR} in their names, because their authors named them
+after the task they perform rather than after the architecture they use. The two
+usages are independent, and the naming is not a contradiction.
+
 \section{Thesis Structure}
 \label{sec:structure}
 
-% TODO(structure): keep in sync with the final chapter list.
-Chapter~\ref{ch:background} introduces the technical and legal background.
+% Keep in sync with main.tex's include list.
+Chapter~\ref{ch:background} introduces the technical and legal background, and
 Chapter~\ref{ch:related-work} positions the thesis against prior work.
-Chapter~\ref{ch:methodology} specifies the system, datasets, metrics, and the
-pre-registered hypotheses. Chapters~\ref{ch:extraction}--\ref{ch:system} report
-the three layers and the prototype. Chapter~\ref{ch:discussion} discusses the
-findings and Chapter~\ref{ch:conclusion} concludes.
+Chapter~\ref{ch:system-design} presents the system design and states which parts
+of it are evaluated here. Chapter~\ref{ch:methodology} specifies the corpus, the
+ground truth, the metric suite and the pre-registration discipline.
+Chapter~\ref{ch:results} reports the results, and
+Chapter~\ref{ch:implementation} describes the prototype.
+Chapter~\ref{ch:discussion} interprets the findings,
+Chapter~\ref{ch:limitations-future-work} sets out the limitations and the work
+left undone, and Chapter~\ref{ch:conclusion} concludes.
