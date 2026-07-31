@@ -933,6 +933,26 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
             "any future MinerU re-run."
         ),
     },
+    "opendatalab/MinerU2.5-Pro-2605-1.2B": {
+        "extractor_class": TransformersMPSExtractor,
+        "category": 1,
+        "prompt_template": "OCR this document.",
+        "max_tokens": 2048,
+        "quant_target": "bf16",
+        "alt_model_id": None,
+        "license": "apache-2.0",
+        "needs_trust_remote_code": False,
+        "repetition_penalty": 1.05,
+        "note": (
+            "qwen2_vl arch; 1.16 B params; same architecture + decode wiring as "
+            "the 2604 checkpoint above (identical extractor path). 2605 is the "
+            "MinerU 3.3-release checkpoint (2026-06-11): fixes 2604 stability "
+            "issues on complex documents + adds NATIVE multilingual OCR (German "
+            "relevance). Added per ADR-054 as the lead candidate for the GPU "
+            "reader bake-off (#114); the 2604 entry is retained untouched for "
+            "pilot-13 / bake-off-wave lineage."
+        ),
+    },
     "allenai/olmOCR-2-7B-1025": {
         "extractor_class": MLXVLMExtractor,
         "category": 1,

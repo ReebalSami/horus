@@ -62,6 +62,11 @@ uv run python scripts/finetune_reader_bakeoff.py \
 # Control: local leader (~0.72 answerability on M1) re-run on CUDA
 uv run python scripts/finetune_reader_bakeoff.py \
   --reader opendatalab/MinerU2.5-Pro-2604-1.2B --force-transformers
+
+# LEAD candidate (ADR-054): MinerU 3.3-release checkpoint — fixes 2604 stability
+# issues + native multilingual OCR (German); same arch/wiring as 2604
+uv run python scripts/finetune_reader_bakeoff.py \
+  --reader opendatalab/MinerU2.5-Pro-2605-1.2B --force-transformers
 ```
 
 Each prints the per-invoice answerability table vs the canonical Granite baseline
