@@ -53,7 +53,7 @@
       "overall_micro_f1": 0.39215686274509803,
       "presence_conditional_f1": 0.6896551724137931,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 28.82070962502621,
+      "structure_seconds": 28.862934500000847,
       "error": null
     },
     {
@@ -63,7 +63,7 @@
       "overall_micro_f1": 0.6666666666666667,
       "presence_conditional_f1": 0.6956521739130436,
       "spurious_emission_rate": 0.05263157894736842,
-      "structure_seconds": 26.930764083052054,
+      "structure_seconds": 26.857590041996446,
       "error": null
     },
     {
@@ -73,7 +73,7 @@
       "overall_micro_f1": 0.9545454545454545,
       "presence_conditional_f1": 0.975609756097561,
       "spurious_emission_rate": 0.08333333333333333,
-      "structure_seconds": 42.111806500004604,
+      "structure_seconds": 43.07461829199747,
       "error": null
     },
     {
@@ -83,7 +83,7 @@
       "overall_micro_f1": 0.9090909090909091,
       "presence_conditional_f1": 0.9444444444444444,
       "spurious_emission_rate": 0.07142857142857142,
-      "structure_seconds": 40.07747537503019,
+      "structure_seconds": 41.893184125001426,
       "error": null
     },
     {
@@ -93,7 +93,7 @@
       "overall_micro_f1": 0.9565217391304348,
       "presence_conditional_f1": 1.0,
       "spurious_emission_rate": 0.06666666666666667,
-      "structure_seconds": 39.00522883294616,
+      "structure_seconds": 43.10671079099848,
       "error": null
     },
     {
@@ -103,7 +103,7 @@
       "overall_micro_f1": 0.888888888888889,
       "presence_conditional_f1": 0.967741935483871,
       "spurious_emission_rate": 0.23529411764705882,
-      "structure_seconds": 39.13626899989322,
+      "structure_seconds": 43.65758366600494,
       "error": null
     },
     {
@@ -113,7 +113,7 @@
       "overall_micro_f1": 0.48484848484848486,
       "presence_conditional_f1": 0.5517241379310345,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 25.22376570792403,
+      "structure_seconds": 32.254441083998245,
       "error": null
     },
     {
@@ -123,7 +123,7 @@
       "overall_micro_f1": 0.7179487179487181,
       "presence_conditional_f1": 0.7894736842105263,
       "spurious_emission_rate": 0.09090909090909091,
-      "structure_seconds": 39.79265820898581,
+      "structure_seconds": 48.5854209159952,
       "error": null
     },
     {
@@ -133,7 +133,7 @@
       "overall_micro_f1": 0.8666666666666666,
       "presence_conditional_f1": 0.7894736842105263,
       "spurious_emission_rate": 0.2,
-      "structure_seconds": 41.85271804104559,
+      "structure_seconds": 53.44648716600204,
       "error": null
     },
     {
@@ -143,7 +143,7 @@
       "overall_micro_f1": 0.911764705882353,
       "presence_conditional_f1": 0.9166666666666666,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 38.10028774989769,
+      "structure_seconds": 38.35230091700214,
       "error": null
     },
     {
@@ -153,7 +153,7 @@
       "overall_micro_f1": 0.36144578313253006,
       "presence_conditional_f1": 0.7058823529411764,
       "spurious_emission_rate": 0.16666666666666666,
-      "structure_seconds": 49.30526833399199,
+      "structure_seconds": 50.24047004199383,
       "error": null
     },
     {
@@ -163,7 +163,7 @@
       "overall_micro_f1": 0.10714285714285715,
       "presence_conditional_f1": 0.25,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 32.77957979100756,
+      "structure_seconds": 32.32119149999926,
       "error": null
     },
     {
@@ -173,7 +173,7 @@
       "overall_micro_f1": 0.2545454545454546,
       "presence_conditional_f1": 0.5185185185185185,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 26.139868375030346,
+      "structure_seconds": 25.937970790997497,
       "error": null
     },
     {
@@ -183,7 +183,7 @@
       "overall_micro_f1": 0.7012987012987012,
       "presence_conditional_f1": 0.7567567567567568,
       "spurious_emission_rate": 0.09090909090909091,
-      "structure_seconds": 39.89516154094599,
+      "structure_seconds": 39.838717958002235,
       "error": null
     },
     {
@@ -193,7 +193,7 @@
       "overall_micro_f1": 0.912280701754386,
       "presence_conditional_f1": 1.0,
       "spurious_emission_rate": 0.125,
-      "structure_seconds": 36.290649875067174,
+      "structure_seconds": 36.424430708997534,
       "error": null
     },
     {
@@ -203,7 +203,7 @@
       "overall_micro_f1": 0.631578947368421,
       "presence_conditional_f1": 0.6666666666666666,
       "spurious_emission_rate": 0.17647058823529413,
-      "structure_seconds": 41.057539624976926,
+      "structure_seconds": 41.698238666002,
       "error": null
     },
     {
@@ -213,7 +213,7 @@
       "overall_micro_f1": 0.45569620253164556,
       "presence_conditional_f1": 0.8484848484848484,
       "spurious_emission_rate": 0.13333333333333333,
-      "structure_seconds": 41.826226750039496,
+      "structure_seconds": 42.38100766700518,
       "error": null
     },
     {
@@ -223,7 +223,7 @@
       "overall_micro_f1": 0.574712643678161,
       "presence_conditional_f1": 0.9047619047619047,
       "spurious_emission_rate": 0.1,
-      "structure_seconds": 41.8196621669922,
+      "structure_seconds": 55.55573241600359,
       "error": null
     },
     {
@@ -233,7 +233,7 @@
       "overall_micro_f1": 0.7796610169491525,
       "presence_conditional_f1": 0.8095238095238095,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 38.642188916914165,
+      "structure_seconds": 45.52301383300073,
       "error": null
     },
     {
@@ -243,7 +243,7 @@
       "overall_micro_f1": 0.2816901408450704,
       "presence_conditional_f1": 0.6666666666666666,
       "spurious_emission_rate": 0.07142857142857142,
-      "structure_seconds": 27.3234138750704,
+      "structure_seconds": 29.68716091600072,
       "error": null
     },
     {
@@ -253,7 +253,7 @@
       "overall_micro_f1": 0.793103448275862,
       "presence_conditional_f1": 0.8275862068965517,
       "spurious_emission_rate": 0.11764705882352941,
-      "structure_seconds": 34.92293662496377,
+      "structure_seconds": 37.04456908299471,
       "error": null
     },
     {
@@ -263,7 +263,7 @@
       "overall_micro_f1": 0.5357142857142857,
       "presence_conditional_f1": 0.6428571428571429,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 31.17481479200069,
+      "structure_seconds": 32.989477041999635,
       "error": null
     },
     {
@@ -273,7 +273,7 @@
       "overall_micro_f1": 0.7142857142857143,
       "presence_conditional_f1": 0.6666666666666666,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 34.50773229193874,
+      "structure_seconds": 36.58572224999807,
       "error": null
     },
     {
@@ -283,7 +283,7 @@
       "overall_micro_f1": 0.8484848484848484,
       "presence_conditional_f1": 0.8717948717948718,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 41.46076012495905,
+      "structure_seconds": 43.27685599999677,
       "error": null
     },
     {
@@ -293,7 +293,7 @@
       "overall_micro_f1": 0.7920792079207921,
       "presence_conditional_f1": 0.9142857142857143,
       "spurious_emission_rate": 0.13333333333333333,
-      "structure_seconds": 53.68156287504826,
+      "structure_seconds": 57.16705820799689,
       "error": null
     },
     {
@@ -303,7 +303,7 @@
       "overall_micro_f1": 0.8985507246376812,
       "presence_conditional_f1": 0.9411764705882353,
       "spurious_emission_rate": 0.06666666666666667,
-      "structure_seconds": 46.147553375107236,
+      "structure_seconds": 47.19498591699812,
       "error": null
     },
     {
@@ -313,7 +313,7 @@
       "overall_micro_f1": 0.4556962025316456,
       "presence_conditional_f1": 0.878048780487805,
       "spurious_emission_rate": 0.0,
-      "structure_seconds": 27.766277624992654,
+      "structure_seconds": 28.61622191600327,
       "error": null
     },
     {
@@ -323,7 +323,7 @@
       "overall_micro_f1": 0.8846153846153846,
       "presence_conditional_f1": 0.9333333333333333,
       "spurious_emission_rate": 0.17647058823529413,
-      "structure_seconds": 41.64212770899758,
+      "structure_seconds": 42.52320141700329,
       "error": null
     },
     {
@@ -333,7 +333,7 @@
       "overall_micro_f1": 0.9032258064516129,
       "presence_conditional_f1": 1.0,
       "spurious_emission_rate": 0.05,
-      "structure_seconds": 27.64060016698204,
+      "structure_seconds": 29.129806500000996,
       "error": null
     }
   ]

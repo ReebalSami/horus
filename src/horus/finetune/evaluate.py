@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import time
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -87,8 +88,20 @@ def evaluate_structurer(
     eval_cfg: EvalConfig | None = None,
     label: str = "zero-shot",
     progress: bool = True,
+    save_outputs_dir: Path | None = None,
+    reader_text_fn: Callable[[InvoiceRecord], str] | None = None,
 ) -> EvalReport:
-    """Score the structurer (optionally LoRA-adapted) over every ready record in ``records``."""
+    """Score the structurer (optionally LoRA-adapted) over every ready record in ``records``.
+
+    ``save_outputs_dir`` persists each invoice's RAW structurer generation to
+    ``<dir>/<stem>.txt`` so offline re-scoring (field-subset attribution, adapter
+    A/B) never has to re-run the VLM (attribution audit, issue #55 follow-up).
+
+    ``reader_text_fn`` overrides where the structurer input text comes from
+    (default: the record's cached reader transcript). The oracle-transcript
+    probe passes ``lambda r: render_oracle_transcript(r.gt)`` to measure the
+    structurer ceiling independent of reading quality.
+    """
     cfg = eval_cfg or EvalConfig()
     ready = [r for r in records if r.ready and r.gt is not None]
     if not ready:
@@ -113,9 +126,15 @@ def evaluate_structurer(
         flush=True,
     )
 
+    if save_outputs_dir is not None:
+        save_outputs_dir.mkdir(parents=True, exist_ok=True)
+
     for i, rec in enumerate(ready, 1):
         assert rec.transcript_path is not None and rec.gt is not None  # (ready ⇒ both set)
-        reader_text = reader_text_from_transcript(rec.transcript_path)
+        if reader_text_fn is not None:
+            reader_text = reader_text_fn(rec)
+        else:
+            reader_text = reader_text_from_transcript(rec.transcript_path)
         full_prompt = structurer.build_structuring_input(structuring_prompt, reader_text)
 
         t0 = time.perf_counter()
@@ -129,6 +148,9 @@ def evaluate_structurer(
             if progress:
                 print(f"[{i}/{len(ready)}] {rec.stem}: FAILED ({result.error})", flush=True)
             continue
+
+        if save_outputs_dir is not None:
+            (save_outputs_dir / f"{rec.stem}.txt").write_text(result.text, encoding="utf-8")
 
         predicted = structurer.to_predicted_dict(result.text, structurer_model)
         predicted_groups = structurer.to_predicted_groups(result.text)

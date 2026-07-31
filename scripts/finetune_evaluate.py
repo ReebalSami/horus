@@ -26,7 +26,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from horus.finetune.config import FinetuneConfig  # noqa: E402
-from horus.finetune.dataset import build_records  # noqa: E402
+from horus.finetune.dataset import build_records, render_oracle_transcript  # noqa: E402
 from horus.finetune.evaluate import EvalReport, evaluate_structurer  # noqa: E402
 from horus.finetune.split import load_split  # noqa: E402
 
@@ -61,6 +61,19 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--out", default=None, help="Write the JSON report to this path.")
     parser.add_argument("--limit", type=int, default=0, help="Only the first N invoices (spike).")
     parser.add_argument("--max-tokens", type=int, default=0, help="Override decode budget.")
+    parser.add_argument(
+        "--save-outputs",
+        default=None,
+        metavar="DIR",
+        help="Persist each invoice's raw structurer generation to DIR/<stem>.txt "
+        "(enables offline field-subset re-scoring without re-running the VLM).",
+    )
+    parser.add_argument(
+        "--oracle",
+        action="store_true",
+        help="Feed the structurer a PERFECT GT-rendered transcript instead of the "
+        "reader's (structurer-ceiling probe for the attribution audit).",
+    )
     args = parser.parse_args(argv[1:])
 
     cfg = FinetuneConfig.from_yaml(args.config)
@@ -83,8 +96,17 @@ def main(argv: list[str]) -> int:
         subset = subset[: args.limit]
 
     adapter_dir = Path(args.adapter) if args.adapter else None
-    label = args.label or ("finetuned" if adapter_dir else "zero-shot")
+    if args.label:
+        label = args.label
+    elif args.oracle:
+        label = "oracle"
+    else:
+        label = "finetuned" if adapter_dir else "zero-shot"
     max_tokens = args.max_tokens or cfg.eval_max_tokens
+
+    def _oracle_text(rec) -> str:  # noqa: ANN001 — InvoiceRecord; ready ⇒ gt is set
+        assert rec.gt is not None
+        return render_oracle_transcript(rec.gt)
 
     report = evaluate_structurer(
         subset,
@@ -93,6 +115,8 @@ def main(argv: list[str]) -> int:
         adapter_dir=adapter_dir,
         max_tokens=max_tokens,
         label=label,
+        save_outputs_dir=Path(args.save_outputs) if args.save_outputs else None,
+        reader_text_fn=_oracle_text if args.oracle else None,
     )
     _print_summary(report)
 

@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -40,7 +41,13 @@ from typing import Any
 
 from horus.config import EvalConfig
 from horus.eval import structurer
-from horus.eval.ground_truth import FIELDS, GroundTruth, GroundTruthField
+from horus.eval.ground_truth import (
+    FIELDS,
+    REPEATING_GROUPS,
+    FieldSpec,
+    GroundTruth,
+    GroundTruthField,
+)
 from horus.eval.harness import _extract_groundtruth_via_facturx, _model_slug
 from horus.eval.scorer import InvoiceFieldScores, score
 from horus.eval.transcripts import parse_transcript, split_per_page_texts
@@ -55,6 +62,7 @@ __all__ = [
     "groundtruth_to_target",
     "load_groundtruth",
     "reader_text_from_transcript",
+    "render_oracle_transcript",
     "summarize",
     "target_self_score",
 ]
@@ -237,6 +245,84 @@ def target_self_score(gt: GroundTruth, *, eval_cfg: EvalConfig | None = None) ->
         model_id="<gt-target>",
         predicted_groups=predicted_groups,
     )
+
+
+def _oracle_print_form(rec: GroundTruthField, spec: FieldSpec) -> str | None:
+    """Render one GT value the way a German invoice page prints it.
+
+    DATE → ``dd.mm.yyyy``; MONEY → thousand-dot + decimal-comma + ``€``;
+    RATE → ``19 %``. Controlled-vocabulary CODEs that never print verbatim
+    (document_type token, VAT category letter) stay canonical — the oracle
+    isolates structuring capability, not page-to-code inference. ``None`` for
+    absent / empty / normalizer-rejected fields (they don't appear on the page).
+    """
+    if not rec.is_present or not rec.normalized_value:
+        return None
+    v = rec.normalized_value
+    if spec.field_type == "DATE":
+        m = re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})", v)
+        if m:
+            y, mo, d = m.groups()
+            return f"{d}.{mo}.{y}"
+        return v
+    if spec.field_type == "MONEY":
+        m = re.fullmatch(r"(-?)(\d+)\.(\d{2})", v)
+        if m:
+            sign, euros, cents = m.groups()
+            grouped = ""
+            while len(euros) > 3:
+                grouped = "." + euros[-3:] + grouped
+                euros = euros[:-3]
+            return f"{sign}{euros}{grouped},{cents} €"
+        return v
+    if spec.field_type == "RATE":
+        return f"{v} %"
+    return v
+
+
+def render_oracle_transcript(gt: GroundTruth) -> str:
+    """Render the GT as the text a PERFECT reader would produce (attribution audit).
+
+    Emulates an ideal reader transcript of the invoice page: one
+    ``<german_label>: <printed value>`` line per present flat field, plus one
+    labeled line per repeating-group row. Feeding this to the structurer measures
+    the structurer + predicted-normalizer ceiling INDEPENDENT of reading quality —
+    the gap to `target_self_score` (≈0.9975) is pure downstream loss.
+
+    Two honesty caveats (documented for the audit report):
+      - DATE / MONEY / RATE values are German-print-formatted, so the structurer's
+        locale conversion IS exercised (that's part of its real job).
+      - Label→field mapping is trivially easy here (labels ARE the registry's
+        german_label). Real pages use varied labels, so this is an UPPER bound.
+    """
+    lines: list[str] = []
+    for key, spec in FIELDS.items():
+        printed = _oracle_print_form(gt.header[key], spec)
+        if printed is not None:
+            lines.append(f"{spec.german_label}: {printed}")
+    group_titles = {
+        "vat_breakdown": "Umsatzsteueraufstellung",
+        "skonto": "Zahlungsbedingungen (Skonto)",
+        "line_items": "Rechnungspositionen",
+    }
+    for group, (_row_xpath, sub_fields) in REPEATING_GROUPS.items():
+        rows = getattr(gt, group)
+        if not rows:
+            continue
+        lines.append("")
+        lines.append(f"{group_titles[group]}:")
+        for i, row in enumerate(rows, start=1):
+            cells = []
+            for sub_key, sub_spec in sub_fields.items():
+                rec = row.get(sub_key)
+                if rec is None:
+                    continue
+                printed = _oracle_print_form(rec, sub_spec)
+                if printed is not None:
+                    cells.append(f"{sub_spec.german_label} {printed}")
+            if cells:
+                lines.append(f"  {i}. " + " | ".join(cells))
+    return "\n".join(lines)
 
 
 def reader_text_from_transcript(transcript_path: Path) -> str:

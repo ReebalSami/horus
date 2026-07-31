@@ -1,0 +1,66 @@
+{
+  "split": "val",
+  "n_invoices": 29,
+  "mean_overall_micro_f1_recomputed": 0.9608,
+  "mean_overall_micro_f1_report": 0.9607527899813898,
+  "oracle_mean_overall_micro_f1": 0.9607527899813898,
+  "clusters": {
+    "group:line_items": {
+      "tp": 412,
+      "fp": 21,
+      "fn": 4,
+      "fn_readable": 0,
+      "fn_unreadable": 4,
+      "pooled_f1": 0.9706,
+      "mean_invoice_f1": 0.9657,
+      "n_invoices": 26
+    },
+    "group:skonto": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 4,
+      "fn_readable": 4,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.75,
+      "mean_invoice_f1": 0.6,
+      "n_invoices": 5
+    },
+    "group:vat_breakdown": {
+      "tp": 145,
+      "fp": 4,
+      "fn": 0,
+      "fn_readable": 0,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9864,
+      "mean_invoice_f1": 0.9592,
+      "n_invoices": 28
+    },
+    "legacy-16": {
+      "tp": 371,
+      "fp": 7,
+      "fn": 12,
+      "fn_readable": 7,
+      "fn_unreadable": 5,
+      "pooled_f1": 0.975,
+      "mean_invoice_f1": 0.9747,
+      "n_invoices": 29
+    },
+    "new-flat": {
+      "tp": 158,
+      "fp": 0,
+      "fn": 35,
+      "fn_readable": 24,
+      "fn_unreadable": 11,
+      "pooled_f1": 0.9003,
+      "mean_invoice_f1": 0.8965,
+      "n_invoices": 29
+    }
+  },
+  "loss_shares": {
+    "total_signal_errors": 87,
+    "fn_reader_unreadable": 20,
+    "fn_structurer_readable": 35,
+    "fp_structurer": 32
+  },
+  "missing_outputs": []
+}
