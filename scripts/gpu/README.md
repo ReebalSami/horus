@@ -10,13 +10,59 @@ M1** (the mlx_vlm LoRA trainer is Apple-only by design — matched train/serve p
 Budget approved: ≲ $15 (< 6 GPU-hours on-demand). **Terminate the instance when done —
 step 6 is not optional.**
 
-## 1. Launch (once)
+## 1. Launch (once) — exact AWS-console steps
 
-- **Instance**: `g5.xlarge` (A10G 24 GB), region `eu-central-1` (Frankfurt)
-- **AMI**: *Deep Learning Base OSS Nvidia Driver GPU AMI (Ubuntu 22.04)* — driver preinstalled
-- **Disk**: 200 GB gp3 (HF checkpoints: olmOCR-2-7B ≈16 GB, Qwen3-VL-4B ≈9 GB, MinerU ≈3 GB)
-- **Security group**: SSH (22) from your IP only
-- On-demand ≈ $1.01/hr; spot ≈ $0.30–0.45/hr (spot is fine — every pass here is resumable)
+Target: `g5.xlarge` (A10G 24 GB), region `eu-central-1` (Frankfurt), on-demand ≈ $1.01/hr
+(spot ≈ $0.30–0.45/hr also works — every pass is resumable — but on-demand is simpler).
+
+### 1a. One-time pre-flight: vCPU quota for G instances
+
+Fresh/lightly-used AWS accounts often have a **0-vCPU quota for G instances** — the launch
+fails with `VcpuLimitExceeded` even though everything else is right. Check BEFORE launching:
+
+1. Console → search **"Service Quotas"** → **AWS services** → **Amazon EC2**
+2. Search the quota list for **"Running On-Demand G and VT instances"**
+3. If **Applied account-level quota value < 4** → **Request increase at account level** → enter **4** → submit.
+   Approval is usually quick for small values; you get an email.
+
+### 1b. Launch wizard
+
+1. Console → top-right region selector → **Europe (Frankfurt) eu-central-1**
+2. **EC2** → **Instances** → **Launch instances** (orange button)
+3. **Name**: `horus-bakeoff`
+4. **Application and OS Images (AMI)** → search box: type
+   **`Deep Learning Base OSS Nvidia Driver GPU AMI (Ubuntu 22.04)`** → **Quickstart AMIs** /
+   **AWS Marketplace AMIs** tab → select it (publisher: Amazon Web Services, free AMI —
+   NVIDIA driver + CUDA preinstalled; do NOT pick a "PyTorch" flavor, `setup.sh` installs deps)
+5. **Instance type** → type `g5.xlarge` → select (4 vCPU / 16 GiB / 1×A10G 24 GB)
+6. **Key pair** → **Create new key pair** → name `horus-gpu`, type **ED25519**, format **.pem**
+   → **Create** (downloads `horus-gpu.pem`). Then on the Mac:
+   `mv ~/Downloads/horus-gpu.pem ~/.ssh/ && chmod 400 ~/.ssh/horus-gpu.pem`
+7. **Network settings** → keep default VPC/subnet; **Auto-assign public IP: Enable**;
+   **Create security group** → check **Allow SSH traffic from** → dropdown: **My IP**
+8. **Configure storage** → change to **200** GiB, type **gp3**
+   (HF checkpoints: olmOCR-2-7B ≈16 GB, Qwen3-VL-4B ≈9 GB, MinerU ≈3 GB each)
+9. (Optional, spot) **Advanced details** → **Purchasing option** → tick **Request Spot Instances**
+10. Right panel **Summary** → **Number of instances: 1** → **Launch instance**
+11. Click the instance id → wait for **Instance state: Running** + **Status checks: 2/2 passed**
+    (~2 min) → copy the **Public IPv4 address** — that's `<instance-ip>` everywhere below
+12. First connection test from the Mac:
+    `ssh -i ~/.ssh/horus-gpu.pem ubuntu@<instance-ip>` → accept the host key → `nvidia-smi`
+    must show **A10G**. Exit.
+
+**Billing note**: the meter runs from launch until *terminate* (a *stopped* instance still
+bills the 200 GB disk). Step 6 (terminate) is not optional.
+
+All `ssh`/`rsync` commands below need `-i ~/.ssh/horus-gpu.pem` — or add once to `~/.ssh/config`:
+
+```
+Host horus-gpu
+  HostName <instance-ip>
+  User ubuntu
+  IdentityFile ~/.ssh/horus-gpu.pem
+```
+
+then `ssh horus-gpu` / `rsync … horus-gpu:~/horus/` work without flags.
 
 ## 2. Sync repo + data (from the Mac)
 
@@ -77,25 +123,11 @@ collapsing below the Granite baseline; ties break toward the smaller model
 ## 5. Regenerate all 146 transcripts with the winner
 
 ```sh
-uv run python - <<'PY'
-from pathlib import Path
-from horus.finetune.dataset import build_records
-from horus.finetune.reader_pass import ReaderPassConfig, run_reader_pass
-
-WINNER = "<model-id-from-step-4>"
-run_reader_pass(
-    build_records(Path("data/raw/german/zugferd-corpus")),
-    config=ReaderPassConfig(
-        reader_model=WINNER,
-        transcript_dir=Path("data/finetune/gpu-transcripts"),
-        force_transformers=True,
-    ),
-)
-PY
+uv run python scripts/gpu/regen_transcripts.py --winner <model-id-from-step-4>
 ```
 
-(Heredoc is fine here — this runs in a plain SSH shell on Linux, not the Windsurf
-macOS terminal; the `no-terminal-oneline-scripts` crash hazard does not apply.)
+(Single-line — safe to drive over `ssh` from the Windsurf terminal, unlike the heredoc
+this replaced. Resume-safe: re-running skips already-transcribed stems.)
 
 ## 6. Bring artifacts home + TERMINATE
 
