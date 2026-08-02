@@ -1083,6 +1083,29 @@ COHORT_MANIFEST: dict[str, dict[str, Any]] = {
             "ceiling; the cap LANCZOS-downscales before the processor."
         ),
     },
+    "Qwen/Qwen3-VL-8B-Instruct": {
+        "extractor_class": TransformersMPSExtractor,
+        "category": 3,
+        "prompt_template": "Extract all text and structure from this invoice. Return as markdown.",
+        "max_tokens": 2048,
+        "quant_target": "bf16",
+        "alt_model_id": None,
+        "license": "apache-2.0",
+        "needs_trust_remote_code": False,
+        "max_pixels": 2_150_000,
+        "note": (
+            "qwen3_vl arch; 8.77 B params; multilingual. Added per ADR-057 as the "
+            "ONE hypothesis-driven sibling test of the reader winner (Qwen3-VL-4B): "
+            "does 2x capacity remove the 4B's character-level slips "
+            "(Lieferant->Lieberant f/b confusion on stylesheet fixtures; FR-VAT "
+            "digit-run +1) while keeping its read-every-margin behavior? GPU-only "
+            "candidate (bf16 exceeds the M1 Pro 16 GB envelope; max_pixels cap is "
+            "the MPS-only guard inherited from the 4B entry, inert on CUDA). This "
+            "is the 8B variant ADR-009 SS3.2 originally traded away for local "
+            "deployability - re-admitted for the reader role only, where inference "
+            "runs on the on-prem workstation GPU (ADR-054 premise), not the laptop."
+        ),
+    },
     "google/paligemma2-3b-mix-448": {
         "extractor_class": TransformersMPSExtractor,
         "category": 3,

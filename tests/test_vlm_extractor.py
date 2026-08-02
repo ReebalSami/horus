@@ -101,7 +101,17 @@ _ADR_032_CONTROLLED_PAIR_MPS = "ibm-granite/granite-docling-258M"
 # registered only so the #114 bake-off can run it via the manifest.
 _ADR_054_BAKEOFF_CANDIDATE = "opendatalab/MinerU2.5-Pro-2605-1.2B"
 
-_NON_COHORT_ENTRIES = {_ADR_032_CONTROLLED_PAIR_MPS, _ADR_054_BAKEOFF_CANDIDATE}
+# The ADR-057 reader-selection sibling test — the 8B variant of the winning
+# Qwen3-VL reader family (the variant ADR-009 §3.2 traded away for local
+# deployability, re-admitted for the GPU-hosted READER role only). NOT an
+# ADR-009 evaluation-cohort member.
+_ADR_057_READER_SIBLING = "Qwen/Qwen3-VL-8B-Instruct"
+
+_NON_COHORT_ENTRIES = {
+    _ADR_032_CONTROLLED_PAIR_MPS,
+    _ADR_054_BAKEOFF_CANDIDATE,
+    _ADR_057_READER_SIBLING,
+}
 
 
 def test_cohort_manifest_membership() -> None:
@@ -111,8 +121,9 @@ def test_cohort_manifest_membership() -> None:
     assert _NON_COHORT_ENTRIES <= set(COHORT_MANIFEST)
     adr009_cohort = set(COHORT_MANIFEST) - _NON_COHORT_ENTRIES
     assert len(adr009_cohort) == 10, "ADR-009 §3.1 defines exactly 10 cohort models"
-    assert len(COHORT_MANIFEST) == 12, (
-        "10 ADR-009 cohort + 1 ADR-032 controlled-pair + 1 ADR-054 bake-off candidate"
+    assert len(COHORT_MANIFEST) == 13, (
+        "10 ADR-009 cohort + 1 ADR-032 controlled-pair + 1 ADR-054 bake-off "
+        "candidate + 1 ADR-057 reader sibling"
     )
 
 
