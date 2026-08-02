@@ -73,15 +73,24 @@ future work, and **after this phase the experiment track stops**.
 
 **The endgame is a fixed, short pipeline; each step gates the next; no new experiments after it.**
 
-> **Execution-substrate amendment (2026-07-31, same day)**: AWS denied the G-instance vCPU
-> quota increase twice (fresh-account ramp policy, support case 178548148400462, both
-> us-east-1 and eu-central-1). The rented box is now a **RunPod A40 48 GB pod, EU region**
-> (≈ $0.35–0.44/hr, per-second billing, no quota gate; runbook §1B). The decision's substance
-> — one rented CUDA session, same candidates, same decision rule, same budget envelope — is
-> unchanged; only the provider swapped. Cost improves (< $5 projected vs ~$6 on A10G).
+> **Execution-substrate amendment (2026-07-31, same day — superseded by amendment 2 below)**:
+> AWS denied the G-instance vCPU quota increase twice (fresh-account ramp policy, support
+> case 178548148400462, both us-east-1 and eu-central-1). The rented box is now a **RunPod
+> A40 48 GB pod, EU region** (≈ $0.35–0.44/hr, per-second billing, no quota gate; runbook
+> §1B). The decision's substance — one rented CUDA session, same candidates, same decision
+> rule, same budget envelope — is unchanged; only the provider swapped. Cost improves
+> (< $5 projected vs ~$6 on A10G).
+
+> **Execution-substrate amendment 2 (2026-08-01)**: the quota appeal on the same case
+> (178548148400462) was **APPROVED** — "Running On-Demand G and VT instances" raised to
+> 4 vCPUs in eu-central-1 Frankfurt. This supersedes the RunPod amendment above before it
+> was ever executed: the rented box is the originally planned **AWS `g5.xlarge` (A10G
+> 24 GB), eu-central-1, on-demand ≈ $1.01/hr** — runbook §1A reinstated as plan of record,
+> §1B retained as fallback. Decision substance again unchanged — same candidates, same
+> decision rule, same ≲ $15 budget envelope (projected ≈ $6 on A10G).
 
 1. **GPU reader bake-off** (#114, runbook `scripts/gpu/README.md`, one rented CUDA-box
-   session — RunPod A40 per the amendment above): candidates are **MinerU2.5-Pro-2605-1.2B
+   session — AWS g5.xlarge per amendment 2 above): candidates are **MinerU2.5-Pro-2605-1.2B
    (lead)**, **Qwen3-VL-4B (contrast)**,
    **granite-docling-258M (control)**, all via `--force-transformers` at bf16. Decision rule:
    highest mean answerability on the 29 sealed val invoices; ties break toward the smaller model.
