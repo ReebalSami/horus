@@ -1,0 +1,126 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  76.34s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version: 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Handelsrechnung Nr. 471102 vom 05.06.2018
+
+Anwendungsempfehlung: urn:cen.eu:en16931:2017  
+Währung: EUR  
+
+Liefers- und Leistungsdatum: 03.06.2018  
+
+Bestellung: 2013-471331  
+
+---
+
+### Verkäufer:
+
+Globale Nummer: 4000001123452 (GLN)  
+Lieberant GmbH  
+Lieberantenstraße 20  
+DE 80333 München  
+
+Steuernummer: 201/113/40209  
+USt.-Id.-Nr.: DE123456789  
+
+---
+
+### Käufer:
+
+Nummer: GE2020211  
+Kunden AG Mitte  
+Kundenstraße 15  
+DE 69876 Frankfurt  
+
+---
+
+Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+
+Qualifizierung der Textart: AAK  
+
+Es bestehen Rabatt- und Bonusvereinbarungen.
+
+Qualifizierung der Textart: REG  
+
+---
+
+Lieberant GmbH  
+Lieberantenstraße 20  
+80333 München  
+Deutschland  
+
+Geschäftsführer: Hans Muster  
+Handelsregisternummer: H A 123
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|------------|-------|--------|---------|
+|     | Art-Nr       |              |              |            |       |        |         |
+|     | (Art)        |              |              |            |       |        |         |
+| 1   | KR3M         | 4012345001235 | Kunstrasen grün 3m breit | 3,33 | 3 m² | 19 % VAT (S) | 10,00 |
+|     | (GLN)        |              |              |            |       |        |         |
+|     | Bruttoreis : 4,00 Abschlag : 0,67 | Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen: | | | | |
+|     |              | 300cm x 100 cm | | | | | |
+| 2   | SFK5         | 4000050986428 | Schweinesteak | 5,50 | 5 kg | 7 % VAT (S) | 27,50 |
+|     | (GLN)        |              |              |            |       |        |         |
+|     | Bruttoreis : 5,50 | aus Deutschland | | | | | |
+| 3   | GTRWA5       | 4000001234561 | Mineralwasser Medium 12 x 1,01 PET | 5,49 | 20 Stk | 7 % VAT (S) | 109,80 |
+|     | (GLN)        |              |              |            |       |        |         |
+|     | Bruttoreis : 5,49 | | | | | | |
+| 4   | PFA5         | 4000001234578 | Pfand | 2,77 | 20 Stk | 19 % VAT (S) | 55,40 |
+|     | (GLN)        |              |              |            |       |        |         |
+|     | Bruttoreis : 2,77 | | | | | | |
+
+**Zahlungsbedingungen:**
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+| Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3% Skonto innerhalb 10 Tagen bis 15.06.2018 | | |
+
+**Zu- und Abschläge:**
+
+| Art | % | Basisbetrag | Basismenge | Steuer | Betrag |
+|-----|---|-------------|------------|--------|--------|
+| Abschlag | Sondernachlass | 10,00 | | 19 % VAT (S) | -1,00 |
+| Abschlag | Sondernachlass | 137,30 | | 7 % VAT (S) | -13,73 |
+| Zuschlag | Versandkosten | 137,30 | | 7 % VAT (S) | 5,80 |
+
+**Umsatzsteueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Steuerbasisbetrag | USt. % | USt.-Betrag |
+|-----------------|-----------|--------------|-------------------|--------|-------------|
+| VAT (S)         |           |              | 129,37            | 7      | 9,06        |
+| VAT (S)         |           |              | 64,40             | 19     | 12,24       |
+```<|im_end|>
+===== PAGE 3 =====
+```markdown
+**Belegsummen:**
+
+| Positionssumme | 202,70 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 5,80 |
+| Gesamtbetrag der Abschläge | -14,73 |
+| Rechnungssumme ohne USt. | 193,77 |
+| Steuerbetrag | 21,30 |
+| **Bruttosumme** | **215,07** |
+| Erhaltene Anzahlungen | -50,00 |
+| Zahlbetrag | 165,07 |
+```<|im_end|>

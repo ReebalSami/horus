@@ -1,0 +1,62 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  ZUGFeRD_1p0_EXTENDED_Kostenrechnung
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  48.05s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Lieferant<lcel><fcel>Käufer<lcel><fcel>KOSTENRECHNUNG<lcel><fcel>Seite 1<nl>
+<fcel>GLN 4333741000005 Lief-Nr: 549910<lcel><fcel>GLN 4304171000002<lcel><ecel><lcel><ecel><nl>
+<fcel>KOSTENLIEFERANT GMBH<lcel><fcel>MUSTER-KUNDE GMBH<lcel><fcel>Beleg-Nr : KR87654321012<lcel><ecel><nl>
+<ucel><xcel><ucel><xcel><fcel>Beleg-Datum : 06.10.2013<lcel><ecel><nl>
+<fcel>BAHNHOFSTRASSE 99<lcel><fcel>KUNDENWEG 88<lcel><ecel><lcel><ecel><nl>
+<fcel>99199 MUSTERHAUSEN<lcel><fcel>40235 DUESSELDORF<lcel><fcel>Leistungs-Datum : 01.09.13 - 30.09.13<lcel><ecel><nl>
+<fcel>Steuer-Nr : 5133081508159<lcel><fcel>Kunden-Nr. : 339420<lcel><fcel>Vertrags-Nr : V88456789<lcel><ecel><nl>
+<ucel><xcel><ucel><xcel><fcel>Vertrags-Datum : 01.04.2013<lcel><ecel><nl>
+<ucel><xcel><ucel><xcel><fcel>Lieferschein-Nr : L87654321012<lcel><ecel><nl>
+<ucel><xcel><ucel><xcel><fcel>Lieferschein-Datum : 30.09.2013<lcel><ecel><nl>
+<fcel>Rechnungsempfänger<lcel><fcel>Warenempfänger<lcel><fcel>Auftrag-Nr-Lief : A777123<lcel><ecel><nl>
+<fcel>GLN 4304171000002<lcel><fcel>GLN 4304171088093<lcel><fcel>Auftrag-Datum-Lief : 02.04.2013<lcel><ecel><nl>
+<fcel>MUSTER-KUNDE GMBH<lcel><fcel>MUSTER-MARKT<lcel><ecel><lcel><ecel><nl>
+<fcel>KUNDENWEG 88<lcel><fcel>HAUPTSTRASSE 44<lcel><fcel>Zählpunkt: DE0001346484600000000000000100038<lcel><ecel><nl>
+<fcel>40235 DUESSELDORF<lcel><fcel>31157 SARSTEDT<lcel><fcel>Bei Rückfragen: Telefon: +49 932 431 500 E-Mail : max.muster@musterlieferant.de<lcel><ecel><nl>
+<fcel>Kunden-Nr. : 339420<lcel><fcel>Abteilung : 7322 Kostenstelle: 4430-MG-100<lcel><ecel><lcel><ecel><nl>
+<fcel>GTIN Art-Nr-Kunde<fcel>Art-Nr-Lieferant Artikelbezeichnung<fcel>Menge<fcel>VKE/Geb<fcel>Nettopreis<fcel>MwSt-%<fcel>Nettowert<nl>
+<fcel>Wichtige Information: Bei Bestellungen bis zum 19.12. ist die Auslieferung bis spätestens 23.12. garantiert.<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>4123456000014<fcel>WA997<fcel>10000,0000 KWh<fcel>1<fcel>0,0520<fcel>19,0<fcel>520,00<nl>
+<ucel><fcel>Wirkarbeit HT<ecel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Liefer-Datum: 01.09.2013 - 30.09.2013<lcel><ecel><ecel><ecel><ecel><nl>
+<fcel>4123456000021<fcel>ÖST250<fcel>10000,0000 KWh<fcel>1<fcel>0,0205<fcel>19,0<fcel>205,00<nl>
+<ucel><fcel>Ökosteuer Lieferant<ecel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Liefer-Datum: KW 38/2013<lcel><ecel><ecel><ecel><ecel><nl>
+<fcel>4260331811362<ecel><fcel>27,5000 Std.<fcel>1<fcel>10,5000<fcel>19,0<fcel>288,75<nl>
+<fcel>K6521<fcel>Kommissionierer 1250032 D. Muster Abrechnungszeitraum KW 36<lcel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Besteller: Hr. Mayer, Personalnr. 4488, Kostenstelle 5465-8876<lcel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Artikelrabatt 1: 30,00% Rabatt: 4,50 €/Std.<lcel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Bruttopreis: 15,0000 € Artikelgesamtrabatt: -123,75 €<lcel><ecel><ecel><ecel><ecel><nl>
+<fcel>2001015001325.<fcel>FB05<fcel>3500,0000 Stk.<fcel>1<fcel>0,0105<fcel>19,0<fcel>36,75<nl>
+<fcel>K4322<fcel>FALTENBEUTEL 16X6X28 CM<lcel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Bestell-Nr: B610061523500010, Lieferschein-Nr. L87654321011<lcel><ecel><ecel><ecel><ecel><nl>
+<fcel>4123456000038.<fcel>KOPO5<fcel>1210,0000 Stk.<fcel>1<fcel>0,0100<fcel>19,0<fcel>12,10<nl>
+<fcel>K4322<fcel>Kopierpapier A4<lcel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Zähler-Nr. MG-X79318, Zählerstand von-bis: 543210 - 544420<lcel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Abrechnungszeitraum: 15.09.2013 - 30.09.2013<lcel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Bestell-Nr: B610061523500010,<lcel><ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>Warenempfänger: Mustermarkt, Hauptstr. 46, 31157 Sarstedt Kostenstelle: 4430-MG-002, Sekretariat-2<lcel><ecel><ecel><ecel><ecel><nl>
+<fcel>Warenlieferant/Hersteller: GLN 4333741002207<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>KOSTENLIEFERANT GMBH, Werk 3, HAUPTSTR. 1, 99199 MUSTERHAUSEN<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Transportkosten : Frachtbetrag: 15,00, MwSt.-% 19,0<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Skontovereinbarung: 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Es bestehen Rabatt- oder Bonusvereinbarungen.<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Warenwert Zu-/Abschlag<fcel>Fracht-Verp-Vers<fcel>Skonto sofort<fcel>Nettobetrag<fcel>MwSt-Betrag<fcel>MwSt-%<fcel>Endbetrag<nl>
+<fcel>1062,60<fcel>15,00<fcel>-21,55<fcel>1056,05<fcel>200,65<fcel>19,0<fcel>1256,70<nl>
+<fcel>1062,60<fcel>15,00<fcel>-21,55<fcel>1056,05<fcel>200,65<fcel>EUR<fcel>1256,70<nl>
+<fcel>MUSTERLIEFERANT GMBH<fcel>Geschäftsführung:<fcel>USt-IdNr: DE123456789<fcel>HRB Nr. 372876<lcel><lcel><lcel><nl>
+<fcel>BAHNHOFSTRASSE 99<fcel>Max Mustermann<fcel>Telefon: +49 932 431 0<fcel>Amtsgericht Musterstadt<lcel><lcel><lcel><nl>
+<fcel>99199 MUSTERHAUSEN<ecel><fcel>www.musterlieferant.de<fcel>GLN 4304171000002<lcel><lcel><lcel><nl>
+<|im_end|>

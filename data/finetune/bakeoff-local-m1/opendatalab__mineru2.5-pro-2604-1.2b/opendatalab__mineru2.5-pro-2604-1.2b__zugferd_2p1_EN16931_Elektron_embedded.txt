@@ -1,0 +1,77 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  zugferd_2p1_EN16931_Elektron_embedded
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  282.08s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version : 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+Baurechnung Nr. 181301674 vom 25.04.2018
+Geschäftsprozess : Baurechnung
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung : EUR
+Liefer- und Leistungsdatum : 06.03.2018
+Referenz des Käufers : 04011000-12345-34
+Zahlungsreferenz : Rechnung 181301674
+Buchungsreferenz : 420
+Weitere Referenz : Aufmass, Art der Referenz: 916
+Weitere Referenz : ElektronRapport, Art der Referenz: 916
+Verkäufer:
+Globale Nummer: 4000001123452 (GTIN)
+ELEKTRON Industrieservice GmbH
+Max Mustermann
+Muster-Einkauf
+Erfurter Strasse 13
+DE 74465 Demoort
+Telefon : +49891234567
+E-Mail : Max@Mustermann.de
+Steuernummer : 201/113/40209
+USt.-Id.-Nr. : DE123456789
+Käufer:
+Nummer : 16259
+ConsultingService GmbH
+Musterstr. 18
+DE 76138 Karlsruhe
+Rapport-Nr.: 42389 vom 08.03.2018
+Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.
+Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr
+(Art)
+Beschreibung Nettopreis Menge Steuer Entgelt
+TGA 43,20 3 Std 19 % VAT (S) 129,60
+Obermonteur/Monteur
+Bruttopreis : 43,20<|im_end|>
+===== PAGE 2 =====
+<fcel>01<fcel>01 Beamermontage
+Für die doppelte Verlegung, falls erforderlich.<lcel><lcel><nl>
+<ecel><fcel>Beamer-<fcel>122,50<fcel>1 H87 19 % VAT (S) 122,50<nl>
+<ecel><fcel>Deckenhalterung
+Bruttopreis : 122,50<lcel><lcel><nl>
+<fcel>02<fcel>02 Außerhalb Angebot<lcel><lcel><nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Zahlbar sofort rein netto<lcel><lcel><lcel><nl>
+<fcel>Zahlungsart:<lcel><lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert): 58<lcel><lcel><lcel><nl>
+<fcel>Verkäufer-IBAN : DE5467894567876500<lcel><lcel><lcel><nl>
+<fcel>Umsatzsteueraufschlüsselung:<lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<lcel><fcel>USt. %<fcel>USt.-Betrag<nl>
+<fcel>VAT (S)<fcel>252,10<fcel>19<fcel>47,90<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Positionssumme<lcel><fcel>252,10<nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<lcel><fcel>0,00<nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<lcel><fcel>-0,00<nl>
+<ecel><fcel>Rechnungssumme ohne USt.<lcel><fcel>252,10<nl>
+<ecel><fcel>Steuerbetrag<lcel><fcel>47,90<nl>
+<ecel><fcel>Bruttosumme<lcel><fcel>300,00<nl>
+<ecel><fcel>Erhaltene Anzahlungen<lcel><fcel>-0,00<nl>
+<ecel><fcel>Zahlbetrag<lcel><fcel>300,00<nl><|im_end|>

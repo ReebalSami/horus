@@ -1,0 +1,31 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  MustangGnuaccountingBeispielRE-20170509_505
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  31.17s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+2017-05-09
+
+Bei Spiel GmbH
+Ecke 12
+12345 Stadthausen
+
+Theodor Est
+Bahnstr. 42
+
+88802 Spielkreis
+
+USt.-ID: DE13695976
+
+Powered by GnuAccounting
+
+Seite 1/1
+
+Powered by GnuAccounting
+
+Seite 1/1

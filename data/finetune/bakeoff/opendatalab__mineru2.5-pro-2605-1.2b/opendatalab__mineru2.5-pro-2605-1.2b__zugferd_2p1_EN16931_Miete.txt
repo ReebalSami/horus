@@ -1,0 +1,53 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  zugferd_2p1_EN16931_Miete
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  33.82s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-RechnungenZUGFeRD-Version : 2.1 vom 24.03.2020Stylesheet-Version: 2.0 vom 18.10.2018Codelisten-Version: 3.0 vom 15.11.2019(c) AWV e.V. 2020<lcel><nl>
+<fcel>Mietrechnung Nr. 9314110911/00/M/00/N vom 01.10.2018<lcel><nl>
+<fcel>Geschäftsprozess : BeispielgeschäftsprozessAnwendungsempfehlung : urn:cen.eu:en16931:2017Währung : EUR<lcel><nl>
+<fcel>Liefer- und Leistungsdatum : 29.09.2018<lcel><nl>
+<fcel>Bestellung : B123456789Lieferavis : L87654321012345<lcel><nl>
+<fcel>Verkäufer:Nummer : 549910Globale Nummer: 4333741000005 (GTIN)MUSTER-AutovermietungMusterstr. 99DE 99199 MUSTERHAUSEN<lcel><nl>
+<fcel>UST.-Id.-Nr. : DE136695976<lcel><nl>
+<fcel>Käufer:Nummer : 9314110911MUSTER-KUNDE GMBHKUNDENWEG 88DE 40235 DUESSELDORF<lcel><nl>
+<fcel>Qualifizierung der Textart: REGMUSTER-Autovermietung GMBHMusterstr. 9999199 MUSTERHAUSENGeschäftsführung:Maxima MusterfrauUSt-IdNr: DE136695976Telefon: +49 711-50885524www.musterlieferant.deHRB Nr. 372876Amtsgericht MusterstadtGLN 4304171000002<lcel><nl>
+<fcel>Bei Rückfragen:Telefon: +49 711-50885524E-Mail : info@muster-autovermietung.de<lcel><nl>
+<fcel>Übergabe am 29.09.2018/ 10:35Ort: Frankfurt a. M.km: 17791<lcel><nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Rückgabe am 01.10.2018/ 10:19Ort: Frankfurt a. M.km: 18664<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Übernahme: FrankfurtDatum: 01.10.2018Zeit: 10:19km/out: 177791km/in: 18664km gefahren: 873Kennzeichen: M-MM 0000CO2: 150Bruttolistenpreis: 68300<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art-Nr-KundeArt-Nr-Lief.Art-Nr(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl>
+<fcel>1<fcel>Miettage<fcel>86,55<fcel>2 Stk<fcel>19 % VAT (S)<fcel>173,10<nl>
+<fcel>Weitere Eigenschaften:Fahrzeug-Kennzeichen: = M-MM 0000Navigationssystem - Garantie<lcel><lcel><fcel>2 Stk<fcel>19 % VAT (S)<fcel>10,08<nl>
+<fcel>2<fcel>Inklusiv-Kilometer waren: 873<lcel><ecel><ecel><ecel><nl>
+<fcel>3<fcel>Vollkasko<fcel>23,10<fcel>2 Stk<fcel>19 % VAT (S)<fcel>46,20<nl>
+<fcel>4<fcel>minimaleSelbstbeteiligung<fcel>15,55<fcel>2 Stk<fcel>19 % VAT (S)<fcel>31,10<nl>
+<fcel>5<fcel>Personen-Unfallversicherung<fcel>7,98<fcel>2 Stk<fcel>19 % VAT (S)<fcel>15,96<nl>
+<fcel>6<fcel>ChoiceUpgrade<fcel>5,04<fcel>2 Stk<fcel>19 % VAT (S)<fcel>10,08<nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Beschreibung<ecel><fcel>Fälligkeit<lcel><fcel>Teilzahlung<nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Beschreibung<lcel><fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.<lcel><lcel><lcel><nl>
+<fcel>Umsatzsteueraufschlüsselung:<lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<lcel><fcel>UST. %<fcel>UST.-Betrag<nl>
+<fcel>VAT (S)<fcel>286,52<fcel>19<fcel>54,44<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Positionssumme<lcel><fcel>286,52<nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<lcel><fcel>0,00<nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<lcel><fcel>-0,00<nl>
+<ecel><fcel>Rechnungssumme ohne USt.<lcel><fcel>286,52<nl>
+<ecel><fcel>Steuerbetrag<lcel><fcel>54,44<nl>
+<ecel><fcel>Bruttosumme<lcel><fcel>340,96<nl>
+<ecel><fcel>Erhaltene Anzahlungen<lcel><fcel>-0,00<nl>
+<ecel><fcel>Zahlbetrag<lcel><fcel>340,96<nl>
+<|im_end|>

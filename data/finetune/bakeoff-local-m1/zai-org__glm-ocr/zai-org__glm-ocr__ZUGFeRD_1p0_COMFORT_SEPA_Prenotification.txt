@@ -1,0 +1,54 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  ZUGFeRD_1p0_COMFORT_SEPA_Prenotification
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  34.34s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Rechnungsersteller
+Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
+GLN 4000001123452
+
+RECHNUNG
+Rechnungsnummer 471102
+Rechnungsdatum 05.03.2014
+Leistungsdatum 05.03.2014
+Referenz (bitte bei Zahlung angeben) 2014-471102
+Kundennummer GE2020211
+Beträge in EUR
+Hinweis
+Rechnung gemäß Bestellung Nr. 2014-471331 vom 01.03.2014.
+Es bestehen Rabatt- und Bonusvereinbarungen.
+
+Kunden AG Mitte
+Hans Muster
+Kundenstraße 15
+69876 Frankfurt
+Deutschland
+GLN 4000001987658
+
+RECHNUNG
+Rechnungsnummer 471102
+Rechnungsdatum 05.03.2014
+Leistungsdatum 05.03.2014
+Referenz (bitte bei Zahlung angeben) 2014-471102
+Kundennummer GE2020211
+Beträge in EUR
+Hinweis
+Rechnung gemäß Bestellung Nr. 2014-471331 vom 01.03.2014.
+Es bestehen Rabatt- und Bonusvereinbarungen.
+
+Unsere
+Pos Art.Nr. Artikelbeschreibung Menge Meng.-einheit Preis/ Betrag USt. %
+
+1 TB100A4
+IBAN-Nr.: DE0 7009 0100 1234 5678 90
+USt.-Identnr.: DE123456789
+Steuernnr.: 20111340209

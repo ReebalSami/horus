@@ -1,0 +1,27 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  ZUGFeRD_2_fully_compliant_complete
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  7.52s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>FirmaElektromarkt BambyAdlerstrasse 452D-07545 GERA<lcel><fcel>Information<lcel><lcel><nl>
+<ucel><xcel><fcel>Belegnummer<fcel>90005178<ecel><nl>
+<ucel><xcel><fcel>Belegdatum<fcel>07.01.1997<ecel><nl>
+<ucel><xcel><fcel>Lieferscheinnr./-datum<fcel>80003371 (03.01.1997)<ecel><nl>
+<ucel><xcel><fcel>Nummer/Datum<fcel>4970 (03.01.1997)<ecel><nl>
+<ucel><xcel><fcel>Bestellnummer<fcel>EB-653421 (03.01.1997)<ecel><nl>
+<ucel><xcel><fcel>Kunden Nummer<fcel>1175<ecel><nl>
+<ucel><xcel><fcel>Währung<fcel>DEM<ecel><nl>
+<fcel>Shipping Information<lcel><ecel><ecel><ecel><nl>
+<fcel>Terms of Payment<fcel>14 Tage 3%, 30<ecel><ecel><ecel><nl>
+<fcel>Incoterms<fcel>CIP Gera<ecel><ecel><ecel><nl>
+<fcel>Description<fcel>Frachtfrei versichert<ecel><ecel><ecel><nl>
+<fcel>Gross Weight<fcel>308,500 KG<ecel><ecel><ecel><nl>
+<fcel>Net Weight<fcel>308,500 KG<ecel><ecel><ecel><nl>
+<fcel>Volume<fcel>0,750 M3<ecel><ecel><ecel><nl>
+<|im_end|>

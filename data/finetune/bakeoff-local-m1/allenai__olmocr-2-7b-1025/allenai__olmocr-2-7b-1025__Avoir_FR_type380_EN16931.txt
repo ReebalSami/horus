@@ -1,0 +1,45 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  Avoir_FR_type380_EN16931
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  133.41s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+**Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France**
++33 4 50 44 68 99 - http://www.aubonmoulin.fr
+TVA : FR119999999998 - SIRET : 99999999800010 - APE : 4778C - SARL au capital de 120 000,00 €
+
+**Avoir AV-2017-0005**
+
+**Adresse de livraison**
+Ma jolie boutique
+35 rue de la République
+69001 Lyon
+France
+sav@majolieboutique.net
+
+**Contact commercial**
+Tony Dubois
++33 6 11 22 33 44
+tony.dubois@aubonmoulin.fr
+
+**Date de facture** 16/11/2017
+**Conditions de paiement** Paiement immédiat
+**Réf. marché** MSPE2017
+**Facture liée** FA-2017-0010
+**N° TVA client** FR19787878784
+
+**Notes** Avoir suite à bidon 10L d'huile d'olive percé et carton de nougat renversé
+
+| Description | Quantité | Prix unitaire | Rem. | Prix HT |
+| --- | --- | --- | --- | --- |
+| Nougat de l'Abbaye 250g | 5 Unit(s) | 4,55 € | 10% | -20,48 € |
+| Huile d'olive à l'ancienne | 10 Liter(s) | 19,80 € |  | -198,00 € |
+
+**Total HT** -218,48 €
+**Total taxes** -14,99 €
+**Total TTC** -233,47 €

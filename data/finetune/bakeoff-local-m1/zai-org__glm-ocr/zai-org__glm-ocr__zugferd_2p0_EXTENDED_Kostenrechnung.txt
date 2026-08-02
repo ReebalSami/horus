@@ -1,0 +1,163 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p0_EXTENDED_Kostenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  113.53s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+Handelsrechnung Nr. KR87654321012 vom 06.10.2018
+KOSTENRECHNUNG
+
+Testkennzeichen : true
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended
+
+Rechnungswährung : EUR
+Liefer- und Leistungsdatum : 30.09.2018
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+
+Weitere Referenz : A777123, Art der Referenz: Rechnungsdatenblatt
+
+Testkennzeichen : true
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended
+
+Rechnungswährung : EUR
+Liefer- und Leistungsdatum : 30.09.2018
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+
+Weitere Referenz : A777123, Art der Referenz: Rechnungsdatenblatt
+
+Qualifizierung der Textart: Price conditions , Qualifizierung des Textes: ST3
+Es bestehen Rabatt- oder Bonusvereinbarungen.
+Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisiforderung.
+===== PAGE 2 =====
+Qualifizierung der Textart: Regulatory information
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Max Mustermann
+Bestellung: Hr. Muster, Musterstadt
+Zähler-Nr.: = MG-X79318
+
+Pos Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)
+Beschreibung Nettopreis Menge USt. Positionsbetrag ohne USt.
+1 Wirkarbeit HT 10000 KWH 19 % 52,00
+4123456000014 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+Bruttopreis :0,0105 1210 Stk 19 % 52,00
+4123456000038 (GTIN)
+
+===== PAGE 3 =====
+Zahlungsbedingungen:
+
+Beschreibung
+Skontovereinbarung: 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum
+
+Fälligkeit
+Innerhalb 10 Tag(e)
+
+Basisbetrag
+2
+
+Prozentsatz %
+19 % UST (S)
+
+Betrag
+-21,55
+15,00
+
+Zu- und Abschläge:
+
+Art % Basisbetrag Basismenge Steuer Betrag
+Abschlag Sonderrabatt 410,10 19 % UST (S)
+Transportkosten: Frachbetrag 19 % UST (S)
+
+Steueraufschlüsselung:
+
+Art (Kategorie) Warenwert Zu-/Abschlag Basisbetrag USt. % Steuerbetrag
+Umsatzsteuer (S) 410,10 19 % UST (S)

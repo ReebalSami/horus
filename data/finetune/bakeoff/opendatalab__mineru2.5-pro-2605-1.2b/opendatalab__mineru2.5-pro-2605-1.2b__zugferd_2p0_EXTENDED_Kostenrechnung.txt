@@ -1,0 +1,253 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  zugferd_2p0_EXTENDED_Kostenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  76.22s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen<lcel><nl>
+<fcel>Handelsrechnung Nr. KR87654321012 vom 06.10.2018 KOSTENRECHNUNG<lcel><nl>
+<fcel>Testkennzeichen : trueAnwendungsempfehlung :urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended<lcel><nl>
+<fcel>Rechnungswährung : EURLiefer- und Leistungsdatum : 30.09.2018<lcel><nl>
+<fcel>Weitere Referenz : A777123, Art der Referenz: Rechnungsdatenblatt<lcel><nl>
+<fcel>Verkäufer:Nummer : 549910Globale Nummer: 4333741000005 (GTIN)MUSTERLIEFERANT GMBHBAHNHOFSTRASSE 99DE 99199 MUSTERHAUSEN<lcel><nl>
+<fcel>Telefon : +49 932 431 500E-Mail : max.mustermann@musterlieferant.deSteuernummer : 201/113/40209<lcel><nl>
+<fcel>Käufer/Leistungsempfänger:Nummer : 339420Globale Nummer: 4304171000002 (GTIN)MUSTER-KUNDE GMBHKUNDENWEG 88DE 40235 DUESSELDORF<lcel><nl>
+<fcel>Abweichender Warenempfänger:<lcel><nl>
+<fcel>Globale Nummer: 4304171088093 (GTIN)MUSTER-MARKT7322HAUPTSTRASSE 44DE 31157 SARSTEDT<lcel><nl>
+<fcel>Abweichender Rechnungsempfänger:Nummer : 339420Globale Nummer: 4304171000002 (GTIN)MUSTER-KUNDE GMBHKUNDENWEG 88DE 40235 DUESSELDORF<lcel><nl>
+<fcel>Qualifizierung der Textart: Price conditions , Qualifizierung des Textes: ST3Es bestehen Rabatt- oder Bonusvereinbarungen.<lcel><nl>
+<fcel>Qualifizierung der Textart: Additional sale/purchase conditions , Qualifizierung des Textes: EEVDer Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.<lcel><nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Qualifizierung der Textart: Regulatory informationMUSTERLIEFERANT GMBHBAHNHOFSTRASSE 9999199 MUSTERHAUSENGeschäftsführung:Max MustermannUSt-IdNr: DE123456789Telefon: +49 932 431 0www.musterlieferant.deHRB Nr. 372876Amtsgericht MusterstadtGLN 4304171000002<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-KundeArt-Nr-Lief.Art-Nr(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions-betragohne USt.<nl>
+<fcel>1<fcel>WA9974123456000014(GTIN)<fcel>WirkarbeitHTBruttopreis : 0,0520<fcel>0,0520<fcel>10000 KWH<fcel>19 %<fcel>52,00<nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ucel><ucel>
+===== PAGE 3 =====
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Skontovereinbarung: 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Bezug<fcel>Innerhalb<fcel>Basisbetrag<fcel>Prozentsatz %<fcel>Betrag<nl>
+<fcel>Skonto<ecel><fcel>10 Tag(e)<ecel><fcel>2<ecel><nl>
+<fcel>Zu- und Abschläge:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art<fcel>%<fcel>Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<nl>
+<fcel>Abschlag Sonderrabatt<ecel><fcel>410,10<ecel><fcel>19 % UST (S)<fcel>-21,55<nl>
+<fcel>Transportkosten: Frachbetrag<ecel><ecel><ecel><fcel>19 % UST (S)<fcel>15,00<nl>
+<fcel>Steueraufschlüsselung:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<fcel>410,10<fcel>-6,55<fcel>403,55<fcel>19<fcel>76,67<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><ecel><fcel>Positionssumme<ecel><fcel>410,10<nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><fcel>15,00<nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><fcel>-21,55<nl>
+<ecel><ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><fcel>403,55<nl>
+<ecel><ecel><ecel><fcel>Steuerbetrag in<fcel>EUR<fcel>76,67<nl>
+<ecel><ecel><ecel><fcel>Bruttosumme<ecel><fcel>480,22<nl>
+<ecel><ecel><ecel><fcel>Erhaltene Anzahlungen<ecel><fcel>-0,00<nl>
+<ecel><ecel><ecel><fcel>Zahlbetrag<ecel><fcel>480,22<nl>
+<|im_end|>

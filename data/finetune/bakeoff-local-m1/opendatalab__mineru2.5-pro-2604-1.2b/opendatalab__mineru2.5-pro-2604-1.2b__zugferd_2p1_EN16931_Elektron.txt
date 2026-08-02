@@ -1,0 +1,38 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  zugferd_2p1_EN16931_Elektron
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  309.27s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl>
+<ucel><ucel><fcel>TGA Obermonteur/ Monteur<fcel>43,20<fcel>3 Std<fcel>19 % VAT (S)<fcel>129,60<nl>
+<ucel><fcel>Bruttopreis : 43,20<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>01<fcel>01 Beamermontage Für die doppelte Verlegung, falls erforderlich.<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Beamer- Deckenhalterung<fcel>122,50<fcel>1 H87<fcel>19 % VAT (S)<fcel>122,50<ecel><nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Bruttopreis: 122,50<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>02<fcel>02 Außerhalb Angebot<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Beschreibung<lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<lcel><nl>
+<fcel>Zahlbar sofort rein netto<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungsart:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert): 58<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Verkäufer-IBAN : DE5467894567876500<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Umsatzsteueraufschlüsselung:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<lcel><nl>
+<fcel>VAT (S)<ecel><ecel><fcel>252,10<fcel>19<fcel>47,90<lcel><nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><ecel><fcel>Positionssumme<ecel><fcel>252,10<lcel><nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><fcel>0,00<lcel><nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><fcel>-0,00<lcel><nl>
+<ecel><ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><fcel>252,10<lcel><nl>
+<ecel><ecel><ecel><fcel>Steuerbetrag<ecel><fcel>47,90<lcel><nl>
+<ecel><ecel><ecel><fcel>Bruttosumme<ecel><fcel>300,00<lcel><nl>
+<ecel><ecel><ecel><fcel>Erhaltene Anzahlungen<ecel><fcel>-0,00<lcel><nl>
+<ecel><ecel><ecel><fcel>Zahlbetrag<ecel><fcel>300,00<lcel><nl><|im_end|>

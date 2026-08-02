@@ -219,12 +219,45 @@ def _extract_groundtruth_via_facturx(pdf_path: Path) -> GroundTruth | None:
 # ===========================================================================
 
 
+_BLANK_PAGE_DARK_FRACTION = 0.005
+"""Fraction of non-near-white pixels below which a rasterized page counts as blank.
+
+Calibrated on the 59 sealed-val page rasters (issue #114 bake-off investigation):
+the one truly blank page (`zugferd_2p1_EN16931_Sachversicherung…` p3) measures
+0.00000; the lowest CONTENT page measures 0.02087 — a 4× margin above this
+threshold. Image-statistic detection (not text-layer) so it works identically
+for born-digital renders and scanned Belege (privacy-first vision premise).
+"""
+
+
+def _is_blank_page(page_png: Path) -> bool:
+    """True when a rasterized page is visually blank (near-white everywhere).
+
+    VLM readers HALLUCINATE plausible content on blank pages — the #114 bake-off
+    caught Qwen3-VL-4B inventing a complete fictional US invoice on a blank page 3,
+    which the downstream structurer then preferred over the real document
+    (overall_micro_f1 0.885 → 0.047). Blank pages must never reach the reader.
+    """
+    from PIL import Image  # noqa: PLC0415 — defer heavy import
+
+    with Image.open(page_png) as im:
+        gray = im.convert("L")
+        gray.thumbnail((256, 256))
+        hist = gray.histogram()
+    total = sum(hist)
+    if not total:
+        return True
+    dark = sum(hist[:250])
+    return dark / total < _BLANK_PAGE_DARK_FRACTION
+
+
 def _extract_and_concat(
     extractor: Any,  # VLMExtractor Protocol — Any to avoid forward-ref issues
     page_pngs: list[Path],
     *,
     prompt: str,
     max_tokens: int,
+    skip_blank_pages: bool = False,
 ) -> tuple[str, list[ExtractionResult]]:
     """Run `extractor.extract()` once per page; concatenate with page separators.
 
@@ -238,6 +271,11 @@ def _extract_and_concat(
     The returned text combines successful pages only (errored pages contribute an empty
     string + their separator header for transcript-archive traceability).
 
+    ``skip_blank_pages=True`` (reader-pass path, issue #114) short-circuits visually
+    blank pages via `_is_blank_page` — the page contributes its separator + an empty
+    string WITHOUT a VLM call, closing the blank-page-hallucination failure mode.
+    Default False keeps the pilot-13 cohort harness behavior byte-identical.
+
     Returns:
         `(concatenated_text, per_page_results)` — the second element is the list of
         per-page `ExtractionResult` objects so the caller can log per-page latencies
@@ -247,11 +285,18 @@ def _extract_and_concat(
     per_page_results: list[ExtractionResult] = []
 
     for i, page_png in enumerate(page_pngs, start=1):
-        result = extractor.extract(image_path=page_png, prompt=prompt, max_tokens=max_tokens)
+        if skip_blank_pages and _is_blank_page(page_png):
+            result = ExtractionResult(
+                model_id=getattr(extractor, "model_id", "unknown"),
+                backend_name=getattr(extractor, "backend_name", "unknown"),
+                text="",
+            )
+        else:
+            result = extractor.extract(image_path=page_png, prompt=prompt, max_tokens=max_tokens)
         per_page_results.append(result)
         separator = _PAGE_SEPARATOR_FMT.format(page=i)
         chunks.append(separator)
-        chunks.append(result.text)  # empty string on error; that's fine
+        chunks.append(result.text)  # empty string on error/blank; that's fine
 
     concatenated = "\n".join(chunks)
     return concatenated, per_page_results

@@ -1,0 +1,95 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p0_EN16931_Miete
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  97.17s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+Mietrechnung Nr. 9314110911/00/M/00/N vom 01.10.2018
+
+Geschäftsprozess : Beispielgeschäftsprozess
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+
+Rechnungswährung : EUR
+
+Liefer- und Leistungsdatum : 29.09.2018
+
+Bestellung : B123456789
+Telefon: +49 711-50885524
+E-Mail : info@muster-autovermietung.de
+
+Bei Rückfragen:
+Telefon: +49 711-50885524
+E-Mail : info@muster-autovermietung.de
+===== PAGE 2 =====
+Rückgabe am 01.10.2018/ 10:19
+Ort: Frankfurt a. M.
+km: 18664
+
+Übernahme: Frankfurt
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Art-Nr-Kunde
+15,5500
+2 Stk
+19 %
+31,10
+15,96
+
+Übernahme: Frankfurt
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Minimales System
+7,9800
+2 Stk
+19 %
+31,10
+15,96
+
+Personen-Unfallversicherung
+5,0400
+2 Stk
+19 %
+31,10
+15,96
+===== PAGE 3 =====
+Zahlungsbedingungen:
+
+Beschreibung
+Die Leistung wurde erbracht im Zeitraum zwischen
+Übergabe und Rückgabe. Der Rechnungsbetrag wird über
+Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine
+Aufforderung zur Zahlung. Rechnung für Ihre
+Unterlagen.
+
+Steueraufschlüsselung:
+
+Art (Kategorie) Warenwert Zu-/Abschlag Basisbetrag USt. % Steuerbetrag
+Umsatzsteuer (S) 286,52 19 54,44
+
+Belegsummen:
+
+Positionssumme 286,52
+Gesamtbetrag der Zuschläge 0,00
+Gesamtbetrag der Abschläge -0,00
+Rechnungssumme ohne USt. 286,52

@@ -1,0 +1,74 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  zugferd_2p0_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  32.22s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+Handelsrechnung Nr. 471102 vom 05.06.2018
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Rechnungswährung : EUR
+Liefer- und Leistungsdatum : 03.06.2018
+Bestellung : 2013-471331
+Verkäufer:
+Globale Nummer: 4000001123452 (GTIN)
+Lieferant GmbH
+Lieferantenstraße 20
+DE 80333 München
+Steuernummer : 201/113/40209
+USt.-Id.-Nr. : DE123456789
+Käufer/Leistungsempfänger:
+Nummer : GE2020211
+Globale Nummer: 4000001987658 (GTIN)
+Kunden AG Mitte
+Kundenstraße 15
+DE 69876 Frankfurt
+Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+Qualifizierung der Textart: Price conditions
+Es bestehen Rabatt- und Bonusvereinbarungen.
+Qualifizierung der Textart: Regulatory information
+Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123<|im_end|>
+===== PAGE 2 =====
+<fcel>Pos Art-Nr-Kunde Art-Nr-Lief.Art-Nr(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions-betrag ohne USt.<nl>
+<fcel>1KR3M4012345001235(GLN)<fcel>Kunstrasengrün 3mbreit<fcel>3,3333<fcel>3 m2<fcel>19 %<fcel>10,00<nl>
+<ecel><fcel>Bruttopreis : 4,0000 Abschlag : 0,6667<lcel><fcel>Rabatt<ecel><ecel><nl>
+<ecel><fcel>Wir erlauben uns Ihnen folgende Positionen aus derLieferung Nr. 2018-51112 in Rechnung zu stellen:<lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>300cm x 100 cm<lcel><lcel><lcel><lcel><nl>
+<fcel>2SFK54000050986428(GLN)<fcel>Schweinesteak<fcel>5,5000<fcel>5 kg<fcel>7 %<fcel>27,50<nl>
+<ecel><fcel>Bruttopreis : 5,5000aus Deutschland<lcel><lcel><lcel><lcel><nl>
+<fcel>3GTRWA54000001234561(GLN)<fcel>MineralwasserMedium 12 x1,01 PET<fcel>5,4900<fcel>20 Stk<fcel>7 %<fcel>109,80<nl>
+<ecel><fcel>Bruttopreis : 5,4900<lcel><lcel><lcel><lcel><nl>
+<fcel>4PFA54000001234578(GLN)<fcel>Pfand<fcel>2,7700<fcel>20 Stk<fcel>19 %<fcel>55,40<nl>
+<ecel><fcel>Bruttopreis : 2,7700<lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>BeschreibungZahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3%Skonto innerhalb 10 Tagen bis 15.06.2018<lcel><lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Zu- und Abschläge:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art<fcel>% Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<lcel><nl>
+<fcel>Abschlag Sondernachlass<fcel>10,00<ecel><fcel>19 % UST (S)<fcel>-1,00<lcel><nl>
+<fcel>Abschlag Sondernachlass<fcel>137,30<ecel><fcel>7 % UST (S)<fcel>-13,73<lcel><nl>
+<fcel>Zuschlag Versandkosten<fcel>137,30<ecel><fcel>7 % UST (S)<fcel>5,80<lcel><nl>
+<fcel>Steueraufschlüsselung:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<lcel><nl>
+<fcel>Umsatzsteuer (S)<ecel><fcel>129,37<fcel>7<fcel>9,06<lcel><nl>
+<fcel>Umsatzsteuer (S)<ecel><fcel>64,40<fcel>19<fcel>12,24<lcel><nl><|im_end|>
+===== PAGE 3 =====
+<fcel>Belegsummen:<lcel><lcel><nl>
+<ecel><fcel>Positionssumme<fcel>202,70<nl>
+<ucel><fcel>Gesamtbetrag der Zuschläge<fcel>5,80<nl>
+<ucel><fcel>Gesamtbetrag der Abschläge<fcel>-14,73<nl>
+<ucel><fcel>Rechnungssumme ohne USt.<fcel>193,77<nl>
+<ucel><fcel>Steuerbetrag in EUR<fcel>21,30<nl>
+<ucel><fcel>Bruttosumme<fcel>215,07<nl>
+<ucel><fcel>Erhaltene Anzahlungen<fcel>-50,00<nl>
+<ucel><fcel>Zahlbetrag<fcel>165,07<nl>
+<|im_end|>

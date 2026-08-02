@@ -1,0 +1,60 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  244.96s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Handelsrechnung Nr. R18-31 vom 03.10.2018
+
+Verkäufer:
+Physiotherapeutin
+Tanja Tinder
+Musterstraße 12
+
+Käufer:
+Liselotte Müller
+Rechnungsstraße 12
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Beschreibung
+Nettopreis
+Menge
+Steuer
+Entgelt
+
+1
+Hausbesuch
+12,00
+10 Stk
+0 %
+VAT
+(E)
+120,00
+===== PAGE 2 =====
+Beschreibung
+Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.
+
+Fälligkeit 21.11.2018
+Teilzahlung
+
+Zahlungsart:
+Zahlungstyp (codiert): 30
+Verkäufer-Kontoname: Tanja Tinder
+Verkäufer-IBAN: DE02120300000000202051
+
+Umsatzsteueraufschlüsselung:
+Art (Kategorie): Warenwert Zu-/Abschlag Steuerbasi
+Steuerfreie
+Leistungen nach §4 Nr. 14 UStG
+Positionssumme ohne USt. 380,00
+Gesamtbetrag der Zuschläge 0,00
+Gesamtbetrag der Abschläge 0,00
+Bruttosumme 380,00
+Erhaltene Anzahlungen 0,00
+Zahlbetrag 380,00

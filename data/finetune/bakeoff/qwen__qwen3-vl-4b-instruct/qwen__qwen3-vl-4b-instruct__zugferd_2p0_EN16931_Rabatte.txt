@@ -1,0 +1,141 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  68.70s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. 471102 vom 05.06.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+
+Rechnungswährung : EUR
+
+Liefer- und Leistungsdatum : 03.06.2018
+
+Bestellung : 2013-471331
+
+---
+
+### Verkäufer:
+
+Globale Nummer: 4000001123452 (GTIN)
+
+**Lieberant GmbH**
+
+Lieberantenstraße 20
+
+DE 80333 München
+
+Steuernummer : 201/113/40209
+
+USt.-Id.-Nr. : DE123456789
+
+---
+
+### Käufer/Leistungsempfänger:
+
+Nummer : GE2020211
+
+Globale Nummer: 4000001987658 (GTIN)
+
+**Kunden AG Mitte**
+
+Kundenstraße 15
+
+DE 69876 Frankfurt
+
+---
+
+Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+
+---
+
+Qualifizierung der Textart: Price conditions
+
+Es bestehen Rabatt- und Bonusvereinbarungen.
+
+---
+
+Qualifizierung der Textart: Regulatory information
+
+**Lieberant GmbH**
+
+Lieberantenstraße 20
+
+80333 München
+
+Deutschland
+
+Geschäftsführer: Hans Muster
+
+Handelsregisternummer: H A 123
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Art-Nr (Art) | Beschreibung | Nettopreis | Menge | USt. | Positions- betrag ohne USt. |
+|-----|--------------|--------------|--------------|--------------|------------|-------|------|-----------------------------|
+| 1   | KR3M         | 4012345001235 | (GLN)        | Kunstrasen grün 3m breit | 3,3333 | 3 m² | 19 % | 10,00 |
+| 2   | SFK5         | 4000050986428 | (GLN)        | Schweinesteak | 5,5000 | 5 kg | 7 % | 27,50 |
+| 3   | GTRWA5       | 4000001234561 | (GLN)        | Mineralwasser Medium 12 x 1,01 PET | 5,4900 | 20 Stk | 7 % | 109,80 |
+| 4   | PFA5         | 4000001234578 | (GLN)        | Pfand | 2,7700 | 20 Stk | 19 % | 55,40 |
+
+**Bruttopreis : 4,0000 Abschlag : 0,6667 Rabatt**
+
+Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:
+
+300cm x 100 cm
+
+aus Deutschland
+
+---
+
+**Zahlungsbedingungen:**
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+| Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3% | | |
+| Skonto innerhalb 10 Tagen bis 15.06.2018 | | |
+
+---
+
+**Zu- und Abschläge:**
+
+| Art | % | Basisbetrag | Basismenge | Steuer | Betrag |
+|-----|---|-------------|------------|--------|--------|
+| Abschlag Sondernachlass | 10,00 | 19 % UST (S) | -1,00 |
+| Abschlag Sondernachlass | 137,30 | 7 % UST (S) | -13,73 |
+| Zuschlag Versandkosten | 137,30 | 7 % UST (S) | 5,80 |
+
+---
+
+**Steueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|------------------------|-------------|--------|--------------|
+| Umsatzsteuer (S) | 129,37 | 7 | 9,06 |
+| Umsatzsteuer (S) | 64,40 | 19 | 12,24 |
+```<|im_end|>
+===== PAGE 3 =====
+```markdown
+**Belegsummen:**
+
+| Positionssumme | 202,70 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 5,80 |
+| Gesamtbetrag der Abschläge | -14,73 |
+| Rechnungssumme ohne USt. | 193,77 |
+| Steuerbetrag in EUR | 21,30 |
+| **Bruttosumme** | **215,07** |
+| Erhaltene Anzahlungen | -50,00 |
+| Zahlbetrag | 165,07 |
+
+file:///C:/Users/jenny.hertzfeldt/AppData/Local/Temp/tmp0001.html 21.01.2019
+```<|im_end|>

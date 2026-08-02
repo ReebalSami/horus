@@ -1,0 +1,375 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p0_EXTENDED_Fremdwaehrung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  112.62s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+Handelsrechnung Nr. 47110815 vom 31.10.2018
+RECHNUNG
+
+Geschäftsprozess : Beispielgeschäftsprozess
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended
+
+Rechnungswährung : GBP
+
+Währung der Umsatzsteuerbuchung : EUR
+Umrechnungskurs : 1.12244
+
+Liefer-/Leistungszeitraum : 01.10.2018 bis 31.10.2018
+
+Währung der Umsatzsteuerbuchung : EUR
+Umrechnungskurs : 1.12244
+
+Liefer-/Leistungszeitraum : 01.10.2018 bis 31.10.2018
+
+Global Supplies Financial Services
+Eichenpromenade 37
+Tor 1
+Friedrichstraße 165
+Friedrichstraße 165
+DE 12345 Berlin
+===== PAGE 2 =====
+Qualifizierung der Textart: Regulatory information
+Mitglieder der Geschäftsleitung
+H. Meier Geschäftsführer
+T. Müller Prokurist
+HRB Braunschweig 12345
+
+Qualifizierung der Textart: General information
+Vom 17. Dezember 2018 bis 6. Januar 2019 haben wir Betriebsferien.
+
+Qualifizierung der Textart: Tax declaration
+Aus konzern-internen Gründen wird der Steuerbetrag sowohl in der Rechungswährung
+(EUR) als auch in der Buchwährung (GBP) ausgegeben.
+
+Zahlungstyp (Codierung): 58 - per SEPA ÜBERWEISUNG
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr
+(Art)
+
+Beschreibung
+Stahlcoil
+CO-123/V2A
+
+Nettopreis
+100,000
+
+Menge
+10 Stk
+
+USt.
+19 %
+
+Positionsbetrag ohne USt.
+
+1 Toolbox 0815
+CO-123/V2A
+Preisbasis
+10 Stk
+19 %
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234 4321 9876 00
+
+%Basisbetrag
+Steuer
+USt.
+850,00
+
+ZuschlagEinwegverpackung (Miscellaneous)
+IBAN
+DE12 1234
+===== PAGE 3 =====
+Art
+
+%Basisbetrag Basismenge Steuer Betrag
+19
+% UST
+(S)
+
+Steueraufschlüsselung:
+
+Art (Kategorie) Warenwert Zu-/Abschlag Basisbetrag USt. % Steuerbetrag
+Umsatzsteuer (S) 850,00 8,75 858,75 19 163,16
+
+Belegsummen:
+
+Positionssumme 850,00
+Gesamtbetrag der Zuschläge 30,00
+Gesamtbetrag der Abschläge -21,25
+Rechnungssumme ohne USt. 858,75
+Steuerbetrag in GBP 163,16
+EUR 183,14
+Bruttosumme 1021,91

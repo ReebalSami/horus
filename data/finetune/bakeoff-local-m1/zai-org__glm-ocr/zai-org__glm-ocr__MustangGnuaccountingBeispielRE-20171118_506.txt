@@ -1,0 +1,29 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  MustangGnuaccountingBeispielRE-20171118_506
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  31.18s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+2017-11-18
+
+Bei Spiel GmbH
+Ecke 12
+12345 Stadthausen
+
+Theodor Est
+Bahnstr. 42
+
+Nettopreis
+Ust.-Betrag
+75,04 €
+
+Bitte überweisen Sie bis zum 09.12.2017.
+
+Powered by GnuAccounting
+
+Kontoinhaber: Max Mustermann

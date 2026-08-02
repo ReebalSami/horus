@@ -174,7 +174,13 @@ def run_reader_pass(
                     image_format="png",
                 )
                 concatenated, per_page = _extract_and_concat(
-                    extractor, page_pngs, prompt=prompt, max_tokens=max_tokens
+                    extractor,
+                    page_pngs,
+                    prompt=prompt,
+                    max_tokens=max_tokens,
+                    # Blank pages must never reach the reader: VLMs hallucinate
+                    # plausible invoices on them (#114 bake-off finding).
+                    skip_blank_pages=True,
                 )
                 n_errors = sum(1 for r in per_page if not r.is_ok)
                 header = _transcript_header(

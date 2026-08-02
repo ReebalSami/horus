@@ -146,6 +146,16 @@ ssh ubuntu@<instance-ip>
 cd ~/horus && bash scripts/gpu/setup.sh
 ```
 
+> **LD_LIBRARY_PATH gotcha (hit 2026-08-02, AWS DL Base AMI)**: the AMI exports
+> `LD_LIBRARY_PATH=/usr/local/cuda/lib64:…` (system CUDA 13.2). Those libs SHADOW the
+> pip-provided `nvidia-*` wheels torch links against (RUNPATH loses to
+> LD_LIBRARY_PATH), producing `Invalid handle. Cannot load symbol cublasLtGetVersion`
+> + SIGABRT at the first cuBLAS call — while `torch.cuda.is_available()` still passes
+> (driver-only check). Fix: prefix every `uv run` with an empty override, e.g.
+> `ssh horus-gpu 'cd ~/horus && LD_LIBRARY_PATH= PATH=$HOME/.local/bin:$PATH uv run python …'`
+> (also note: `uv` lands in `~/.local/bin`, which non-interactive ssh shells don't have
+> on PATH).
+
 ## 4. Reader bake-off — full precision, 29 sealed val invoices
 
 Candidates ran at their canonical HF repos via `--force-transformers` (bf16, native

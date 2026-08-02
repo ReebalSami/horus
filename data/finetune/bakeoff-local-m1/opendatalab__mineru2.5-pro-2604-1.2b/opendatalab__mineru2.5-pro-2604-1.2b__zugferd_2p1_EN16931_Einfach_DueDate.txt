@@ -1,0 +1,40 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  zugferd_2p1_EN16931_Einfach_DueDate
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  2315.73s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr
+(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl>
+<fcel>1<fcel>Trennblätter<fcel>9,90<fcel>20 Stk<fcel>19 % VAT (S)<fcel>198,00<nl>
+<fcel>TB100A4<fcel>A4<ecel><ecel><ecel><ecel><nl>
+<fcel>4012345001235
+(GLN)<ecel><ecel><ecel><ecel><ecel><nl>
+<ecel><fcel>Bruttopreis : 9,90<ecel><ecel><ecel><ecel><nl>
+<fcel>2<fcel>Joghurt<fcel>5,50<fcel>50 Stk<fcel>7 % VAT (S)<fcel>275,00<nl>
+<fcel>ARNR2<fcel>Banane<ecel><ecel><ecel><ecel><nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>4000050986428(GLN)Bruttopreis : 5,50<lcel><lcel><lcel><nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Beschreibung<fcel>Fälligkeit05.03.2019<fcel>Teilzahlung<nl>
+<fcel>Umsatzsteueraufschlüsselung:<lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<lcel><fcel>USt. %<fcel>USt.-Betrag<nl>
+<fcel>VAT (S)<fcel>275,00<fcel>7<fcel>19,25<nl>
+<fcel>VAT (S)<fcel>198,00<fcel>19<fcel>37,62<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Positionssumme<lcel><fcel>473,00<nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<lcel><fcel>0,00<nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<lcel><fcel>-0,00<nl>
+<ecel><fcel>Rechnungssumme ohne USt.<lcel><fcel>473,00<nl>
+<ecel><fcel>Steuerbetrag<lcel><fcel>56,87<nl>
+<ecel><fcel>Bruttosumme<lcel><fcel>529,87<nl>
+<ecel><fcel>Erhaltene Anzahlungen<lcel><fcel>-0,00<nl>
+<ecel><fcel>Zahlbetrag<lcel><fcel>529,87<nl><|im_end|>

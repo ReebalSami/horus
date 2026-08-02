@@ -1,0 +1,56 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  zugferd_2p0_BASIC_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  21.59s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen<nl>
+<fcel>Handelsrechnung Nr. 471102 vom 05.03.2018<nl>
+<fcel>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic<nl>
+<fcel>Rechnungswährung : EUR<nl>
+<fcel>Liefer- und Leistungsdatum : 05.03.2018<nl>
+<fcel>Verkäufer:<nl>
+<fcel>Lieferant GmbH<nl>
+<fcel>Lieferantenstraße 20<nl>
+<fcel>DE 80333 München<nl>
+<fcel>Steuernummer : 201/113/40209<nl>
+<fcel>UST.-Id.-Nr. : DE123456789<nl>
+<fcel>Käufer/Leistungsempfänger:<nl>
+<fcel>Kunden AG Mitte<nl>
+<fcel>Hans Muster<nl>
+<fcel>Kundenstraße 15<nl>
+<fcel>DE 69876 Frankfurt<nl>
+<fcel>Rechnung gemäß Bestellung vom 01.03.2018.<nl>
+<fcel>Lieferant GmbH<nl>
+<fcel>Lieferantenstraße 20<nl>
+<fcel>80333 München<nl>
+<fcel>Deutschland<nl>
+<fcel>Geschäftsführer: Hans Muster<nl>
+<fcel>Handelsregisternummer: H A 123<nl>
+<fcel>Unsere GLN: 4000001123452<nl>
+<fcel>Ihre GLN: 4000001987658<nl>
+<fcel>Ihre Kundennummer: GE2020211<nl>
+<fcel>Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018.<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Pos<fcel>Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions-betrag ohne USt.<nl>
+<fcel>1<ecel><fcel>GTIN: 4012345001235 Unsere Art.-Nr.: TB100A4 Trennblätter A4<fcel>9,9000<fcel>20 Stk<fcel>19 %<fcel>198,00<nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><lcel><lcel><fcel>Fälligkeit 04.04.2018<fcel>Teilzahlung<nl>
+<fcel>Steueraufschlüsselung:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<lcel><fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<lcel><nl>
+<fcel>Umsatzsteuer (S)<lcel><lcel><fcel>198,00<fcel>19<fcel>37,62<lcel><nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><lcel><lcel><fcel>Positionssumme<lcel><fcel>198,00<lcel><nl>
+<ucel><xcel><xcel><fcel>Gesamtbetrag der Zuschläge<lcel><fcel>0,00<lcel><nl>
+<ucel><xcel><xcel><fcel>Gesamtbetrag der Abschläge<lcel><fcel>-0,00<lcel><nl>
+<ucel><xcel><xcel><fcel>Rechnungssumme ohne USt.<lcel><fcel>198,00<lcel><nl>
+<ucel><xcel><xcel><fcel>Steuerbetrag in<fcel>EUR<fcel>37,62<lcel><nl>
+<ucel><xcel><xcel><fcel>Bruttosumme<lcel><fcel>235,62<lcel><nl>
+<ecel><lcel><lcel><fcel>Zahlbetrag<lcel><fcel>235,62<lcel><nl>
+<|im_end|>

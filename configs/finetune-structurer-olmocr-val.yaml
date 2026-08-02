@@ -1,0 +1,22 @@
+# Re-baseline the zero-shot structurer on the OTHER top bake-off candidate's val
+# transcripts (issue #114, ADR-054 step 3): the fixed answerability ruler puts
+# allenai/olmOCR-2-7B-1025 (0.913) and Qwen/Qwen3-VL-4B-Instruct (0.906) a noise-level
+# 0.007 apart on 29 invoices, so the winner decision falls through to the endpoint
+# metric — sealed-val zero-shot overall_micro_f1 — measured for BOTH under identical
+# structurer settings (sibling config: finetune-structurer-qwen-val.yaml).
+#
+#   uv run python scripts/finetune_evaluate.py \
+#     --config configs/finetune-structurer-olmocr-val.yaml --split val \
+#     --label zero-shot-olmocr-reader --out data/finetune/eval-zeroshot-olmocr-val.json
+#
+# Refs: ADR-054 (endgame), issue #114, scripts/gpu/README.md §7.
+
+structurer_model: google/gemma-4-E4B-it
+structuring_prompt_config: configs/arm-b.yaml
+corpus_root: data/raw/german/zugferd-corpus
+transcript_dir: data/finetune/bakeoff/allenai__olmocr-2-7b-1025
+reader_model: allenai/olmOCR-2-7B-1025
+split_path: data/finetune/split.json
+adapter_dir: data/finetune/adapter
+eval_max_tokens: 2048
+min_self_overall: 0.95

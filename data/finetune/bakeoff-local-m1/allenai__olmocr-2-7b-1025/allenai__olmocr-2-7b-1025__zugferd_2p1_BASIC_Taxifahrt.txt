@@ -1,0 +1,71 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_BASIC_Taxifahrt
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  254.25s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. TX-471102 vom 30.10.2019
+
+Verkäufer:
+Taxiunternehmen TX GmbH
+Lieferantenstraße 20
+10369 Berlin
+Deutschland
+Geschäftsführer: Hans Mustermann
+Handelsregisternummer: H A 123
+
+Käufer:
+Taxi-Gast AG Mitte
+Kundenstraße 15
+13351 Berlin
+Deutschland
+Handelsregisternummer: GE2020211
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Lief. (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuer</th>
+    <th>Entgelt</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Grundpreis (Pauschale)</td>
+    <td>Grundpreis (Pauschale)</td>
+    <td>3,90</td>
+    <td>1 Stk</td>
+    <td>7 % VAT (S)</td>
+    <td>3,90</td>
+  </tr>
+</table>
+===== PAGE 2 =====
+2
+Stadtfahrt - 2,00 Euro je gefahrene Kilometer
+2,00
+6 Stk
+7 % VAT (S)
+13,00
+Zahlungsbedingungen:
+Art (Kategorie)    Warenwert    Zu-/Abschlag    Steuerbasisbetrag    USt. %    USt.-Betrag
+VAT (S)    2,00    6 Stk    7 %    16,90    7    1,18
+Belegsummen:
+Positionssumme    16,90
+Gesamtbetrag der Zuschläge    0,00
+Gesamtbetrag der Abschläge    -0,00
+Rechnungssumme ohne USt.    16,90
+Rechnungssumme    18,08
+Zahlbetrag    18,08

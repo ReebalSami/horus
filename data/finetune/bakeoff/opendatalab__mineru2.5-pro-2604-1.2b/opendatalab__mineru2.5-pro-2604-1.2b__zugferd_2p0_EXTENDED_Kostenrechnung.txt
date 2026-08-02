@@ -1,0 +1,114 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  zugferd_2p0_EXTENDED_Kostenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  49.56s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+Handelsrechnung Nr. KR87654321012 vom 06.10.2018
+KOSTENRECHNUNG
+Testkennzeichen : true
+Anwendungsempfehlung :
+urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended
+Rechnungswährung : EUR
+Liefer- und Leistungsdatum : 30.09.2018
+Weitere Referenz : A777123, Art der Referenz: Rechnungsdatenblatt
+Verkäufer:
+Nummer : 549910
+Globale Nummer: 4333741000005 (GTIN)
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+DE 99199 MUSTERHAUSEN
+Telefon : +49 932 431 500
+E-Mail : max.mustermann@musterlieferant.de
+Steuernummer : 201/113/40209
+Käufer/Leistungsempfänger:
+Nummer : 339420
+Globale Nummer: 4304171000002 (GTIN)
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+Abweichender Warenempfänger:
+Globale Nummer: 4304171088093 (GTIN)
+MUSTER-MARKT
+7322
+HAUPTSTRASSE 44
+DE 31157 SARSTEDT
+Abweichender Rechnungsempfänger:
+Nummer : 339420
+Globale Nummer: 4304171000002 (GTIN)
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+Qualifizierung der Textart: Price conditions , Qualifizierung des Textes: ST3
+Es bestehen Rabatt- oder Bonusvereinbarungen.
+Qualifizierung der Textart: Additional sale/purchase conditions , Qualifizierung
+des Textes: EEV
+Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der
+Kaufpreisforderung.<|im_end|>
+===== PAGE 2 =====
+<fcel>Qualifizierung der Textart: Regulatory information<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>MUSTERLIEFERANT GMBH<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>BAHNHOFSTRASSE 99<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>99199 MUSTERHAUSEN<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Geschäftsführung:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Max Mustermann<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>USt-IdNr: DE123456789<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Telefon: +49 932 431 0<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>www.musterlieferant.de<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>HRB Nr. 372876<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Amtsgericht Musterstadt<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>GLN 4304171000002<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-Kunde<lcel><lcel><lcel><lcel><lcel><nl>
+<ucel><fcel>Art-Nr-Lief.<lcel><lcel><lcel><lcel><lcel><nl>
+<ucel><fcel>Art-Nr (Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions-betrag ohne USt.<nl>
+<fcel>1<fcel>WA997<fcel>Wirkarbeit<fcel>0,0520<fcel>10000 KWH<fcel>19 %<fcel>52,00<nl>
+<ucel><ucel><fcel>HT<ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>4123456000014 (GTIN)<fcel>Bruttopreis : 0,0520<ecel><ecel><ecel><ecel><nl>
+<ucel><ecel><fcel>Weitere Eigenschaften:<lcel><lcel><lcel><lcel><nl>
+<ucel><ecel><fcel>Zählpunkt: = DE0001346484600000000000000100038<lcel><lcel><lcel><lcel><nl>
+<fcel>2<fcel>ÖST250<fcel>Ökosteuer<fcel>0,0205<fcel>10000 KWH<fcel>19 %<fcel>20,50<nl>
+<ucel><ucel><fcel>Lieferant<ecel><ecel><ecel><ecel><nl>
+<ucel><fcel>4123456000021 (GTIN)<fcel>Bruttopreis : 0,0205<ecel><ecel><ecel><ecel><nl>
+<fcel>3<fcel>4260331811362 (GTIN)<fcel>Kommissionierer<fcel>10,5000<fcel>27,5 Std<fcel>19 %<fcel>288,75<nl>
+<ucel><ucel><fcel>1250032 D.<ecel><ecel><ecel><ecel><nl>
+<ucel><ucel><fcel>Muster<ecel><ecel><ecel><ecel><nl>
+<ucel><ecel><fcel>Bruttopreis : 15,0000<fcel>Abschlag : 4,5000<fcel>Artikelrabatt 1<ecel><ecel><nl>
+<ucel><ecel><fcel>Besteller: Hr. Mayer, Personalnr. 4488<lcel><lcel><lcel><lcel><nl>
+<fcel>4<fcel>FB05<fcel>FALTENBEUTEL<fcel>0,0105<fcel>3500 Stk<fcel>19 %<fcel>36,75<nl>
+<ucel><fcel>2001015001325 (GTIN)<fcel>16x6x28 CM<ecel><ecel><ecel><ecel><nl>
+<ucel><ecel><fcel>Bruttopreis : 0,0105<ecel><ecel><ecel><ecel><nl>
+<fcel>5<fcel>KOP05<fcel>Kopierpapier<fcel>0,0100<fcel>1210 Stk<fcel>19 %<fcel>12,10<nl>
+<ucel><fcel>4123456000038 (GTIN)<fcel>A4<ecel><ecel><ecel><ecel><nl>
+<ucel><ecel><fcel>Bruttopreis : 0,0100<ecel><ecel><ecel><ecel><nl>
+<ucel><ecel><fcel>Zählerstand von-bis: 543210 - 544420<ecel><ecel><ecel><ecel><nl>
+<ucel><ecel><fcel>Weitere Eigenschaften:<lcel><lcel><lcel><lcel><nl>
+<ucel><ecel><fcel>Zähler-Nr.: = MG-X79318<ecel><ecel><ecel><ecel><nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Skontovereinbarung: 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Bezug<fcel>Innerhalb<fcel>Basisbetrag<fcel>Prozentsatz %<fcel>Betrag<nl>
+<ucel><fcel>Skonto<fcel>10 Tag(e)<ecel><fcel>2<ecel><nl>
+<fcel>Zu- und Abschläge:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art<fcel>%<fcel>Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<nl>
+<fcel>Abschlag<fcel>Sonderrabatt<fcel>410,10<ecel><fcel>19 % UST (S)<fcel>-21,55<nl>
+<fcel>Transportkosten: Frachbetrag<lcel><lcel><ecel><fcel>19 % UST (S)<fcel>15,00<nl>
+<fcel>Steueraufschlüsselung:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<fcel>410,10<fcel>-6,55<fcel>403,55<fcel>19<fcel>76,67<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><ecel><fcel>Positionssumme<ecel><fcel>410,10<nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><fcel>15,00<nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><fcel>-21,55<nl>
+<ecel><ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><fcel>403,55<nl>
+<ecel><ecel><ecel><fcel>Steuerbetrag in<fcel>EUR<fcel>76,67<nl>
+<ecel><ecel><ecel><fcel>Bruttosumme<ecel><fcel>480,22<nl>
+<ecel><ecel><ecel><fcel>Erhaltene Anzahlungen<ecel><fcel>-0,00<nl>
+<ecel><ecel><ecel><fcel>Zahlbetrag<ecel><fcel>480,22<nl><|im_end|>

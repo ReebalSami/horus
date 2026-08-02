@@ -1,0 +1,71 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  fail3
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  136.54s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+2017-05-09
+
+Bei Spiel GmbH   •   Ecke 12   •   12345 Stadthausen
+
+Bei Spiel GmbH
+Ecke 12
+12345 Stadthausen
+fon   (555) 23 78 -0
+fax   (555) 23 78 -51
+http://localhost/
+
+Kundenennummer:2
+
+Rechnung # RE-20170509/505 von 09.05.2017
+Leistungsdatum 07.05.2017
+
+Kundenennummer:2
+
+<table>
+  <tr>
+    <th>Menge</th>
+    <th>Produkt</th>
+    <th>USt. Satz</th>
+    <th>Nettopreis</th>
+    <th>Ust.-Betrag</th>
+  </tr>
+  <tr>
+    <td>1,00</td>
+    <td>Künstlerische Gestaltung (Stunde): Einer Beispielrechnung</td>
+    <td>7%</td>
+    <td>160,00 €</td>
+    <td>11,20 €</td>
+  </tr>
+  <tr>
+    <td>400,00</td>
+    <td>Luftballon: Bunt, ca. 500ml</td>
+    <td>19%</td>
+    <td>336,00 €</td>
+    <td>63,84 €</td>
+  </tr>
+  <tr>
+    <td>200,00</td>
+    <td>Heiße Luft pro Liter:</td>
+    <td>19%</td>
+    <td>336,00 €</td>
+    <td>63,84 €</td>
+  </tr>
+</table>
+
+Gesammtbetrag: 571,04 €
+
+Bitte überweisen Sie bis zum 30.05.2017.
+
+Powered by GnuAccounting
+
+USt-ID: DE136695976
+IBAN DE88200800000970375700
+BIC COBADEFFXXX
+Commerzbank vormals Dresdner Bank
+Kontoinhaber: Max Mustermann

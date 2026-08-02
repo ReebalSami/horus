@@ -1,0 +1,194 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p1_EN16931_Einfach_DueDate
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  79.25s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version : 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. 471102 vom 05.03.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung : EUR
+Liefer- und Leistungsdatum : 05.03.2018
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Beschreibung : Nettopreis : Menge : Steuer : VAT (S) : Entgelt
+TB100A4 : A4
+Bruttopreis : 9,90
+Steuer : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entgelt : 275,00
+VAT (S) : 9,90
+Entg
+===== PAGE 2 =====
+### Zahlungsbedingungen:
+
+**Beschreibung** 05.03.2019
+
+**Fälligkeit** 7
+
+**Teilzahlung** 529,87
+
+### Umsatzsteueraufschlüsselung:
+
+**Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag** USt. % USt.-Betrag
+
+- VAT (S) 275,00 7 19,25
+- VAT (S) 198,00 19 37,62

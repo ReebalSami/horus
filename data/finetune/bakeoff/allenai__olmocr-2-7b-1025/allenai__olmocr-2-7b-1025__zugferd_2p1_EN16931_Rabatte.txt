@@ -1,0 +1,208 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  92.48s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. 471102 vom 05.06.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung                : EUR
+
+Liefer- und Leistungsdatum   : 03.06.2018
+
+Bestellung               : 2013-471331
+
+Verkäufer:
+
+Globale Nummer: 4000001123452 (GLN)
+Lieferant GmbH
+Lieferantenstraße 20
+DE 80333 München
+
+Steuernummer : 201/113/40209
+USt.-Id.-Nr. : DE123456789
+
+Käufer:
+Nummer      : GE2020211
+Kunden AG Mitte
+Kundenstraße 15
+DE 69876 Frankfurt
+
+Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+
+Qualifizierung der Textart: AAK
+
+Es bestehen Rabatt- und Bonusvereinbarungen.
+
+Qualifizierung der Textart: REG
+
+Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123<|im_end|>
+===== PAGE 2 =====
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuer</th>
+    <th>Entgelt</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td>KR3M<br>4012345001235<br>(GLN)</td>
+    <td>Kunstrasen grün 3m breit</td>
+    <td>3,33</td>
+    <td>3 m²</td>
+    <td>19 % VAT (S)</td>
+    <td>10,00</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 4,00 Abschlag : 0,67</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td colspan="6">Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112 in Rechnung zu stellen:</td>
+  </tr>
+  <tr>
+    <td colspan="7">300cm x 100 cm</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>SFK5<br>4000050986428<br>(GLN)</td>
+    <td>Schweinesteak</td>
+    <td>5,50</td>
+    <td>5 kg</td>
+    <td>7 % VAT (S)</td>
+    <td>27,50</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 5,50</td>
+  </tr>
+  <tr>
+    <td colspan="7">aus Deutschland</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>GTRWA5<br>4000001234561<br>(GLN)</td>
+    <td>Mineralwasser Medium 12 x 1,0l PET</td>
+    <td>5,49</td>
+    <td>20 Stk</td>
+    <td>7 % VAT (S)</td>
+    <td>109,80</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 5,49</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>PFA5<br>4000001234578<br>(GLN)</td>
+    <td>Pfand</td>
+    <td>2,77</td>
+    <td>20 Stk</td>
+    <td>19 % VAT (S)</td>
+    <td>55,40</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 2,77</td>
+  </tr>
+</table>
+
+Zahlungsbedingungen:
+
+Beschreibung
+Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3% Skonto innerhalb 10 Tagen bis 15.06.2018
+
+Zu- und Abschläge:
+
+<table>
+  <tr>
+    <th>Art</th>
+    <th>%</th>
+    <th>Basisbetrag</th>
+    <th>Basismenge</th>
+    <th>Steuer</th>
+    <th>Betrag</th>
+  </tr>
+  <tr>
+    <td>Abschlag</td>
+    <td>Sondernachlass</td>
+    <td>10,00</td>
+    <td></td>
+    <td>19 % VAT (S)</td>
+    <td>-1,00</td>
+  </tr>
+  <tr>
+    <td>Abschlag</td>
+    <td>Sondernachlass</td>
+    <td>137,30</td>
+    <td></td>
+    <td>7 % VAT (S)</td>
+    <td>-13,73</td>
+  </tr>
+  <tr>
+    <td>Zuschlag</td>
+    <td>Versandkosten</td>
+    <td>137,30</td>
+    <td></td>
+    <td>7 % VAT (S)</td>
+    <td>5,80</td>
+  </tr>
+</table>
+
+Umsatzsteueraufschlüsselung:
+
+<table>
+  <tr>
+    <th>Art (Kategorie)</th>
+    <th>Warenwert</th>
+    <th>Zu-/Abschlag</th>
+    <th>Steuerbasisbetrag</th>
+    <th>USt. %</th>
+    <th>USt.-Betrag</th>
+  </tr>
+  <tr>
+    <td>VAT (S)</td>
+    <td></td>
+    <td></td>
+    <td>129,37</td>
+    <td>7</td>
+    <td>9,06</td>
+  </tr>
+  <tr>
+    <td>VAT (S)</td>
+    <td></td>
+    <td></td>
+    <td>64,40</td>
+    <td>19</td>
+    <td>12,24</td>
+  </tr>
+</table><|im_end|>
+===== PAGE 3 =====
+Belegsummen:
+
+Positionssumme	202,70
+Gesamtbetrag der Zuschläge	5,80
+Gesamtbetrag der Abschläge	-14,73
+Rechnungssumme ohne USt.	193,77
+Steuerbetrag	21,30
+Bruttosumme	215,07
+Erhaltene Anzahlungen	-50,00
+Zahlbetrag	165,07<|im_end|>

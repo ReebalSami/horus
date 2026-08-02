@@ -1,0 +1,60 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  zugferd_2p1_BASIC_Taxifahrt
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  21.91s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Handelsrechnung Nr. TX-471102 vom 30.10.2019<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
+Währung : EUR<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Liefer- und Leistungsdatum : 29.10.2019<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Verkäufer:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Taxiunternehmen TX GmbH
+Lieferantenstraße 20
+DE 10369 Berlin<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>USt.-Id.-Nr. : DE123456789<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Käufer:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Taxi-Gast AG Mitte
+Hans Mustermann
+Kundenstraße 15
+DE 13351 Berlin<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Rechnung gemäß Taxifahrt vom 29.10.2019<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Taxiunternehmen TX GmbH
+Lieferantenstraße 20
+10369 Berlin
+Deutschland
+Geschäftsführer: Hans Mustermann
+Handelsregisternummer: H A 123<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Unsere GLN: 4000001123452
+Ihre GLN: 4000001987658
+Ihre Kundennummer: GE2020211<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art-Nr-Kunde
+Pos Art-Nr-Lief.
+Art-Nr
+(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl>
+<fcel>1<fcel>Grundpreis
+(Pauschale)<fcel>3,90<fcel>1 Stk<fcel>7 % VAT (S)<fcel>3,90<nl><|im_end|>
+===== PAGE 2 =====
+<fcel>2<fcel>Stadtfahrt - 2,00 Euro je gefahrene Kilometer<fcel>2,00<fcel>6 Stk<fcel>7 % VAT (S)<fcel>13,00<nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Beschreibung<lcel><ecel><fcel>Fälligkeit 29.11.2019<fcel>Teilzahlung<nl>
+<fcel>Umsatzsteueraufschlüsselung:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie) VAT (S)<fcel>Warenwert<fcel>Zu-/Abschlag<fcel>Steuerbasisbetrag 16,90<fcel>USt. % 7<fcel>USt.-Betrag 1,18<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><ecel><fcel>Positionssumme<ecel><fcel>16,90<nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><fcel>0,00<nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><fcel>-0,00<nl>
+<ecel><ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><fcel>16,90<nl>
+<ecel><ecel><ecel><fcel>Steuerbetrag<ecel><fcel>1,18<nl>
+<ecel><ecel><ecel><fcel>Bruttosumme<ecel><fcel>18,08<nl>
+<ecel><ecel><ecel><fcel>Zahlbetrag<ecel><fcel>18,08<nl><|im_end|>

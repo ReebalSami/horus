@@ -1,0 +1,185 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p0_EN16931_Miete
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  84.74s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+Mietrechnung Nr. 9314110911/00/M/00/N vom 01.10.2018
+
+Geschäftsprozess      : Beispielgeschäftsprozess
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+
+Rechnungswährung     : EUR
+
+Liefer- und Leistungsdatum    : 29.09.2018
+
+Bestellung           : B123456789
+Lieferavis           : L87654321012345
+
+Verkäufer:
+Nummer      : 549910
+Globale Nummer: 4333741000005 (GTIN)
+MUSTER-Autovermietung
+Musterstr. 99
+DE 99199 MUSTERHAUSEN
+
+USt.-Id.-Nr. : DE136695976
+
+Käufer/Leistungsempfänger:
+Nummer      : 9314110911
+Globale Nummer: 4304171000002 (GTIN)
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+
+Qualifizierung der Textart: Regulatory information
+MUSTER-Autovermietung GMBH
+Musterstr. 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Maxima Musterfrau
+USt-IdNr: DE136695976
+Telefon: +49 711-50885524
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+
+Bei Rückfragen:
+Telefon: +49 711-50885524
+E-Mail : info@muster-autovermietung.de
+
+Übergabe am 29.09.2018/ 10:35
+Ort: Frankfurt a. M.
+km: 17791<|im_end|>
+===== PAGE 2 =====
+Rückgabe am 01.10.2018/ 10:19
+Ort: Frankfurt a. M.
+km: 18664
+
+Übernahme: Frankfurt
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>USt.</th>
+    <th>Positionsbetrag ohne USt.</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td></td>
+    <td>Miettage</td>
+    <td>86,5500</td>
+    <td>2 Stk</td>
+    <td>19 %</td>
+    <td>173,10</td>
+  </tr>
+  <tr>
+    <td colspan="7"><u>Weitere Eigenschaften:</u></td>
+  </tr>
+  <tr>
+    <td colspan="7">Fahrzeug-Kennzeichen: = M-MM 0000</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td></td>
+    <td>Navigationssystem - Garantie</td>
+    <td>5,0400</td>
+    <td>2 Stk</td>
+    <td>19 %</td>
+    <td>10,08</td>
+  </tr>
+  <tr>
+    <td colspan="7">Inklusiv-Kilometer waren: 873</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td></td>
+    <td>Vollkasko</td>
+    <td>23,1000</td>
+    <td>2 Stk</td>
+    <td>19 %</td>
+    <td>46,20</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td></td>
+    <td>minimale Selbstbeteiligung</td>
+    <td>15,5500</td>
+    <td>2 Stk</td>
+    <td>19 %</td>
+    <td>31,10</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td></td>
+    <td>Personen-Unfallversicherung</td>
+    <td>7,9800</td>
+    <td>2 Stk</td>
+    <td>19 %</td>
+    <td>15,96</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td></td>
+    <td>Choice Upgrade</td>
+    <td>5,0400</td>
+    <td>2 Stk</td>
+    <td>19 %</td>
+    <td>10,08</td>
+  </tr>
+</table><|im_end|>
+===== PAGE 3 =====
+Zahlungsbedingungen:
+
+Beschreibung
+Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.
+
+Steueraufschlüsselung:
+
+<table>
+  <tr>
+    <th>Art (Kategorie)</th>
+    <th>Warenwert Zu-/Abschlag</th>
+    <th>Basisbetrag</th>
+    <th>USt. %</th>
+    <th>Steuerbetrag</th>
+  </tr>
+  <tr>
+    <td>Umsatzsteuer (S)</td>
+    <td></td>
+    <td>286,52</td>
+    <td>19</td>
+    <td>54,44</td>
+  </tr>
+</table>
+
+Belegsummen:
+
+Positionssumme
+Gesamtbetrag der Zuschläge 0,00
+Gesamtbetrag der Abschläge -0,00
+Rechnungssumme ohne USt. 286,52
+Steuerbetrag in EUR 54,44
+Bruttosumme 340,96
+Erhaltene Anzahlungen -0,00
+Zahlbetrag 340,96<|im_end|>

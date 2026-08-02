@@ -1,0 +1,58 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_MINIMUM_Rechnung
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  23.82s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version : 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. 471102 vom 05.03.2020
+
+Anwendungsempfehlung : urn:factur-x.eu:1p0:minimum
+Währung : EUR
+
+Verkäufer:
+Lieferant GmbH
+Lieferantenstraße 20
+DE 80333 München
+
+Steuernummer : 201/113/40209
+USt.-Id.-Nr. : DE123456789
+
+Käufer:
+Kunden AG Frankreich
+Alexandre Payet
+35 rue de la République
+FR 69001 Lyon
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr<br>(Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuer</th>
+    <th>Entgelt</th>
+  </tr>
+</table>
+
+Belegsummen:
+
+Positionssumme 198,00
+Gesamtbetrag der Zuschläge
+Gesamtbetrag der Abschläge
+Rechnungssumme ohne USt. 198,00
+Steuerbetrag 37,62
+Bruttosumme 235,62
+Erhaltene Anzahlungen
+Zahlbetrag 235,62<|im_end|>

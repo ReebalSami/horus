@@ -1,0 +1,109 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_EN16931_Elektron_embedded
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  57.55s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version : 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Baurechnung Nr. 181301674 vom 25.04.2018
+
+Geschäftsprozess      : Baurechnung
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung              : EUR
+
+Liefer- und Leistungsdatum      : 06.03.2018
+Referenz des Käufers            : 04011000-12345-34
+Zahlungsreferenz                : Rechnung 181301674
+Buchungsreferenz                : 420
+Weitere Referenz                : Aufmass, Art der Referenz: 916
+Weitere Referenz                : ElektronRapport, Art der Referenz: 916
+
+Verkäufer:
+
+Globale Nummer: 4000001123452 (GTIN)
+ELEKTRON Industrieservice GmbH
+Max Mustermann
+Muster-Einkauf
+Erfurter Strasse 13
+DE 74465 Demoort
+
+Telefon      : +49891234567
+E-Mail       : Max@Mustermann.de
+Steuernummer : 201/113/40209
+USt.-Id.-Nr. : DE123456789
+
+Käufer:
+Nummer        : 16259
+ConsultingService GmbH
+Musterstr. 18
+DE 76138 Karlsruhe
+
+Rapport-Nr.: 42389 vom 08.03.2018
+
+Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr<br>(Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuer</th>
+    <th>Entgelt</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td>TGA<br>Obermonteur/Monteur</td>
+    <td></td>
+    <td>43,20</td>
+    <td>3 Std</td>
+    <td>19 % VAT (S)</td>
+    <td>129,60</td>
+  </tr>
+</table>
+
+Bruttopreis : 43,20<|im_end|>
+===== PAGE 2 =====
+01  01 Beamermontage
+Für die doppelte Verlegung, falls erforderlich.
+
+Beamer-Deckenhalterung  122,50  1 H87 19 % VAT (S)  122,50
+Bruttopreis: 122,50
+
+02  02 Außerhalb Angebot
+
+Zahlungsbedingungen:
+
+Beschreibung        Fälligkeit    Teilzahlung
+Zahlbar sofort rein netto
+
+Zahlungsart:
+Zahlungstyp (codiert): 58
+Verkäufer-IBAN: DE5467894567876500
+
+Umsatzsteueraufschlüsselung:
+
+Art (Kategorie)  Warenwert  Zu-/Abschlag  Steuerbasisbetrag  USt. %  USt.-Betrag
+VAT (S)          252,10      19           47,90
+
+Belegsummen:
+
+Positionssumme  252,10
+Gesamtbetrag der Zuschläge  0,00
+Gesamtbetrag der Abschläge  -0,00
+Rechnungssumme ohne USt.  252,10
+Steuerbetrag  47,90
+Bruttosumme  300,00
+Erhaltene Anzahlungen  -0,00
+Zahlbetrag  300,00<|im_end|>

@@ -1,0 +1,26 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  ZUGFeRD_1p0_COMFORT_SEPA_Prenotification
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  16.86s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>RechnungserstellerLieferant GmbHLieferantenstraße 2080333 MünchenDeutschlandGLN 4000001123452<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>RechnungsempfängerKunden AG MitteHans MusterKundenstraße 1569876 FrankfurtDeutschlandGLN 4000001987658<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>UnserePos Art.Nr.<fcel>Artikelbeschreibung<fcel>Menge<fcel>Meng.-einheit<fcel>Preis/Einheit<fcel>Betrag<fcel>UST. %<ecel><nl>
+<fcel>1 TB100A4<fcel>Trennblätter A4GTIN: 4012345001235<fcel>20<fcel>Stk.<fcel>9,90<fcel>198,00<fcel>19<ecel><nl>
+<fcel>2 ARNR2<fcel>Joghurt BananeGTIN: 4000050986428<fcel>50<fcel>Stk.<fcel>5,50<fcel>275,00<fcel>7<ecel><nl>
+<fcel>Rechnungssumme Netto (excl. USt.)<lcel><lcel><lcel><lcel><fcel>473,00<lcel><ecel><nl>
+<fcel>Steuerbasisbetrag USt. 7%<lcel><lcel><lcel><lcel><fcel>275,00<fcel>19,25<ecel><nl>
+<fcel>Steuerbasisbetrag USt. 19%<lcel><lcel><lcel><lcel><fcel>198,00<fcel>37,62<ecel><nl>
+<fcel>Rechnungssumme Brutto (inkl. USt.)<lcel><lcel><lcel><lcel><fcel>529,87<lcel><ecel><nl>
+<fcel>Zahlungsinformationen:Der Betrag in Höhe von EUR 529,87 wird am 20.03.2014 von Ihrem Konto mit IBAN DE21860000000086001055 und BIC MARKDEF1860, Deutsche Bundesbank -Filiale Leipzig- per SEPA-Lastschrift eingezogen.Mandatsreferenz: REF A-123, Gläubiger-Identifikationsnummer: DE98ZZZ09999999999<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Bank-/Steuerinformationen<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Kontonr.:<fcel>1234 5678 90<fcel>IBAN-Nr.:<fcel>DE08 7009 0100 1234 5678 90<fcel>Handelsreg.:<fcel>HA 123<lcel><ecel><nl>
+<fcel>BLZ:<fcel>700 901 00<fcel>BIC:<fcel>GENODEF1M04<fcel>USt.-Identnr.:<fcel>DE123456789<lcel><ecel><nl>
+<fcel>Bankname:<fcel>Hausbank München<fcel>Geschäftsf.:<fcel>Hans Muster<fcel>Steuernr.:<fcel>201/113/40209<lcel><ecel><nl>
+<|im_end|>

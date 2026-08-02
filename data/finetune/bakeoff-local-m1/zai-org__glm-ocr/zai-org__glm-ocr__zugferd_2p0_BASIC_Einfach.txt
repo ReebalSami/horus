@@ -1,0 +1,122 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p0_BASIC_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  79.68s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+Handelsrechnung Nr. 471102 vom 05.03.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Rechnungswährung : EUR
+
+Liefer- und Leistungsdatum : 05.03.2018
+
+Liefer- und Leistungsdatum : 05.03.2018
+
+Verkäufer:
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Steuernummer : urn:cen.eu:en1
+===== PAGE 2 =====
+<table><thead><tr><th>Pos.</th><th>Art-Nr-Kunde<br>Art-Nr-Lief. Art-Nr (Art)</th><th>Beschreibung</th><th>Nettopreis</th><th>Menge</th><th>USt.</th><th>Positionsbetrag ohne USt.</th></tr></thead><tbody><tr><td>1</td><td>4012345001235 (GLN)</td><td>GTIN: 4012345001235<br>Unsere Art.-Nr.: TB100A4<br>Trennblätter A4</td><td>9,9000</td><td>20 Stk</td><td>19 %</td><td>198,00</td></tr></tbody></table>

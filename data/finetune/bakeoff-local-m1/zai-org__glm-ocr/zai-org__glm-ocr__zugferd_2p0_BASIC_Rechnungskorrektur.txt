@@ -1,0 +1,72 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p0_BASIC_Rechnungskorrektur
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  96.52s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+Rechnungskorrektur Nr. RK21012345 vom 16.09.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Rechnungswährung : EUR
+
+Liefer- und Leistungsdatum : 05.08.2018
+
+Liefer- und Leistungsdatum : 05.08.2018
+
+Verkäufer:
+
+USt-IdNr: DE123456789
+
+Telefon: +49 932 431 500
+
+www.musterlieferant.de
+
+HRB Nr. 372876
+
+Amtsgericht Musterstadt
+
+E-Mail : max.muster@musterlieferant.de
+===== PAGE 2 =====
+Warenempfänger
+GLN 430417088093
+MUSTER-MARKT
+
+Bestell-Nr : B123456789
+Bestell-Datum : 01.08.2018
+Lieferschein-Nr : L87654321012345
+Lieferschein-Datum : 05.08.2018
+Ursprungsbeleg-Nr : R87654321012345
+Gelierzucker
+Extra 250g
+Karton
+VKE/Geb: 1
+===== PAGE 3 =====
+## Zu- und Abschläge:
+
+| Art | % Basisbetrag | Basismenge | Steuer | Betrag |
+| :--- | :--- | :--- | :--- | :--- |
+| Abschlag Rechnungsrabatt | | 19 % UST (S) | 0,15 |
+| Abschlag Rechnungsrabatt | | 7 % UST (S) | 0,08 |
+
+## Steueraufschlüsselung:
+
+| Art (Kategorie) | Warenwert Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+| :--- | :--- | :--- | :--- | :--- |
+| Umsatzsteuer (S) | | -4,85 | 19 | -0,92 |
+| Umsatzsteuer (S) | | -2,82 | 7 | -0,20 |
+
+## Belegsummen:
+
+| | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| | | Positionssumme | -7,90 | |
+| | | Gesamtbetrag der Zuschläge | 0,00 | |
+| | | Steuerbetrag | -0,20 | |

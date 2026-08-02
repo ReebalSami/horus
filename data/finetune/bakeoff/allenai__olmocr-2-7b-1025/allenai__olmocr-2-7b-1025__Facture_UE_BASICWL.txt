@@ -1,0 +1,124 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  Facture_UE_BASICWL
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  39.88s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Invoice FA-2017-0008
+
+Delivery Address
+Me gusta olive
+87 camino de la calor
+41700 Dos Hermanas
+Spain
++34 954 93 12 29
+contact@megustaolive.es
+
+Me gusta olive
+Pedro Sanchez
+87 camino de la calor
+41700 Dos Hermanas
+Spain
+
+Invoice Date
+11/03/2017
+
+Payment Terms
+30% advance payment, balance at 30 days
+
+Due Date
+12/03/2017
+
+Your Reference
+COMPRA0832
+
+Agreement Ref.
+FROLIVE2017
+
+Customer VAT Number
+ESA12345674
+
+Incoterms
+DELIVERED DUTY UNPAID
+
+Sales Contact
+Tony Dubois
++33 4 72 07 08 56
++33 6 11 22 33 44
+tony.dubois@aubonmoulin.fr
+
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Quantity</th>
+    <th>Unit Price</th>
+    <th>Disc.</th>
+    <th>Price w/o Tax</th>
+  </tr>
+  <tr>
+    <td>Nougat de l'Abbaye 250g</td>
+    <td>8 Unit(s)</td>
+    <td>4.55 €</td>
+    <td>10%</td>
+    <td>32.76 €</td>
+  </tr>
+  <tr>
+    <td>Biscuits aux raisins 300g</td>
+    <td>20 Unit(s)</td>
+    <td>3.20 €</td>
+    <td></td>
+    <td>64.00 €</td>
+  </tr>
+  <tr>
+    <td>Huile d'olive à l'ancienne</td>
+    <td>100 Liter(s)</td>
+    <td>19.80 €</td>
+    <td></td>
+    <td>1,980.00 €</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Tax</th>
+    <th>Base</th>
+    <th>Amount</th>
+  </tr>
+  <tr>
+    <td>TVA 0% livraisons intracommunautaires (vente)</td>
+    <td>2,076.76 €</td>
+    <td>0.00 €</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Payment</th>
+    <th>Date</th>
+    <th>Amount</th>
+  </tr>
+  <tr>
+    <td>SEPA Wire transfer</td>
+    <td>11/17/2017</td>
+    <td>623.00 €</td>
+  </tr>
+</table>
+
+Net total: 2,076.76 €
+Tax Total: 0.00 €
+Total: 2,076.76 €
+Residual: 1,453.76 €
+
+Notes
+Free shipping (amount > 300 €)
+
+Payment
+Invoice to pay by wire transfer to the following bank account:
+IBAN : FR20 1242 1242 1242 1242 1242 124 - BIC : FIDCFR21XXX - Bank: Banque Fiducial
+
+French VAT exemption according to articles 262 ter I (for products) and/or 283-2 (for services) of "CGI"<|im_end|>

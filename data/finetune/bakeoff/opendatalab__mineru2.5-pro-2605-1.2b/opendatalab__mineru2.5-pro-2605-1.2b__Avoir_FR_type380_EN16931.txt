@@ -1,0 +1,105 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  Avoir_FR_type380_EN16931
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  48.84s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<|box_start|>051 024 063 036<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 036 063 048<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 048 063 059<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 059 063 069<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 069 063 079<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 079 063 089<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 089 063 099<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 099 063 109<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 109 063 119<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 119 063 129<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 129 063 139<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 139 063 149<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 149 063 159<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 159 063 169<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 169 063 179<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 179 063 189<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 189 063 199<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 199 063 209<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 209 063 219<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 219 063 229<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 229 063 239<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 239 063 249<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 249 063 259<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 259 063 269<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 269 063 279<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 279 063 289<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 289 063 299<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 299 063 309<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 309 063 319<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 319 063 329<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 329 063 339<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 339 063 349<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 349 063 359<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 359 063 369<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 369 063 379<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 379 063 389<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 389 063 399<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 399 063 409<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 409 063 419<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 419 063 429<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 429 063 439<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 439 063 449<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 449 063 459<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 459 063 469<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 469 063 479<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 479 063 489<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 489 063 499<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 499 063 509<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 509 063 519<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 519 063 529<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 529 063 539<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 539 063 549<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 549 063 559<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 559 063 569<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 569 063 579<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 579 063 589<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 589 063 599<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 599 063 609<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 609 063 619<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 619 063 629<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 629 063 639<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 639 063 649<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 649 063 659<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 659 063 669<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 669 063 679<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 679 063 689<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 689 063 699<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 699 063 709<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 709 063 719<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 719 063 729<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 729 063 739<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 739 063 749<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 749 063 759<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 759 063 769<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 769 063 779<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 779 063 789<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 789 063 799<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 799 063 809<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 809 063 819<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 819 063 829<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 829 063 839<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 839 063 849<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 849 063 859<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 859 063 869<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 869 063 879<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 879 063 889<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 889 063 899<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 899 063 909<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 909 063 919<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 919 063 929<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 929 063 939<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 939 063 949<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>051 949 063 959<|box_end|><|ref_start|>header<|ref_end|><|rotate_up|>
+<|box_start|>0

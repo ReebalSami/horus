@@ -1,0 +1,135 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_EN16931_Einfach_DueDate
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  56.27s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. 471102 vom 05.03.2018
+
+Anwendungsempfehlung: urn:cen.eu:en16931:2017
+Währung: EUR
+
+Liefer- und Leistungsdatum: 05.03.2018
+
+Verkäufer:
+Nummer: 549910
+Globale Nummer: 4000001123452 (GTIN)
+Lieferant GmbH
+Lieferantenstraße 20
+DE 80333 München
+
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.: DE123456789
+
+Käufer:
+Nummer: GE2020211
+Kunden AG Mitte
+Kundenstraße 15
+DE 69876 Frankfurt
+
+Rechnung gemäß Bestellung vom 01.03.2018.
+
+Qualifizierung der Textart: REG
+Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde</th>
+    <th>Art-Nr-Lief.</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuer</th>
+    <th>Entgelt</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Trennblätter</td>
+    <td>9,90</td>
+    <td>20 Stk 19 % VAT (S)</td>
+    <td>198,00</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>TB100A4</td>
+    <td>A4</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>4012345001235</td>
+    <td>(GLN)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="8">Bruttopreis: 9,90</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Joghurt Banane</td>
+    <td>5,50</td>
+    <td>50 Stk 7 % VAT (S)</td>
+    <td>275,00</td>
+  </tr>
+  <tr>
+    <td>ARNR2</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table><|im_end|>
+===== PAGE 2 =====
+4000050986428
+(GLN)
+Bruttopreis : 5,50
+
+Zahlungsbedingungen:
+
+Beschreibung	Fälligkeit	Teilzahlung
+05.03.2019
+
+Umsatzsteueraufschlüsselung:
+
+Art (Kategorie)	Warenwert	Zu-/Abschlag	Steuerbasisbetrag	USt. %	USt.-Betrag
+VAT (S)		275,00	7	19,25
+VAT (S)		198,00	19	37,62
+
+Belegsummen:
+
+Positionssumme	473,00
+Gesamtbetrag der Zuschläge	0,00
+Gesamtbetrag der Abschläge	-0,00
+Rechnungssumme ohne USt.	473,00
+Steuerbetrag	56,87
+Bruttosumme	529,87
+Erhaltene Anzahlungen	-0,00
+Zahlbetrag	529,87<|im_end|>

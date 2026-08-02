@@ -1,0 +1,66 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  ZUGFeRD_2_fully_compliant_complete
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  28.56s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Die Vordefinierte Firma
+Waldstrasse 86-90
+13403 Berlin
+Deutschland
+
+Tel: +49 (030) 41092-0
+Fax: +49 (030) 41092-111
+email: info@vordefiniert.de
+UStID#DE12345618938
+
+Rechnung
+
+Firma
+Elektromarkt Bamby
+Adlerstrasse 452
+D-07545 GERA
+
+Information
+Belegnummer 90005178
+Belegdatum 07.01.1997
+Lieferscheinnr./-datum 80003371 (03.01.1997)
+Nummer/Datum 4970 (03.01.1997)
+Bestellnummer EB-653421 (03.01.1997)
+Kunden Nummer 1175
+Währung DEM
+
+Shipping Information
+Terms of Payment 14 Tage 3%, 30
+Incoterms CIP Gera
+Description Frachtfrei versichert
+Gross Weight 308,500 KG
+Net Weight 308,500 KG
+Volume 0,750 M3
+
+Position  Material/Beschreibung  Menge  Preis  Betrag
+10  M-01
+Sony Sunny01
+Dieses Gerät ist strahlungsarm gemäß DIN
+5 ST  1.630,00  8.150,00
+20  M-02
+Sony Xa1
+Dieses Gerät ist strahlungsarm gemäß DIN
+5 ST  1.888,00  9.440,00
+30  M-10
+Highscreen MS 1775P
+Dieses Gerät ist strahlungsarm gemäß DIN
+4 ST  2.350,00  9.400,00
+40  M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+4 ST  1.462,00  5.848,00
+
+Total Before Tax  32.838,00
+Total Tax  4.925,70
+Total Amount (DEM)  37.763,70<|im_end|>

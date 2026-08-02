@@ -1,0 +1,113 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  Avoir_FR_type381_MINIMUM
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  34.52s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Avoir AV-2017-0005
+
+Adresse de livraison
+Ma jolie boutique
+35 rue de la République
+69001 Lyon
+France
++33 4 72 07 08 55
+sav@majolieboutique.net
+
+Ma jolie boutique
+Alexandre Payet
+35 rue de la République
+69001 Lyon
+France
+
+Date de facture
+16/11/2017
+
+Conditions de paiement
+Paiement immédiat
+
+Date d'échéance
+16/11/2017
+
+Votre référence
+PO445
+
+Réf. marché
+MSPE2017
+
+Facture liée
+FA-2017-0010
+
+N° TVA client
+FR19787878784
+
+Contact commercial
+Tony Dubois
++33 4 72 07 08 56
++33 6 11 22 33 44
+tony.dubois@aubonmoulin.fr
+
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Quantité</th>
+    <th>Prix unitaire</th>
+    <th>Rem.</th>
+    <th>Prix HT</th>
+  </tr>
+  <tr>
+    <td>Nougat de l'Abbaye 250g</td>
+    <td>5 Unit(s)</td>
+    <td>4,55 €</td>
+    <td>10%</td>
+    <td>-20,48 €</td>
+  </tr>
+  <tr>
+    <td>Huile d'olive à l'ancienne</td>
+    <td>10 Liter(s)</td>
+    <td>19,80 €</td>
+    <td></td>
+    <td>-198,00 €</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Taxe</th>
+    <th>Base</th>
+    <th>Montant</th>
+  </tr>
+  <tr>
+    <td>TVA collectée (vente) 20,0%</td>
+    <td>-20,48 €</td>
+    <td>-4,10 €</td>
+  </tr>
+  <tr>
+    <td>TVA collectée (vente) 5,5%</td>
+    <td>-198,00 €</td>
+    <td>-10,89 €</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Total HT</th>
+    <th>-218,48 €</th>
+  </tr>
+  <tr>
+    <th>Total taxes</th>
+    <th>-14,99 €</th>
+  </tr>
+  <tr>
+    <th>Total TTC</th>
+    <th>-233,47 €</th>
+  </tr>
+</table>
+
+Notes
+Avoir suite à bidon 10L d'huile d'olive percé et carton de nougat renversé<|im_end|>

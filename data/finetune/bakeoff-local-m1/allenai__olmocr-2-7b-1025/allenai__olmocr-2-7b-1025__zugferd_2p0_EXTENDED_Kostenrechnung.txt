@@ -1,0 +1,170 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p0_EXTENDED_Kostenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  397.55s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Handelsrechnung Nr. KR87654321012 vom 06.10.2018
+KOSTENRECHNUNG
+
+Testkennzeichen        : true
+urn:cen.eu:en16931:2017#conformmant#urn:zugferd.de:2p0:extended
+
+Rechnungswährung        : EUR
+Weitere Referenz        : A777123, Art der der Referenz: Rechnungsdatenblatt
+
+Verkäufer:
+Nummer                : 5499910
+Globale Nummer          : 43337410000005 (GTIN)
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+DE 99199 MUSTERHAUSEN
+
+Telefon                : +49 932 431 500
+E-Mail                  : max.mustermustermann@musterlieferferantant.de
+Steuernummer             : 201/113/40209
+
+Abweichender der Rechnungsempfänger:
+Nummer                  : 339420
+Globale Nummer            : 43041710000002 (GTIN)
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+
+Qualifizierung der Textart: Price conditions, Qualifizierung des Textes: ST3
+Es bestehen Rabatt- oder Bonusvereinbarungen.
+Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.
+===== PAGE 2 =====
+Qualifizierung der Textart: Regulatory information
+
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Max Mustermann
+USt-IdNr: DE123456789
+Telefon: +49 932 431 0
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 43041710000002
+
+Positions- betrag ohne USt.
+
+Art-Nr-Lief. (Art)
+Pos
+1
+WA997
+41234560000014
+(GTIN)
+Beschreibung
+Wirkararbeit
+HT
+Bruttopreis : 0,0520
+Menge
+10000 KWH
+USt.
+19 %
+52,00
+
+Art-Nr-Lief. (Art)
+Pos
+2
+ÖST250
+41260331811362
+(GTIN)
+Beschreibung
+Ökosteuere
+Lieferant
+Bruttopreis : 0,0205
+Menge
+10000 KWH
+USt.
+19 %
+20,50
+
+Art-Nr-Lief. (Art)
+Pos
+3
+KOP05
+41234560000038
+(GTIN)
+Beschreibung
+Kopierpapier
+A4
+Bruttopreis : 0,0100
+Menge
+1210 Stk
+USt.
+19 %
+12,10
+
+Art-Nr-Lief. (Art)
+Pos
+5
+KOP05
+41234560000038
+(GTIN)
+Beschreibung
+Kopierpapier
+A4
+Bruttopreis : 0,0100
+Menge
+1210 Stk
+USt.
+19 %
+12,10
+
+Art-Nr-Lief. (Art)
+Pos
+5
+KOP05
+41234560000038
+(GTIN)
+Beschreibung
+Kopierpapier
+A4
+Bruttopreis : 0,0100
+Menge
+1210 Stk
+USt.
+19 %
+12,10
+
+Art-Nr-Lief. (Art)
+Pos
+5
+KOP05
+41234560000038
+(GTIN)
+Beschreibung
+Kopierpapier
+A4
+Bruttopreis : 0,0100
+Menge
+1210 Stk
+USt.
+19 %
+12,10
+===== PAGE 3 =====
+**Zahlungsbedingungen:**
+
+**Beschreibung**
+Skontovereinbarung: 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum
+
+**Bezug**        **Innerhalb**        **Basisbetrag**        **Prozentsatz**        **Teilzahlung**        **Betrag**
+Skonto           10 Tag(e)           410,10                19 % UST (S)           2                          -21,55
+Umsatzsteuer      (S)                410,10                19 % UST (S)           15,00                       76,67
+Bruttosumme       480,22
+
+**Belegsummen:**
+
+**Bezug**        **Innerhalb**        **Basisbetrag**        **Prozentsatz**        **Teilzahlung**        **Betrag**
+Skonto           10 Tag(e)           410,10                19 % UST (S)           2                          -21,55
+Umsatzsteuer      (S)                410,10                19 % UST (S)           15,00                       76,67
+Bruttosumme       480,22

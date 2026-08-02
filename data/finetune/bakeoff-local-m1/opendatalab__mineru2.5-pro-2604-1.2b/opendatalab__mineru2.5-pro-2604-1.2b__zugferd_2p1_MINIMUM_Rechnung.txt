@@ -1,0 +1,43 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  zugferd_2p1_MINIMUM_Rechnung
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  1165.32s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version : 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Handelsrechnung Nr. 471102 vom 05.03.2020<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Anwendungsempfehlung : urn:factur-x.eu:1p0:minimum
+Währung : EUR<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Verkäufer:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Lieferant GmbH
+Lieferantenstraße 20
+DE 80333 München<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Steuernummer : 201/113/40209
+USt.-Id.-Nr. : DE123456789<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Käufer:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Kunden AG Frankreich
+Alexandre Payet
+35 rue de la République
+FR 69001 Lyon<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr
+(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><ecel><fcel>Positionssumme<ecel><ecel><fcel>198,00<nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><ecel><ecel><nl>
+<ecel><ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><ecel><ecel><nl>
+<ecel><ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><ecel><fcel>198,00<nl>
+<ecel><ecel><ecel><fcel>Steuerbetrag<ecel><ecel><fcel>37,62<nl>
+<ecel><ecel><ecel><fcel>Bruttosumme<ecel><ecel><fcel>235,62<nl>
+<ecel><ecel><ecel><fcel>Erhaltene Anzahlungen<ecel><ecel><ecel><nl>
+<ecel><ecel><ecel><fcel>Zahlbetrag<ecel><ecel><fcel>235,62<nl><|im_end|>

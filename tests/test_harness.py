@@ -204,6 +204,53 @@ def test_extract_and_concat_per_page_loop() -> None:
         assert f"output-for-page-{i}" in concatenated
 
 
+def test_extract_and_concat_skips_blank_pages(tmp_path: Path) -> None:
+    """`skip_blank_pages=True` short-circuits visually blank pages (no VLM call).
+
+    #114 bake-off finding: VLM readers hallucinate plausible invoices on blank
+    pages (Qwen3-VL-4B invented a fictional US invoice on a blank page 3,
+    collapsing the downstream structurer from 0.885 to 0.047 overall F1).
+    """
+    from PIL import Image
+
+    blank = tmp_path / "page-1.png"
+    Image.new("L", (400, 560), color=255).save(blank)
+    content = tmp_path / "page-2.png"
+    img = Image.new("L", (400, 560), color=255)
+    img.paste(0, (40, 40, 360, 200))  # a big dark block = real content
+    img.save(content)
+
+    @dataclass
+    class _MockExtractor:
+        backend_name: str = "mock"
+        model_id: str = "mock/model"
+        calls: list[Path] = None  # type: ignore[assignment]
+
+        def __post_init__(self) -> None:
+            self.calls = []
+
+        def extract(self, image_path: Path, prompt: str, max_tokens: int) -> ExtractionResult:
+            self.calls.append(image_path)
+            return ExtractionResult(
+                model_id=self.model_id, backend_name=self.backend_name, text="real content"
+            )
+
+    extractor = _MockExtractor()
+    concatenated, per_page = _extract_and_concat(
+        extractor, [blank, content], prompt="p", max_tokens=64, skip_blank_pages=True
+    )
+    assert extractor.calls == [content], "Blank page must not reach the VLM"
+    assert len(per_page) == 2
+    assert per_page[0].text == "" and per_page[0].is_ok
+    assert "real content" in concatenated
+    assert _PAGE_SEPARATOR_FMT.format(page=1) in concatenated, "Separator kept for traceability"
+
+    # Default (harness path) stays byte-identical: blank page IS extracted.
+    extractor2 = _MockExtractor()
+    _extract_and_concat(extractor2, [blank, content], prompt="p", max_tokens=64)
+    assert len(extractor2.calls) == 2
+
+
 @skip_if_no_corpus  # ADR-023: iterates ZUGFERD_CORPUS_DIR
 def test_list_paired_invoices_matches_conftest_helper() -> None:
     """`harness._list_paired_invoices` returns the same 26 pairs as conftest's helper.

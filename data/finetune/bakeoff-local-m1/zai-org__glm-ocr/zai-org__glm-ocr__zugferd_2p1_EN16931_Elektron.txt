@@ -1,0 +1,44 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p1_EN16931_Elektron
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  63.79s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Baurechnung Nr. 181301674 vom 25.04.2018
+
+Geschäftsprozess : Baurechnung
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung : EUR
+
+Liefer- und Leistungsdatum : 06.03.2018
+
+Pos Art-Nr-Kunde
+Art-Nr-Lief.
+Beschreibung Nettopreis Menge Steuer
+Für die doppelte Verlegung, falls erforderlich.
+
+Beamer-Deckenhalterung 122,50 1 H87 19 % VAT (S) 122,50
+===== PAGE 2 =====
+Bruttopreis : 122,50
+02 Außerhalb Angebot
+
+Zahlungsbedingungen:
+
+Beschreibung Fälligkeit Teilzahlung
+Zahlbar sofort rein netto
+
+Zahlungsart:
+
+Zahlungstyp (codiert): 58
+Verkäufer-IBAN : DE5467894567876500

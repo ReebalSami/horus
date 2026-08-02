@@ -1,0 +1,46 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  MustangGnuaccountingBeispielRE-20171118_506
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  132.45s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+2017-11-18
+
+Bei Spiel GmbH   •   Ecke 12   •   12345 Stadthausen
+
+Bei Spiel GmbH
+Ecke 12
+12345 Stadthausen
+fon   (555) 23 78 -0
+fax   (555) 23 78 -51
+http://localhost/
+
+Kundenennummer:2
+
+Rechnung # RE-201711118/506 von 18.11.2017
+Leistungsdatum 17.11.2017
+
+| Menge | Produkt | USt. | Preis | Gesamtbetrag |
+|-------|---------|------|-------|-------------|
+| 1,00  | Künstlerische Gestaltung (Stunde): Einer Beispielrechnung | 7%   | 160,00 € | 160,00 € |
+| 400,00 | Luftballon: Bunt, ca. 500ml | 19%  | 336,00 € | 63,84 € |
+| 200,00 | Heiße Luft pro Liter: | 19%  | 336,00 € | 63,84 € |
+
+Nettobetrag: 496,00 €
+USt. Gesamt: 75,04 €
+Gesamtbetrag: 571,04 €
+
+Bitte überweisen Sie bis zum 09.12.2017.
+
+Powered by GnuAccounting
+
+USt-ID: DE136695976
+IBAN DE88200800000970375700
+BIC COBADEFFXXX
+Commerzbank vormals Dresdner Bank
+Kontoinhaber: Max Mustermann
