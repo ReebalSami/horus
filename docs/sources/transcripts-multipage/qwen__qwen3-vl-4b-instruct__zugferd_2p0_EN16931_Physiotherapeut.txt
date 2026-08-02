@@ -1,0 +1,109 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  55.63s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. R18-31 vom 03.10.2018
+
+Anwendungsempfehlung : urn:ce.eu:en16931:2017
+
+Rechnungswährung : EUR
+
+---
+
+### Verkäufer:
+
+**Physiotherapeutin**
+
+Tanja Tinder
+
+Musterstraße 12
+
+DE 12345 Beispielstadt
+
+Telefon : 015119630027
+
+E-Mail : tanja.tinder@beispiel-provider.de
+
+USt.-Id.-Nr. : DE136695976
+
+---
+
+### Käufer/Leistungsempfänger:
+
+**Liselotte Müller**
+
+Rechnungsstraße 12
+
+DE 12345 Beispielstadt
+
+---
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | USt. | Positions- | 
+|-----|--------------|--------------|--------------|------------|-------|------|-------------|
+|     | Art-Nr       | (Art)        |              |            |       |      | betrag ohne USt. |
+| 0   |              |              | Physiotherapie | 26,0000   | 10 Stk | 0 %  | 260,00      |
+|     |              |              | Behandlungen aufgrund der Verordnung von Frau Dr. Heilerin vom 05.09.2018 an folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018 |
+| 1   |              |              | Hausbesuch   | 12,0000    | 10 Stk | 0 %  | 120,00      |
+|     |              |              | An folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018 |
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+# Zahlungsbedingungen:
+
+**Beschreibung**
+
+Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.
+
+**Fälligkeit** 21.11.2018
+
+**Teilzahlung**
+
+---
+
+# Zahlungsart:
+
+Zahlungstyp (codiert): 30 - per Überweisung (SEPA)
+
+Kontoname : Tanja Tinder
+
+IBAN : DE02120300000000202051
+
+---
+
+# Steueraufschlüsselung:
+
+| Art (Kategorie) | Warenwert /Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|---------------------|-------------|--------|--------------|
+| Umsatzsteuer (E) |                 |             |        |              |
+| Steuerfreie Leistungen nach §4 Nr. 14 UStG | | 380,00 | 0 | 0,00 |
+
+---
+
+# Belegsummen:
+
+**Positionssumme** 380,00
+
+Gesamtbetrag der Zuschläge
+
+Gesamtbetrag der Abschläge
+
+**Rechnungssumme ohne USt.** 380,00
+
+**Steuerbetrags in EUR** 0,00
+
+**Bruttosumme** 380,00
+
+**Erhaltene Anzahlungen**
+
+**Zahlbetrag** 380,00
+```<|im_end|>

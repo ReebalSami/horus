@@ -1,0 +1,109 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_EN16931_OEPNV
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  54.62s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version : 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Handelsrechnung Nr. E2018092011804 vom 20.09.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017  
+Währung : EUR  
+
+Liefer- und Leistungsdatum : 20.09.2018  
+Referenz des Käufers : 05 158 004 - 11023 - 45  
+Bestellung : 2018092011804  
+
+---
+
+### Verkäufer:
+
+Nummer : 549910  
+**Verkehrsbetriebe GmbH**  
+Torti Mayer  
+Musterstraße 3  
+DE 12345 Berlin  
+
+Telefon : +493012345678  
+E-Mail : tm@verkehrsbetriebe.de  
+USt.-Id.-Nr. : DE123456789  
+
+---
+
+### Käufer:
+
+Nummer : Liselotte Müllermann  
+**Liselotte Müllermann**  
+Beispielstraße 24  
+DE 12345 Berlin  
+
+---
+
+Qualifizierung der Textart: ADU  
+Bei Schriftwechsel bitte Ihre Kundenummer 35040727 und Belegnummer 2018092011804 angeben  
+
+---
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|------------|-------|--------|---------|
+| 0   |              | Art-Nr       |              |            |       |        |         |
+|     |              | (Art)        | 4-           | 8,41       | 1 Stk | 7 % VAT (S) | 8,41    |
+|     |              |              | Fahrtent-Karte |            |       |        |         |
+|     |              |              | Berlin       |            |       |        |         |
+|     |              |              | AB           |            |       |        |         |
+
+---
+
+Gültig ab 20.09.2018 15:39 Uhr bis 20.09.2018 17:39 Uhr  
+Abschnitt: 1/4  
+
+---
+
+## Zahlungsbedingungen:
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+**Beschreibung** | **Fälligkeit** | **Teilzahlung**
+---|---|---
+Zahlungsbedingungen: Der Rechnungsbetrag wurde bereits beglichen. | 03.10.2018 | 
+
+**Zahlungsart:**
+
+Zahlungstyp (codiert): 30
+
+Verkäufer-Kontoname : Verkehrsbetriebe GmbH
+Verkäufer-IBAN : DE12 1234 5678 9012 3456 78
+Verkäufer-BIC : 
+
+**Umsatzsteueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Steuerbasisbetrag | USt. % | USt.-Betrag |
+|---|---|---|---|---|---|
+| VAT (S) | | | 8,41 | 7 | 0,59 |
+
+**Belegsummen:**
+
+| Positionssumme | 8,41 |
+|---|---|
+| Gesamtbetrag der Zuschläge | |
+| Gesamtbetrag der Abschläge | |
+| Rechnungssumme ohne USt. | 8,41 |
+| Steuerbetrag | 0,59 |
+| **Bruttosumme** | **9,00** |
+| Erhaltene Anzahlungen | |
+| **Zahlbetrag** | **9,00** |
+```<|im_end|>

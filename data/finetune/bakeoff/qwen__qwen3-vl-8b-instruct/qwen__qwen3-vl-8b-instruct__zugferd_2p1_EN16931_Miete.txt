@@ -1,0 +1,151 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-8B-Instruct
+# Invoice:  zugferd_2p1_EN16931_Miete
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  105.69s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Mietrechnung Nr. 9314110911/00/M/00/N vom 01.10.2018
+
+## Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+- **ZUGFeRD-Version**: 2.1 vom 24.03.2020
+- **Stylesheet-Version**: 2.0 vom 18.10.2018
+- **Codelisten-Version**: 3.0 vom 15.11.2019
+- **(c) AWW e.V. 2020**
+
+---
+
+## Geschäftsinformationen
+
+- **Geschäftsprozess**: Beispielgeschäftsprozess
+- **Anwendungsempfehlung**: urn:cen.eu:en16931:2017
+- **Währung**: EUR
+
+---
+
+## Datum und Bestellinformationen
+
+- **Liefer- und Leistungsdatum**: 29.09.2018
+- **Bestellung**: B123456789
+- **Lieferavis**: L87654321012345
+
+---
+
+## Verkäufer
+
+- **Nummer**: 549910
+- **Globale Nummer**: 4333741000005 (GTIN)
+- **Firma**: MUSTER-Autovermietung
+- **Adresse**: Musterstr. 99, DE 99199 MUSTERHAUSEN
+- **USt.-Id.-Nr.**: DE136695976
+
+---
+
+## Käufer
+
+- **Nummer**: 9314110911
+- **Firma**: MUSTER-KUNDE GMBH
+- **Adresse**: KUNDENWEG 88, DE 40235 DUESSELDORF
+
+---
+
+## Qualifizierung der Textart
+
+- **Textart**: REG
+- **Firma**: MUSTER-Autovermietung GMBH
+- **Adresse**: Musterstr. 99, 99199 MUSTERHAUSEN
+- **Geschäftsführung**: Maxima Musterfrau
+- **USt-IdNr**: DE136695976
+- **Telefon**: +49 711-50885524
+- **Website**: www.musterlieferant.de
+- **HRB Nr.**: 372876
+- **Amtsgericht**: Musterstadt
+- **GLN**: 4304171000002
+
+---
+
+## Kontaktinformationen
+
+**Bei Rückfragen:**
+
+- **Telefon**: +49 711-50885524
+- **E-Mail**: info@muster-autovermietung.de
+
+---
+
+## Übergabeinformationen
+
+- **Übergabe am**: 29.09.2018 / 10:35
+- **Ort**: Frankfurt a. M.
+- **km**: 17791
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+Rückgabe am 01.10.2018/ 10:19  
+Ort: Frankfurt a. M.  
+km: 18664  
+
+Übernahme: Frankfurt  
+Datum: 01.10.2018  
+Zeit: 10:19  
+km/out: 177791  
+km/in: 18664  
+km gefahren: 873  
+Kennzeichen: M-MM 0000  
+CO2: 150  
+Bruttolistenpreis: 68300  
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|------------|-------|--------|---------|
+|     | Art-Nr (Art)|              |              |            |       |        |         |
+| 1   |              |              | Mietstage    | 86,55      | 2 Stk | 19 % VAT (S) | 173,10  |
+|     |              |              |              |            |       |        |         |
+|     |              |              | Weitere Eigenschaften: |            |       |        |         |
+|     |              |              | Fahrzeug-Kennzeichen: = M-MM 0000 |            |       |        |         |
+|     |              |              | Navigationssystem | 5,04      | 2 Stk | 19 % VAT (S) | 10,08   |
+|     |              |              | - Garantie   |            |       |        |         |
+| 2   |              |              | Inklusiv-Kilometer waren: 873 |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+| 3   |              |              | Vollkasko    | 23,10      | 2 Stk | 19 % VAT (S) | 46,20   |
+|     |              |              |              |            |       |        |         |
+| 4   |              |              | minimale Selbstbeteiligung | 15,55      | 2 Stk | 19 % VAT (S) | 31,10   |
+|     |              |              |              |            |       |        |         |
+| 5   |              |              | Personen-Unfallversicherung | 7,98      | 2 Stk | 19 % VAT (S) | 15,96   |
+|     |              |              |              |            |       |        |         |
+| 6   |              |              | Choice Upgrade | 5,04      | 2 Stk | 19 % VAT (S) | 10,08   |
+
+Zahlungsbedingungen:  
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+```<|im_end|>
+===== PAGE 3 =====
+```markdown
+| Beschreibung | Fälligkeit | Teilzahlung |
+|---|---|---|
+| Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen. |  |  |
+
+## Umsatzsteueraufschlüsselung:
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Steuerbasisbetrag | USt. % | USt.-Betrag |
+|---|---|---|---|---|---|
+| VAT (S) |  |  | 286,52 | 19 | 54,44 |
+
+## Belegsummen:
+
+|  |  |  |
+|---|---|---|
+| Positionssumme |  | 286,52 |
+| Gesamtbetrag der Zuschläge |  | 0,00 |
+| Gesamtbetrag der Abschläge |  | -0,00 |
+| Rechnungssumme ohne USt. |  | 286,52 |
+| Steuerbetrag |  | 54,44 |
+| **Bruttosumme** |  | **340,96** |
+| Erhaltene Anzahlungen |  | -0,00 |
+| **Zahlbetrag** |  | **340,96** |
+```<|im_end|>

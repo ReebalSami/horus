@@ -1,0 +1,55 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  acme_invoice-42_ZUGFeRD
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  26.06s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Acme GmbH | Europa-Allee 1980 | 60486 Frankfurt,
+
+## Herr
+Karl E. Coyote
+Uferstraße 113
+88045 Friedrichshafen
+
+**Rechnungsdatum:** 31.01.2014  
+**Liefers- bzw. Leistungsdatum:** 13.02.2014  
+**Ust-IdNr.:** DE123456789
+
+---
+
+## Rechnung Nr. 42
+
+Wir bedanken uns für die gute Zusammenarbeit und stellen Ihnen vereinbarungsgemäß folgende Lieferungen und Leistungen in Rechnung:
+
+| Nr. | Bezeichnung       | Menge     | Einzel/€ | Gesamt/€ |
+|-----|--------------------|-----------|----------|----------|
+| 1   | Amboss 250 kg      | 1 Stück   | 1.000,00 | 1.000,00 |
+| 3   | Kette              | 30 Meter  | 10       | 300      |
+| 2   | Transport          | Pauschal  | 120,00   | 120,00   |
+
+**Summe netto**          | 1.420,00  
+**Umsatzsteuer 19%**     | 269,80  
+**Rechnungsbetrag**      | **1.589,80**
+
+Die Rechnung ist sofort fällig.
+
+Bitte überweisen Sie den Rechnungsbetrag ohne Abzüge auf unser Bankkonto.
+
+---
+
+**Telefon:** 01234/987654  
+**Fax:** 01234/987655  
+**Email:** hallo@acme.de  
+**Web:** www.acme.de  
+
+**Acme GmbH**  
+Volksbank Frankfurt  
+BIC: FFVBDEFF  
+IBAN: DE34 5019 0000 0012 3456 78
+```<|im_end|>

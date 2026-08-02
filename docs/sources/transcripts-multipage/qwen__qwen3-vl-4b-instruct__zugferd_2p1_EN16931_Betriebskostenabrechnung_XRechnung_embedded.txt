@@ -1,0 +1,122 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_EN16931_Betriebskostenabrechnung_XRechnung_embedded
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  59.76s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version : 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Handelsrechnung Nr. 471102 vom 05.03.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_1.2  
+Währung : EUR
+
+Abrechnungszeitraum : 01.01.2010 bis 31.12.2010  
+Referenz des Käufers : 04011000-12345-34  
+Weitere Referenz : Abrechnung 2010, Art der Referenz: 916
+
+---
+
+### Verkäufer:
+
+Globale Nummer: 4000001123452 (GTIN)  
+**Grundbesitz GmbH & Co.**  
+Max Mustermann  
+Muster-Einkauf  
+Musterstraße 42  
+DE 75645 Frankfurt  
+
+Telefon : +49891234567  
+E-Mail : Max@Mustermann.de  
+Steuernummer : 201/113/40209  
+USt.-Id.-Nr. : DE136695976
+
+---
+
+### Käufer:
+
+**Beispielmieter GmbH**  
+Verwaltung Straße 40  
+DE 12345 Musterstadt
+
+---
+
+### Abweichender Warenempfänger:
+
+Verwaltung Straße 40  
+Einheit: 5.0G rechts  
+DE 12345 Musterstadt
+
+---
+
+## Rechnung gemäß Betriebskostenrechnung vom 21.11.2011.
+
+Qualifizierung der Textart: REG  
+**Grundbesitz GmbH & Co.**
+
+Musterstraße 42  
+75645 Frankfurt  
+Deutschland  
+Geschäftsführer: Hans Muster  
+Handelsregisternummer: H A 123
+
+---
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|------------|-------|--------|---------|
+| 1   |              |              | Abrechnungskreis 1 | 15.387,08 | 1 Stk | 19 % VAT (S) | 15387,08 |
+|     |              | 4012345001235 |              |            |       |        |         |
+|     |              | (GLN)        |              |            |       |        |         |
+
+---
+
+### Zahlungsbedingungen:
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+|              | 04.04.2018 |             |
+
+---
+
+### Zahlungsart:
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+Zahlung per SEPA Überweisung.
+Zahlungstyp (codiert): 58
+
+Verkäufer-Kontoname : Kunden AG
+Verkäufer-IBAN : DE02120300000000202051
+Verkäufer-BIC : BYLADEM1001
+
+**Umsatzsteueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Steuerbasisbetrag | USt. % | USt.-Betrag |
+|-----------------|-----------|--------------|-------------------|--------|-------------|
+| VAT (S)         |           |              | 15387,08          | 19     | 2923,55     |
+
+**Belegsummen:**
+
+| Positionssumme | 15387,08 |
+|----------------|----------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 15387,08 |
+| Steuerbetrag | 2923,55 |
+| **Bruttosumme** | **18310,63** |
+| Erhaltene Anzahlungen | -17808,00 |
+| Zahlbetrag | 502,63 |
+```<|im_end|>

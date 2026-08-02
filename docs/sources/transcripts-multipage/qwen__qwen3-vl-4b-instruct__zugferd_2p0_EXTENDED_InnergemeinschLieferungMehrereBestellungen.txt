@@ -1,0 +1,135 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EXTENDED_InnergemeinschLieferungMehrereBestellungen
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  65.34s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. 47110818 vom 31.10.2018
+
+**Geschäftsprozess** : Beispielsgeschäftsprozess  
+**Anwendungsempfehlung** : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended  
+**Rechnungswährung** : EUR  
+
+**Liefer-/Leistungszeitraum** : 01.10.2018 bis 31.10.2018  
+
+---
+
+### Verkäufer:
+**Nummer** : 12345676  
+**Global Supplies Ltd.**  
+153 Victoria Street  
+GB SW1B 3BN London  
+**USt.-Id.-Nr.** : GB999999999  
+
+---
+
+### Käufer/Leistungsempfänger:
+**Nummer** : 75969813  
+**Metallbau Leipzig GmbH & Co. KG**  
+Pappelallee 15  
+Hof 3  
+DE 12345 Leipzig  
+**USt.-Id.-Nr.** : DE123456789  
+
+---
+
+### Steuerbevollmächtigter des Verkäufers:
+**Global Supplies Financial Services**  
+Friedrichstraße 165  
+DE 12345 Berlin  
+**USt.-Id.-Nr.** : DE987654321  
+
+---
+
+### Abweichender Warenempfänger:
+**Nummer** : 75969815  
+**Metallbau Leipzig GmbH & Co. KG**  
+Eichenpromenade 37  
+Tor 1  
+DE 12347 Metallstadt  
+
+---
+
+### Abweichender Zahlungsempfänger:
+**Globale Nummer**: 432156789 (DUNS)  
+**Global Supplies Financial Services**  
+Friedrichstraße 165  
+DE 12345 Berlin  
+
+---
+
+### Qualifizierung der Textart: Regulatory information
+
+---
+
+### Mitglieder der Geschäftsleitung:
+**Geschäftsführerin**: Johanna Musterfrau  
+**Prokuristin**: Isabell Herrlich  
+HRB Berlin 13086
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+**Art-Nr-Kunde**
+
+| Pos | Art-Nr-Lief. | Art-Nr (Art) | Beschreibung | Nettopreis | Menge | USt. | Positions- betrag ohne USt. |
+|-----|--------------|--------------|--------------|------------|-------|------|-----------------------------|
+| 1   | Toolbox 0815 Windschutzscheibe CO-123/V2A | 100,0000 | 10 Stk | 0 % | 1000,00 |
+| 2   | BR-4529-ZF IM-712/A2A | 100,0000 | 10 Stk | 0 % | 1000,00 |
+
+* Preisbasis: 1 Stk
+* Bruttoreis: 100,0000
+* Berechnungszeitraum: 01.10.2018 bis 31.10.2018
+* Herkunftsland: DE
+* Bestellung Nr. ORDER84359 Zeile 1
+
+* Preisbasis: 1 Stk
+* Bruttoreis: 100,0000
+* Berechnungszeitraum: 01.10.2018 bis 31.10.2018
+* Herkunftsland: DE
+* Bestellung Nr. ORDER84753 Zeile 7
+
+---
+
+**Zahlungsbedingungen:**
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+|              | 30.11.2018 |             |
+
+**Zahlungsart:**
+
+Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG
+
+Kontoname : Global Supplies Financial Services
+IBAN : DE12 1234 4321 9876 00
+
+---
+
+**Steueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert /Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|---------------------|-------------|--------|--------------|
+| Umsatzsteuer (K) | Kein Ausweis der Umsatzsteuer bei innergemeinschaftlichen Lieferungen | 2000,00 | 0 | 0,00 |
+
+---
+
+**Belegsummen:**
+
+| Positionssumme | 2000,00 |
+|----------------|---------|
+| Gesamtbetrag der Zuschläge | |
+| Gesamtbetrag der Abschläge | |
+| Rechnungssumme ohne USt. | 2000,00 |
+| Steuerbetrag in EUR | 0,00 |
+| **Bruttosumme** | **2000,00** |
+| Erhaltene Anzahlungen | |
+| **Zahlbetrag** | **2000,00** |
+```<|im_end|>

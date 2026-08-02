@@ -1,0 +1,97 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EN16931_Betriebskostenabrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  47.84s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. 471102 vom 05.03.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+
+Rechnungswährung : EUR
+
+Liefer-/Leistungszeitraum : 01.01.2010 bis 31.12.2010
+
+Weitere Referenz : Abrechnung 2010, Art der Referenz: Referenzpapier
+
+---
+
+### Verkäufer:
+
+**Grundbesitz GmbH & Co.**  
+Musterstraße 42  
+DE 75645 Frankfurt  
+
+Steuernummer : 201/113/40209  
+USt.-Id.-Nr. : DE136695976  
+
+---
+
+### Käufer/Leistungsempfänger:
+
+**Beispielmieter GmbH**  
+Verwaltung Straße 40  
+DE 12345 Musterstadt  
+
+---
+
+### Abweichender Warenempfänger:
+
+Verwaltung Straße 40  
+Einheit: 5.0G rechts  
+DE 12345 Musterstadt  
+
+---
+
+Rechnung gemäß Betriebskostenrechnung vom 21.11.2011.
+
+Qualifizierung der Textart: Regulatory information
+
+**Grundbesitz GmbH & Co.**  
+Musterstraße 42  
+Frankfurt  
+Deutschland  
+Geschäftsführer: Hans Muster  
+Handelsregisternummer: H A 123
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+| Pos | Art-Nr-Kunde | Beschreibung | Nettopreis | Menge | USt. | Positions- |  |
+|-----|--------------|--------------|------------|-------|------|-------------|---|
+|     | Art-Nr-Lief. | Art-Nr       |            |       |      | betrag ohne USt. |   |
+|     | (Art)        |              |            |       |      |             |   |
+| 1   | Abrechnungskreis | 1 | 15.387,0800 | 1 Stk | 19 % | 15387,08 |   |
+|     | 4012345001235 | (GLN)        |            |       |      |             |   |
+
+**Zahlungsbedingungen:**
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+|              | 04.04.2018 |             |
+
+**Steueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|------------------------|-------------|--------|--------------|
+| Umsatzsteuer (S) |                      | 15387,08    | 19     | 2923,55      |
+
+**Belegsummen:**
+
+| Positionssumme | 15387,08 |
+|----------------|----------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 15387,08 |
+| Steuerbetrag in EUR | 2923,55 |
+| **Bruttosumme** | **18310,63** |
+| Erhaltene Anzahlungen | -17808,00 |
+| Zahlbetrag | 502,63 |
+```<|im_end|>

@@ -1,0 +1,102 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  ZUGFeRD_1p0_COMFORT_Rabatte
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  57.87s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+**Rechnungsersteller**
+
+Lieferrant GmbH
+Lieferrantenstraße 20
+80333 München
+Deutschland
+
+GLN: 4000001123452
+
+**Rechnungsempfänger**
+
+Kunden AG Mitte
+Hans Muster
+Kundenstraße 15
+69876 Frankfurt
+Deutschland
+
+GLN: 4000001987658
+
+---
+
+**FeRD**
+*Forum elektronische Rechnung Deutschland*
+
+---
+
+**RECHNUNG**
+
+| Feld | Wert |
+|------|------|
+| Rechnungsnummer | 471102 |
+| Rechnungsdatum | 05.06.2013 |
+| Leistungsdatum | 03.06.2013 |
+| Referenz (bitte bei Zahlung angeben) | GE2020211-471102 |
+| Kundenummer | GE2020211 |
+| Beträge in | EUR |
+| Hinweis | Rechnung gemäß Bestellung Nr. 2013-471331 vom 01.03.2013. Es bestehen Rabatt- und Bonusvereinbarungen. |
+
+---
+
+**Ihr Zeichen: AB-312**  
+**Ihre USt.-IdentNr.: DE234567890**
+
+---
+
+| Unsere Pos Art.Nr. | Ihre Art.Nr. | Artikelbeschreibung | Menge | Meng.-einheit | Preis/Einheit | Entgelt | USt. % |
+|--------------------|--------------|---------------------|-------|---------------|---------------|----------|--------|
+| 1 KR3M             | 55T01        | Kunstrasen grün 3m breit 300 cm x 100 cm GTIN: 4012345001235 | 3,00 | m² | 4,00 | 12,00 | 19 |
+| 2 SFK5             | 55T02        | Schweinesteak aus Deutschland GTIN: 4000050986428 | 5,000 | kg | 5,50 | 27,50 | 7 |
+| 3 GTRWA5           | 55T03        | Mineralwasser Medium 12 x 1,0l PET GTIN: 4000001234561 | 20 | Stk. | 5,49 | 109,80 | 7 |
+| 4 PFA5             | 55T04        | Pfand nicht rabattierfähig GTIN: 4000001234578 | 20 | Stk. | 2,77 | 55,46 | 19 |
+| **Zwischensumme** |              |                     |       |               |               | **202,76** |        |
+| abzgl. Sondernachlass | 10% | von | 147,30 | -14,73 |        |        |
+| zzgl. Versandkosten |              |                     |       |               |               | 5,80 | 7 |
+
+---
+
+**Rechnungssumme Netto (exkl. USt.)**  
+**zzgl. Umsatzsteuer 7% von 129,37 9,06**  
+**zzgl. Umsatzsteuer 19% von 64,46 12,25**  
+**Summe Umsatzsteuer** 21,31  
+**Rechnungssumme Brutto (inkl. USt.)** 215,14  
+**Bereits bezahlt** 50,00  
+**Offener Betrag** 165,14
+
+---
+
+**Zahlungsinformationen:**  
+Zahlbar innerhalb 30 Tagen netto bis 04.07.2013, 3% Skonto innerhalb 10 Tagen bis 15.06.2013
+
+---
+
+**Bank-/Steuerinformationen**
+
+| Feld | Wert |
+|------|------|
+| Kontonr.: | 1234 5678 90 |
+| BLZ: | 700 901 00 |
+| Bankname: | Hausbank München |
+| IBAN-Nr.: | DE08 7009 0100 1234 5678 90 |
+| BIC: | GENODEF1M04 |
+| Geschäftsf.: | Hans Muster |
+| Handelsreg.: | H A 123 |
+| USt.-Identnr.: | DE123456789 |
+| Steuernr.: | 201/113/40209 |
+
+---
+
+ZUGFeRD Beispielenrechnung COMFORT 2014 - Copyright AWW e.V. 2014
+```<|im_end|>

@@ -1,0 +1,133 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  EN16931_Reisekostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  71.14s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+## Handelsrechnung (380) Nr. 280081 vom 13.07.2018
+
+**Währung:** EUR
+
+**Abrechnungszeitraum:** 09.07.2018 bis 11.07.2018
+
+**Weitere Referenz:** 42389  
+**Art der Referenz:** Referenzpapier (916)
+
+**Weitere Referenz:** 42390  
+**Art der Referenz:** Referenzpapier (916)
+
+---
+
+### Verkäufer
+
+**Nummer:** 549910  
+**Globale Nummer:** 4000001123452 (GLN)  
+**Name:** Liefenant GmbH  
+**Anschrift:** Liefenantenstraße 20  
+DE 80333 München  
+**Steuernummer:** 201/113/40209  
+**USt.-Id.-Nr.:** DE123456789
+
+---
+
+### Käufer/Leistungsempfänger
+
+**Nummer:** GE2020211  
+**Name:** Kunden AG Mitte  
+**Anschrift:** Kundenstraße 15  
+DE 69876 Frankfurt
+
+---
+
+### Abweichender Warenempfänger
+
+**Name:** Musterfirma Nürnberg  
+**Anschrift:** Am Bahnhof 42  
+DE 75319 Nürnberg
+
+---
+
+Seite 1 von 3
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+# Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+## Bemerkungen
+
+**Betreff:** REG Regulatory information
+
+| Inhalt | Listelotte Müllermann, Kumpelstr. 54, 12345 Berlin
+Handelsregisternummer: H A 713 |
+
+**Betreff:** AAI General information
+
+| Inhalt | Flug wurde vom Auftraggeber gebucht. |
+
+**Betreff:** AAI General information
+
+| Inhalt | Reise: Musterreisekostenabrechnung
+Zweck: Workshop in Nürnberg
+Land: Deutschland
+Strecke: Berlin - Berlin |
+
+## Positionsdaten
+
+| Pos | Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art) | Beschreibung | Nettopreis | Menge | Steuersatz | Netto betrag |
+|-----|----------------------------------------|--------------|------------|-------|------------|--------------|
+| 1   |                                      | Übernachtung. 2 Nächte Hotel | 158,88     | 1     | 7 %        | 158,88       |
+|     |                                      | getLineTradeAgreementBruttopreis : 158,88 |
+| 2   |                                      | Verpflegung Frühstück | 11,76     | 1     | 19 %       | 11,76        |
+|     |                                      | getLineTradeAgreementBruttopreis : 14,00 |
+| 3   |                                      | Fahrtkosten, Taxi Berlin | 23,36     | 1     | 7 %        | 23,36        |
+|     |                                      | getLineTradeAgreementBruttopreis : 25,00 |
+| 4   |                                      | Fahrtkosten, Taxi Nürnberg | 20,09     | 1     | 7 %        | 20,09        |
+|     |                                      | getLineTradeAgreementBruttopreis : 21,50 |
+
+Seite 2 von 3
+```<|im_end|>
+===== PAGE 3 =====
+```markdown
+# Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+## Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+|-----------------|-----------|--------------|-------------|----------------|--------------|
+| Umsatzsteuer (S) |           |              | 202,33      | 7              | 14,16        |
+| Umsatzsteuer (S) |           |              | 11,76       | 19             | 2,23         |
+
+## Belegsummen
+
+| Positionssumme | 214,09 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 214,09 |
+| Steuerbetrag | 16,39 |
+| **Bruttosumme** | **230,48** |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **230,48** |
+
+## Zahlungsbedingungen
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+| Zahlbar innerhalb 30 Tagen netto bis 12.08.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018 | | |
+
+## Rechnungsbegleitende Unterlagen
+
+| Name | Dateiname | Art |
+|------|-----------|-----|
+|      |           |     |
+
+Seite 3 von 3
+```<|im_end|>

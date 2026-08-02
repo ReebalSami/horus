@@ -1,0 +1,94 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_BASIC_Taxifahrt
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  44.16s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. TX-471102 vom 30.10.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Rechnungswährung : EUR
+
+Liefer- und Leistungsdatum : 29.10.2018
+
+---
+
+### Verkäufer:
+
+**Taxiunternehmen TX GmbH**  
+Lieberantenstraße 20  
+DE 10369 Berlin  
+
+USt.-Id.-Nr. : DE123456789
+
+---
+
+### Käufer/Leistungsempfänger:
+
+**Taxi-Gast AG Mitte**  
+Hans Mustermann  
+Kundenstraße 15  
+DE 13351 Berlin
+
+---
+
+## Rechnung gemäß Taxifahrt vom 29.10.2018
+
+**Taxiunternehmen TX GmbH**  
+Lieberantenstraße 20  
+10369 Berlin  
+Deutschland  
+
+Geschäftsführer: Hans Mustermann  
+Handelsregisternummer: H A 123
+
+---
+
+Unsere GLN: 4000001123452  
+Ihre GLN: 4000001987658  
+Ihre Kundenummer: GE2020211
+
+---
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | USt. | Positions- | 
+|-----|--------------|--------------|--------------|------------|-------|------|-------------|
+|     | Art-Nr       | (Art)        |              |            |       |      | betrag ohne USt. |
+| 1   |              |              | Grundpreis (Pauschale) | 3,9000 | 1 Stk | 7 % | 3,90 |
+| 2   |              |              | Stadt fahrt - 2,00 Euro je gefahrene Kilometer | 2,0000 | 6,5 Stk | 7 % | 13,00 |
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+# Zahlungsbedingungen:
+
+**Beschreibung**
+
+| Fälligkeit | Teilzahlung |
+|------------|-------------|
+| 29.11.2018 |             |
+
+# Steueraufschlüsselung:
+
+| Art (Kategorie) | Warenwert Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|------------------------|-------------|--------|--------------|
+| Umsatzsteuer (S) |                        | 16,90       | 7      | 1,18         |
+
+# Belegsummen:
+
+| Positionssumme | 16,90 |
+|----------------|-------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 16,90 |
+| Steuerbetrag in EUR | 1,18 |
+| **Bruttosumme** | **18,08** |
+| **Zahlbetrag** | **18,08** |
+```<|im_end|>

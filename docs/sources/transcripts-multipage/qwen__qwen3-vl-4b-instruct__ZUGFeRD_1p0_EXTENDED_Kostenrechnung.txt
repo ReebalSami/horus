@@ -1,0 +1,116 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  ZUGFeRD_1p0_EXTENDED_Kostenrechnung
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  89.66s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+**FeRD**
+*Forum elektronische Rechnung Deutschland*
+
+# KOSTENRECHNUNG
+Seite 1
+
+---
+
+**Lieferrant**
+GLN 4333741000005 Lief-Nr: 549910
+KOSTENLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+
+**Käufer**
+GLN 4304171000002
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+40235 DUESSELDORF
+
+**Rechnungsempfänger**
+GLN 4304171000002
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+40235 DUESSELDORF
+
+**Warenempfänger**
+GLN 4304171088093
+MUSTER-MARKT
+HAUPTSTRASSE 44
+31157 SARSTEDT
+
+**Beleg-Nr**: KR87654321012
+**Beleg-Datum**: 06.10.2013
+**Leistungs-Datum**: 01.09.13 - 30.09.13
+**Vertrags-Nr**: V88456789
+**Vertrags-Datum**: 01.04.2013
+**Lieferschein-Nr**: L87654321012
+**Lieferschein-Datum**: 30.09.2013
+**Auftrag-Nr-Lief**: A777123
+**Auftrag-Datum-Lief**: 02.04.2013
+
+**Steuer-Nr**: 5133081508159
+**Kunden-Nr.**: 339420
+
+**Zählpunkt**: DE000134648460000000000000000100038
+
+**Bei Rückfragen**:
+Telefon: +49 932 431 500
+E-Mail: max.muster@musterlieferant.de
+
+**Kunden-Nr.**: 339420
+**Abteilung**: 7322
+**Kostenstelle**: 4430-MG-100
+
+---
+
+| GTIN | Art-Nr-Lieferant | Art-Nr-Kunde | Artikelbezeichnung | Menge | VKE/Geb | Nettopreis | MwSt-% | Nettowert |
+|------|------------------|--------------|--------------------|-------|---------|------------|--------|-----------|
+| 4123456000014 | WA997 |  | Wirkarbeit HT<br>Liefer-Datum: 01.09.2013 - 30.09.2013 | 10000,0000 KWh | 1 | 0,0520 | 19,0 | 520,00 |
+| 4123456000021 | ÖST250 |  | Ökosteuer Lieferant<br>Liefer-Datum: KW 38/2013 | 10000,0000 KWh | 1 | 0,0205 | 19,0 | 205,00 |
+| 4260331811362 | K6521 |  | Kommissionierer 1250032 D. Muster<br>Abrechnungszeitraum KW 36<br>Besteller: Hr. Mayer, Personalnr. 4488, Kostenstelle 5465-8876<br>Artikelrabatt 1: 30,00%<br>Rabatt: 4,50 €/Std.<br>Bruttopreis: 15,0000 €<br>Artikelgesamtrabatt: -123,75 € | 27,5000 Std. | 1 | 10,5000 | 19,0 | 288,75 |
+| 2001015001325. | K4322 |  | FB05<br>FALTENBEUTEL 16X6X28 CM<br>Bestell-Nr: B610061523500010, Lieferschein-Nr. L87654321011 | 3500,0000 Stk. | 1 | 0,0105 | 19,0 | 36,75 |
+| 4123456000038. | K4322 |  | KOP05<br>Kopierpapier A4<br>Zähler-Nr. MG-X79318, Zählerstand von-bis: 543210 - 544420<br>Abrechnungszeitraum: 15.09.2013 - 30.09.2013<br>Bestell-Nr: B610061523500010,<br>Warenempfänger: Mustermarkt, Hauptstr. 46, 31157 Sarstedt<br>Kostenstelle: 4430-MG-002, Sekretariat-2 | 1210,0000 Stk. | 1 | 0,0100 | 19,0 | 12,10 |
+
+**Warenlieferant/Hersteller**: GLN 4333741002207
+KOSTENLIEFERANT GMBH, Werk 3, HAUPTSTR. 1, 99199 MUSTERHAUSEN
+
+---
+
+**Transportkosten**: Frachtbetrag: 15,00, MwSt.-% 19,0
+**Skontovereinbarung**: 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum
+
+**Es bestehen Rabatt- oder Bonusvereinbarungen.**
+
+**Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.**
+
+---
+
+| Warenwert | Zu-/Abschlag | Fracht-Verp-Vers | Skonto sofort | Nettobetrag | MwSt-Betrag | MwSt-% | Endbetrag |
+|-----------|--------------|------------------|---------------|-------------|-------------|--------|-----------|
+| 1062,60   | 15,00        | -21,55           | 1056,05       | 200,65      | 19,0        | 1256,70 |
+
+---
+
+**1062,60** | **15,00** | **-21,55** | **1056,05** | **200,65** | **EUR** | **1256,70**
+
+**MUSTERLIEFERANT GMBH**
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+
+**Geschäftsführung**: Max Mustermann
+**USt-IdNr**: DE123456789
+**Telefon**: +49 932 431 0
+**www.musterlieferant.de**
+
+**HRB Nr.**: 372876
+**Amtsgericht Musterstadt**
+**GLN**: 4304171000002
+
+---
+
+ZUGFeRD Beispielsrechnung Extended, Copyright AWW e.V. 2013
+```<|im_end|>

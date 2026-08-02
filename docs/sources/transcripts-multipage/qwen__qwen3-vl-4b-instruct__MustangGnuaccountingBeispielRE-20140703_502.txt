@@ -1,0 +1,57 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  MustangGnuaccountingBeispielRE-20140703_502
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  24.61s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+2014-07-03
+
+Bei Spiel GmbH • Ecke 12 • 12345 Stadthausen
+
+Theodor Est
+Bahnstr. 42
+88802 Spielkreis
+
+---
+
+Ihre Nummer:2
+
+Rechnung # RE-20140703/502 vom 03.07.2014
+
+| # | Produkt | USt | Einzelpreis | Summe |
+|---|---------|-----|-------------|-------|
+| 1,00 | Künstlerische Gestaltung (Stunde): Einer Beispielrechnung | 7% | 160,00 € | 160,00 € |
+| 400,00 | Luftballon: Bunt, ca. 500ml | 19% | 0,79 € | 316,00 € |
+| 200,00 | Heiße Luft pro Liter: | 19% | 0,10 € | 20,00 € |
+
+Summe netto: 496,00 €
+Zuzügl. USt: 75,04 €
+
+Bitte überweisen Sie bis zum 24.07.2014:
+Summe inkl. USt: 571,04 €
+
+Powered by GnuAccounting
+
+---
+
+Bei Spiel GmbH
+Ecke 12
+12345 Stadthausen
+
+fon (555) 23 78 -0
+fax (555) 23 78 -51
+info@localhost.local
+http://localhost/
+
+UST-ID: DE136695976
+IBAN DE88 2008 0000 0970 3757 00
+BIC COBADEFFXXX
+Commerzbank Frankfurt
+Kontoinhaber: Max Mustermann
+```<|im_end|>

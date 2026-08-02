@@ -1,0 +1,93 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_BASIC-WL_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  45.33s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version: 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Handelsrechnung Nr. 471102 vom 13.11.2019
+
+Anwendungsempfehlung: urn:factur-x.eu:1p0:basicwl  
+Währung: EUR
+
+Zahlungsreferenz: FA-2017-0010  
+Bestellung: PO445  
+Vertrag: MSPE2017
+
+---
+
+### Verkäufer:
+
+Lieberant GmbH  
+Handelsname: 99999999800010  
+Lieberantenstraße 20  
+DE 80333 München  
+USt.-Id.-Nr.: DE123456789
+
+---
+
+### Käufer:
+
+Ma jolie boutique  
+Handelsname: 78787878400035  
+35 rue de la République  
+FR 69001 Lyon  
+USt.-Id.-Nr.: DE19787878784
+
+---
+
+Zahlbar innerhalb 30 Tagen netto bis 04.04.2020, 3% Skonto innerhalb 10 Tagen bis 15.03.2020.
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Art-Nr (Art) | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|--------------|------------|-------|--------|---------|
+
+---
+
+### Zahlungsbedingungen:
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+|              | 13.12.2017 |             |
+
+---
+
+### Zahlungsart:
+
+Zahlungstyp (codiert): 30  
+Verkäufer-IBAN: DE201242124212421242124
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+**Umsatzsteueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Steuerbasisbetrag | USt. % | USt.-Betrag |
+|-----------------|-----------|--------------|-------------------|--------|-------------|
+| VAT (S)         |           |              | 81,90             | 20     | 16,38       |
+| VAT (S)         |           |              | 543,00            | 5,5    | 29,87       |
+
+**Belegsummen:**
+
+| Positionssumme | 624,90 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | |
+| Gesamtbetrag der Abschläge | |
+| Rechnungssumme ohne USt. | 624,90 |
+| Steuerbetrag | 46,25 |
+| **Bruttosumme** | **671,15** |
+| Erhaltene Anzahlungen | -201,00 |
+| Zahlbetrag | 470,15 |
+```<|im_end|>

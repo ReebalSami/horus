@@ -1,0 +1,63 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  fail1
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  29.80s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+2015-10-08
+
+Bei Spiel GmbH • Ecke 12 • 12345 Stadthausen
+
+Theodor Est
+Bahnstr. 42
+88802 Spielkreis
+
+Kundennummer:2
+
+Rechnung # RE-20151008/504 von 08.10.2015
+Leistungsdatum 07.10.2015
+
+| Menge | Produkt | USt. | Preis | Gesamtbetrag |
+|-------|---------|------|-------|--------------|
+| 1,00  | Künstlerische Gestaltung (Stunde): | 7%   | 160,00 € | 160,00 € |
+| 400,00 | Luftballon: Bunt, ca. 500ml | 19%  | 0,79 € | 316,00 € |
+| 200,00 | Heiße Luft pro Liter: | 19%  | 0,10 € | 20,00 € |
+
+Nettobetrag: 496,00 €
+
+zuzüglich Umsatzsteuer
+
+| USt. Satz | Nettopreis | Ust.-Betrag |
+|-----------|------------|-------------|
+| 7%        | 160,00 €   | 11,20 €     |
+| 19%       | 336,00 €   | 63,84 €     |
+| **USt. Gesamt:** | **75,04 €** | |
+
+Gesamtbetrag: 571,04 €
+
+Bitte überweisen Sie bis zum 29.10.2015.
+
+Powered by GnuAccounting
+
+Seite 1/1
+
+Bei Spiel GmbH
+Ecke 12
+12345 Stadthausen
+fon (555) 23 78 -0
+fax (555) 23 78 -51
+info@localhost.local
+http://localhost/
+
+UST-ID: DE136695976
+IBAN DE88200800000970375700
+BIC COBADEFFXXX
+Commerzbank vormals Dresdner Bank
+Kontoinhaber: Max Mustermann
+```<|im_end|>

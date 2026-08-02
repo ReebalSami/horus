@@ -1,0 +1,127 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  EN16931_Rechnungskorrektur
+# Pages:    4
+# DPI:      300
+# Errors:   0/4
+# Extract:  87.51s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Rechnungskorrektur (384) Nr. RK21012345 vom 16.09.2018
+
+## Währung:
+EUR
+
+## Liefer- und Leistungsdatum:
+05.08.2018
+
+## Bestellung:
+B123456789
+
+## Lieferavis:
+L87654321012345
+
+---
+
+## Verkäufer
+
+**Nummer:** 549910  
+**Globale Nummer:** 4333741000005 (GLN)  
+**Name:** MUSTERLIEFERANT GMBH  
+**Anschrift:** BAHNHOFSTRASSE 99  
+DE 99199 MUSTERHAUSEN  
+**USt.-Id.-Nr.:** DE123456789
+
+---
+
+## Käufer/Leistungsempfänger
+
+**Nummer:** 009420  
+**Name:** MUSTER-KUNDE GMBH  
+**Anschrift:** KUNDENWEG 88  
+DE 40235 DÜSSELDORF
+
+---
+
+Seite 1 von 4
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+# Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+## Bemerkungen
+
+**Betreff:** AAK Price conditions
+
+| Inhalt | Es bestehen Rabatt- oder Bonusvereinbarungen. |
+
+**Betreff:** REG Regulatory information
+
+| Inhalt |
+| --- |
+| MUSTERLIEFERANT GMBH<br>BAHNHOFSTRASSE 99<br>99199 MUSTERHAUSEN<br>Geschäftsführung:<br>Max Mustermann<br>USt-IdNr: DE123456789<br>Telefon: +49 932 431 0<br>www.musterlieferant.de<br>HRB Nr. 372876<br>Amtsgericht Musterstadt<br>GLN 4304171000002 |
+
+**Bemerkung**
+
+Bei Rückfragen:<br>Telefon: +49 932 431 500<br>E-Mail : max.muster@musterlieferant.de
+
+**Bemerkung**
+
+Ursprungsbeleg-Nr : R87654321012345<br>Reklamationsnummer : REKLA-2018-235
+
+**Bemerkung**
+
+Warenempfänger<br>GLN 430417088093<br>MUSTER-MARKT<br>HAUPTSTRASSE 44<br>31157 SARSTEDT<br>Abteilung : 8211
+
+Seite 2 von 4
+```<|im_end|>
+===== PAGE 3 =====
+```markdown
+# Beispiele-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+## Positionsdaten
+
+| Pos | Art-Nr-Kunde Art-Nr-Lief. Art-Nr (Art) | Beschreibung | Nettopreis | Menge | Steuersatz | Netto betrag |
+|-----|----------------------------------------|--------------|------------|-------|------------|--------------|
+| 1   | ZS997<br>4123456000014 (GLN)           | Zitronensäure 100ml<br>getLineTradeAgreementBruttopreis : 1,0000<br>Verpackung: Flasche<br>VKE/Geb: 1 | 1,0000     | -5 Stk | 19 %       | -5,00        |
+| 2   | GZ250<br>4123456000021 (GLN)           | Gelierzucker Extra 250g<br>getLineTradeAgreementBruttopreis : 1,5000<br>Abschlag: 0,0500<br>Verpackung: Karton<br>VKE/Geb: 1 | 1,4500     | -2 Stk | 7 %        | -2,90        |
+
+## Umsatzsteueraufschlüsselung
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | Steuersatz [%] | Steuerbetrag |
+|-----------------|-----------|--------------|-------------|----------------|--------------|
+| Umsatzsteuer (S) |           |              | -4,85       | 19             | -0,92        |
+| Umsatzsteuer (S) |           |              | -2,82       | 7              | -0,20        |
+
+## Belegsummen
+
+| Positionssumme | -7,90 |
+|----------------|-------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | 0,23 |
+| Rechnungssumme ohne USt. | -7,67 |
+| Steuerbetrag | -1,12 |
+| Bruttosumme | -8,79 |
+| Erhaltene Anzahlungen | -0,00 |
+| Zahlbetrag | -8,79 |
+
+Seite 3 von 4
+```<|im_end|>
+===== PAGE 4 =====
+```markdown
+# Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+## Zu- und Abschläge
+
+| Art | Prozent | Basisbetrag | Basismenge | Steuer | Betrag |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Abschlag Rechnungsrabatt 1<br>-2,00% Basisbetrag: -5,00, MwSt.<br>% 19,0 |  |  |  | 19 % UST (S) | 0,10 |
+| Abschlag Rechnungsrabatt 1<br>-2,00% Basisbetrag: -2,90, MwSt.<br>% 7,0 |  |  |  | 7 % UST (S) | 0,06 |
+| Abschlag Rechnungsrabatt 2<br>Basisbetrag: -5,00, MwSt. % 19,0 |  |  |  | 19 % UST (S) | 0,05 |
+| Abschlag Rechnungsrabatt 2<br>Basisbetrag: -2,90, MwSt. % 7,0 |  |  |  | 7 % UST (S) | 0,02 |
+
+Seite 4 von 4
+```<|im_end|>

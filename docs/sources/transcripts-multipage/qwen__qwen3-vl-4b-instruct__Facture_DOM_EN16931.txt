@@ -1,0 +1,101 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  Facture_DOM_EN16931
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  40.22s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Facture FA-2017-0009
+
+## Adresse de livraison
+
+**Hôtel Saint Denis**  
+42 rue du stade  
+97400 Saint Denis de la réunion  
+Ile de la Réunion  
+📞 +33 2 62 94 26 00  
+✉️ book@hotelsaintdenis.re
+
+## Contact commercial
+
+**Tony Dubois**  
+📞 +33 4 72 07 08 56  
+📱 +33 6 11 22 33 44  
+✉️ tony.dubois@aubonmoulin.fr
+
+---
+
+### Informations facture
+
+- **Date de facture**: 05/11/2017
+- **Conditions de paiement**: 30% d'acompte, solde à 30 j
+- **Date d'échéance**: 05/12/2017
+- **Votre référence**: BC543
+- **Réf. marché**: WELCOME_PACK_2017
+- **N° TVA client**: FR90343434346
+- **Incoterms**: RENDU DROITS NON ACQUITTÉS
+
+---
+
+## Détails de la facture
+
+| Description               | Quantité     | Prix unitaire | Rem. | Prix HT   |
+|--------------------------|--------------|---------------|------|-----------|
+| Nougat de l'Abbaye 250g  | 50 Unit(s)   | 4,55 €        | 10%  | 204,75 €  |
+| Biscuits aux raisins 300g| 40 Unit(s)   | 3,20 €        |      | 128,00 €  |
+| Huile d'olive à l'ancienne | 10 Liter(s) | 19,80 €       |      | 198,00 €  |
+
+---
+
+### Taxe
+
+| Taxe                     | Base         | Montant     |
+|--------------------------|--------------|-------------|
+| TVA 0% export (vente)    | 530,75 €     | 0,00 €      |
+
+---
+
+### Règlement
+
+| Règlement        | Date         | Montant     |
+|------------------|--------------|-------------|
+| Vir SEPA         | 31/10/2017   | 147,00 €    |
+
+---
+
+### Total
+
+| Description     | Montant     |
+|-----------------|-------------|
+| **Total HT**    | 530,75 €    |
+| **Total taxes**| 0,00 €      |
+| **Total TTC**   | 530,75 €    |
+| **Solde à payer** | 383,75 €   |
+
+---
+
+### Notes
+
+**Franco de port (Commande > 300 € HT)**
+
+---
+
+### Règlement
+
+**Facture à régler par virement sur le compte suivant :**  
+IBAN : FR20 1242 1242 1242 1242 124 - BIC : FIDCFR21XXX - Banque : Banque Fiducial
+
+---
+
+**Exonération de TVA selon article 262 I du Code général des impôts**
+
+---
+
+**Page 1 / 1**
+
+```<|im_end|>

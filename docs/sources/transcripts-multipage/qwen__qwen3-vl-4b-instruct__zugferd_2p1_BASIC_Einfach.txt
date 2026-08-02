@@ -1,0 +1,111 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_BASIC_Einfach
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  50.10s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version: 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Handelsrechnung Nr. 471102 vom 05.03.2020
+
+Anwendungsempfehlung: urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic  
+Währung: EUR  
+
+Liefers- und Leistungsdatum: 05.03.2020
+
+---
+
+### Verkäufer:
+
+Lieberant GmbH  
+Lieberantenstraße 20  
+DE 80333 München  
+
+Steuernummer: 201/113/40209  
+USt.-Id.-Nr.: DE123456789
+
+---
+
+### Käufer:
+
+Kunden AG Mitte  
+Hans Muster  
+Kundenstraße 15  
+DE 69876 Frankfurt
+
+---
+
+Rechnung gemäß Bestellung vom 01.03.2020.
+
+---
+
+Lieberant GmbH  
+Lieberantenstraße 20  
+80333 München  
+Deutschland  
+
+Geschäftsführer: Hans Muster  
+Handelsregisternummer: H A 123
+
+---
+
+Unsere GLN: 4000001123452  
+Ihre GLN: 4000001987658  
+Ihre Kundenummer: GE2020211
+
+---
+
+Zahlbar innerhalb 30 Tagen netto bis 04.04.2020, 3% Skonto innerhalb 10 Tagen bis 15.03.2020.
+
+---
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|------------|-------|--------|---------|
+| 1   |              | Art-Nr (Art) | GTIN: 4012345001235 | 9,90 | 20 Stk | 19 % VAT (S) | 198,00 |
+
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+4012345001235
+(GLN)
+
+Unsere Art.-Nr.:
+TB100A4
+Trennblätter A4
+
+**Zahlungsbedingungen:**
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+|              | 04.04.2020 |             |
+
+**Umsatzsteueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Steuerbasisbetrag | USt. % | USt.-Betrag |
+|-----------------|-----------|--------------|-------------------|--------|-------------|
+| VAT (S)         |           |              | 198,00            | 19     | 37,62       |
+
+**Belegsummen:**
+
+| Positionssumme | 198,00 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 198,00 |
+| Steuerbetrag | 37,62 |
+| **Bruttosumme** | **235,62** |
+| **Zahlbetrag** | **235,62** |
+```<|im_end|>

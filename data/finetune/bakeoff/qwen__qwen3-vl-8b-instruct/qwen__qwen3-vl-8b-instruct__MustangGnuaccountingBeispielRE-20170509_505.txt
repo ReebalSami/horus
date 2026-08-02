@@ -1,0 +1,71 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-8B-Instruct
+# Invoice:  MustangGnuaccountingBeispielRE-20170509_505
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  34.10s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+2017-05-09
+
+# Bei Spiel GmbH
+
+Ecke 12  
+12345 Stadthausen  
+
+fon (555) 23 78 -0  
+fax (555) 23 78 -51  
+info@localhost.local  
+http://localhost/
+
+---
+
+## Theodor Est  
+Bahnstr. 42  
+88802 Spielkreis  
+
+---
+
+**Kundennummer:** 2  
+
+**Rechnung # RE-20170509/505 von 09.05.2017**  
+**Leistungsdatum 07.05.2017**
+
+| Menge | Produkt | USt. | Preis | Gesamtbetrag |
+|-------|---------|------|-------|--------------|
+| 1,00 | Künstlerische Gestaltung (Stunde): Einer Beispielrechnung | 7% | 160,00 € | 160,00 € |
+| 400,00 | Luftballon: Bunt, ca. 500ml | 19% | 0,79 € | 316,00 € |
+| 200,00 | Heiße Luft pro Liter: | 19% | 0,10 € | 20,00 € |
+
+**Nettobetrag: 496,00 €**
+
+### zuzüglich Umsatzsteuer
+
+| USt. Satz | Nettopreis | Ust.-Betrag |
+|-----------|------------|-------------|
+| 7% | 160,00 € | 11,20 € |
+| 19% | 336,00 € | 63,84 € |
+| **USt. Gesamt:** | | **75,04 €** |
+
+**Gesamtbetrag: 571,04 €**
+
+---
+
+**Bitte überweisen Sie bis zum 30.05.2017.**
+
+Powered by GnuAccounting
+
+---
+
+**Seite 1/1**
+
+**UST-ID: DE136695976**  
+**IBAN DE88200800000970375700**  
+**BIC COBADEFFXXX**  
+**Commerzbank vormals Dresdner Bank**  
+**Kontoinhaber: Max Mustermann**
+```<|im_end|>
