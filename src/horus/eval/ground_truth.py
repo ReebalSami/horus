@@ -210,6 +210,13 @@ _DOCTYPE_CODE_TO_TOKEN: Final[dict[str, str]] = {
     "389": "invoice",  # Self-billed invoice
     "393": "invoice",  # Factored invoice
     "395": "invoice",  # Consignment invoice
+    # #114 findability audit: two more invoice-family codes observed in the val
+    # fixtures whose pages render plain invoice titles — 204 (payment valuation;
+    # symtrax "Baurechnung" construction claim) and 575 (insurer's invoice;
+    # symtrax "Rechnung des Versicherers"). Same ADR-046 rationale: the page
+    # never prints the numeric subtype, so an unmapped code manufactures FNs.
+    "204": "invoice",  # Payment valuation (Baurechnung / construction claim)
+    "575": "invoice",  # Insurer's invoice
     "381": "credit_note",  # Credit note
     "396": "credit_note",  # Factored credit note
     "384": "correction",  # Corrected invoice
@@ -1516,7 +1523,10 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
         # value is conventionally not rendered on the page, so for a visual-
         # extraction task the honest ground truth is "no value" (null). raw_value
         # is preserved for audit; scoring keys off is_present + normalized_value.
-        if english_key in _OPTIONAL_ZERO_TOTALS and normalized == "0.00":
+        # "-0.00" included per the #114 findability audit: the FNFE Avoir fixture
+        # carries TotalPrepaidAmount="-0.00" — a signed structural zero is still a
+        # structural zero (nothing is rendered on the page).
+        if english_key in _OPTIONAL_ZERO_TOTALS and normalized in ("0.00", "-0.00"):
             header[english_key] = GroundTruthField(
                 bt_code=spec.bt_code,
                 raw_value=raw_str,

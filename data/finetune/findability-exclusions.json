@@ -1,0 +1,29 @@
+{
+  "_description": "Findability exclusions from the #114 manual audit (eval/reader-findability-audit.md): (invoice, field) pairs whose GT value is NOT findable on the rendered page — no vision reader can extract them. Reason codes: not-printed | xml-page-contradiction | degenerate-gt | invalid-gt. Consumed by the findability scorers; NEVER by the F1 eval without its own ADR.",
+  "_provenance": "judged by hand against data/raw/smoke/multipage rasters, 2026-08-02, ADR-057",
+  "exclusions": [
+    {"stem": "MustangGnuaccountingBeispielRE-20170509_505", "field": "seller_tax_id", "reason": "not-printed"},
+    {"stem": "MustangGnuaccountingBeispielRE-20170509_505", "field": "buyer_vat_id", "reason": "not-printed"},
+    {"stem": "MustangGnuaccountingBeispielRE-20170509_505", "field": "payment_means_text", "reason": "not-printed"},
+    {"stem": "MustangGnuaccountingBeispielRE-20171118_506", "field": "seller_tax_id", "reason": "not-printed"},
+    {"stem": "MustangGnuaccountingBeispielRE-20171118_506", "field": "buyer_vat_id", "reason": "not-printed"},
+    {"stem": "MustangGnuaccountingBeispielRE-20171118_506", "field": "payment_means_text", "reason": "not-printed"},
+    {"stem": "fail3", "field": "seller_tax_id", "reason": "not-printed"},
+    {"stem": "fail3", "field": "buyer_vat_id", "reason": "not-printed"},
+    {"stem": "fail3", "field": "payment_means_text", "reason": "not-printed"},
+    {"stem": "ZUGFeRD_1p0_COMFORT_SEPA_Prenotification", "field": "delivery_date", "reason": "xml-page-contradiction"},
+    {"stem": "ZUGFeRD_1p0_COMFORT_SEPA_Prenotification", "field": "payment_reference", "reason": "xml-page-contradiction"},
+    {"stem": "ZUGFeRD_1p0_COMFORT_SEPA_Prenotification", "field": "tax_total_amount", "reason": "not-printed"},
+    {"stem": "ZUGFeRD_1p0_COMFORT_SEPA_Prenotification", "field": "payment_means_code", "reason": "not-printed"},
+    {"stem": "ZUGFeRD_1p0_EXTENDED_Kostenrechnung", "field": "billing_period_start", "reason": "invalid-gt"},
+    {"stem": "ZUGFeRD_2_fully_compliant_complete", "field": "invoice_currency_code", "reason": "xml-page-contradiction"},
+    {"stem": "ZUGFeRD_2_fully_compliant_complete", "field": "tax_total_amount", "reason": "xml-page-contradiction"},
+    {"stem": "ZUGFeRD_2_fully_compliant_complete", "field": "grand_total_amount", "reason": "xml-page-contradiction"},
+    {"stem": "ZUGFeRD_2_fully_compliant_complete", "field": "due_payable_amount", "reason": "xml-page-contradiction"},
+    {"stem": "ZUGFeRD_2_fully_compliant_complete", "field": "payment_due_date", "reason": "xml-page-contradiction"},
+    {"stem": "ZUGFeRD_2_fully_compliant_complete", "field": "seller_iban", "reason": "xml-page-contradiction"},
+    {"stem": "ZUGFeRD_2_fully_compliant_complete", "field": "seller_bic", "reason": "xml-page-contradiction"},
+    {"stem": "Avoir_FR_type381_MINIMUM", "field": "seller_address", "reason": "degenerate-gt"},
+    {"stem": "Avoir_FR_type381_MINIMUM", "field": "buyer_address", "reason": "degenerate-gt"}
+  ]
+}

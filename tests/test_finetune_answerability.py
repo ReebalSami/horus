@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from horus.finetune.answerability import _composite_findable, value_variants
+from horus.finetune.answerability import _canon, _composite_findable, value_variants
 
 
 def test_iso_date_variants() -> None:
@@ -66,10 +66,26 @@ def test_currency_code_maps_to_symbol() -> None:
     assert "€" not in value_variants("EUR", "EUR")
 
 
+def test_us_date_and_anglo_grouping_variants() -> None:
+    v = value_variants("20171103", "2017-11-03")
+    assert "11/03/2017" in v  # FNFE fixtures print US month-first
+    v_amt = value_variants(None, "2076.76")
+    assert "2,076.76" in v_amt  # Anglo comma-thousands + dot-decimals
+
+
+def test_canon_strips_markdown_and_folds_german() -> None:
+    text = _canon("**MVM Musterhafter**\nVersicherungsverein   Musterstadt a.G.")
+    assert "mvm musterhafter versicherungsverein musterstadt a.g." in text
+    # Ü <-> UE fold works in both directions (applied to both sides consistently)
+    assert _canon("DÜSSELDORF") == _canon("DUESSELDORF") == "duesseldorf"
+    assert _canon("Lieferantenstraße") == _canon("Lieferantenstrasse")
+
+
 def test_composite_address_component_wise() -> None:
-    text = "verkäufer: lieferant gmbh lieferantenstraße 20 de 80333 münchen"
+    # _composite_findable receives _canon()-normalized text (see score_answerability).
+    text = _canon("Verkäufer: Lieferant GmbH Lieferantenstraße 20 DE 80333 München")
     raw = "Lieferantenstraße 20, 80333, München, DE"
     assert _composite_findable(text, raw, raw)  # multi-line block, reordered country
-    assert not _composite_findable("völlig anderer text", raw, raw)
+    assert not _composite_findable(_canon("völlig anderer text"), raw, raw)
     # a component genuinely absent (wrong city) stays missing
-    assert not _composite_findable("lieferantenstraße 20 de 80333 hamburg", raw, raw)
+    assert not _composite_findable(_canon("Lieferantenstraße 20 DE 80333 Hamburg"), raw, raw)

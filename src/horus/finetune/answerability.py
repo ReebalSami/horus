@@ -65,8 +65,25 @@ _CURRENCY_SYMBOL: dict[str, str] = {"EUR": "€", "USD": "$", "GBP": "£"}
 _COMPOSITE_FIELDS = frozenset({"seller_address", "buyer_address"})
 
 
+_MD_MARKS_RE = re.compile(r"[*`]+")
+
+
+# German transliteration fold (both sides of the containment check get it, so it is
+# information-preserving): pages print DUESSELDORF, models often normalize to
+# Düsseldorf (and vice versa) — #114 audit, buyer_address on 4 intarsys fixtures.
+def _fold_german(s: str) -> str:
+    return s.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace("ß", "ss")
+
+
 def _canon(s: str) -> str:
-    return _WS_RE.sub(" ", s.lower()).strip()
+    """Lowercase, strip markdown emphasis, fold German transliterations, collapse WS.
+
+    Markdown ``**bold**``/backticks are the MODEL's formatting, not page content —
+    stripping them is transcript-format normalization, not content alteration
+    (#114 audit: bold markers broke the MVM seller_name containment).
+    """
+    s = _MD_MARKS_RE.sub("", s.lower())
+    return _WS_RE.sub(" ", _fold_german(s)).strip()
 
 
 def _german_grouped(euros: str, cents: str) -> str:
@@ -75,6 +92,19 @@ def _german_grouped(euros: str, cents: str) -> str:
         grouped = "." + euros[-3:] + grouped
         euros = euros[:-3]
     return f"{euros}{grouped},{cents}"
+
+
+def _anglo_grouped(euros: str, cents: str) -> str:
+    """Anglo print shape ``2,076.76`` (comma thousands, dot decimals).
+
+    The FNFE French fixtures print totals Anglo-style (#114 audit: Facture_UE
+    prints ``2,076.76 €`` — 4 of its phantom misses were this exact shape).
+    """
+    grouped = ""
+    while len(euros) > 3:
+        grouped = "," + euros[-3:] + grouped
+        euros = euros[:-3]
+    return f"{euros}{grouped}.{cents}"
 
 
 def value_variants(
@@ -105,12 +135,16 @@ def value_variants(
             out.add(f"{d}.{mo}.{y}")
             out.add(f"{int(d)}.{int(mo)}.{y}")
             out.add(f"{d}/{mo}/{y}")
+            # US month-first print shape (FNFE fixtures print 11/03/2017 for
+            # 2017-11-03 — #114 audit, Facture_UE issue/due dates).
+            out.add(f"{mo}/{d}/{y}")
         m = _AMOUNT_RE.fullmatch(v)
         if m:
             euros, cents = m.groups()
             out.add(f"{euros},{cents}")
             if len(euros) > 3:
                 out.add(_german_grouped(euros, cents))
+                out.add(_anglo_grouped(euros, cents))
         if _IBAN_RE.fullmatch(v):
             out.add(" ".join(v[i : i + 4] for i in range(0, len(v), 4)))
         despaced = v.replace(" ", "")
