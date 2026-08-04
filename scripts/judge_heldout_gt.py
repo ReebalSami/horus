@@ -42,6 +42,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from horus.env_file import load_env_file  # noqa: E402
 from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS  # noqa: E402
 from horus.eval.heldout import load_heldout_index  # noqa: E402
 from horus.eval.judge import (  # noqa: E402
@@ -51,6 +52,11 @@ from horus.eval.judge import (  # noqa: E402
     judge_invoice,
     resolve_judge_model,
     verdict_to_gt_document,
+)
+from horus.eval.judge_images import (  # noqa: E402
+    PreparedImage,
+    describe_images,
+    prepare_judge_images,
 )
 from horus.eval.rasterize import rasterize_pdf  # noqa: E402
 from horus.finetune.dataset import (  # noqa: E402
@@ -192,6 +198,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--dry-run", action="store_true", help="Show selection + cost surface; no API calls."
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-judge invoices that already have a verdict on disk (default: skip them).",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help=(
+            "Judge at most N invoices this run. Combined with resume-safety this turns a "
+            "long batch into observable chunks: re-run to continue where it stopped."
+        ),
+    )
     args = parser.parse_args(argv)
 
     items = load_heldout_index(args.corpus)
@@ -213,23 +233,58 @@ def main(argv: list[str] | None = None) -> int:
     else:
         selected = _select_sample(all_ids, channels, args.per_channel)
 
+    # Resume-safety: every verdict is written as it completes, so an interrupted batch
+    # can be continued without paying for the same invoice twice. Mirrors the
+    # `_skip_if_finished` contract the pilot-13 harness uses for the same reason.
+    gt_out = args.out_dir / "gt"
+    if not args.force:
+        done = [sid for sid in selected if (gt_out / f"{sid}.gt.json").is_file()]
+        if done:
+            print(
+                f"Skipping {len(done)} already-judged invoice(s) "
+                f"(--force to re-judge): {', '.join(done[:4])}"
+                f"{' …' if len(done) > 4 else ''}",
+                flush=True,
+            )
+            selected = [sid for sid in selected if sid not in set(done)]
+        if not selected:
+            print("Nothing left to judge.", flush=True)
+            return 0
+
+    if args.limit is not None and args.limit < len(selected):
+        remaining = len(selected) - args.limit
+        selected = selected[: args.limit]
+        print(f"Limiting to {args.limit} this run; {remaining} will remain.", flush=True)
+
     print(f"Selected {len(selected)} of {len(all_ids)} invoice(s):", flush=True)
-    total_pages = 0
-    page_map: dict[str, list[Path]] = {}
+    total_images = 0
+    total_tokens = 0
+    image_map: dict[str, list[PreparedImage]] = {}
     for sid in selected:
         pages = rasterize_pdf(
             by_id[sid].pdf_path, dpi=args.dpi, cache_dir=args.raster_cache, image_format="png"
         )
-        page_map[sid] = pages
-        total_pages += len(pages)
+        prepared = prepare_judge_images(pages, out_dir=args.out_dir / "images" / sid)
+        image_map[sid] = prepared
+        total_images += len(prepared)
+        total_tokens += sum(image.tokens for image in prepared)
+        n_tiled = sum(1 for image in prepared if image.is_tile)
+        tiling = f" (incl. {n_tiled} slice(s) of tall page(s))" if n_tiled else ""
         anchor = "  [ANCHOR]" if sid in CALIBRATION_ANCHORS else ""
-        print(f"  {sid:<24} {channels[sid]:<18} {len(pages)} page(s){anchor}", flush=True)
-    print(f"Total page images to judge: {total_pages}", flush=True)
+        print(
+            f"  {sid:<24} {channels[sid]:<18} {len(pages)} page(s) -> "
+            f"{len(prepared)} image(s){tiling}{anchor}",
+            flush=True,
+        )
+    print(f"Total images to judge: {total_images} (~{total_tokens} visual tokens)", flush=True)
 
     if args.dry_run:
         print("Dry run — no API calls made.", flush=True)
         return 0
 
+    injected = load_env_file()
+    if injected:
+        print(f"Loaded from .env: {', '.join(sorted(injected))}", flush=True)
     if not os.environ.get("ANTHROPIC_API_KEY"):
         print(
             "ANTHROPIC_API_KEY is not set. Export it, or put it in the git-ignored .env.\n"
@@ -247,7 +302,6 @@ def main(argv: list[str] | None = None) -> int:
         f"Judge model: {model} (effort={cfg.effort}, thinking={not args.no_thinking})", flush=True
     )
 
-    gt_out = args.out_dir / "gt"
     gt_out.mkdir(parents=True, exist_ok=True)
     verdicts: list[JudgeVerdict] = []
     failures: list[str] = []
@@ -257,9 +311,10 @@ def main(argv: list[str] | None = None) -> int:
         try:
             verdict = judge_invoice(
                 client,
-                page_map[sid],
+                [image.path for image in image_map[sid]],
                 invoice_id=sid,
                 config=JudgeConfig(model=model, effort=cfg.effort, thinking=cfg.thinking),
+                image_note=describe_images(image_map[sid]),
             )
         except Exception as exc:  # noqa: BLE001 — one bad invoice must not lose the rest
             failures.append(sid)

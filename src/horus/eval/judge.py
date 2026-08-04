@@ -31,9 +31,10 @@ human, and only author review may set `verified: true`.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import TYPE_CHECKING, Any, Literal
 
 from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS
 from horus.eval.structurer import render_field_glossary
@@ -50,6 +51,16 @@ DEFAULT_MAX_TOKENS = 16000
 #: CALLER's account rather than hardcoding an id that may not exist by the time this
 #: runs.
 DEFAULT_MODEL_PREFERENCE: tuple[str, ...] = ("opus", "sonnet")
+
+#: What the judge writes when a field is genuinely not on the page.
+#:
+#: The obvious encoding is JSON ``null``, which is what this schema used first. It is
+#: rejected: structured outputs cap a schema at 16 union-typed parameters, and making
+#: every field nullable produced exactly 48 (34 flat + 14 group cells) — a hard 400 before
+#: any image is read. An empty string is a single-type encoding that keeps the property
+#: that matters: every key is still REQUIRED, so "absent" is asserted by the judge rather
+#: than inferred from a missing key, which is the distinction the superseded GT lost.
+ABSENT_VALUE = ""
 
 _MEDIA_TYPES: dict[str, str] = {
     ".png": "image/png",
@@ -115,22 +126,25 @@ def resolve_judge_model(
 def gt_output_schema() -> dict[str, object]:
     """Build the judge's JSON schema from the field registry.
 
-    Every flat field in ``FIELDS`` and every cell of every group in
-    ``REPEATING_GROUPS`` is required and nullable, so "absent" is stated explicitly
-    rather than inferred from an omitted key — the distinction the superseded GT lost.
-    All values are strings (or null) because GT stores the value AS PRINTED and
-    normalization happens later in `build_groundtruth_from_mapping`.
-    """
-    nullable_string: dict[str, object] = {"type": ["string", "null"]}
+    Every flat field in ``FIELDS`` and every cell of every group in ``REPEATING_GROUPS``
+    is REQUIRED, so "absent" is stated explicitly rather than inferred from an omitted
+    key — the distinction the superseded GT lost. Absence is carried by
+    :data:`ABSENT_VALUE` rather than ``null`` because nullable types are unions and the
+    schema would breach the structured-output union limit; see that constant.
 
-    flat_props: dict[str, object] = {key: dict(nullable_string) for key in FIELDS}
+    All values are plain strings because GT stores the value AS PRINTED and normalization
+    happens later in `build_groundtruth_from_mapping`.
+    """
+    printed_string: dict[str, object] = {"type": "string"}
+
+    flat_props: dict[str, object] = {key: dict(printed_string) for key in FIELDS}
     group_props: dict[str, object] = {}
     for group_name, (_row_xpath, cells) in REPEATING_GROUPS.items():
         group_props[group_name] = {
             "type": "array",
             "items": {
                 "type": "object",
-                "properties": {cell: dict(nullable_string) for cell in cells},
+                "properties": {cell: dict(printed_string) for cell in cells},
                 "required": list(cells),
                 "additionalProperties": False,
             },
@@ -170,8 +184,9 @@ reading the attached page image(s) of ONE invoice.
 Your output becomes the permanent answer key. Another system's accuracy will be
 measured against it forever. Therefore:
 
-- A WRONG value is far worse than an honest null. If you cannot read a value with
-  confidence, set the field to null and add its key to `illegible_fields`.
+- A WRONG value is far worse than an honest blank. If you cannot read a value with
+  confidence, set the field to an EMPTY STRING ("") and add its key to
+  `illegible_fields`.
 - NEVER infer, derive, or compute a value that is not printed. Do not add up line
   items to produce a total, do not subtract tax to produce a net amount, do not
   convert a date format.
@@ -180,13 +195,14 @@ measured against it forever. Therefore:
   German decimal comma and thousands dot stay as printed (`1.234,56`), dates stay in
   the printed form (`28.09.2022`, `March 27, 2024`), percentages are the bare
   number (`19`).
-- `null` means the value is genuinely not on the page. Most invoices leave many
-  fields absent; that is normal and expected.
+- An EMPTY STRING ("") means the value is genuinely not on the page. Never write "n/a",
+  "none", "-", "unknown" or a placeholder — those are indistinguishable from a real
+  printed value. Most invoices leave many fields absent; that is normal and expected.
 
 Document types you may encounter include B2B invoices, credit notes, and RETAIL TILL
 RECEIPTS (Kassenbelege) photographed with a phone. A till receipt legitimately has no
 buyer, no buyer address, and often no invoice number in the formal sense — leave those
-null rather than inventing them. A product BRAND printed next to a line item is not
+empty rather than inventing them. A product BRAND printed next to a line item is not
 the buyer.
 
 Amount fields refer to WHOLE-DOCUMENT totals (typically under a
@@ -223,6 +239,39 @@ def _image_block(path: Path) -> dict[str, object]:
     }
 
 
+def _absent_to_none(value: object) -> str | None:
+    """Map the judge's absence sentinel to ``None`` for the GT document.
+
+    Whitespace-only strings collapse too: a lone space carries no more information than
+    an empty one, and letting it through would store a "present" value that no scorer can
+    match against anything.
+    """
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
+
+
+def _clean_group_rows(rows: object, cells: Iterable[str]) -> list[dict[str, Any]]:
+    """Normalize one repeating group's rows to the GT document shape.
+
+    Keeps only registry cells (so an invented key cannot reach GT), maps the absence
+    sentinel to ``None``, and drops rows that ended up entirely empty — an all-blank row
+    is the model padding the array to look thorough, and in an answer key it would score
+    as a phantom line item forever.
+    """
+    if not isinstance(rows, list):
+        return []
+    cleaned: list[dict[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        values: dict[str, Any] = {cell: _absent_to_none(row.get(cell)) for cell in cells}
+        if any(value is not None for value in values.values()):
+            cleaned.append(values)
+    return cleaned
+
+
 def _response_text(message: Any) -> str:
     """Concatenate the text blocks of a Messages response, skipping thinking blocks."""
     parts: list[str] = []
@@ -238,12 +287,18 @@ def judge_invoice(
     *,
     invoice_id: str,
     config: JudgeConfig | None = None,
+    image_note: str = "",
 ) -> JudgeVerdict:
     """Judge ONE invoice from its page images and return the authored ground truth.
 
     All pages go in a single request so the judge sees the whole document: totals on a
     later page must be reconcilable with line items on an earlier one, which a
     per-page pass structurally cannot do.
+
+    ``image_note`` describes the attached images when they are not simply one-per-page —
+    see :func:`horus.eval.judge_images.describe_images`. It is required for tiled pages,
+    where overlapping slices otherwise read as extra pages and their repeated band
+    invites double-counted line items.
     """
     import json  # local: keeps module import cheap for callers that only need schemas
 
@@ -253,6 +308,8 @@ def judge_invoice(
     model = cfg.model or resolve_judge_model(client, cfg.model_preference)
 
     content: list[dict[str, object]] = [{"type": "text", "text": judge_instructions()}]
+    if image_note:
+        content.append({"type": "text", "text": image_note})
     content.extend(_image_block(p) for p in page_paths)
 
     request: dict[str, Any] = {
@@ -278,13 +335,17 @@ def judge_invoice(
         ) from exc
 
     fields_obj = parsed.get("fields", {})
+    groups = {
+        name: _clean_group_rows(parsed.get(name), cells)
+        for name, (_row_xpath, cells) in REPEATING_GROUPS.items()
+    }
     return JudgeVerdict(
         invoice_id=invoice_id,
         model=model,
-        fields={key: cast(str | None, fields_obj.get(key)) for key in FIELDS},
-        vat_breakdown=list(parsed.get("vat_breakdown") or []),
-        skonto=list(parsed.get("skonto") or []),
-        line_items=list(parsed.get("line_items") or []),
+        fields={key: _absent_to_none(fields_obj.get(key)) for key in FIELDS},
+        vat_breakdown=groups["vat_breakdown"],
+        skonto=groups["skonto"],
+        line_items=groups["line_items"],
         illegible_fields=list(parsed.get("illegible_fields") or []),
         notes=str(parsed.get("notes") or ""),
         input_tokens=int(getattr(message.usage, "input_tokens", 0) or 0),
