@@ -12,6 +12,17 @@ ONE runner, two passes — the matched-precision comparison:
 
 `--adapter` is opt-in: omit it for the zero-shot baseline (so the baseline can never
 accidentally load an adapter). `--limit N` runs a quick spike over the first N invoices.
+
+`--score-only DIR` re-scores generations previously persisted by `--save-outputs`,
+without loading the structurer or running any inference:
+
+    uv run python scripts/finetune_evaluate.py --split val \
+        --score-only data/finetune/oracle-outputs --label oracle-rescored \
+        --out data/finetune/eval-oracle-val-rescored.json
+
+That isolates a scorer / normalizer / parser change from any generation change (the
+two-tier measurement in `eval/per-field-reporting-audit.md`), and is how an adapter
+A/B is compared after a LoRA run.
 """
 
 from __future__ import annotations
@@ -27,7 +38,11 @@ if str(REPO_ROOT) not in sys.path:
 
 from horus.finetune.config import FinetuneConfig  # noqa: E402
 from horus.finetune.dataset import build_records, render_oracle_transcript  # noqa: E402
-from horus.finetune.evaluate import EvalReport, evaluate_structurer  # noqa: E402
+from horus.finetune.evaluate import (  # noqa: E402
+    EvalReport,
+    evaluate_structurer,
+    score_saved_outputs,
+)
 from horus.finetune.split import load_split  # noqa: E402
 
 
@@ -46,6 +61,19 @@ def _print_summary(report: EvalReport) -> None:
         print("  weakest invoices (overall_micro_f1):")
         for e in worst:
             print(f"    {e.overall_micro_f1:.3f}  {e.stem}")
+
+    # Pooled per-field F1 — the trustworthy per-field diagnostic. `per_field_mean`
+    # is a mean comparator score, not an F1; don't rank on it.
+    if report.per_field_f1:
+        print("  weakest fields (pooled per-field F1, signal-bearing outcomes only):")
+        for key, f1 in sorted(report.per_field_f1.items(), key=lambda kv: kv[1])[:10]:
+            c = report.per_field_outcomes.get(key, {})
+            n_sig = c.get("TP", 0) + c.get("FP", 0) + c.get("FN", 0)
+            print(f"    {f1:.3f}  {key:<32} n={n_sig} excluded={c.get('EXCLUDED', 0)}")
+
+    never_tested = sorted(set(report.per_field_outcomes) - set(report.per_field_f1))
+    if never_tested:
+        print(f"  fields with NO signal-bearing outcome (untested, not scored): {never_tested}")
 
 
 def main(argv: list[str]) -> int:
@@ -74,7 +102,18 @@ def main(argv: list[str]) -> int:
         help="Feed the structurer a PERFECT GT-rendered transcript instead of the "
         "reader's (structurer-ceiling probe for the attribution audit).",
     )
+    parser.add_argument(
+        "--score-only",
+        default=None,
+        metavar="DIR",
+        help="Re-score generations saved earlier by --save-outputs (reads DIR/<stem>.txt); "
+        "loads no model and runs no inference. Isolates scorer/normalizer changes.",
+    )
     args = parser.parse_args(argv[1:])
+    if args.score_only and args.save_outputs:
+        parser.error("--score-only reads saved generations; --save-outputs would rewrite them.")
+    if args.score_only and args.adapter:
+        parser.error("--score-only never loads a model, so --adapter has no effect.")
 
     cfg = FinetuneConfig.from_yaml(args.config)
     prompt = cfg.structuring_prompt()
@@ -98,6 +137,8 @@ def main(argv: list[str]) -> int:
     adapter_dir = Path(args.adapter) if args.adapter else None
     if args.label:
         label = args.label
+    elif args.score_only:
+        label = "score-only"
     elif args.oracle:
         label = "oracle"
     else:
@@ -108,16 +149,24 @@ def main(argv: list[str]) -> int:
         assert rec.gt is not None
         return render_oracle_transcript(rec.gt)
 
-    report = evaluate_structurer(
-        subset,
-        structurer_model=cfg.structurer_model,
-        structuring_prompt=prompt,
-        adapter_dir=adapter_dir,
-        max_tokens=max_tokens,
-        label=label,
-        save_outputs_dir=Path(args.save_outputs) if args.save_outputs else None,
-        reader_text_fn=_oracle_text if args.oracle else None,
-    )
+    if args.score_only:
+        report = score_saved_outputs(
+            subset,
+            Path(args.score_only),
+            structurer_model=cfg.structurer_model,
+            label=label,
+        )
+    else:
+        report = evaluate_structurer(
+            subset,
+            structurer_model=cfg.structurer_model,
+            structuring_prompt=prompt,
+            adapter_dir=adapter_dir,
+            max_tokens=max_tokens,
+            label=label,
+            save_outputs_dir=Path(args.save_outputs) if args.save_outputs else None,
+            reader_text_fn=_oracle_text if args.oracle else None,
+        )
     _print_summary(report)
 
     if args.out:
