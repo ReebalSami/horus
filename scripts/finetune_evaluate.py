@@ -23,6 +23,18 @@ without loading the structurer or running any inference:
 That isolates a scorer / normalizer / parser change from any generation change (the
 two-tier measurement in `eval/per-field-reporting-audit.md`), and is how an adapter
 A/B is compared after a LoRA run.
+
+`--heldout` swaps the sealed synthetic split for the PRIVATE held-out Belege set of
+real invoices (ADR-040) — same structurer, same prompt, same scorer, different data:
+
+    uv run python scripts/finetune_evaluate.py --heldout --label zero-shot \
+        --out data/self-collected/_eval/eval-zeroshot-heldout.json
+
+That is the generalization measurement: every number the thesis currently reports comes
+from synthetic ZUGFeRD invoices, so a real-invoice score is the only evidence that the
+pipeline works on documents it was not built around. `--split` does not apply (the whole
+set is held out by construction) and the report label is suffixed `-heldout` so it can
+never be confused with a val number.
 """
 
 from __future__ import annotations
@@ -37,7 +49,13 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from horus.finetune.config import FinetuneConfig  # noqa: E402
-from horus.finetune.dataset import build_records, render_oracle_transcript  # noqa: E402
+from horus.finetune.dataset import (  # noqa: E402
+    DEFAULT_HELDOUT_CORPUS_ROOT,
+    DEFAULT_HELDOUT_TRANSCRIPT_DIR,
+    build_heldout_records,
+    build_records,
+    render_oracle_transcript,
+)
 from horus.finetune.evaluate import (  # noqa: E402
     EvalReport,
     evaluate_structurer,
@@ -125,6 +143,22 @@ def main(argv: list[str]) -> int:
         help="Re-score generations saved earlier by --save-outputs (reads DIR/<stem>.txt); "
         "loads no model and runs no inference. Isolates scorer/normalizer changes.",
     )
+    parser.add_argument(
+        "--heldout",
+        action="store_true",
+        help="Evaluate the private held-out Belege set of REAL invoices (ADR-040) instead "
+        "of the sealed synthetic split; --split does not apply.",
+    )
+    parser.add_argument(
+        "--heldout-corpus",
+        default=str(DEFAULT_HELDOUT_CORPUS_ROOT),
+        help="Held-out corpus root holding index.json (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--heldout-transcripts",
+        default=str(DEFAULT_HELDOUT_TRANSCRIPT_DIR),
+        help="Held-out reader-transcript dir (default: %(default)s).",
+    )
     args = parser.parse_args(argv[1:])
     if args.score_only and args.save_outputs:
         parser.error("--score-only reads saved generations; --save-outputs would rewrite them.")
@@ -140,12 +174,23 @@ def main(argv: list[str]) -> int:
         "all": set(split.train) | set(split.val),
     }[args.split]
 
-    records = build_records(
-        Path(cfg.corpus_root),
-        transcript_dir=Path(cfg.transcript_dir),
-        reader_model=cfg.reader_model,
-    )
-    subset = [r for r in records if r.stem in stems]
+    if args.heldout:
+        # No split filtering: the entire Belege set is held out by construction, so
+        # there is nothing to hold back from it. Transcripts come from the private
+        # git-ignored tree rather than the tracked docs/sources/ dir.
+        records = build_heldout_records(
+            Path(args.heldout_corpus),
+            transcript_dir=Path(args.heldout_transcripts),
+            reader_model=cfg.reader_model,
+        )
+        subset = list(records)
+    else:
+        records = build_records(
+            Path(cfg.corpus_root),
+            transcript_dir=Path(cfg.transcript_dir),
+            reader_model=cfg.reader_model,
+        )
+        subset = [r for r in records if r.stem in stems]
     subset.sort(key=lambda r: r.stem)
     if args.limit > 0:
         subset = subset[: args.limit]
@@ -159,6 +204,11 @@ def main(argv: list[str]) -> int:
         label = "oracle"
     else:
         label = "finetuned" if adapter_dir else "zero-shot"
+    if args.heldout:
+        # Suffix unconditionally, including a user-supplied --label: a held-out number
+        # and a val number are not comparable, and mixing them up would silently
+        # misstate what the thesis claims.
+        label = f"{label}-heldout"
     max_tokens = args.max_tokens or cfg.eval_max_tokens
 
     def _oracle_text(rec) -> str:  # noqa: ANN001 — InvoiceRecord; ready ⇒ gt is set
