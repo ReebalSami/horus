@@ -48,7 +48,7 @@ from horus.eval.harness import (
     _micro_f1_from_counts,
     _model_slug,
 )
-from horus.eval.scorer import score
+from horus.eval.scorer import is_signal_bearing, score
 from horus.eval.transcripts import build_gt_cache, parse_transcript, split_per_page_texts
 from horus.vlm_extractor import COHORT_MANIFEST, MLXVLMExtractor, get_extractor
 
@@ -286,7 +286,13 @@ def run_arm_b(
                         mlflow.log_dict(asdict(scores), artifact_file="per_field_scores.json")
 
                     for fk, fr in scores.per_field.items():
-                        per_field_scores_acc[structurer_model].setdefault(fk, []).append(fr.score)
+                        # TN (score 1.0) / EXCLUDED (score 0.0) carry no signal —
+                        # admitting them makes a field's heatmap cell a function of
+                        # how often it is absent. See `scorer.SIGNAL_OUTCOMES`.
+                        if is_signal_bearing(fr.outcome):
+                            per_field_scores_acc[structurer_model].setdefault(fk, []).append(
+                                fr.score
+                            )
                         if fr.outcome == "TP":
                             per_profile[profile]["tp"] += 1
                             per_profile["POOLED"]["tp"] += 1

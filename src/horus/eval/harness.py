@@ -81,7 +81,7 @@ from horus.eval import adapters as adapters_regex
 from horus.eval import adapters_json, structurer
 from horus.eval.ground_truth import FIELDS, GroundTruth, parse_cii_xml
 from horus.eval.rasterize import rasterize_pdf
-from horus.eval.scorer import InvoiceFieldScores, score
+from horus.eval.scorer import InvoiceFieldScores, is_signal_bearing, score
 from horus.vlm_extractor import COHORT_MANIFEST, ExtractionResult, get_extractor
 
 if TYPE_CHECKING:
@@ -1187,7 +1187,11 @@ def run_cohort(
 
                     # Aggregation
                     for fk, fr in scores.per_field.items():
-                        per_field_scores_acc[model_id].setdefault(fk, []).append(fr.score)
+                        # TN (score 1.0) / EXCLUDED (score 0.0) carry no signal —
+                        # admitting them makes a field's heatmap cell a function of
+                        # how often it is absent. See `scorer.SIGNAL_OUTCOMES`.
+                        if is_signal_bearing(fr.outcome):
+                            per_field_scores_acc[model_id].setdefault(fk, []).append(fr.score)
                         if fr.outcome == "TP":
                             per_profile_outcomes[profile]["tp"] += 1
                             per_profile_outcomes["POOLED"]["tp"] += 1

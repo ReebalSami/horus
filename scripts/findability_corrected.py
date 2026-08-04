@@ -77,7 +77,10 @@ def main() -> int:
             if ans is None:
                 continue
             keep_missing = [f for f in ans.missing_fields if (rec.stem, f) not in excl]
-            excluded_here = sum(1 for f in rec.gt.header if (rec.stem, f) in excl)
+            gt = rec.gt
+            if gt is None:  # a non-None `ans` implies parsed GT; narrowed for mypy
+                continue
+            excluded_here = len([f for f in gt.header if (rec.stem, f) in excl])
             n_present = ans.n_present - excluded_here
             n_found = n_present - len(keep_missing)
             ratios.append(n_found / n_present if n_present else 1.0)
