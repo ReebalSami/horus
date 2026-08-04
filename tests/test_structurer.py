@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import re
 
 import pytest
 
@@ -252,10 +253,109 @@ def test_render_field_glossary_includes_confusable_fields() -> None:
 
 
 def test_render_field_glossary_excludes_fields_without_description() -> None:
-    """Fields with no `description` are omitted — the bare key list already names them."""
+    """Fields with no `description` are omitted — the bare key list already names them.
+
+    The glossary is deliberately scoped to CONFUSABLE fields (ADR-049, reaffirmed by
+    ADR-058's extension): keys whose English name maps obviously onto the printed
+    German label stay out, because over-glossing was measured net-negative (ADR-048).
+    """
     glossary = structurer.render_field_glossary()
-    for key in ("invoice_number", "seller_name", "seller_gln", "buyer_vat_id"):
+    for key in ("invoice_number", "seller_name", "issue_date", "buyer_address"):
         assert f"- {key}:" not in glossary
+
+
+def test_tax_rate_backfilled_from_single_rate_breakdown() -> None:
+    """ADR-058: one distinct rate in the model's own VAT table fills the flat key.
+
+    The oracle probe showed the structurer filling `vat_breakdown[].rate_percent`
+    while leaving flat `tax_rate` null (it reads as redundant), so BT-119 scored 0
+    even on perfect input. Repair, not invention — the value is the model's own.
+    """
+    raw = json.dumps(
+        {
+            "invoice_number": "471102",
+            "vat_breakdown": [{"category_code": "S", "rate_percent": 19, "tax_amount": 12.24}],
+        }
+    )
+    assert structurer.to_predicted_dict(raw, "m")["tax_rate"] == "19"
+
+
+def test_tax_rate_not_backfilled_when_rates_differ() -> None:
+    """Two distinct rates → no single document rate exists; null is correct.
+
+    Matches the GT side, which marks multi-rate invoices EXCLUDED (ADR-045/052).
+    """
+    raw = json.dumps(
+        {
+            "vat_breakdown": [
+                {"category_code": "S", "rate_percent": 7},
+                {"category_code": "S", "rate_percent": 19},
+            ]
+        }
+    )
+    assert structurer.to_predicted_dict(raw, "m")["tax_rate"] is None
+
+
+def test_tax_rate_backfill_accepts_repeated_identical_rate() -> None:
+    """Several rows all carrying the SAME rate still yield one document rate."""
+    raw = json.dumps(
+        {
+            "vat_breakdown": [
+                {"category_code": "S", "rate_percent": 19},
+                {"category_code": "S", "rate_percent": 19},
+            ]
+        }
+    )
+    assert structurer.to_predicted_dict(raw, "m")["tax_rate"] == "19"
+
+
+def test_tax_rate_backfill_never_overwrites_explicit_value() -> None:
+    """An explicitly emitted flat tax_rate wins over the breakdown."""
+    raw = json.dumps(
+        {
+            "tax_rate": 7,
+            "vat_breakdown": [{"category_code": "S", "rate_percent": 19}],
+        }
+    )
+    assert structurer.to_predicted_dict(raw, "m")["tax_rate"] == "7"
+
+
+def test_tax_rate_backfill_no_ops_without_breakdown() -> None:
+    """No VAT table (or no rates in it) → the flat key stays null."""
+    assert (
+        structurer.to_predicted_dict(json.dumps({"invoice_number": "1"}), "m")["tax_rate"] is None
+    )
+    raw = json.dumps({"vat_breakdown": [{"category_code": "S", "tax_amount": 1.0}]})
+    assert structurer.to_predicted_dict(raw, "m")["tax_rate"] is None
+
+
+def test_glossary_descriptions_embed_no_concrete_identifiers() -> None:
+    """No description may contain a value-SHAPED string (ADR-058).
+
+    Corpus-independent structural guard. The listed patterns are the shapes a concrete
+    invoice value takes; an "example" of that shape is by construction a candidate
+    ground-truth value, and three real leaks were found this way — a VAT id, a slashed
+    Steuernummer, and a payment-method phrase, each verbatim the GT of a corpus
+    invoice. `scripts/audit_field_prompts.py` is the exhaustive corpus-backed check;
+    this test is the fast gate that needs no corpus on disk.
+    """
+    forbidden = {
+        "VAT-id shape": re.compile(r"\b[A-Z]{2}\d{6,}\b"),
+        "Steuernummer shape": re.compile(r"\b\d{2,4}/\d{2,4}/\d{3,}\b"),
+        "IBAN shape": re.compile(r"\b[A-Z]{2}\d{2}[0-9A-Z]{10,}\b"),
+        "German date": re.compile(r"\b\d{1,2}\.\d{1,2}\.\d{4}\b"),
+        "ISO date": re.compile(r"\b\d{4}-\d{2}-\d{2}\b"),
+        "decimal amount": re.compile(r"\b\d+[.,]\d{2}\b"),
+    }
+    for key, spec in FIELDS.items():
+        if spec.description is None:
+            continue
+        for shape, pattern in forbidden.items():
+            match = pattern.search(spec.description)
+            assert match is None, (
+                f"{key} description embeds a {shape}: {match.group(0)!r} — "
+                "concrete values leak ground truth into the prompt; describe the shape"
+            )
 
 
 def test_render_field_glossary_carries_no_ground_truth_values() -> None:

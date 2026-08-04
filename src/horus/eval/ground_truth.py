@@ -54,6 +54,7 @@ from lxml import etree
 
 from horus.eval.normalizers import (
     _normalize_predicted_invoice_number,
+    _normalize_predicted_nonneg_money,
     _normalize_predicted_optional_zero_money,
     _normalize_predicted_seller_assigned_id,
     _normalize_predicted_vat_category,
@@ -157,6 +158,33 @@ def _normalize_money(raw: str) -> str:
     except InvalidOperation as exc:
         raise ValueError(f"Money string is not parseable as Decimal: {raw!r}") from exc
     return str(d.quantize(Decimal("0.01")))
+
+
+def _normalize_nonneg_money(raw: str) -> str:
+    """Canonical money, with the sign folded away (BT-107/108/113 only; ADR-058).
+
+    EN16931 defines BT-107 (allowance total), BT-108 (charge total) and BT-113
+    (prepaid amount) as non-negative MAGNITUDES — the deduction semantics live in the
+    field's identity, not in the value's sign. The corpus does not honour that
+    consistently: ``zugferd_2p0_BASIC_Rechnungskorrektur`` (a credit note) carries
+    ``BT-107 = -0.23`` while every other allowance/charge/prepaid value in the corpus
+    is positive.
+
+    Folding on BOTH sides (here and in
+    :func:`~horus.eval.normalizers._normalize_predicted_nonneg_money`) keeps the
+    comparison symmetric, which is the defining property of the representation-only
+    class (ADR-043/046/051/056): the same textual transformation must apply to GT and
+    prediction alike, or the scorer arbitrarily privileges one sign convention. An
+    asymmetric fold would mark a model that correctly copies ``-0,23`` from that
+    credit note as FN.
+
+    Deliberately NOT used for BT-114 (``rounding_amount``), which is legitimately
+    signed — a ``-0.02`` rounding correction differs from ``+0.02`` — nor for any
+    required total, where a negative value is meaningful (e.g. the
+    ``EN16931_Einfach_negativePaymentDue`` fixture).
+    """
+    norm = _normalize_money(raw)
+    return norm[1:] if norm.startswith("-") else norm
 
 
 def _passthrough(raw: str) -> str:
@@ -465,6 +493,17 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         ),
         normalize=_normalize_string,
         field_type="CODE",
+        # No literal example value: an example that matches a corpus GT value hands
+        # the model the answer for that invoice. Describe the SHAPE instead.
+        description=(
+            "The SELLER's VAT identification number — a two-letter country prefix "
+            "followed by an unbroken run of digits. NEVER the slash-grouped "
+            "Steuernummer (that is seller_tax_id)."
+        ),
+        # Corpus-measured (ADR-058): "USt.-Id.-Nr" is the dominant printed spelling
+        # (91/146) and was MISSING, while "USt-IdNr." hits only 1. "UID" / "VAT ID"
+        # scored 0 and are dropped.
+        prompt_aliases=("USt.-Id.-Nr", "USt-IdNr.", "USt-ID", "VAT-ID", "TVA"),
     ),
     # 7. Seller Steuernummer (BT-32), scheme FC. German-specific; not in
     # EN16931-mandatory core but common on German invoices alongside VAT ID.
@@ -478,6 +517,15 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         ),
         normalize=_normalize_string,
         field_type="CODE",
+        # Shape, not a sample value (see seller_vat_id).
+        description=(
+            "The seller's domestic TAX number (Steuernummer): digit groups separated "
+            "by slashes, with no country letters. NEVER the USt-IdNr./VAT id — that "
+            "is seller_vat_id."
+        ),
+        # "St.-Nr." / "Steuer-Nr." scored 0; "Steuernr." is the abbreviation actually
+        # printed (ADR-058).
+        prompt_aliases=("Steuernummer", "Steuernr."),
     ),
     # 8. Seller GLN (BT-29), scheme 0088 (GS1 Global Location Number). 0..1;
     # in ADR-009 evidence base. Tracked for continuity with the cohort smoke.
@@ -488,6 +536,12 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=(f"{_HEADER_AGREEMENT}/ram:SellerTradeParty/ram:GlobalID[@schemeID='0088']"),
         normalize=_normalize_string,
         field_type="CODE",
+        description=(
+            "The seller's 13-digit GLN/ILN location number. A pure digit string — "
+            "not the VAT id, not the tax number, not a line item's GTIN/EAN."
+        ),
+        # "Globale Nummer" is printed on 64/146 and was missing; "ILN" scored 0.
+        prompt_aliases=("GLN", "Globale Nummer"),
     ),
     # 9. Buyer name (BT-44) — exactly 1 per invoice (EN16931-mandatory).
     "buyer_name": FieldSpec(
@@ -512,7 +566,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "The buyer's own customer/account number (the identifying number shown "
             "in the buyer/Käufer block). NOT a purchase-order number."
         ),
-        prompt_aliases=("Kundennummer", "Kunden-Nr.", "Nummer (im Käufer-Block)"),
+        # "Nummer (im Käufer-Block)" was a description masquerading as a label (0 hits).
+        prompt_aliases=("Kundennummer", "Kunden-Nr."),
     ),
     # 11. Buyer VAT identifier (BT-48), scheme VA. 0..1; conditionally
     # mandatory in EN16931 (B2B cross-border EU). Deliberately included to
@@ -528,6 +583,14 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         ),
         normalize=_normalize_string,
         field_type="CODE",
+        description=(
+            "The BUYER's/recipient's VAT identification number — the USt-IdNr. "
+            "printed in the customer block, not the seller's."
+        ),
+        # All three previous aliases scored 0. The buyer's id is printed under the SAME
+        # "USt.-Id.-Nr" label as the seller's, so the description (not the label) is what
+        # disambiguates; the French/English fixtures print explicit customer variants.
+        prompt_aliases=("USt.-Id.-Nr", "N° TVA client", "Customer VAT Number"),
     ),
     # 12. Sum of line net amounts (BT-106) — EN16931-mandatory.
     "line_total_amount": FieldSpec(
@@ -542,7 +605,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "totals/summary block — NOT a single line's amount and NOT one VAT "
             "rate's subtotal."
         ),
-        prompt_aliases=("Positionssumme", "Summe der Nettobeträge"),
+        prompt_aliases=("Positionssumme", "Nettobetrag"),
     ),
     # 13. Invoice total without VAT / tax basis (BT-109) — EN16931-mandatory.
     "tax_basis_total_amount": FieldSpec(
@@ -557,7 +620,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "across all VAT rates — the document-level summary total, not a single "
             "line or rate."
         ),
-        prompt_aliases=("Rechnungssumme ohne USt.", "Steuerlicher Bemessungsbetrag"),
+        prompt_aliases=("Rechnungssumme ohne USt.", "Net total"),
     ),
     # 14. Invoice total VAT amount (BT-110) — EN16931-mandatory.
     "tax_total_amount": FieldSpec(
@@ -571,7 +634,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "Total VAT amount for the whole invoice, summed across all VAT rates, "
             "taken from the totals/summary block — NOT a single rate's VAT amount."
         ),
-        prompt_aliases=("Steuerbetrag", "Umsatzsteuer gesamt"),
+        prompt_aliases=("Steuerbetrag", "Total taxes"),
     ),
     # 15. Invoice total amount with VAT / grand total (BT-112) — EN16931-mandatory.
     "grand_total_amount": FieldSpec(
@@ -585,7 +648,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "Invoice total INCLUDING VAT (gross) for the whole invoice — the "
             "document-level summary total."
         ),
-        prompt_aliases=("Bruttosumme", "Bruttobetrag", "Gesamtbetrag"),
+        prompt_aliases=("Bruttosumme", "Gesamtbetrag", "Total TTC"),
     ),
     # 16. Amount due for payment (BT-115) — EN16931-mandatory.
     "due_payable_amount": FieldSpec(
@@ -612,6 +675,17 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_HEADER_SETTLEMENT}/ram:ApplicableTradeTax/ram:RateApplicablePercent",
         normalize=_normalize_rate,
         field_type="RATE",
+        # ADR-058: the oracle probe showed models fill `vat_breakdown[].rate_percent`
+        # and leave this flat key null, reading it as redundant. State the
+        # single-rate rule explicitly (the multi-rate case is EXCLUDED per
+        # ADR-045/052, so "null when several" is the correct instruction).
+        description=(
+            "The ONE document-level VAT rate as a number (e.g. 19). Fill it whenever "
+            "the invoice has exactly one distinct rate — including when that rate is "
+            "only shown inside the VAT table — and leave it null when several "
+            "different rates apply."
+        ),
+        prompt_aliases=("Steuersatz", "USt.", "MwSt."),
     ),
     # 18. Seller postal address (BG-5) — ADR-035 schema extension. Composite:
     # the PostalTradeAddress element's own .text is empty, so child leaves are
@@ -661,7 +735,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "The purchase-order number — use ONLY if an explicit order number is "
             "printed; never put the buyer's customer number here."
         ),
-        prompt_aliases=("Bestellnummer", "Auftragsnummer", "Bestell-Nr."),
+        # "Bestellung" (55/146) and the French "Votre référence" (15/146) are the printed
+        # forms; "Auftragsnummer" / "Bestell-Nr." scored 0.
+        prompt_aliases=("Bestellnummer", "Bestellung", "Votre référence"),
     ),
     # 22. Billing period start (BT-73).
     "billing_period_start": FieldSpec(
@@ -671,6 +747,19 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_HEADER_SETTLEMENT}/ram:BillingSpecifiedPeriod/ram:StartDateTime/udt:DateTimeString",
         normalize=_normalize_date,
         field_type="DATE",
+        # No sample dates: a concrete date is a value, and values leak (ADR-058).
+        description=(
+            "START of the service/billing period — the FIRST date of the printed "
+            "period range (two dates joined by 'bis' or a dash under one heading). "
+            "Not the invoice date and not the delivery date."
+        ),
+        # The period is printed as ONE range under a single heading ("Abrechnungszeitraum"
+        # 13/146, "Liefer-/Leistungszeitraum" 5/146), never as separate start/end labels —
+        # all three previous "... Beginn/von" aliases scored 0.
+        prompt_aliases=(
+            "Abrechnungszeitraum",
+            "Liefer-/Leistungszeitraum",
+        ),
     ),
     # 23. Billing period end (BT-74).
     "billing_period_end": FieldSpec(
@@ -680,6 +769,16 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_HEADER_SETTLEMENT}/ram:BillingSpecifiedPeriod/ram:EndDateTime/udt:DateTimeString",
         normalize=_normalize_date,
         field_type="DATE",
+        description=(
+            "END of the service/billing period — the SECOND date of a printed "
+            "von–bis range. Not the payment due date."
+        ),
+        # Same single-heading range as billing_period_start; the END is the date AFTER
+        # "bis" in that range. All three previous "... Ende/bis" aliases scored 0.
+        prompt_aliases=(
+            "Abrechnungszeitraum",
+            "Liefer-/Leistungszeitraum",
+        ),
     ),
     # 24. Payment due date / Zahlungsziel (BT-9).
     "payment_due_date": FieldSpec(
@@ -699,6 +798,12 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_PAYMENT_MEANS}/ram:TypeCode",
         normalize=_normalize_string,
         field_type="CODE",
+        description=(
+            "UNTDID 4461 payment-means CODE as digits (58 = SEPA credit transfer, "
+            "30 = credit transfer, 48 = card, 49 = direct debit, 10 = cash). Use the "
+            "code, not the words — the words go in payment_means_text."
+        ),
+        prompt_aliases=("Zahlungsart",),
     ),
     # 26. Payment means free text (BT-82) — captures "PayPal"/"Überweisung" etc.
     "payment_means_text": FieldSpec(
@@ -708,6 +813,17 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_SETTLEMENT_PAYMENT_MEANS}/ram:Information",
         normalize=_normalize_string,
         field_type="STRING",
+        # Names NO payment method: the GT for this field is exactly such a phrase, in
+        # German AND English across the corpus, so any example leaks an answer. The
+        # first attempt at this fix said "bank transfer" and leaked
+        # MustangGnuaccountingBeispielRE-20201121_508 — hence the purely structural
+        # wording below (ADR-058).
+        description=(
+            "How payment is made, in WORDS, copied verbatim from the payment or "
+            "bank-details block. Words only — the numeric code belongs in "
+            "payment_means_code. Not the payment terms and not the due date."
+        ),
+        prompt_aliases=("Zahlungsart",),
     ),
     # 27. Payee bank account IBAN (BT-84).
     "seller_iban": FieldSpec(
@@ -739,6 +855,12 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         ),
         normalize=_normalize_string,
         field_type="STRING",
+        description=(
+            "Name on the receiving BANK ACCOUNT (the account holder printed next to "
+            "the IBAN). Often — but not always — the same text as seller_name; take "
+            "it from the bank-details block."
+        ),
+        prompt_aliases=("Kontoinhaber", "Zahlungsempfänger"),
     ),
     # 30. Remittance information / Verwendungszweck (BT-83).
     "payment_reference": FieldSpec(
@@ -748,6 +870,12 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         xpath=f"{_HEADER_SETTLEMENT}/ram:PaymentReference",
         normalize=_normalize_string,
         field_type="STRING",
+        description=(
+            "The remittance reference to quote when paying — what belongs in the "
+            "transfer's reference line. Often the invoice number repeated; NOT the "
+            "customer number and NOT the order number."
+        ),
+        prompt_aliases=("Referenz", "Zahlungsreferenz"),
     ),
     # 31. Paid (prepaid) amount (BT-113).
     "prepaid_amount": FieldSpec(
@@ -755,11 +883,20 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         bt_code="BT-113",
         german_label="Bereits gezahlt",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TotalPrepaidAmount",
-        normalize=_normalize_money,
+        normalize=_normalize_nonneg_money,
         field_type="MONEY",
         # ADR-051: symmetric with the GT-side ADR-043 rule — a predicted 0.00 on
         # this optional total is treated as absent (TN, not FP).
-        predicted_normalize=_normalize_predicted_optional_zero_money,
+        # ADR-058: BT-113 is a non-negative magnitude by spec, but the page prints
+        # the deduction signed (the reader arms emitted -50.0 / -500.00 against GTs
+        # of 50.00 / 500.00) → fold the sign on BOTH sides, so the rule is symmetric.
+        predicted_normalize=_normalize_predicted_nonneg_money,
+        description=(
+            "Amount ALREADY paid / prepaid, as a positive number (drop any minus "
+            "sign). Subtracted from the gross total to give due_payable_amount."
+        ),
+        # "Bereits gezahlt" / "Vorauszahlung" scored 0 despite reading naturally.
+        prompt_aliases=("Anzahlung", "Offene Zahlungen"),
     ),
     # 32. Sum of document-level allowances (BT-107).
     "allowance_total_amount": FieldSpec(
@@ -767,10 +904,27 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         bt_code="BT-107",
         german_label="Summe Nachlässe",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:AllowanceTotalAmount",
-        normalize=_normalize_money,
+        normalize=_normalize_nonneg_money,
         field_type="MONEY",
         # ADR-051: predicted 0.00 → absent (symmetric with ADR-043).
-        predicted_normalize=_normalize_predicted_optional_zero_money,
+        # ADR-058: pages print this as a document-level "Abschläge" total, often
+        # NEGATIVE ("Gesamtbetrag der Abschläge | -14,73"). BT-107 is a non-negative
+        # magnitude by spec, but the corpus is inconsistent — the
+        # zugferd_2p0_BASIC_Rechnungskorrektur credit note carries GT -0.23 — so the
+        # fold runs on BOTH sides to keep the comparison symmetric.
+        predicted_normalize=_normalize_predicted_nonneg_money,
+        description=(
+            "Document-level TOTAL of all discounts/allowances, as a positive number. "
+            "Take the totals-block sum (drop any minus sign) — not a single line's "
+            "discount, and not a surcharge."
+        ),
+        # "Summe Nachlässe" (the EN16931-style name, and this field's german_label)
+        # scored 0 — the corpus prints "Gesamtbetrag der Abschläge" (88/146).
+        prompt_aliases=(
+            "Gesamtbetrag der Abschläge",
+            "Abschläge",
+            "Rabatt",
+        ),
     ),
     # 33. Sum of document-level charges (BT-108).
     "charge_total_amount": FieldSpec(
@@ -778,10 +932,24 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         bt_code="BT-108",
         german_label="Summe Zuschläge",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:ChargeTotalAmount",
-        normalize=_normalize_money,
+        normalize=_normalize_nonneg_money,
         field_type="MONEY",
         # ADR-051: predicted 0.00 → absent (symmetric with ADR-043).
-        predicted_normalize=_normalize_predicted_optional_zero_money,
+        # ADR-058: BT-108 is a non-negative magnitude by spec; fold the sign on BOTH
+        # sides (the GT-side twin of the predicted nonneg normalizer).
+        predicted_normalize=_normalize_predicted_nonneg_money,
+        description=(
+            "Document-level TOTAL of all surcharges/extra charges (shipping, "
+            "handling), as a positive number. The counterpart of "
+            "allowance_total_amount — never mix the two."
+        ),
+        # "Summe Zuschläge" scored 0; the corpus prints "Gesamtbetrag der Zuschläge".
+        prompt_aliases=(
+            "Gesamtbetrag der Zuschläge",
+            "Zuschläge",
+            "Versandkosten",
+            "Frachtbetrag",
+        ),
     ),
     # 34. Rounding amount (BT-114).
     "rounding_amount": FieldSpec(
@@ -792,7 +960,17 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         normalize=_normalize_money,
         field_type="MONEY",
         # ADR-051: predicted 0.00 → absent (symmetric with ADR-043).
+        # ADR-058: deliberately KEEPS the signed normalizer — unlike BT-107/108/113,
+        # a rounding correction of -0.02 is a genuinely different value from +0.02.
         predicted_normalize=_normalize_predicted_optional_zero_money,
+        description=(
+            "Rounding correction applied to the payable total — a few cents. This one "
+            "MAY be negative; keep the sign as printed."
+        ),
+        # No alias survives grounding: all three previous ones scored 0/146, and BT-114 is
+        # present on exactly 1/146 corpus invoices. The description is kept (it stops a
+        # rounding line being bound to another total) but no invented label is asserted.
+        prompt_aliases=None,
     ),
 }
 
