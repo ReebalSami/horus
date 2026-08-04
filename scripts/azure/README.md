@@ -29,9 +29,15 @@ Intelligence**. Older tutorials and blog posts use the old name for the same thi
 
 1. Sign in at <https://portal.azure.com>
 2. Top search bar → type **`Document Intelligence`** → under **Services** pick
-   **Document Intelligence** (*not* "Azure AI services" multi-service — a
-   **single-service** resource is what you want here; it is the only kind that supports
-   Microsoft Entra auth later, and it keeps the key scoped to this one service)
+   **Document Intelligence**
+
+   > **There is no single-service/multi-service toggle to look for** — the distinction is
+   > decided entirely by *which search result you click*. Landing on a blade headed
+   > **Create Document Intelligence** means you have the single-service resource, which is
+   > what you want: it keeps the key scoped to this one service and is the only kind that
+   > supports Microsoft Entra auth later. The multi-service alternative is a separate blade
+   > headed *Create Azure AI services* — if you see that title instead, back out and
+   > re-search.
 3. **+ Create**
 4. Fill the **Basics** tab:
    - **Subscription** — your only one
@@ -113,9 +119,11 @@ sane dimensions. Channel 2 should reuse it rather than uploading PDFs.
 That 4.3 MB scan is the concrete proof this matters: uploading it as a PDF would fail on
 F0 outright, and it is a Tier B document, so it is precisely one we cannot skip.
 
-The remaining F0 constraint is throughput — **20 requests/minute**. For ~15 page-images
-that is one short pause, not a design problem; the runner should rate-limit rather than
-retry-storm.
+The remaining F0 constraints, as stated verbatim in the portal's tier dropdown, are
+**500 pages/month** and **20 calls/minute**. The 13 Tier B documents come to roughly 15–20
+page-images, so the monthly page quota has ~25× headroom and is a non-issue even with
+re-runs. The per-minute cap means one short pause; the runner should rate-limit rather than
+retry-storm into `429`s.
 
 ## 6. What channel 2 must reconcile (field-name mismatch is expected)
 
