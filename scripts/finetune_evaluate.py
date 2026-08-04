@@ -75,6 +75,22 @@ def _print_summary(report: EvalReport) -> None:
     if never_tested:
         print(f"  fields with NO signal-bearing outcome (untested, not scored): {never_tested}")
 
+    # Repeating groups. `overall_micro_f1` pools these WITH the flat fields, so
+    # without them a group-only regression shows up in the headline with no
+    # attributable cause anywhere in the report (ADR-059).
+    if report.per_group_f1:
+        print("  repeating groups (pooled per-group F1):")
+        for key, f1 in sorted(report.per_group_f1.items()):
+            c = report.per_group_outcomes.get(key, {})
+            n_sig = c.get("TP", 0) + c.get("FP", 0) + c.get("FN", 0)
+            print(f"    {f1:.3f}  {key:<32} n={n_sig}")
+    if report.per_group_cell_f1:
+        print("  weakest group cells (pooled per-cell F1):")
+        for key, f1 in sorted(report.per_group_cell_f1.items(), key=lambda kv: kv[1])[:10]:
+            c = report.per_group_cell_outcomes.get(key, {})
+            n_sig = c.get("TP", 0) + c.get("FP", 0) + c.get("FN", 0)
+            print(f"    {f1:.3f}  {key:<32} n={n_sig}")
+
 
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(prog="finetune_evaluate")

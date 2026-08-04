@@ -1185,9 +1185,14 @@ VAT_BREAKDOWN_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="category_code",
         bt_code="BT-118",
         german_label="Steuerkategorie",
-        # 97/146. "Steuerkategorie" is 0/146; the VAT table prints the German WORD, which
-        # is exactly the asymmetry the predicted-side normalizer below exists for.
-        printed_label="Umsatzsteuer",
+        # NO printed_label on purpose. "Steuerkategorie" is 0/146, but the obvious
+        # substitute "Umsatzsteuer" (97/146) labels the VAT SECTION, not the category
+        # letter, so pairing it with the GT value renders "Umsatzsteuer: S" — a page
+        # that reads "VAT: S" and from which the structurer cannot tell that S is a
+        # tax-category code. Measured on the oracle arm: 11 FNs (F1 1.000 -> 0.831)
+        # versus 0 FNs for the canonical "Steuerkategorie: S". Grounded-but-wrong is
+        # worse than synthetic-and-clear; see `_NO_PRINTED_LABEL_REASONS` in
+        # scripts/audit_field_prompts.py, which gates this exception (ADR-059).
         xpath="ram:CategoryCode",
         normalize=_normalize_string,
         field_type="CODE",

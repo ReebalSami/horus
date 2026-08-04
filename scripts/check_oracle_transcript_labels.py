@@ -77,7 +77,10 @@ def main() -> None:
     subset = [r for r in records if r.stem in stems and r.ready and r.gt is not None]
 
     print(f"field   : {key}  ({spec.bt_code})")
-    print(f"label   : {spec.german_label!r}")
+    # `rendered_label` is what the transcript actually prints (printed_label when
+    # measured, german_label otherwise). Checking german_label here would report a
+    # FALSE absence for every ADR-059-corrected field.
+    print(f"label   : {spec.rendered_label!r}  (canonical german_label={spec.german_label!r})")
     print(f"glossed : {spec.description is not None}   aliases={spec.prompt_aliases}")
     print()
 
@@ -91,7 +94,7 @@ def main() -> None:
 
         printed = _oracle_print_form(gt_rec, spec)
         transcript = render_oracle_transcript(rec.gt)
-        label_in = spec.german_label in transcript
+        label_in = spec.rendered_label in transcript
         value_in = printed is not None and printed in transcript
 
         emitted = "<no saved output>"

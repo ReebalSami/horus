@@ -37,7 +37,7 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 from horus.config import EvalConfig
 from horus.eval import structurer
@@ -291,6 +291,16 @@ def _oracle_print_form(rec: GroundTruthField, spec: FieldSpec) -> str | None:
     return v
 
 
+# Repeating groups whose rows are numbered on a real page, mapped to the sub-field
+# holding that number. Such a row leads with the GT value bare and unlabelled, the
+# way the column reads, instead of also emitting it as a "<label>: <value>" cell —
+# the structurer returned the labelled form verbatim (line_id="Pos: 1", 65 FNs).
+# `line_items` qualifies because BT-126 IS the printed "Pos" column; the VAT
+# breakdown and Skonto tiers have no position column, so numbering their rows would
+# put a number on the page that is not a value (ADR-059).
+_ROW_ORDINAL_CELL: Final[dict[str, str]] = {"line_items": "line_id"}
+
+
 def render_oracle_transcript(gt: GroundTruth) -> str:
     """Render the GT as the text a PERFECT reader would produce (attribution audit).
 
@@ -310,13 +320,19 @@ def render_oracle_transcript(gt: GroundTruth) -> str:
     spec's "Summe Zuschläge" (0/146). 5 fields keep a synthetic label because no
     printed form exists for them at all; ``make audit-prompts`` enumerates them.
 
+    Repeating-group rows render as ``<label>: <value>`` cells joined by ``" | "``.
+    Groups listed in `_ROW_ORDINAL_CELL` lead with their GT row position, bare and
+    unlabelled, because that is how a position column reads on a page; every other
+    group leads with a dash so the row carries no number that is not a value.
+
     Remaining honesty caveats (documented for the audit report):
       - DATE / MONEY / RATE values are German-print-formatted, so the structurer's
         locale conversion IS exercised (that's part of its real job).
-      - One label per field, one field per line: a real page prints the billing
-        period as ONE range under ONE heading, and line items as a TABLE with
-        shared column headers. So this remains an UPPER bound on layout, even
-        though the label WORDING is now corpus-grounded.
+      - One label per field, one field per line, and group labels repeated on every
+        row: a real page prints the billing period as ONE range under ONE heading,
+        and line items as a TABLE with column headers stated once. So this remains
+        an UPPER bound on layout, even though the label WORDING is now
+        corpus-grounded.
     """
     lines: list[str] = []
     for key, spec in FIELDS.items():
@@ -334,17 +350,47 @@ def render_oracle_transcript(gt: GroundTruth) -> str:
             continue
         lines.append("")
         lines.append(f"{group_titles[group]}:")
-        for i, row in enumerate(rows, start=1):
+        ordinal_key = _ROW_ORDINAL_CELL.get(group)
+        for row in rows:
+            # Groups with a real position column lead with that GT position, bare, the
+            # way the column reads on the page; the rest lead with a dash. Never
+            # `enumerate`: it fabricated positions that CONTRADICT the GT (on
+            # EN16931_Physiotherapeut the GT line_ids are "0"/"1" and enumerate printed
+            # "1."/"2."), and on groups with no position column the bare ordinal was
+            # read as data — the structurer returned it as rate_percent on VAT rows
+            # whose "Steuersatz" cell is absent (rate_percent FP 2 -> 7). See ADR-059.
+            prefix = "  - "
             cells = []
             for sub_key, sub_spec in sub_fields.items():
                 rec = row.get(sub_key)
                 if rec is None:
                     continue
                 printed = _oracle_print_form(rec, sub_spec)
-                if printed is not None:
-                    cells.append(f"{sub_spec.rendered_label} {printed}")
+                if printed is None:
+                    continue
+                # A row is ONE line, so a value containing newlines would split it
+                # and the block would stop parsing as rows entirely. Some CII
+                # `name` elements hold a whole product block ("GTIN 4123456000014\n
+                # Art-Nr-Lieferant ZS9997\nZitronensäure 100ml\n…"), which broke the
+                # line-item table on 1 of 29 val invoices. Flat fields deliberately
+                # keep their newlines: a multi-line address block under one label is
+                # what a page actually prints, and there is no row contract to break.
+                printed = " ".join(printed.split())
+                if sub_key == ordinal_key:
+                    prefix = f"  {printed}. "
+                    continue
+                # Colon-separated, exactly like the flat lines above. Without it the
+                # cell is "<label> <value>", which only reads correctly while the
+                # labels are long German compounds: once ADR-059 replaced them with
+                # the SHORT forms real pages print, "Positionsnummer 1" became
+                # "Pos 1" and the structurer faithfully returned line_id="Pos 1"
+                # (65 FNs), while "Umsatzsteuer S" made it give up and emit
+                # category_code=null (38 FNs) — 103 cells lost on PERFECT input,
+                # purely to punctuation. A label must be separable from its value by
+                # construction, not by being too wordy to mistake for one.
+                cells.append(f"{sub_spec.rendered_label}: {printed}")
             if cells:
-                lines.append(f"  {i}. " + " | ".join(cells))
+                lines.append(prefix + " | ".join(cells))
     return "\n".join(lines)
 
 

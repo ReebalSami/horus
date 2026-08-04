@@ -96,6 +96,12 @@ _NO_PRINTED_LABEL_REASONS: dict[str, str] = {
         "all Skonto-basis spellings 0/146; the generic 'Basisbetrag' (90/146) is the VAT "
         "table's taxable-base column, so borrowing it would render a WRONG label"
     ),
+    "vat_breakdown.category_code": (
+        "'Steuerkategorie' 0/146; 'Umsatzsteuer' (97/146) labels the VAT SECTION, not the "
+        "EN16931 category LETTER, so borrowing it renders 'Umsatzsteuer: S' — measured 11 "
+        "oracle FNs (1.000 -> 0.831) vs 0 for 'Steuerkategorie: S'. The letter itself is "
+        "never printed either, which is why predicted_normalize exists for this cell"
+    ),
 }
 
 # `_canon` is private but deliberately reused: it is the transcript canonicalizer the

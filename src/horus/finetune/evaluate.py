@@ -67,6 +67,22 @@ class EvalReport:
     Both aggregates gate on ``scorer.is_signal_bearing``: admitting TN (score 1.0)
     or EXCLUDED (score 0.0) makes a field's number a function of how often it is
     absent instead of how well it was read.
+
+    Two more surfaces cover the REPEATING GROUPS, which the flat ones cannot see:
+
+    - ``per_group_f1`` / ``per_group_outcomes`` — pooled over each group's cells
+      (``vat_breakdown`` / ``skonto`` / ``line_items``).
+    - ``per_group_cell_f1`` / ``per_group_cell_outcomes`` — keyed
+      ``<group>.<sub_field>``, the cell-level equivalent of ``per_field_f1``.
+
+    These exist because omitting them made a real regression unattributable: the
+    headline ``mean_overall_micro_f1`` (flat + groups) fell 0.0458 while
+    ``mean_micro_f1`` (flat only) ROSE, and nothing in the report could say why. The
+    cause was 103 lost cells concentrated in two cells that went from perfect to
+    zero, which is exactly what a per-cell surface surfaces at a glance (ADR-059).
+    Same defect class as the per-field reporting bug in
+    ``eval/per-field-reporting-audit.md``: a number was computed, then discarded
+    before it reached the report.
     """
 
     label: str
@@ -82,6 +98,10 @@ class EvalReport:
     per_field_mean: dict[str, float]
     per_field_f1: dict[str, float]
     per_field_outcomes: dict[str, dict[str, int]]
+    per_group_f1: dict[str, float]
+    per_group_outcomes: dict[str, dict[str, int]]
+    per_group_cell_f1: dict[str, float]
+    per_group_cell_outcomes: dict[str, dict[str, int]]
     per_invoice: list[InvoiceEval]
 
     def to_dict(self) -> dict[str, Any]:
@@ -131,6 +151,17 @@ class _Accumulator:
             lambda: {"TP": 0, "FP": 0, "FN": 0, "TN": 0, "EXCLUDED": 0}
         )
     )
+    # Repeating-group cell outcomes, pooled per group and per <group>.<sub_field>.
+    _group_counts: dict[str, dict[str, int]] = field(
+        default_factory=lambda: defaultdict(
+            lambda: {"TP": 0, "FP": 0, "FN": 0, "TN": 0, "EXCLUDED": 0}
+        )
+    )
+    _group_cell_counts: dict[str, dict[str, int]] = field(
+        default_factory=lambda: defaultdict(
+            lambda: {"TP": 0, "FP": 0, "FN": 0, "TN": 0, "EXCLUDED": 0}
+        )
+    )
 
     def add_failure(self, stem: str, secs: float, error: str | None) -> None:
         """Record a generation that never produced text (scores 0, spurious 1.0)."""
@@ -168,6 +199,14 @@ class _Accumulator:
             # `scorer.SIGNAL_OUTCOMES`.
             if is_signal_bearing(field_result.outcome):
                 self._score_acc[field_key].append(field_result.score)
+        # `scores.repeating` is populated only when `predicted_groups` is passed
+        # (it always is here). Each cell's english_key is "<group>[<pair>].<sub>",
+        # so the sub-field name is the trailing dot-segment.
+        for group_key, group_result in scores.repeating.items():
+            for cell in group_result.cell_results:
+                self._group_counts[group_key][cell.outcome] += 1
+                sub_key = cell.english_key.rsplit(".", 1)[-1]
+                self._group_cell_counts[f"{group_key}.{sub_key}"][cell.outcome] += 1
         return scores
 
     def report(self, *, label: str, adapter_dir: Path | None, n_total: int) -> EvalReport:
@@ -186,6 +225,12 @@ class _Accumulator:
             per_field_mean={k: _mean(v) for k, v in sorted(self._score_acc.items())},
             per_field_f1=_per_field_f1(self._counts),
             per_field_outcomes={k: dict(v) for k, v in sorted(self._counts.items())},
+            per_group_f1=_per_field_f1(self._group_counts),
+            per_group_outcomes={k: dict(v) for k, v in sorted(self._group_counts.items())},
+            per_group_cell_f1=_per_field_f1(self._group_cell_counts),
+            per_group_cell_outcomes={
+                k: dict(v) for k, v in sorted(self._group_cell_counts.items())
+            },
             per_invoice=self.per_invoice,
         )
 

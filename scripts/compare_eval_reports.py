@@ -53,9 +53,9 @@ def _load(path: Path) -> dict[str, Any]:
     return report
 
 
-def _counts(report: dict[str, Any], key: str) -> dict[str, int]:
-    """Return the five outcome counts for one field (zero-filled when absent)."""
-    raw = report.get("per_field_outcomes", {}).get(key, {})
+def _counts(report: dict[str, Any], key: str, outcomes_key: str) -> dict[str, int]:
+    """Return the five outcome counts for one field/cell (zero-filled when absent)."""
+    raw = report.get(outcomes_key, {}).get(key, {})
     return {bucket: int(raw.get(bucket, 0)) for bucket in _BUCKETS}
 
 
@@ -96,15 +96,41 @@ def compare(before: dict[str, Any], after: dict[str, Any]) -> list[str]:
         lines.append(f"  {metric:<32} {b_val:.4f} {arrow} {a_val:.4f}   ({delta:+.4f})")
     lines.append("")
 
-    b_f1: dict[str, float] = before.get("per_field_f1", {})
-    a_f1: dict[str, float] = after.get("per_field_f1", {})
+    # Three surfaces, same diff shape. The group ones matter because
+    # `mean_overall_micro_f1` pools flat fields AND group cells: diffing only the
+    # flat surface can show the headline moving with no visible cause (ADR-059).
+    for noun, f1_key, outcomes_key in (
+        ("fields", "per_field_f1", "per_field_outcomes"),
+        ("repeating groups", "per_group_f1", "per_group_outcomes"),
+        ("group cells", "per_group_cell_f1", "per_group_cell_outcomes"),
+    ):
+        lines.extend(_diff_section(before, after, noun, f1_key, outcomes_key))
+    return lines
 
+
+def _diff_section(
+    before: dict[str, Any],
+    after: dict[str, Any],
+    noun: str,
+    f1_key: str,
+    outcomes_key: str,
+) -> list[str]:
+    """Diff one per-key F1 surface (flat fields, groups, or group cells)."""
+    b_f1: dict[str, float] = before.get(f1_key, {})
+    a_f1: dict[str, float] = after.get(f1_key, {})
+    if not b_f1 and not a_f1:
+        # Reports written before this surface existed simply omit it; saying so is
+        # more useful than printing an empty section that implies "no change".
+        return [f"{noun}: not recorded in either report", ""]
+
+    lines: list[str] = []
     changed: list[tuple[float, str, str]] = []
     unchanged: list[str] = []
 
     for key in sorted(set(b_f1) | set(a_f1)):
         b_val, a_val = b_f1.get(key), a_f1.get(key)
-        b_cnt, a_cnt = _counts(before, key), _counts(after, key)
+        b_cnt = _counts(before, key, outcomes_key)
+        a_cnt = _counts(after, key, outcomes_key)
 
         if b_val is None:
             marker = "NEW "
@@ -129,15 +155,15 @@ def compare(before: dict[str, Any], after: dict[str, Any]) -> list[str]:
         # be the first thing a reader sees.
         changed.append((delta, key, row))
 
-    lines.append(f"changed fields ({len(changed)})")
+    lines.append(f"changed {noun} ({len(changed)})")
     if changed:
         for _, _, row in sorted(changed, key=lambda item: (item[0], item[1])):
             lines.append(row)
     else:
         lines.append("  (none)")
     lines.append("")
-
-    lines.append(f"unchanged fields ({len(unchanged)}): {', '.join(unchanged) or '(none)'}")
+    lines.append(f"unchanged {noun} ({len(unchanged)}): {', '.join(unchanged) or '(none)'}")
+    lines.append("")
     return lines
 
 
