@@ -267,9 +267,16 @@ def test_freeform_arm_processes_full_archive() -> None:
     cfg = ExperimentConfig.from_yaml(["configs/pilot-13.yaml"])
     assert cfg.cohort is not None
     gt_cache = build_gt_cache(cfg.cohort.corpus_root)
-    results = rc._process_dir(TRANSCRIPTS_DIR, adapters, gt_cache, cfg.eval or EvalConfig())
+    all_results = rc._process_dir(TRANSCRIPTS_DIR, adapters, gt_cache, cfg.eval or EvalConfig())
+    # `TRANSCRIPTS_DIR` is a SHARED, slug-discriminated archive: ADR-057 §Decision 3
+    # lands each new canonical reader lineage (Qwen3-VL-4B × 146) beside pilot-13's
+    # transcripts rather than in a separate tree. This test is about the pilot-13
+    # cohort specifically — ADR-009 Amendment 1 excluded Qwen3-VL from it — so scope
+    # to the config's working_models instead of "whatever is in the directory".
+    cohort_models = set(cfg.cohort.working_models)
+    results = [r for r in all_results if r.model_id in cohort_models]
     assert len(results) == 182, "7 models × 26 invoices = 182 tuples"
-    assert len({r.model_id for r in results}) == 7
+    assert {r.model_id for r in results} == cohort_models
     agg = rc._ceiling_agg(results)
     # The core invariant must hold cohort-wide: a parser cannot extract more than
     # the model emitted.

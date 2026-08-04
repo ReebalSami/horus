@@ -1,0 +1,99 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  ZUGFeRD_1p0_COMFORT_SEPA_Prenotification
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  46.22s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Rechnungsersteller
+Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
+GLN 4000001123452
+
+Rechnungsempfänger
+Kunden AG Mitte
+Hans Muster
+Kundenstraße 15
+69876 Frankfurt
+Deutschland
+GLN 4000001987658
+
+RECHNUNG
+Rechnungsnummer 471102
+Rechnungsdatum 05.03.2014
+Leistungsdatum 05.03.2014
+Referenz (bitte bei Zahlung angeben) 2014-471102
+Kundennummer GE2020211
+Beträge in EUR
+Hinweis
+Rechnung gemäß Bestellung Nr. 2014-471331 vom 01.03.2014.
+Es bestehen Rabatt- und Bonusvereinbarungen.
+
+<table>
+  <tr>
+    <th>Unsere Pos Art.Nr.</th>
+    <th>Artikelbeschreibung</th>
+    <th>Menge</th>
+    <th>Meng.-einheit</th>
+    <th>Preis/Einheit</th>
+    <th>Betrag</th>
+    <th>USt. %</th>
+  </tr>
+  <tr>
+    <td>1 TB100A4</td>
+    <td>Trennblätter A4<br>GTIN: 4012345001235</td>
+    <td>20</td>
+    <td>Stk.</td>
+    <td>9,90</td>
+    <td>198,00</td>
+    <td>19</td>
+  </tr>
+  <tr>
+    <td>2 ARNR2</td>
+    <td>Joghurt Banane<br>GTIN: 4000050986428</td>
+    <td>50</td>
+    <td>Stk.</td>
+    <td>5,50</td>
+    <td>275,00</td>
+    <td>7</td>
+  </tr>
+  <tr>
+    <td colspan="6">Rechnungssumme Netto (excl. USt.)</td>
+    <td>473,00</td>
+  </tr>
+  <tr>
+    <td colspan="6">Steuerbasisbetrag USt. 7%</td>
+    <td>275,00</td>
+    <td>19,25</td>
+  </tr>
+  <tr>
+    <td colspan="6">Steuerbasisbetrag USt. 19%</td>
+    <td>198,00</td>
+    <td>37,62</td>
+  </tr>
+  <tr>
+    <td colspan="6">Rechnungssumme Brutto (inkl. USt.)</td>
+    <td colspan="2">529,87</td>
+  </tr>
+</table>
+
+Zahlungsinformationen:
+Der Betrag in Höhe von EUR 529,87 wird am 20.03.2014 von Ihrem Konto mit IBAN DE21860000000086001055 und BIC MARKDEF1860, Deutsche Bundesbank -Filiale Leipzig- per SEPA-Lastschrift eingezogen.
+Mandatsreferenz: REF A-123, Gläubiger-Identifikationsnummer: DE98ZZZ099999999999
+
+Bank-/Steuerinformationen
+Kontonr.: 1234 5678 90
+IBAN-Nr.: DE08 7009 0100 1234 5678 90
+Handelsreg.: H A 123
+BLZ: 700 901 00
+BIC: GENODEF1M04
+USt.-Identnr.: DE123456789
+Bankname: Hausbank München
+Geschäftsf.: Hans Muster
+Steuernr.: 201/113/40209<|im_end|>

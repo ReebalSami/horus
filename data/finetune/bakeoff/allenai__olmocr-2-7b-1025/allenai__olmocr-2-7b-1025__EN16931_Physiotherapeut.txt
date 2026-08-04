@@ -1,0 +1,113 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  57.48s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. R18-31  vom  03.10.2018
+
+Währung: EUR
+
+Verkäufer
+Name: Physiotherapeutin
+Ansprechpartner: Tanja Tinder
+Anschrift: Musterstraße 12
+DE 12345 Beispielstadt
+Telefon: 015119630027
+E-Mail: tanja.tinder@beispiel-provider.de
+USt.-Id.-Nr.: DE136695976
+
+Käufer/Leistungsempfänger
+Name: Liselotte Müller
+Anschrift: Rechnungsstraße 12
+DE 12345 Beispielstadt
+
+Bemerkungen
+
+Positionsdaten
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuersatz</th>
+    <th>Nettobetrag</th>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td></td>
+    <td>Physiotherapie</td>
+    <td>26,00</td>
+    <td>10</td>
+    <td>0 %</td>
+    <td>260,00</td>
+  </tr>
+  <tr>
+    <td colspan="7">Behandlungen aufgrund der Verordnung von Frau Dr. Heilerin vom 05.09.2018 an folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td></td>
+    <td>Hausbesuch</td>
+    <td>12,00</td>
+    <td>10</td>
+    <td>0 %</td>
+    <td>120,00</td>
+  </tr>
+  <tr>
+    <td colspan="7">An folgenden Terminen: 11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018</td>
+  </tr>
+</table><|im_end|>
+===== PAGE 2 =====
+Umsatzsteueraufschlüsselung
+
+<table>
+  <tr>
+    <th>Art (Kategorie)</th>
+    <th>Warenwert</th>
+    <th>Zu-/Abschlag</th>
+    <th>Basisbetrag</th>
+    <th>Steuersatz [%]</th>
+    <th>Steuerbetrag</th>
+  </tr>
+  <tr>
+    <td>Umsatzsteuer (E)<br>Steuerfreie Leistungen nach §4 Nr. 14 UStG</td>
+    <td></td>
+    <td></td>
+    <td>380,00</td>
+    <td>0</td>
+    <td>0,00</td>
+  </tr>
+</table>
+
+Belegsummen
+
+Positionssumme 380,00
+Gesamtbetrag der Zuschläge
+Gesamtbetrag der Abschläge
+Rechnungssumme ohne USt. 380,00
+Steuerbetrag 0,00
+Bruttosumme 380,00
+Erhaltene Anzahlungen
+Zahlbetrag 380,00
+
+Zahlungsbedingungen
+
+Beschreibung
+Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.
+Fälligkeit 21.11.2018
+Teilzahlung
+
+Zahlungsart
+
+Zahlungstyp (codiert): 30 - per Überweisung (SEPA)
+Kontoname: Tanja Tinder
+IBAN: DE02120300000000202051<|im_end|>

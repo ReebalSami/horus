@@ -1,0 +1,120 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_EN16931_Haftpflichtversicherung_Versicherungssteuer
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  63.11s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version : 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Rechnung des Versicherers Nr. 01.234.567.8-2018-1 vom 06.12.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017  
+Währung : EUR  
+Liefer- und Leistungsdatum : 06.12.2018
+
+---
+
+### Verkäufer:
+
+**Nummer** : 549910  
+**MVM Musterhafter**  
+**Versicherungsverein Musterstadt a.G.**  
+Musterstr. 12  
+DE 12345 Musterstadt  
+**USt.-Id.-Nr.** : DE234567891
+
+---
+
+### Käufer:
+
+**Herrn**  
+**Max Mustermann**  
+Musterstr. 11  
+DE 12346 Bad Musterhausen
+
+---
+
+### Allgemeine Haftpflichtversicherung VSNR: 01.234.567.8  
+*(Bei Schriftwechsel und Zahlung bitte angeben.)*
+
+---
+
+### Qualifizierung der Textart: REG
+
+**MVM Musterhafter**  
+**Versicherungsverein Musterstadt a.G.**  
+**Versicherungsbüro**  
+Muster  
+Musterstr. 12  
+12345 Musterstadt  
+**Tel.** : 0123/45678  
+**Fax.** : 01231/99 45678  
+**Mo.-Fr.** 08.30 - 12.30 Uhr  
+**Mo.-Fr.** 14.00 - 17.00 Uhr  
+**Mo-Fr 8.00-20.00 Uhr, Sa 8.00-14.00 Uhr**
+
+---
+
+| Pos | Art-Nr | Kunde | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------|-------|--------------|------------|-------|--------|---------|
+| Art-Nr-Lief. | | | | | | | |
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+**Art-Nr**  
+**(Art)**
+
+1 | Privathaftpflicht | 50,00 | 1 Stk | 0 % VAT (E) | 50,00  
+---|---|---|---|---|---  
+| Bruttoreis : 50,00  
+
+2 | Lebensgefährte/in zur Privathaftpflicht | 0,00 | 1 Stk | 0 % VAT (E) | 0,00  
+---|---|---|---|---|---  
+| Bruttoreis : 0,00  
+
+---
+
+**Zahlungsbedingungen:**
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|---|---|---|
+| Einen zu zahlenden Beitrag überweisen Sie bitte auf folgende Bankverbindung: IBAN DE75123456780000001234, BIC WELADED1MST, Sparkasse Musterstadt Ost. Einfacher für Sie ist es, wenn Sie uns ein SEPA-Lastschriftmandat erteilen. Wir würden dann zu der Fälligkeit 06.12.2018 den Beitrag von dem uns bekannten Konto abbuchen. In diesem Fall würden Sie, sofern sich keine Beitragsänderung ergibt, zukünftig keine Zwischenrechnung erhalten. | | |
+| Beitragsgutschriften aus Ihrem Vertrag erstatten wir per Scheck. | | |
+
+---
+
+**Umsatzsteueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert Zu-/Abschlag | Steuerbasisbetrag | USt. % | USt.-Betrag |
+|---|---|---|---|---|
+| VAT (E) | | | | |
+| Umsatzsteuerbefreit nach §4 Nr. 10a | 50,00 | 0 | 0,00 |
+| UStG | | | | |
+
+---
+
+**Belegsummen:**
+
+| Positionssumme | 50,00 |
+|---|---|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 50,00 |
+| Steuerbetrag | 0,00 |
+| **Bruttosumme** | **50,00** |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **50,00** |
+```<|im_end|>

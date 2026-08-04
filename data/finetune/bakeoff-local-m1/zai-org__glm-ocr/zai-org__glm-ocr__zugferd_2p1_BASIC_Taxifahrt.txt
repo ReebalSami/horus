@@ -1,0 +1,47 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p1_BASIC_Taxifahrt
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  64.42s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. TX-471102 vom 30.10.2019
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
+Währung : EUR
+
+Liefer- und Leistungsdatum : 29.10.2019
+
+Verkäufer:
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
+Währung : EUR
+
+Liefer- und Leistungsdatum : 29.10.2019
+
+Verkäufer:
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
+Währung : EUR
+
+Liefer- und Leistungsdatum : 29.10.2019
+===== PAGE 2 =====
+2 Stadtfahrt - 2,00 Euro je gefahrene Kilometer 2,00 6 Stk 7 % VAT (S) 13,00
+
+Zahlungsbedingungen:
+
+Beschreibung Fälligkeit 29.11.2019 Teilzahlung
+
+Umsatzsteueraufschlüsselung:
+
+Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag USt. % USt.-Betrag

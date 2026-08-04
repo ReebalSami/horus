@@ -1,0 +1,70 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  zugferd_2p0_EXTENDED_Fremdwaehrung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  38.75s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen<lcel><nl>
+<fcel>Handelsrechnung Nr. 47110815 vom 31.10.2018 RECHNUNG<lcel><nl>
+<fcel>Geschäftsprozess : BeispielgeschäftsprozessAnwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended<lcel><nl>
+<fcel>Rechnungswährung : GBP<lcel><nl>
+<fcel>Währung der Umsatzsteuerbuchung : EURUmrechnungskurs : 1.12244<lcel><nl>
+<fcel>Liefer-/Leistungszeitraum : 01.10.2018 bis 31.10.2018<lcel><nl>
+<fcel>Verkäufer:Nummer : 12345676Rohstoff AG SalzgitterMarktstr. 153DE 38226 Salzgitter<lcel><nl>
+<fcel>USt.-Id.-Nr. : DE123456789<lcel><nl>
+<fcel>Käufer/Leistungsempfänger:Nummer : 75969813Metallbau Leipzig GmbH & Co. KGPappelallee 15Hof 3DE 12345 Leipzig<lcel><nl>
+<fcel>Steuerbevollmächtigter des Verkäufers:<lcel><nl>
+<fcel>Global Supplies Financial ServicesFriedrichstraße 165DE 12345 Berlin<lcel><nl>
+<fcel>USt.-Id.-Nr. : DE133456701<lcel><nl>
+<fcel>Abweichender Warenempfänger:Nummer : 75969815Metallbau Leipzig GmbH & Co. KGEichenpromenade 37Tor 1DE 12347 Metallstadt<lcel><nl>
+<fcel>Abweichender Zahlungsempfänger:<lcel><nl>
+<fcel>Globale Nummer: 432156789 (DUNS)Global Supplies Financial ServicesFriedrichstraße 165DE 12345 Berlin<lcel><nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>Qualifizierung der Textart: Regulatory informationMitglieder der GeschäftsleitungH. Meier GeschäftsführerT. Müller ProkuristHRB Braunschweig 12345<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Qualifizierung der Textart: General informationVom 17. Dezember 2018 bis 6. Januar 2019 haben wir Betriebsferien.<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Qualifizierung der Textart: Tax declarationAus konzern-internen Gründen wird der Steuerbetrag sowohl in der Rechungswährung (EUR) als auch in der Buchwährung (GBP) ausgegeben.<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-KundeArt-Nr-Lief.Art-Nr(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>USt.<fcel>Positions-betragohne USt.<nl>
+<fcel>1<fcel>Toolbox 0815CO-123/V2A<fcel>Stahlcoil<fcel>100,0000Preisbasis:1 StkBruttopreis : 100,0000<fcel>10 Stk<fcel>19 %<fcel>850,00<nl>
+<ecel><ecel><ecel><fcel>Materialzertifikat X-234 gem ISO XYZ.Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.<ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Sonstige Zu- und Abschläge der RechnungspositionArt Grund<lcel><lcel><fcel>%Grundbetrag<fcel>Betrag<nl>
+<ecel><ecel><fcel>AbschlagLagerware (Bilateral vereinbart)<lcel><lcel><fcel>10 1000,00<fcel>-100,00<nl>
+<ecel><ecel><fcel>AbschlagDirektbelieferung (Direktbelieferung)<lcel><lcel><fcel>1000,00<fcel>-50,00<nl>
+<ecel><ecel><fcel>* Herkunftsland: DE* Bestellung Nr. ORDER84359 Zeile 1<lcel><lcel><ecel><ecel><nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Beschreibung<lcel><lcel><lcel><fcel>Fälligkeit<fcel>Teilzahlung<lcel><nl>
+<fcel>Zahlbar ohne Abschlag bis<lcel><lcel><lcel><fcel>20.11.2018<ecel><lcel><nl>
+<fcel>Zahlbar mit 2% Skonto bis<lcel><lcel><lcel><fcel>14.11.2018<ecel><lcel><nl>
+<fcel>Zahlungsart:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Kontoname : Global Supplies Financial ServicesIBAN : DE12 1234 4321 9876 00<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zu- und Abschläge:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art<lcel><lcel><fcel>% Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<nl>
+<ecel><lcel><lcel><ecel><ecel><fcel>19<ecel><nl>
+<fcel>ZuschlagEinwegverpackung (Miscellaneous)<lcel><lcel><ecel><ecel><fcel>% UST(S)<fcel>30,00<nl>
+<fcel>AbschlagStammkundenrabatt (Miscellaneous) 2,5<lcel><lcel><fcel>850,00<ecel><ecel><fcel>-21,25<nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Art<fcel>% Basisbetrag<fcel>Basismenge<fcel>Steuer<fcel>Betrag<nl>
+<ucel><ecel><ecel><fcel>19<ecel><nl>
+<ucel><ecel><ecel><fcel>% UST<ecel><nl>
+<ucel><ecel><ecel><fcel>(S)<ecel><nl>
+<fcel>Steueraufschlüsselung:<lcel><lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag<fcel>Basisbetrag<fcel>USt. %<fcel>Steuerbetrag<nl>
+<fcel>Umsatzsteuer (S)<fcel>850,00<fcel>8,75<fcel>858,75<fcel>19<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><lcel><nl>
+<ecel><ecel><fcel>Positionssumme<ecel><fcel>850,00<nl>
+<ecel><ecel><fcel>Gesamtbetrag der Zuschläge<ecel><fcel>30,00<nl>
+<ecel><ecel><fcel>Gesamtbetrag der Abschläge<ecel><fcel>-21,25<nl>
+<ecel><ecel><fcel>Rechnungssumme ohne USt.<ecel><fcel>858,75<nl>
+<ecel><ecel><fcel>Steuerbetrag in<fcel>GBP<fcel>163,16<nl>
+<ecel><ecel><ecel><fcel>EUR<fcel>183,14<nl>
+<ecel><ecel><fcel>Bruttosumme<ecel><fcel>1021,91<nl>
+<ecel><ecel><fcel>Erhaltene Anzahlungen<ecel><fcel>-500,00<nl>
+<ecel><ecel><fcel>Zahlbetrag<ecel><fcel>521,91<nl>
+<|im_end|>

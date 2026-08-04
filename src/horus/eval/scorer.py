@@ -61,12 +61,14 @@ from horus.eval.normalizers import (
 __all__ = [
     "DOCUMENT_FIELDS",
     "FIELD_GROUPS",
+    "SIGNAL_OUTCOMES",
     "FieldResult",
     "InvoiceFieldScores",
     "RepeatingGroupResult",
     "f1_from_counts",
     "group_level_counts",
     "group_level_f1",
+    "is_signal_bearing",
     "label_outcome_counts",
     "presence_conditional_counts",
     "presence_conditional_f1",
@@ -77,6 +79,30 @@ __all__ = [
 ]
 
 Outcome = Literal["TP", "FP", "FN", "TN", "EXCLUDED"]
+
+# The outcomes that carry evaluative signal. `TN` (GT absent AND prediction
+# absent — a correct rejection) and `EXCLUDED` (GT ill-posed per ADR-045/052, or
+# normalizer-rejected) are BOTH signal-free: `_aggregate_micro_macro` and
+# `label_outcome_counts` already drop them from every F1 numerator/denominator.
+#
+# Any aggregation over `FieldResult.score` MUST filter on this set. Including
+# `TN` silently inflates a field's mean toward 1.0 (its score is 1.0) and
+# including `EXCLUDED` deflates it toward 0.0 (its score is 0.0), so a field's
+# reported mean ends up driven by how often it happens to be absent rather than
+# by how well the model read it. That defect shipped in three aggregation sites
+# and produced a misleading per-field diagnostic (`rounding_amount` read as a
+# perfect 1.000 off 29/29 TN, `payment_means_text` as 0.640 instead of its true
+# 0.286) — see `eval/per-field-reporting-audit.md`.
+SIGNAL_OUTCOMES: frozenset[str] = frozenset({"TP", "FP", "FN"})
+
+
+def is_signal_bearing(outcome: str) -> bool:
+    """True when ``outcome`` contributes to precision/recall (i.e. not TN/EXCLUDED).
+
+    The single predicate every per-field score aggregation must gate on. See
+    `SIGNAL_OUTCOMES` for why.
+    """
+    return outcome in SIGNAL_OUTCOMES
 
 
 # ---------------------------------------------------------------------------

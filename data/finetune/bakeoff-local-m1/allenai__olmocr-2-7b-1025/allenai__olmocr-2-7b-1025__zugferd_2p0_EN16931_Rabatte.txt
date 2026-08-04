@@ -1,0 +1,75 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p0_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  373.96s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Handelsrechnung Nr. 471102 vom 05.06.2018
+
+Anwendungsempfehlung: urn:cen.eu:en16931:2017
+Lieferung: 03.06.2018
+Bestellung: 2013-471331
+
+Verkäufer/Lieferant: Lieferantant GmbH
+Lieferantenstraße: 20
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.: DE123456789
+
+Qualifizierung der Textart: Regulatory information
+Lieferantant GmbH
+Lieferantenstraße: 20
+Steuernummer: 201/113/40209
+USt.-Id.-Nr.: DE123456789
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+===== PAGE 2 =====
+```
+Pos Art-Nr-Kunde Beschreibung    Nettopreis    Menge    USt.    Positions-
+Art-Nr-Lief.    Art-Nr    (Art)    betrag ohne USt.
+
+1    Kunstrasen    3,3333    3 m²    19 %    10,00
+    KR3M    grün 3m    (GLN)
+
+2    Schweineinesteak    5,5000    5 kg    7 %    27,50
+    SFK5    Medium 12 x    (GLN)
+
+3    Mineralwasser    5,4900    20 Stk    19 %    109,80
+    GTRWA5    Medium 12 x    (GLN)
+
+4    Pfand    2,7700    20 Stk    7 %    5,80
+    PFA5    Versandkosten    (GLN)
+
+Zu- und Abschläge:
+
+Art    %    Basisbetrag    Basismenge    Steuer    Betrag
+Abschlag    Sondernachlass    10,00    19 % UST (S)    -1,00
+Abschlag    Sondernachlass    137,30    7 % UST (S)    -13,73
+Zuschlag    Versandkosten    137,30    7 % UST (S)    5,80
+
+Steueraufschlüsselung:
+
+Art (Kategorie)    Warenwert    Zu-/Abschlag    Basisbetrag    USt. %    Steuerbetrag
+Umsatzsteuer    (S)    129,37    7    9,06
+Umsatzsteuer    (S)    64,40    19    12,24
+```
+===== PAGE 3 =====
+Belegsummen:
+
+Positionssumme
+Gesamtbetrag der Zuschläge
+Gesamtbetrag der Abschläge
+Rechnungssumme ohne USt.
+Steuerbetrag in EUR
+Bruttosumme
+
+202,70
+5,80
+-14,73
+193,77
+21,30
+215,07

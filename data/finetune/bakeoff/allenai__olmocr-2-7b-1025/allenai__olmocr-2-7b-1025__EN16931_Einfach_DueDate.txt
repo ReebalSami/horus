@@ -1,0 +1,207 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  EN16931_Einfach_DueDate
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  74.47s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom  05.03.2018
+
+Währung:        EUR
+Liefer- und Leistungsdatum:  05.03.2018
+
+<table>
+  <tr>
+    <th>Verkäufer</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>Nummer:</td>
+    <td>549910</td>
+  </tr>
+  <tr>
+    <td>Globale Nummer:</td>
+    <td>4000001123452 (GLN)</td>
+  </tr>
+  <tr>
+    <td>Name:</td>
+    <td><b>Lieferant GmbH</b></td>
+  </tr>
+  <tr>
+    <td>Anschrift:</td>
+    <td>Lieferantenstraße 20<br>DE 80333 München</td>
+  </tr>
+  <tr>
+    <td>Steuernummer:</td>
+    <td>201/113/40209</td>
+  </tr>
+  <tr>
+    <td>USt.-Id.-Nr.:</td>
+    <td>DE123456789</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Käufer/Leistungsempfänger</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>Nummer:</td>
+    <td>GE2020211</td>
+  </tr>
+  <tr>
+    <td>Name:</td>
+    <td><b>Kunden AG Mitte</b></td>
+  </tr>
+  <tr>
+    <td>Anschrift:</td>
+    <td>Kundenstraße 15<br>DE 69876 Frankfurt</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Bemerkungen</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>Bemerkung</td>
+    <td>Rechnung gemäß Bestellung vom 01.03.2018.</td>
+  </tr>
+  <tr>
+    <td>Betreff:</td>
+    <td>REG  Regulatory information</td>
+  </tr>
+</table>
+
+Inhalt
+Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123<|im_end|>
+===== PAGE 2 =====
+Positionsdaten
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuersatz</th>
+    <th>Nettobetrag</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>TB100A4<br>4012345001235<br>(GTIN)</td>
+    <td>Trennblätter A4</td>
+    <td>9,9000</td>
+    <td>20 Stk</td>
+    <td>19 %</td>
+    <td>198,00</td>
+  </tr>
+  <tr>
+    <td colspan="7">getLineTradeAgreementBruttopreis : 9,9000</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>ARNR2<br>4000050986428<br>(GTIN)</td>
+    <td>Joghurt Banane</td>
+    <td>5,5000</td>
+    <td>50 Stk</td>
+    <td>7 %</td>
+    <td>275,00</td>
+  </tr>
+  <tr>
+    <td colspan="7">getLineTradeAgreementBruttopreis : 5,5000</td>
+  </tr>
+</table>
+
+Umsatzsteueraufschlüsselung
+
+<table>
+  <tr>
+    <th>Art (Kategorie)</th>
+    <th>Warenwert</th>
+    <th>Zu-/Abschlag</th>
+    <th>Basisbetrag</th>
+    <th>Steuersatz [%]</th>
+    <th>Steuerbetrag</th>
+  </tr>
+  <tr>
+    <td>Umsatzsteuer (S)</td>
+    <td></td>
+    <td></td>
+    <td>275,00</td>
+    <td>7</td>
+    <td>19,25</td>
+  </tr>
+  <tr>
+    <td>Umsatzsteuer (S)</td>
+    <td></td>
+    <td></td>
+    <td>198,00</td>
+    <td>19</td>
+    <td>37,62</td>
+  </tr>
+</table>
+
+Belegsummen
+
+<table>
+  <tr>
+    <th>Positionssumme</th>
+    <th>473,00</th>
+  </tr>
+  <tr>
+    <td>Gesamtbetrag der Zuschläge</td>
+    <td>0,00</td>
+  </tr>
+  <tr>
+    <td>Gesamtbetrag der Abschläge</td>
+    <td>-0,00</td>
+  </tr>
+  <tr>
+    <td>Rechnungssumme ohne USt.</td>
+    <td>473,00</td>
+  </tr>
+  <tr>
+    <td>Steuerbetrag</td>
+    <td>56,87</td>
+  </tr>
+  <tr>
+    <td>Bruttosumme</td>
+    <td>529,87</td>
+  </tr>
+  <tr>
+    <td>Erhaltene Anzahlungen</td>
+    <td>-0,00</td>
+  </tr>
+  <tr>
+    <td>Zahlbetrag</td>
+    <td>529,87</td>
+  </tr>
+</table>
+
+Zahlungsbedingungen
+
+<table>
+  <tr>
+    <th>Beschreibung</th>
+    <th>Fälligkeit</th>
+    <th>Teilzahlung</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td>05.03.2019</td>
+    <td></td>
+  </tr>
+</table><|im_end|>

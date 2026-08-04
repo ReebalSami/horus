@@ -1,0 +1,15 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   3/3
+# Extract:  0.00s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+
+===== PAGE 2 =====
+
+===== PAGE 3 =====

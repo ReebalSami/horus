@@ -1,0 +1,34 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  MustangGnuaccountingBeispielRE-20171118_506
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  7.55s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+USt. Satz Nettopreis Ust.-Betrag
+7% 160,00 € 11,20 €
+19% 336,00 € 63,84 €
+USt. Gesamt: 75,04 €
+Beid Spiel GmbH Ecke 12 12345 Stadthausen
+Theodor Est
+Bahnstr. 42
+info@localhost.local
+http://localhost/
+Kundennummer:2
+Rechnung # RE-20171118/506 von 18.11.2017
+Leistungsdatum 17.11.2017
+Gesamtbetrag
+Nettobetrag: 496,00 €
+zuzüglich Umsatzsteuer
+Bitte überweisen Sie bis zum 09.12.2017.
+Powered by GnuAccounting
+USt-ID: DE136695976
+IBAN DE88200800000970375700
+BIC COBADEFFXXX
+Commerzbank vormals Dresdner Bank
+Kontoinhaber: Max Mustermann
+Seite 1/1<|im_end|>

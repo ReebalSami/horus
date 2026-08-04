@@ -77,3 +77,65 @@ uv run python scripts/finetune_attribution.py --split val \
 JSON artifacts: `data/finetune/attribution-val.json` (granite arm) ·
 `data/finetune/attribution-oracle-val.json` (oracle arm) · both force-added over `data/*` gitignore
 alongside the sealed split, per the sealed-evidence precedent.
+
+## Amendment (ADR-059) — the oracle arm was measuring its own renderer
+
+The verdict above rests on the oracle probe, so the probe's own correctness is load-bearing. Auditing
+it turned up **five defects in `render_oracle_transcript`**, every one of which depressed the ceiling
+it was supposed to establish. All are in the measurement apparatus, not the model:
+
+| # | Defect | Effect on the "perfect" page |
+|---|---|---|
+| 1 | Labels were spec jargon, not what pages print | printed wordings occurring in **0/146** real transcripts |
+| 2 | Group cells rendered `<label> <value>`, no separator | `Pos 1`, `Umsatzsteuer S` — **103 cells** lost to punctuation alone |
+| 3 | `category_code` borrowed `Umsatzsteuer`, which labels the VAT *section* | `Umsatzsteuer: S` → 11 FNs (1.000 → 0.831) |
+| 4 | Row prefix was `enumerate`, an unlabelled number | returned as `rate_percent` on rows with no rate; **contradicted the GT** on 0-based invoices |
+| 5 | Multi-line CII values printed verbatim into a one-line row | line-item table structurally broken on 1/29 invoices |
+
+Defect 2 is the instructive one: `<label> <value>` only *looks* fine while labels are long German
+compounds. Fixing defect 1 shortened them, and the latent ambiguity became a 103-cell loss on
+PERFECT input. Grounding a label is not enough — it must also be *separable* from its value.
+
+Defect 3 is the counterexample to naive grounding: `Umsatzsteuer` is well attested (97/146) but names
+a different concept than the value beside it. **Grounded-but-wrong is worse than synthetic-and-clear**;
+it is now a documented exception gated by `make audit-prompts`.
+
+### Corrected ceiling (29 sealed val invoices, same structurer, same decode)
+
+| metric | before | after |
+|---|---|---|
+| `overall_micro_f1` | 0.9676 | **0.9719** |
+| `micro_f1` (flat) | 0.9641 | **0.9743** |
+| `presence_conditional_f1` | 0.9717 | **0.9812** |
+| `spurious_emission_rate` | 0.0176 | **0.0145** (lower better) |
+
+`before` is the archived tier-1 oracle generations **re-scored under current code**, not the 0.9608
+printed earlier in this document — that figure predates later scorer/normalizer changes. Both columns
+share one scorer, so only they are comparable to each other.
+
+The two fields the amendment was raised for both leave zero, confirming they were apparatus artefacts
+rather than structurer blind spots:
+
+- `allowance_total_amount` **0.000 → 0.909** (FN=6 → TP=5, FN=1)
+- `charge_total_amount` **0.000 → 1.000** (FN=5 → TP=5)
+
+`vat_breakdown` (0.986) and `skonto` (0.750) end unchanged; `line_items` is flat at 0.971 with better
+precision (FP 21 → 11); `line_items.line_id` reaches **1.000**.
+
+### Open findings (NOT fixed here — apparatus limits, recorded not hidden)
+
+- **`line_items.seller_assigned_id` 0.929 → 0.776** (FN 1 → 8). On the `*_Rabatte` invoices the
+  structurer merges the following cell into the name (`name="Kunstrasen grün 3m breit | Art-Nr: KR3M"`,
+  `seller_assigned_id=null`), i.e. `" | "` is a weak boundary once the label is the short, real-world
+  `Art-Nr`. Reverting to the unattested `Artikelnummer` would flatter the model by reintroducing
+  defect 1, so it stands. The real fix is a **true table render** (column headers stated once,
+  positional cells), already flagged as a known layout caveat in the renderer docstring.
+- **GT `name` sometimes holds a whole product block**, not a name — e.g.
+  `"GTIN 4123456000014\nArt-Nr-Lieferant ZS9997\nZitronensäure 100ml\nVerpackung: Flasche\nVKE/Geb: 1"`,
+  with `seller_assigned_id` simultaneously `None` even though the article number sits inside that
+  blob. No reader can win this; it is a GT-definition question, not an extraction one.
+- **`skonto` 0.750** is unchanged by all of the above and remains genuine structurer headroom.
+
+Regression guards: `tests/test_finetune_dataset.py` pins the label/value separator, the GT-sourced
+row ordinal, and the one-row-one-line contract (the last hermetically, since the corpus is gitignored
+and corpus-gated tests never run in CI).

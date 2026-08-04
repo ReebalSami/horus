@@ -1,0 +1,137 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p0_BASIC_Rechnungskorrektur
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  71.90s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+Rechnungskorrektur Nr. RK21012345 vom 16.09.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic
+
+Rechnungswährung      : EUR
+
+Liefer- und Leistungsdatum      : 05.08.2018
+
+Verkäufer:
+
+GLN 4333741000005
+Lief-Nr: 549910
+MUSTERLIEFERANT GMBH
+
+BAHNHOFSTRASSE 99
+DE 99199 MUSTERHAUSEN
+
+USt.-Id.-Nr. : DE123456789
+
+Käufer/Leistungsempfänger:
+
+GLN 4304171000002
+Kunden-Nr. : 009420
+MUSTER-KUNDE GMBH
+
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+
+Es bestehen Rabatt- oder Bonusvereinbarungen.
+
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Max Mustermann
+USt-IdNr: DE123456789
+Telefon: +49 932 431 0
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+
+Bei Rückfragen:
+Telefon: +49 932 431 500
+E-Mail : max.muster@musterlieferant.de<|im_end|>
+===== PAGE 2 =====
+Warenempfänger
+GLN 430417088093
+MUSTER-MARKT
+
+HAUPTSTRASSE 44
+31157 SARSTEDT
+
+Abteilung : 8211
+
+Bestell-Nr      : B123456789
+Bestell-Datum  : 01.08.2018
+
+Lieferschein-Nr    : L87654321012345
+Lieferschein-Datum : 05.08.2018
+Ursprungsbeleg-Nr   : R87654321012345
+Reklamationsnummer : REKLA-2018-235
+
+Rechnungsempfänger
+GLN 4304171000002
+MUSTER-KUNDE GMBH
+
+KUNDENWEG 88
+40235 DUESSELDORF
+Kunden-Nr. : 009420
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>USt.</th>
+    <th>Positionsbetrag ohne USt.</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>GTIN<br>4123456000014<br>Art-Nr-<br>Lieferant<br>ZS9997<br>Zitronensäure<br>100ml<br>Verpackung:<br>Flasche<br>VKE/Geb: 1</td>
+    <td></td>
+    <td>1,0000</td>
+    <td>-5 Stk</td>
+    <td>19 %</td>
+    <td>-5,00</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>GTIN<br>4123456000021<br>Art-Nr-<br>Lieferant<br>GZ250<br>Gelierzucker<br>Extra 250g<br>Verpackung:<br>Karton<br>VKE/Geb: 1</td>
+    <td></td>
+    <td>1,4500</td>
+    <td>-2 Stk</td>
+    <td>7 %</td>
+    <td>-2,90</td>
+  </tr>
+</table><|im_end|>
+===== PAGE 3 =====
+Zu- und Abschläge:
+
+Art    %   Basisbetrag   Basismenge   Steuer   Betrag
+Abschlag Rechnungsrabatt   19 % UST (S)   0,15
+Abschlag Rechnungsrabatt   7 % UST (S)   0,08
+
+Steueraufschlüsselung:
+
+Art (Kategorie)   Warenwert Zu-/Abschlag   Basisbetrag   USt. %   Steuerbetrag
+Umsatzsteuer (S)   -4,85   19   -0,92
+Umsatzsteuer (S)   -2,82   7   -0,20
+
+Belegsummen:
+
+Positionssumme   -7,90
+Gesamtbetrag der Zuschläge   0,00
+Gesamtbetrag der Abschläge   0,23
+Rechnungssumme ohne USt.   -7,67
+Steuerbetrag in EUR   -
+1,12
+Bruttosumme   -8,79
+
+Zahlbetrag   -8,79<|im_end|>

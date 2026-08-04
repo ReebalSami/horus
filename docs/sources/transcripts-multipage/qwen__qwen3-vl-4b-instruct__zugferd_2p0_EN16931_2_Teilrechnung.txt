@@ -1,0 +1,113 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EN16931_2_Teilrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  49.29s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. 471113 vom 13.06.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+
+Rechnungswährung : EUR
+
+Liefer- und Leistungsdatum : 03.06.2018
+
+Bestellung : 2018-471331
+
+---
+
+### Verkäufer:
+
+**Globale Nummer:** 4000001123452 (GTIN)
+
+**Lieberant GmbH**  
+Lieberantenstraße 20  
+DE 80333 München
+
+**Steuernummer :** 201/113/40209  
+**USt.-Id.-Nr. :** DE123456789
+
+---
+
+### Käufer/Leistungsempfänger:
+
+**Nummer :** GE2020211  
+**Globale Nummer:** 4000001987658 (GTIN)
+
+**Kunden AG Mitte**  
+Kundenstraße 15  
+DE 69876 Frankfurt
+
+---
+
+Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.
+
+---
+
+**Qualifizierung der Textart:** Price conditions
+
+**Es bestehen Rabatt- und Bonusvereinbarungen.**
+
+---
+
+**Qualifizierung der Textart:** Regulatory information
+
+**Lieberant GmbH**  
+Lieberantenstraße 20  
+80333 München  
+Deutschland
+
+**Geschäftsführer:** Hans Muster  
+**Handelsregisternummer:** H A 123
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Art-Nr (Art) | Beschreibung | Nettopreis | Menge | USt. | Positions- betrag ohne USt. |
+|-----|--------------|--------------|--------------|--------------|------------|-------|------|-----------------------------|
+| 1   | SKF5         | 4000050986428 (GLN) | Schweinesteak | 5,5000 | 4 kg | 7 % | 22,00 |
+
+**Bruttopreis : 5,5000**
+
+Bestellt wurden 5 kg Schweinesteak. Mit dieser Rechnung werden die nachgelieferten 4 kg Steaks berechnet.
+
+Schweinesteak aus Deutschland
+
+---
+
+### Zahlungsbedingungen:
+
+**Beschreibung** | **Fälligkeit** | **Teilzahlung**
+--- | --- | ---
+Zahlbar innerhalb 30 Tagen netto bis 04.07.2018, 3% | | 
+Skonto innerhalb 10 Tagen bis 15.06.2018 | | 
+
+---
+
+### Steueraufschlüsselung:
+
+| Art (Kategorie) | Warenwert Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|------------------------|-------------|--------|--------------|
+| Umsatzsteuer (S) | | 22,00 | 7 | 1,54 |
+
+---
+
+### Belegsummen:
+
+| Positionssumme | 22,00 |
+|----------------|-------|
+| Gesamtbetrag der Zuschläge | |
+| Gesamtbetrag der Abschläge | |
+| Rechnungssumme ohne USt. | 22,00 |
+| Steuerbetrag in EUR | 1,54 |
+| **Bruttosumme** | **23,54** |
+| Erhaltene Anzahlungen | |
+| **Zahlbetrag** | **23,54** |
+```<|im_end|>

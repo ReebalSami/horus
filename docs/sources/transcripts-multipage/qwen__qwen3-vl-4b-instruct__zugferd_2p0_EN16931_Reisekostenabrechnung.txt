@@ -1,0 +1,132 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EN16931_Reisekostenabrechnung
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  66.06s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. 280081 vom 13.07.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+
+Rechnungswährung : EUR
+
+Liefer-/Leistungszeitraum : 09.07.2018 bis 11.07.2018
+
+Weitere Referenz : 42389, Art der Referenz: Referenzpapier
+
+Weitere Referenz : 42390, Art der Referenz: Referenzpapier
+
+---
+
+### Verkäufer:
+
+Globale Nummer: 4000001123452 (GTIN)
+
+**Lieberant GmbH**
+
+Lieberantenstraße 20
+
+DE 80333 München
+
+Steuernummer : 201/113/40209
+
+USt.-Id.-Nr. : DE123456789
+
+---
+
+### Käufer/Leistungsempfänger:
+
+Nummer : GE2020211
+
+Globale Nummer: 4000001987658 (GTIN)
+
+**Kunden AG Mitte**
+
+Kundenstraße 15
+
+DE 69876 Frankfurt
+
+---
+
+### Abweichender Warenempfänger:
+
+**Musterfirma Nürnberg**
+
+Am Bahnhof 42
+
+DE 75319 Nürnberg
+
+---
+
+Qualifizierung der Textart: Regulatory information
+
+Listelotte Müllermann, Kumpelstr. 54, 12345 Berlin
+
+Handelsregisternummer: H A 713
+
+---
+
+Qualifizierung der Textart: General information
+
+Flug wurde vom Auftraggeber gebucht.
+
+---
+
+Qualifizierung der Textart: General information
+
+Reise: Musterreisekostenabrechnung
+
+Zweck: Workshop in Nürnberg
+
+Land: Deutschland
+
+Strecke: Berlin - Berlin
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Art-Nr (Art) | Beschreibung | Nettopreis | Menge | USt. | Positions- | Positions- |
+|-----|--------------|--------------|--------------|--------------|------------|-------|------|------------|------------|
+|     |              |              |              |              |            |       |      | betrag     | ohne USt.  |
+| 1   |              |              |              | Übernachtung. 2 Nächte Hotel | 158,8800 | 1 Stk | 7 % | 158,88 |            |
+|     |              |              |              | Bruttoreis : 170,0000 |            |       |      |            |            |
+| 2   |              |              |              | Verpflegung Frühstück | 11,7600 | 1 Stk | 19 % | 11,76 |            |
+|     |              |              |              | Bruttoreis : 14,0000 |            |       |      |            |            |
+| 3   |              |              |              | Fahrtkosten, Taxi Berlin | 23,3600 | 1 Stk | 7 % | 23,36 |            |
+|     |              |              |              | Bruttoreis : 25,0000 |            |       |      |            |            |
+| 4   |              |              |              | Fahrtkosten, Taxi Nürnberg | 20,0900 | 1 Stk | 7 % | 20,09 |            |
+|     |              |              |              | Bruttoreis : 21,5000 |            |       |      |            |            |
+
+**Zahlungsbedingungen:**
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+| Zahlbar innerhalb 30 Tagen netto bis 12.08.2018, 3% |            |             |
+| Skonto innerhalb 10 Tagen bis 15.03.2018 |            |             |
+
+**Steueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|------------------------|-------------|--------|--------------|
+| Umsatzsteuer (S) |                        | 202,33      | 7      | 14,16        |
+| Umsatzsteuer (S) |                        | 11,76       | 19     | 2,23         |
+
+**Belegsummen:**
+
+| Positionssumme | 214,09 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 214,09 |
+| Steuerbetrag in EUR | 16,39 |
+| **Bruttosumme** | **230,48** |
+| Erhaltene Anzahlungen | -0,00 |
+| Zahlbetrag | 230,48 |
+```<|im_end|>

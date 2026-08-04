@@ -1,0 +1,211 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_EXTENDED_Rechnungskorrektur
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  143.97s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version: 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Rechnungskorrektur Nr. RK21012345 vom 16.09.2018
+
+- **Testkennzeichen**: true  
+- **Geschäftsprozess**: Beispielgeschäftsprozess  
+- **Anwendungsempfehlung**: urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended  
+- **Währung**: EUR  
+- **Liefers- und Leistungsdatum**: 05.08.2018  
+
+---
+
+### Bestellung:  
+- **Bestellung**: B123456789  
+- **Weitere Referenz**: REKLA-2018-235, Art der Referenz: 130  
+- **Weitere Referenz**: R87654321012345, Art der Referenz: 130  
+
+---
+
+### Verkäufer:  
+- **Nummer**: 549910  
+- **Globale Nummer**: 4333741000005 (GTIN)  
+- **MUSTERLIEFERANT GMBH**  
+  - BAHNHOFSTRASSE 99  
+  - DE 99199 MUSTERHAUSEN  
+- **Telefon**: +49 932 431 500  
+- **E-Mail**: max.mustermann@musterlieferant.de  
+- **USt.-Id.-Nr.**: DE123456789  
+
+---
+
+### Käufer:  
+- **Nummer**: 009420  
+- **Globale Nummer**: 4304171000002 (GTIN)  
+- **MUSTER-KUNDE GMBH**  
+  - KUNDENWEG 88  
+  - DE 40235 DÜSSELDORF  
+
+---
+
+### Abweichender Warenempfänger:  
+- **Globale Nummer**: 4304171088093 (GTIN)  
+- **MUSTER-MARKT**  
+  - 8211  
+  - HAUPTSTRASSE 44  
+  - DE 31157 SARSTEDT  
+
+---
+
+### Abweichender Rechnungsempfänger:  
+- **Nummer**: 009420  
+- **Globale Nummer**: 4304171000002 (GTIN)  
+- **MUSTER-KUNDE GMBH**  
+  - KUNDENWEG 88  
+  - DE 40235 DÜSSELDORF  
+
+---
+
+### Qualifizierung der Textart: AAK, Qualifizierung des Textes: ST3  
+Es bestehen Rabatt- oder Bonusvereinbarungen.
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+Qualifizierung der Textart: REG
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Max Mustermann
+USt-IdNr: DE123456789
+Telefon: +49 932 431 0
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|------------|-------|--------|---------|
+| 1   |              | Art-Nr       |              |            |       |        |         |
+|     |              | (Art)        |              |            |       |        |         |
+|     | ZS997        |              | Zitronensäure 100ml | 1,00 | -5 Stk | 19 % VAT (S) | -5,00 |
+|     | 4123456000014 |              |              |            |       |        |         |
+|     | (GTIN)       |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |
+===== PAGE 3 =====
+```markdown
+| Bruttosumme | -8,79 |
+|-------------|-------|
+| Erhaltene Anzahlungen | -0,00 |
+| Zahlbetrag | -8,79 |
+```<|im_end|>

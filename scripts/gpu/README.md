@@ -10,12 +10,14 @@ M1** (the mlx_vlm LoRA trainer is Apple-only by design — matched train/serve p
 Budget approved: ≲ $15 (< 6 GPU-hours on-demand). **Terminate the instance when done —
 step 6 is not optional.**
 
-> **Provider status (2026-07-31)**: AWS denied the G-instance vCPU quota increase twice
-> (fresh-account ramp policy; case 178548148400462). **Plan of record is §1B (RunPod)** —
-> no quota gate, per-second billing, A40 48 GB at ≈ $0.35–0.44/hr (vs $1.01/hr A10G).
-> §1A (AWS) is retained in case the quota appeal ever lands.
+> **Provider status (2026-08-01, supersedes 2026-07-31)**: the AWS quota appeal was
+> **APPROVED** on case 178548148400462 ("Running On-Demand G and VT instances" raised to
+> 4 vCPUs in eu-central-1 Frankfurt). **Plan of record is §1A (AWS g5.xlarge, A10G 24 GB)**
+> again. §1B (RunPod) is retained as the fallback path in case AWS capacity/quota regresses.
+> Prior note (2026-07-31, superseded): AWS had denied the increase twice under the
+> fresh-account ramp policy, which made §1B the interim plan of record.
 
-## 1A. Launch via AWS console (blocked by quota — retained for reference)
+## 1A. Launch via AWS console (plan of record)
 
 Target: `g5.xlarge` (A10G 24 GB), region `eu-central-1` (Frankfurt), on-demand ≈ $1.01/hr
 (spot ≈ $0.30–0.45/hr also works — every pass is resumable — but on-demand is simpler).
@@ -69,7 +71,7 @@ Host horus-gpu
 
 then `ssh horus-gpu` / `rsync … horus-gpu:~/horus/` work without flags.
 
-## 1B. Launch via RunPod (plan of record)
+## 1B. Launch via RunPod (fallback — retained for reference)
 
 Pods are Docker containers with the NVIDIA driver ready; you are `root` inside. Per-second
 billing; ≈ $0.35–0.44/hr for an A40 48 GB → the full job costs < $5 of the ≤ $15 budget.
@@ -144,6 +146,16 @@ ssh ubuntu@<instance-ip>
 cd ~/horus && bash scripts/gpu/setup.sh
 ```
 
+> **LD_LIBRARY_PATH gotcha (hit 2026-08-02, AWS DL Base AMI)**: the AMI exports
+> `LD_LIBRARY_PATH=/usr/local/cuda/lib64:…` (system CUDA 13.2). Those libs SHADOW the
+> pip-provided `nvidia-*` wheels torch links against (RUNPATH loses to
+> LD_LIBRARY_PATH), producing `Invalid handle. Cannot load symbol cublasLtGetVersion`
+> + SIGABRT at the first cuBLAS call — while `torch.cuda.is_available()` still passes
+> (driver-only check). Fix: prefix every `uv run` with an empty override, e.g.
+> `ssh horus-gpu 'cd ~/horus && LD_LIBRARY_PATH= PATH=$HOME/.local/bin:$PATH uv run python …'`
+> (also note: `uv` lands in `~/.local/bin`, which non-interactive ssh shells don't have
+> on PATH).
+
 ## 4. Reader bake-off — full precision, 29 sealed val invoices
 
 Candidates ran at their canonical HF repos via `--force-transformers` (bf16, native
@@ -191,16 +203,19 @@ rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/bakeoff/ ~/Projects/horus/
 rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/gpu-transcripts/ ~/Projects/horus/data/finetune/gpu-transcripts/
 ```
 
-(With the §1B ssh alias, replace `ubuntu@<instance-ip>` with `horus-gpu`.)
+(With the ssh alias from §1A/§1B, replace `ubuntu@<instance-ip>` with `horus-gpu`.)
 
-- **RunPod**: console → pod → **Terminate**; verify the Pods list is empty (billing stops).
-- **AWS** (only if §1A was used):
+- **AWS** (plan of record): console → instance → **Terminate instance** (NOT stop — a
+  stopped instance still bills the 200 GB disk), or from the Mac:
 
 ```sh
 aws ec2 terminate-instances --instance-ids <id> --region eu-central-1
 aws ec2 describe-instances --instance-ids <id> --region eu-central-1 \
   --query 'Reservations[].Instances[].State.Name'   # expect "shutting-down"/"terminated"
 ```
+
+- **RunPod** (only if §1B was used): console → pod → **Terminate**; verify the Pods list
+  is empty (billing stops).
 
 ## 7. Back on the Mac
 

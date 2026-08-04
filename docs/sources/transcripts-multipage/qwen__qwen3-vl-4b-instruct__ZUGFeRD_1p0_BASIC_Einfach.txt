@@ -1,0 +1,84 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  ZUGFeRD_1p0_BASIC_Einfach
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  37.12s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+**Rechnungsersteller**
+
+Lieberant GmbH
+Lieberantenstraße 20
+80333 München
+Deutschland
+GLN 4000001123452
+
+**Rechnungsempfänger**
+
+Kunden AG Mitte
+Hans Muster
+Kundenstraße 15
+69876 Frankfurt
+Deutschland
+GLN 4000001987658
+
+**FeRD**
+*Forum elektronische Rechnung Deutschland*
+
+---
+
+**RECHNUNG**
+
+| Feld | Wert |
+|------|------|
+| Rechnungsnummer | 471102 |
+| Rechnungsdatum | 05.03.2013 |
+| Leistungsdatum | 05.03.2013 |
+| Referenz (bitte bei Zahlung angeben) | 2013-471102 |
+| Kundenummer | GE2020211 |
+| Beträge in | EUR |
+| Hinweis | Rechnung gemäß Bestellung vom 01.03.2013 |
+
+---
+
+| Unsere Art.Nr. | Artikelbeschreibung | Menge | Meng.-einheit | Preis/Einheit | Betrag | USt. % |
+|----------------|---------------------|-------|---------------|---------------|--------|--------|
+| TB100A4        | Trennblätter A4<br>GTIN: 4012345001235 | 20    | Stk.          | 9,90          | 198,00 | 19     |
+
+---
+
+**Rechnungssumme Netto (excl. USt.)** | 198,00
+**Steuerbasisbetrag USt. 19%** | 198,00 | 37,62
+**Rechnungssumme Brutto (inkl. USt.)** | 235,62
+
+---
+
+**Zahlungsinformationen:**
+
+Zahlbar innerhalb 30 Tagen netto bis 04.04.2013, 3% Skonto innerhalb 10 Tagen bis 15.03.2013
+
+---
+
+**Bank-/Steuerinformationen**
+
+| Feld | Wert |
+|------|------|
+| Kontonr.: | 1234 5678 90 |
+| IBAN-Nr.: | DE08 7009 0100 1234 5678 90 |
+| Handelsreg.: | H A 123 |
+| BLZ: | 700 901 00 |
+| BIC: | GENODEF1M04 |
+| USt.-Identnr.: | DE123456789 |
+| Bankname: | Hausbank München |
+| Geschäftsf.: | Hans Muster |
+| Steuernr.: | 201/113/40209 |
+
+---
+
+ZUGFeRD Beispierechnung COMFORT 2014 -Copyright AWW e.V. 2014
+```<|im_end|>

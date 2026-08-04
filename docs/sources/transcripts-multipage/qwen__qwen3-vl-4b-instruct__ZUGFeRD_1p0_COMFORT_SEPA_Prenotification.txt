@@ -1,0 +1,82 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  ZUGFeRD_1p0_COMFORT_SEPA_Prenotification
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  46.29s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+ZUGFeRD Beispierechnung COMFORT 2014 - Copyright AWW e.V. 2014
+
+# Rechnung
+
+## Rechnungsersteller
+
+Lieberant GmbH
+Lieberantenstraße 20
+80333 München
+Deutschland
+GLN 4000001123452
+
+## Rechnungsempfänger
+
+Kunden AG Mitte
+Hans Muster
+Kundenstraße 15
+69876 Frankfurt
+Deutschland
+GLN 4000001987658
+
+## RECHNUNG
+
+| Feld | Wert |
+|------|------|
+| Rechnungsnummer | 471102 |
+| Rechnungsdatum | 05.03.2014 |
+| Leistungsdatum | 05.03.2014 |
+| Referenz (bitte bei Zahlung angeben) | 2014-471102 |
+| Kundenummer | GE2020211 |
+| Beträge in | EUR |
+| Hinweis | Rechnung gemäß Bestellung Nr. 2014-471331 vom 01.03.2014. <br> Es bestehen Rabatt- und Bonusvereinbarungen. |
+
+## Artikelübersicht
+
+| Unsere Pos Art.Nr. | Artikelbeschreibung | Menge | Meng.-einheit | Preis/Einheit | Betrag | USt. % |
+|--------------------|---------------------|-------|---------------|---------------|--------|--------|
+| 1 TB100A4          | Trennblätter A4<br>GTIN: 4012345001235 | 20    | Stk.          | 9,90          | 198,00 | 19     |
+| 2 ARNR2            | Joghurt Banane<br>GTIN: 4000050986428 | 50    | Stk.          | 5,50          | 275,00 | 7      |
+
+## Rechnungssumme
+
+| Beschreibung | Betrag |
+|--------------|--------|
+| Rechnungssumme Netto (excl. USt.) | 473,00 |
+| Steuerbasisbetrag USt. 7% | 275,00 19,25 |
+| Steuerbasisbetrag USt. 19% | 198,00 37,62 |
+| **Rechnungssumme Brutto (inkl. USt.)** | **529,87** |
+
+## Zahlungsinformationen
+
+Der Betrag in Höhe von EUR 529,87 wird am **20.03.2014** von Ihrem Konto mit IBAN DE21860000000086001055 und BIC MARKDEF1860, Deutsche Bundesbank -Filiale Leipzig- per SEPA-Lastschrift eingezogen.
+
+Mandatsreferenz: REF A-123, Gläubiger-Identifikationsnummer: DE98ZZZ09999999999
+
+## Bank-/Steuerinformationen
+
+| Feld | Wert |
+|------|------|
+| Kontonr.: | 1234 5678 90 |
+| BLZ: | 700 901 00 |
+| Bankname: | Hausbank München |
+| IBAN-Nr.: | DE08 7009 0100 1234 5678 90 |
+| BIC: | GENODEF1M04 |
+| Handelsreg.: | H A 123 |
+| USt.-Identnr.: | DE123456789 |
+| Geschäftsf.: | Hans Muster |
+| Steuernr.: | 201/113/40209 |
+
+```<|im_end|>

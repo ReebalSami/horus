@@ -1,0 +1,74 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  ZUGFeRD_1p0_EXTENDED_Kostenrechnung
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  137.43s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+**Lieferant**
+GLN 4333741000005 Lief-Nr: 549910
+KOSTENLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+
+**Käufer**
+GLN 4304171000002
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+40235 DUESSELDORF
+
+**KOSTENRECHNUNG**
+Beleg-Nr: KR87654321012
+Beleg-Datum: 06.10.2013
+Leistungs-Datum: 01.09.13 - 30.09.13
+Vertrags-Nr: V88456789
+Vertrags-Datum: 01.04.2013
+Lieferschein-Nr: L87654321012
+Lieferschein-Datum: 30.09.2013
+Auftrag-Nr-Lief: A777123
+Auftrag-Datum-Lief: 02.04.2013
+Bei Rückfragen:
+Telefon: +49 932 431 500
+E-Mail: max.muster@musterlieferantant.de
+
+**GTIN**
+Art-Nr-Lieferantant
+Menge
+VKE/Geb
+Netttopreis
+MwSt-%
+Endbetrag
+
+**Art-Nr-Kunde**
+Artikelbezeichnung
+
+**Warenwertwert**
+Zu-/Abschlag
+Fracht-Verp-Vers
+Skonto sofort
+Nettobetrag
+MwSt-Betrag
+MwSt-%
+Endbetrag
+
+**Warenwertwert**
+1062,60
+15,00
+-21,55
+1056,05
+200,65
+19,0
+1256,70
+
+**Musterlieferantant**
+Geschäftsführung:
+USt-IdNr: DE123456789
+HRB Nr. 372876
+Max Mustermann
+Telefon: +49 932 431 0
+www.musterlieferantant.de
+GLN 4304171000002

@@ -1,0 +1,74 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  ZUGFeRD_1p0_COMFORT_SEPA_Prenotification
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  138.84s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Rechnungsersteller
+Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
+GLN 4000001123452
+
+Rechnungsempfänger
+Kunden AG Mitte
+Kundenstraße 15
+69876 Frankfurt
+Deutschland
+GLN 4000001987658
+
+RECHNUNG
+Rechnungsnummer 471102
+Rechnungsdatum 05.03.2014
+Leistungsdatum 05.03.2014
+Referenz (bitte bei Zahlung angeben) 2014-471102
+Beträge in EUR
+Hinweis
+Rechnungungssumme Netto (excl. USt.)
+Rechnungungssumme Brutto (inkl. USt.)
+Kontonr.: 1234 5678 90
+IBAN-Nr.: DE08 7009 0100 1234 5678 90
+Handelsreg.: HA 123
+USt.-Identnr.: DE123456789
+Steuernr.: 201/113/40209
+
+ZUGFeRD Beispielrechnung COMFORT 2014 -Copyright AWV e.V. 2014
+
+<table>
+  <tr>
+    <th>Pos Art.Nr.</th>
+    <th>Artikelbeschreibung</th>
+    <th>Menge</th>
+    <th>Meng.-einheit</th>
+    <th>Preis/Einheit</th>
+    <th>Betrag</th>
+    <th>USt. %</th>
+  </tr>
+  <tr>
+    <td>1 TB100A4</td>
+    <td>Trennblätter A4</td>
+    <td>20</td>
+    <td>Stk.</td>
+    <td>9,90</td>
+    <td>198,00</td>
+    <td>19</td>
+  </tr>
+  <tr>
+    <td>2 ARNR2</td>
+    <td>Joghurt Banane</td>
+    <td>50</td>
+    <td>Stk.</td>
+    <td>5,50</td>
+    <td>275,00</td>
+    <td>7</td>
+  </tr>
+</table>
+
+BLZ: 700 901 00
+BIC: GENODEDEF1M04

@@ -1,0 +1,80 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  ZUGFeRD_2.0_fully_compliant_complete
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  45.37s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Rechnung
+
+## Die Vordefinierte Firma
+Waldstrasse 86-90
+13403 Berlin
+Deutschland
+
+Tel: +49 (030) 41092-0
+Fax: +49 (030) 41092-111
+email: info@vordefiniert.de
+USTID#DE12345618938
+
+Seite 1 von 1
+20.03.2018 17:09:28
+
+---
+
+### Firma
+Elektromarkt Bamby
+Adlerstrasse 452
+D-07545 GERA
+
+---
+
+### Information
+**Belegnummer** 90005178
+**Belegdatum** 07.01.1997
+**Lieferscheinr./-datum** 80003371 (03.01.1997)
+**Nummer/Datum** 4970 (03.01.1997)
+**Bestellnummer** EB-653421 (03.01.1997)
+**Kunden Nummer** 1175
+**Währung** DEM
+
+---
+
+### Shipping Information
+**Terms of Payment** 14 Tage 3%, 30
+**Incoterms** CIP Gera
+**Description** Frachtfrei versichert
+**Gross Weight** 308,500 KG
+**Net Weight** 308,500 KG
+**Volume** 0,750 M3
+
+---
+
+### Position Material/Beschreibung | Menge | Preis | Betrag
+---|---|---|---
+10 | M-01 Sony Sunny01 | 5 ST | 1.630,00 | 8.150,00
+| Dieses Gerät ist strahlungsarm gemäß DIN
+20 | M-02 Sony Xa1 | 5 ST | 1.888,00 | 9.440,00
+| Dieses Gerät ist strahlungsarm gemäß DIN
+30 | M-10 Highscreen MS 1775P | 4 ST | 2.350,00 | 9.400,00
+| Dieses Gerät ist strahlungsarm gemäß DIN
+40 | M-12 MAG DX 15F/Fe | 4 ST | 1.462,00 | 5.848,00
+| Dieses Gerät ist strahlungsarm gemäß DIN
+
+---
+
+**Total Before Tax** 32.838,00
+**Total Tax** 4.925,70
+**Total Amount (DEM)** 37.763,70
+
+---
+
+Friedrich-Wagner-Straße 16 · D-60318 Frankfurt/M · Postfach 16 05 29 D-60070 Frankfurt/M · Telefon (0 69) 99-0 · Telefax (0 69) 99 12 77 · Internet: IDESAG@SAP-AG.COM
+Volksbank Frankfurt · (BLZ 699 922 99) 50 4999 09 SWIFT DXXX DE 6K · Postbank Karlsruhe · (BLZ 660 900 99) 999 366-999
+Dresdner Bank Frankfurt · (BLZ 699 800 99) 49999 111 00 SWIFT DRES-DE-FF699 · Deutsche Bank Hamburg · (BLZ 699 700 99) 099 55555 SWIFT DEUT-DE-SM-699
+```<|im_end|>

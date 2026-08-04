@@ -1,0 +1,199 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p0_EXTENDED_Kostenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  104.00s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+Handelsrechnung Nr. KR87654321012 vom 06.10.2018
+KOSTENRECHNUNG
+
+Testkennzeichen      : true
+Anwendungsempfehlung :
+urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended
+
+Rechnungswährung     : EUR
+
+Liefer- und Leistungsdatum    : 30.09.2018
+
+Weitere Referenz        : A777123, Art der Referenz: Rechnungsdatenblatt
+
+Verkäufer:
+Nummer      : 549910
+Globale Nummer: 4333741000005 (GTIN)
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+DE 99199 MUSTERHAUSEN
+
+Telefon     : +49 932 431 500
+E-Mail      : max.mustermann@musterlieferant.de
+Steuernummer : 201/113/40209
+
+Käufer/Leistungsempfänger:
+Nummer      : 339420
+Globale Nummer: 4304171000002 (GTIN)
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+
+Abweichender Warenempfänger:
+
+Globale Nummer: 4304171088093 (GTIN)
+MUSTER-MARKT
+7322
+HAUPTSTRASSE 44
+DE 31157 SARSTEDT
+
+Abweichender Rechnungsempfänger:
+Nummer      : 339420
+Globale Nummer: 4304171000002 (GTIN)
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+
+Qualifizierung der Textart: Price conditions , Qualifizierung des Textes: ST3
+Es bestehen Rabatt- oder Bonusvereinbarungen.
+
+Qualifizierung der Textart: Additional sale/purchase conditions , Qualifizierung des Textes: EEV
+Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.<|im_end|>
+===== PAGE 2 =====
+Qualifizierung der Textart: Regulatory information
+
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Max Mustermann
+USt-IdNr: DE123456789
+Telefon: +49 932 431 0
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>USt.</th>
+    <th>Positionsbetrag ohne USt.</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>WA997<br>4123456000014<br>(GTIN)</td>
+    <td>Wirkarbeit<br>HT</td>
+    <td>0,0520</td>
+    <td>10000 KWH</td>
+    <td>19 %</td>
+    <td>52,00</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 0,0520</td>
+  </tr>
+  <tr>
+    <td colspan="7"><u>Weitere Eigenschaften:</u></td>
+  </tr>
+  <tr>
+    <td colspan="7">Zählpunkt: = DE0001346484600000000000000100038</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>ÖST250<br>4123456000021<br>(GTIN)</td>
+    <td>Ökosteuer<br>Lieferant</td>
+    <td>0,0205</td>
+    <td>10000 KWH</td>
+    <td>19 %</td>
+    <td>20,50</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 0,0205</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>4260331811362<br>(GTIN)</td>
+    <td>Kommissionierer<br>1250032 D.<br>4260331811362 Muster</td>
+    <td>10,5000</td>
+    <td>27,5 Std</td>
+    <td>19 %</td>
+    <td>288,75</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 15,0000 Abschlag : 4,5000 Artikelrabatt 1</td>
+  </tr>
+  <tr>
+    <td colspan="7">Besteller: Hr. Mayer, Personanr. 4488</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>FB05<br>2001015001325<br>(GTIN)</td>
+    <td>FALTENBEUTEL<br>16x6x28 CM</td>
+    <td>0,0105</td>
+    <td>3500 Stk</td>
+    <td>19 %</td>
+    <td>36,75</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 0,0105</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>KOP05<br>4123456000038<br>(GTIN)</td>
+    <td>Kopierpapier<br>A4</td>
+    <td>0,0100</td>
+    <td>1210 Stk</td>
+    <td>19 %</td>
+    <td>12,10</td>
+  </tr>
+  <tr>
+    <td colspan="7">Bruttopreis : 0,0100</td>
+  </tr>
+  <tr>
+    <td colspan="7">Zählerstand von-bis: 543210 - 544420</td>
+  </tr>
+  <tr>
+    <td colspan="7"><u>Weitere Eigenschaften:</u></td>
+  </tr>
+  <tr>
+    <td colspan="7">Zähler-Nr.: = MG-X79318</td>
+  </tr>
+</table><|im_end|>
+===== PAGE 3 =====
+Zahlungsbedingungen:
+
+Beschreibung
+Skontovereinbarung: 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum
+
+Bezug        Fälligkeit    Teilzahlung
+Skonto      Innerhalb 10 Tag(e)   Basisbetrag Prozentsatz %   Betrag
+                                                      2
+
+Zu- und Abschläge:
+
+Art         %   Basisbetrag   Basismenge   Steuer   Betrag
+Abschlag    Sonderrabatt      410,10       19 % UST (S)   -21,55
+Transportkosten: Frachbetrag   19 % UST (S)   15,00
+
+Steueraufschlüsselung:
+
+Art (Kategorie)   Warenwert Zu-/Abschlag   Basisbetrag   USt. %   Steuerbetrag
+Umsatzsteuer (S)  410,10   -6,55   403,55   19   76,67
+
+Belegsummen:
+
+Positionssumme
+Gesamtbetrag der Zuschläge   15,00
+Gesamtbetrag der Abschläge   -21,55
+Rechnungssumme ohne USt.     403,55
+Steuerbetrag in EUR          76,67
+Bruttosumme                  480,22
+Erhaltene Anzahlungen        -0,00
+Zahlbetrag                   480,22<|im_end|>

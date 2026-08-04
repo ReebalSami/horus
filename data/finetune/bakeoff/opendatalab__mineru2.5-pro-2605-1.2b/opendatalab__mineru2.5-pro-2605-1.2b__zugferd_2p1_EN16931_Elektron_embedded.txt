@@ -1,0 +1,76 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  zugferd_2p1_EN16931_Elektron_embedded
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  33.87s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>ZUGFeRD-Version : 2.1 vom 24.03.2020<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Stylesheet-Version: 2.0 vom 18.10.2018<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Codelisten-Version: 3.0 vom 15.11.2019<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>(c) AWV e.V. 2020<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Baurechnung Nr. 181301674 vom 25.04.2018<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Geschäftsprozess : Baurechnung<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Anwendungsempfehlung : urn:cen.eu:en16931:2017<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Währung : EUR<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Liefer- und Leistungsdatum : 06.03.2018<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Referenz des Käufers : 04011000-12345-34<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Zahlungsreferenz : Rechnung 181301674<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Buchungsreferenz : 420<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Weitere Referenz : Aufmass, Art der Referenz: 916<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Weitere Referenz : ElektronRapport, Art der Referenz: 916<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Verkäufer:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Globale Nummer: 4000001123452 (GTIN)<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>ELEKTRON Industrieservice GmbH<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Max Mustermann<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Muster-Einkauf<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Erfurter Strasse 13<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>DE 74465 Demoort<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Telefon : +49891234567<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>E-Mail : Max@Mustermann.de<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Steuernummer : 201/113/40209<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>USt.-Id.-Nr. : DE123456789<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Käufer:<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Nummer : 16259<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>ConsultingService GmbH<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Musterstr. 18<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>DE 76138 Karlsruhe<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Rapport-Nr.: 42389 vom 08.03.2018<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Im 2. OG BT1 Besprechungsraum eine Beamerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesagt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art-Nr-Kunde<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-Lief.<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer Entgelt<nl>
+<ucel><fcel>Art-Nr (Art)<ucel><ucel><ucel><ucel><nl>
+<ecel><ecel><fcel>TGA<fcel>43,20<fcel>3 Std 19 % VAT (S)<fcel>129,60<nl>
+<ecel><ecel><fcel>Obermonteur/Monteur<ecel><ecel><ecel><nl>
+<ecel><ecel><fcel>Bruttopreis : 43,20<ecel><ecel><ecel><nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>01<fcel>01 BeamermontageFür die doppelte Verlegung, falls erforderlich.<lcel><lcel><nl>
+<ecel><fcel>Beamer-<fcel>122,50<fcel>1 H87 19 % VAT (S) 122,50<nl>
+<ecel><fcel>Deckenhalterung<ecel><ecel><nl>
+<ecel><fcel>Bruttopreis : 122,50<ecel><ecel><nl>
+<fcel>02<fcel>02 Außerhalb Angebot<ecel><ecel><nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Zahlbar sofort rein netto<lcel><lcel><lcel><nl>
+<fcel>Zahlungsart:<lcel><lcel><lcel><nl>
+<fcel>Zahlungstyp (codiert): 58<lcel><lcel><lcel><nl>
+<fcel>Verkäufer-IBAN : DE5467894567876500<lcel><lcel><lcel><nl>
+<fcel>Umsatzsteueraufschlüsselung:<lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie)<fcel>Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>UST. %<fcel>UST.-Betrag<nl>
+<fcel>VAT (S)<ecel><fcel>19<fcel>47,90<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Positionssumme<ecel><fcel>252,10<nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<ecel><fcel>0,00<nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<ecel><fcel>-0,00<nl>
+<ecel><fcel>Rechnungssumme ohne USt.<ecel><fcel>252,10<nl>
+<ecel><fcel>Steuerbetrag<ecel><fcel>47,90<nl>
+<ecel><fcel>Bruttosumme<ecel><fcel>300,00<nl>
+<ecel><fcel>Erhaltene Anzahlungen<ecel><fcel>-0,00<nl>
+<ecel><fcel>Zahlbetrag<ecel><fcel>300,00<nl>
+<|im_end|>

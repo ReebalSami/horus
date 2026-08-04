@@ -1,0 +1,102 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  Facture_FR_EN16931
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  44.43s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Facture FA-2017-0010
+
+## Adresse de livraison
+
+**Ma jolie boutique**  
+35 rue de la République  
+69001 Lyon  
+France  
+📞 +33 4 72 07 08 55  
+✉️ sav@majolieboutique.net
+
+## Contact commercial
+
+**Tony Dubois**  
+📞 +33 4 72 07 08 56  
+📱 +33 6 11 22 33 44  
+✉️ tony.dubois@aubonmoulin.fr
+
+---
+
+### Informations facture
+
+- **Date de facture**: 13/11/2017
+- **Conditions de paiement**: 30% d'acompte, solde à 30 j
+- **Date d'échéance**: 13/12/2017
+- **Votre référence**: PO445
+- **Réf. marché**: MSPE2017
+- **N° TVA client**: FR19787878784
+
+---
+
+## Détails de la facture
+
+| Description               | Quantité     | Prix unitaire | Rem. | Prix HT |
+|---------------------------|--------------|---------------|------|---------|
+| Nougat de l'Abbaye 250g   | 20 Unit(s)   | 4,55 €        | 10%  | 81,90 € |
+| Biscuits aux raisins 300g | 15 Unit(s)   | 3,20 €        |      | 48,00 € |
+| Huile d'olive à l'ancienne | 25 Liter(s)  | 19,80 €       |      | 495,00 € |
+
+---
+
+### Taxes
+
+| Taxe                     | Base       | Montant     |
+|--------------------------|------------|-------------|
+| TVA collectée (vente) 20,0% | 81,90 €    | 16,38 €     |
+| TVA collectée (vente) 5,5%  | 543,00 €   | 29,87 €     |
+
+---
+
+### Total
+
+| Total HT | 624,90 € |
+|----------|----------|
+| Total taxes | 46,25 € |
+| Total TTC | 671,15 € |
+| Solde à payer | 470,15 € |
+
+---
+
+### Règlement
+
+| Règlement | Date       | Montant     |
+|-----------|------------|-------------|
+| Virement  | 05/11/2017 | 201,00 €    |
+
+---
+
+### Notes
+
+Franco de port (commande > 300 € HT)
+
+---
+
+### Règlement
+
+Facture à régler par virement sur le compte suivant :  
+**IBAN**: FR20 1242 1242 1242 1242 1242 124 - **BIC**: FIDCFR21XXX - **Banque**: Banque Fiducial
+
+---
+
+**Page 1 / 1**
+
+---
+
+**Au bon moulin SARL - 1242 chemin de l'olive - 84340 Malaucène - France**  
+📞 +33 4 50 44 68 99 - 🌐 http://www.aubonmoulin.fr  
+**TVA**: FR119999999998 - **SIRET**: 99999999800010 - **APE**: 4778C - **SARL au capital de 120 000,00 €**
+
+```<|im_end|>

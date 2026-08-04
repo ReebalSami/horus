@@ -72,7 +72,13 @@ class FinetuneConfig(BaseModel):
     structuring_prompt_config: str = "configs/arm-b.yaml"
     corpus_root: str = "data/raw/german/zugferd-corpus"
     transcript_dir: str = "docs/sources/transcripts-multipage"
-    reader_model: str = "ibm-granite/granite-docling-258M-mlx"
+    # ADR-057's canonical reader. This default was left at the superseded
+    # granite-258M long after the lineage switched, so a bare `FinetuneConfig()`
+    # silently selected the wrong transcripts — it mis-measured one prompt-audit run
+    # before the YAML was loaded explicitly (ADR-058 finding 4). Every current call
+    # site passes YAML, so aligning the default changes no behaviour today; it just
+    # stops being a trap. Keep in step with configs/finetune-structurer.yaml.
+    reader_model: str = "Qwen/Qwen3-VL-4B-Instruct"
     split_path: str = "data/finetune/split.json"
     adapter_dir: str = "data/finetune/adapter"
     eval_max_tokens: int = Field(default=2048, ge=64)

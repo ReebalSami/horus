@@ -1,0 +1,43 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  ZUGFeRD_2_fully_compliant_complete
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  134.06s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+Firma
+Elektromarkt Bamby
+Adlerstrasse 452
+D-07545 GERA
+Shipping Information
+Terms of Payment 14 Tage 3%, 30
+Incoterms CIP Gera
+Description Frachtfrei versichert
+Gross Weight 308,500 KG
+Net Weight 308,500 KG
+Volume 0,750 M3
+Information
+Belegnummer 90005178
+Belegdatum 07.01.1997
+Lieferscheinnr./-datum 80003371 (03.01.1997)
+Nummer/Datum 4970 (03.01.1997)
+Bestellnummer EB-653421 (03.01.1997)
+Kunden Nummer 1175
+Währung DEM
+5 ST 1.630,00 8.150,00
+5 ST 1.888,00 9.440,00
+4 ST 2.350,00 9.400,00
+4 ST 1.462,00 5.848,00
+Total Before Tax 32.838,00
+Total Tax 4.925,70
+Total Amount (DEM) 37.763,70
+Friedrich-Wagner-Straße 16 -D-60318 Frankfurt/M - Postfach 16 05 29 D-60070 Frankfurt/M - Telefon (0 69) 99-0 - Telefax (0 69) 99 12 77 - Internet:IDESAG@SAP-AG.COM
+Volksbank Frankfurt - (BLZ 699 922 99) 50 4999 09 SWIFT DXXX DE 6K - Postbank Karlsruhe - (BLZ 660 900 99) 999 366-999
+Dresdner Bank Frankfurt - (BLZ 699 800 99) 49999-111-08 SWIFT DRES DE FF699 - Deutsche Bank Hamburg (BLZ 699 700 99) 099 55555 SWIFT DEUT DE SM 699
+Seite 1 von 1
+20.03.2018 17:09:28
+Rechnung<|im_end|>

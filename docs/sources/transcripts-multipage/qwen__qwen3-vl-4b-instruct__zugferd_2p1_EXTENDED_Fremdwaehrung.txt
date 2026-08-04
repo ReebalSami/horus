@@ -1,0 +1,201 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_EXTENDED_Fremdwaehrung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  130.32s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version: 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Handelsrechnung Nr. 47110815 vom 31.10.2018
+
+**Geschäftsprozess**: Beispielgeschäftsprozess  
+**Anwendungsempfehlung**: urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended  
+**Währung**: GBP  
+**Abrechnungszeitraum**: 01.10.2018 bis 31.10.2018
+
+---
+
+### Verkäufer:
+**Nummer**: 12345676  
+Rohstoff AG Salzgitter  
+Marktstr. 153  
+DE 38226 Salzgitter  
+**USt.-Id.-Nr.**: DE123456789
+
+---
+
+### Käufer:
+**Nummer**: 75969813  
+Metallbau Leipzig GmbH & Co. KG  
+Pappelallee 15  
+Hof 3  
+DE 12345 Leipzig
+
+---
+
+### Abweichender Warenempfänger:
+**Nummer**: 75969815  
+Metallbau Leipzig GmbH & Co. KG  
+Eichenpromenade 37  
+Tor 1  
+DE 12347 Metallstadt
+
+---
+
+### Abweichender Zahlungsempfänger:
+**Globale Nummer**: 432156789 (DUNS)  
+Global Supplies Financial Services  
+Friedrichstraße 165  
+DE 12345 Berlin
+
+---
+
+### Qualifizierung der Textart: REG  
+**Mitglieder der Geschäftsleitung**  
+H. Meier Geschäftsführer  
+T. Müller Prokurist  
+HRB Braunschweig 12345
+
+---
+
+### Qualifizierung der Textart: AAI  
+Vom 17. Dezember 2018 bis 6. Januar 2019 haben wir Betriebsferien.
+
+---
+
+### Qualifizierung der Textart: TXD  
+Aus konzern-internen Gründen wird der Steuerbetrag sowohl in der Rechnungswährung (EUR) als auch in der
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+# Buchwährung (GBP) ausgegeben.
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|------------|-------|--------|---------|
+|     | Art-Nr       |              |              |            |       |        |         |
+|     | (Art)        |              |              |            |       |        |         |
+|     | Toolbox 0815 |              | Stahlcoil    | 100,00     | 10 Stk| 19 % VAT (S) | 850,00 |
+|     | CO-123/V2A   |              |              |            |       |        |         |
+|     |              | Preisbasismenge: | 1 Stk |            |       |        |         |
+|     |              | Preisbasismenge: | 1 Stk |            |       |        |         |
+|     |              | Preisbasismenge: | 1 Stk |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |       |        |         |
+|     |              |              |              |            |      
+===== PAGE 3 =====

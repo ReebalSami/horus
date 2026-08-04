@@ -1,0 +1,314 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p1_EN16931_Miete
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  112.19s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version : 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Mietrechnung Nr. 9314110911/00/M/00/N vom 01.10.2018
+
+Geschäftsprozess : Beispielgeschäftsprozess
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung : EUR
+
+Liefer- und Leistungsdatum : 29.09.2018
+
+Bei Rückfragen:
+Telefon: +49 711-50885524
+E-Mail : info@muster-autovermietung.de
+
+Übergabe am 29.09.2018/ 10:35
+Ort: Frankfurt a. M.
+km: 17791
+===== PAGE 2 =====
+Rückgabe am 01.10.2018/ 10:19
+Ort: Frankfurt a. M.
+km: 18664
+
+Übernahme: Frankfurt
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Personen-Unfallversicherung
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300
+
+Pos
+Beschreibung
+Nettopreis
+Entgelt
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Datum: 01.
+===== PAGE 3 =====
+Beschreibung
+
+Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.
+
+Umsatzsteueraufschlüsselung:
+
+Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag USt. % USt.-Betrag
+VAT (S) 286,52 19 54,44
+
+Belegsummen:
+
+Positionssumme 286,52
+Gesamtbetrag der Zuschläge 0,00
+Steuerbasisbetrag 54,44

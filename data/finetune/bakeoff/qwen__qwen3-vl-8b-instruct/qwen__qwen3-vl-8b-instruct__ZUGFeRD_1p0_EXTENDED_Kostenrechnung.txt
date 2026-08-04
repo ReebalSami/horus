@@ -1,0 +1,173 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-8B-Instruct
+# Invoice:  ZUGFeRD_1p0_EXTENDED_Kostenrechnung
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  102.46s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# KOSTENRECHNUNG
+
+**Seite 1**
+
+## Lieferant
+
+GLN 4333741000005 Lief-Nr: 549910  
+KOSTENLIEFERANT GMBH  
+BAHNHOFSTRASSE 99  
+99199 MUSTERHAUSEN  
+Steuernr. : 5133081508159
+
+## Käufer
+
+GLN 4304171000002  
+MUSTER-KUNDE GMBH  
+KUNDENWEG 88  
+40235 DUESSELDORF  
+Kunden-Nr. : 339420
+
+## Rechnungsempfänger
+
+GLN 4304171000002  
+MUSTER-KUNDE GMBH  
+KUNDENWEG 88  
+40235 DUESSELDORF  
+Kunden-Nr. : 339420
+
+## Warenempfänger
+
+GLN 4304171088093  
+MUSTER-MARKT  
+HAUPTSTRASSE 44  
+31157 SARSTEDT  
+Abteilung : 7322  
+Kostenstelle: 4430-MG-100
+
+---
+
+## Beleg-Nr. : KR87654321012  
+**Beleg-Datum** : 06.10.2013  
+**Leistungs-Datum** : 01.09.13 – 30.09.13  
+**Vertrags-Nr.** : V88456789  
+**Vertrags-Datum** : 01.04.2013  
+**Lieferschein-Nr.** : L87654321012  
+**Lieferschein-Datum** : 30.09.2013  
+**Auftrag-Nr-Lief** : A777123  
+**Auftrag-Datum-Lief** : 02.04.2013  
+
+**Zählpunkt:**  
+DE0001346484600000000000000100038  
+
+**Bei Rückfragen:**  
+Telefon: +49 932 431 500  
+E-Mail: max.muster@musterlieferant.de
+
+---
+
+## Warenliste
+
+| GTIN | Art-Nr-Lieferant | Art-Nr-Kunde | Artikelbezeichnung | Menge | VKE/Geb | Nettopreis | MwSt-% | Nettowert |
+|------|------------------|--------------|--------------------|-------|---------|------------|--------|-----------|
+| 4123456000014 | WA997 | | Wirkarbeit HT | 10000,0000 KWh | 1 | 0,0520 | 19,0 | 520,00 |
+| 4123456000021 | ÖST250 | | Ökosteuern Lieferant | 10000,0000 KWh | 1 | 0,0205 | 19,0 | 205,00 |
+| 4260331811362 | K6521 | | Kommissionierer 1250032 D. Muster | 27,5000 Std. | 1 | 10,5000 | 19,0 | 288,75 |
+| 2001015001325. | FB05 | | FALTENBEUTEL 16X6X28 CM | 3500,0000 Stk. | 1 | 0,0105 | 19,0 | 36,75 |
+| 4123456000038. | KOP05 | | Kopierpapier A4 | 1210,0000 Stk. | 1 | 0,0100 | 19,0 | 12,10 |
+
+---
+
+## Wichtige Information:
+
+Bei Bestellungen bis zum 19.12. ist die Auslieferung bis spätestens 23.12. garantiert.
+
+---
+
+## Details zu einzelnen Positionen
+
+### WA997
+- **Liefer-Datum:** 01.09.2013 – 30.09.2013
+
+### ÖST250
+- **Liefer-Datum:** KW 38/2013
+
+### K6521
+- **Abrechnungszeitraum KW 36**
+- **Besteller:** Hr. Mayer, Personalnr. 4488, Kostenstelle 5465-8876
+- **Artikelrabatt 1:** 30,00%
+- **Rabatt:** 4,50 €/Std.
+- **Bruttopreis:** 15,0000 €
+- **Artikelgesamtrabatt:** -123,75 €
+
+### FB05
+- **Bestell-Nr:** B610061523500010, Lieferschein-Nr. L87654321011
+
+### KOP05
+- **Zähler-Nr. MG-X79318, Zählerstand von-bis:** 543210 – 544420
+- **Abrechnungszeitraum:** 15.09.2013 – 30.09.2013
+- **Bestell-Nr:** B610061523500010
+- **Warenempfänger:** Mustermarkt, Hauptstr. 46, 31157 Sarstedt
+- **Kostenstelle:** 4430-MG-002, Sekretariat-2
+
+---
+
+## Warenlieferant/Hersteller:
+
+GLN 4333741002207  
+KOSTENLIEFERANT GMBH, Werk 3, HAUPTSTR. 1, 99199 MUSTERHAUSEN
+
+---
+
+## Transportkosten
+
+- **Frachtbetrag:** 15,00, MwSt.-% 19,0
+
+## Skontovereinbarung
+
+- 2% bei Zahlung innerhalb 10 Tagen nach Rechnungsdatum
+
+## Rabatt- oder Bonusvereinbarungen
+
+- Es bestehen Rabatt- oder Bonusvereinbarungen.
+
+## Eigentumserklärung
+
+- Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.
+
+---
+
+## Rechnungsübersicht
+
+| Warenwert | Zu-/Abschlag | Fracht-Verp-Vers | Skonto sofort | Nettobetrag | MwSt-Betrag | MwSt-% | Endbetrag |
+|-----------|--------------|------------------|---------------|-------------|-------------|--------|-----------|
+| 1062,60 | 15,00 | -21,55 | 1056,05 | 200,65 | 19,0 | 1256,70 |
+
+---
+
+## Unternehmensdaten
+
+**MUSTERLIEFERANT GMBH**  
+BAHNHOFSTRASSE 99  
+99199 MUSTERHAUSEN  
+
+**Geschäftsführung:**  
+Max Mustermann  
+
+**UST-IdNr:** DE123456789  
+**Telefon:** +49 932 431 0  
+**www.musterlieferant.de**
+
+**HRB Nr. 372876**  
+**Amtsgericht Musterstadt**  
+**GLN 4304171000002**
+
+---
+
+**FeRD**  
+Forum elektronische Rechnung Deutschland
+
+ZUGFeRD Beispielrechnung Extended, Copyright AWW e.V. 2013
+```<|im_end|>

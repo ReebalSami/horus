@@ -1,0 +1,116 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_EN16931_Miete
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  377.21s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version    : 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Mietrechnung Nr. 9314110911/00/M/00/N vom 01.10.2018
+
+Bestellung
+Liefer- und Leistungsdatum
+: 29.09.2018
+: B123456789
+: L87654321012345
+
+Verkäufer:
+Nummer
+Musterstr. 99
+Mustererlieferant.de
+UST-IdNr: DE136695976
+Telefon: +49 711-50885524
+E-Mail : info@muster-autoververmietung.de
+
+Bei Rückfragen:
+Telefon: +49 711-50885524
+E-Mail : info@muster-autoververmietung.de
+
+Übergabe am 29.09.2018/ 10:35
+Ort: Frankfurt a. M.
+km: 17791
+===== PAGE 2 =====
+Rückgabe am 01.10.2018/ 10:19
+Ort: Frankfurt a. M.
+km: 18664
+
+Übernahme: Frankfurt
+Datum: 01.10.2018
+km/ou: 177791
+km gefahren: 873
+CO2: 150
+Brutttolistenpreis: 68300
+
+Art-Nr-Kunde
+Art-Nr-Lief.
+Beschreibung
+Nettopreis
+Menge
+Steuer
+Entgelt
+1
+Miettagge
+86,55
+2 Stk
+19 % VAT (S)
+173,10
+
+Weitere Eigenschaften:
+Fahrzeug-Kennzeichen:
+Navigationssystem
+5,04
+2 Stk
+19 % VAT (S)
+10,08
+
+Zahlungsbedingungen:
+Beschreibung
+5,04
+2 Stk
+19 % VAT (S)
+10,08
+
+Zahlungsbedingungen:
+Beschreibung
+7,98
+2 Stk
+19 % VAT (S)
+15,96
+
+Zahlungsbedingungen:
+Beschreibung
+5,04
+2 Stk
+19 % VAT (S)
+10,08
+
+Zahlungsbedingungen:
+Beschreibung
+7,98
+2 Stk
+19 % VAT (S)
+15,96
+===== PAGE 3 =====
+Beschreibung
+
+Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.
+
+Umsatzsteueraufschlüsselung:
+
+Art (Kategorie) Warenwert Zu-/Abschlag Steuererbasissbetrag USt. % USt.-Betrag
+VAT (S) 286,52 19 54,44
+
+Belegssummen:
+
+Positionssumme ohne USt. 286,52
+Erhaltene Anzahlung 340,96
+Zahlbetrag 340,96

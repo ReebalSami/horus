@@ -1,0 +1,67 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2605-1.2B
+# Invoice:  zugferd_2p1_EN16931_Einfach_DueDate
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  28.32s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>ZUGFeRD-Version : 2.1 vom 24.03.2020<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Stylesheet-Version: 2.0 vom 18.10.2018<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Codelisten-Version: 3.0 vom 15.11.2019<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>(c) AWV e.V. 2020<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Handelsrechnung Nr. 471102 vom 05.03.2018<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Anwendungsempfehlung : urn:cen.eu:en16931:2017<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Währung : EUR<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Liefer- und Leistungsdatum : 05.03.2018<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Verkäufer:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Nummer : 549910<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Globale Nummer: 4000001123452 (GTIN)<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Lieferant GmbH<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Lieferantenstraße 20<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>DE 80333 München<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Steuernummer : 201/113/40209<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>UST.-Id.-Nr. : DE123456789<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Käufer:<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Nummer : GE2020211<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Kunden AG Mitte<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Kundenstraße 15<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>DE 69876 Frankfurt<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Rechnung gemäß Bestellung vom 01.03.2018.<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Qualifizierung der Textart: REG<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Lieferant GmbH<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Lieferantenstraße 20<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>80333 München<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Deutschland<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Geschäftsführer: Hans Muster<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Handelsregisternummer: H A 123<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art-Nr-Kunde<lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Pos<fcel>Art-Nr-Lief.<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl>
+<ucel><fcel>Art-Nr(Art)<ucel><ucel><ucel><ucel><ucel><nl>
+<fcel>1<fcel>TB100A4<fcel>Trennblätter A4<fcel>9,90<fcel>20 Stk<fcel>19 % VAT (S)<fcel>198,00<nl>
+<ucel><fcel>4012345001235(GLN)<ucel><ucel><ucel><ucel><ucel><nl>
+<ucel><ecel><fcel>Bruttopreis : 9,90<ecel><ecel><ecel><ecel><nl>
+<fcel>2<fcel>ARNR2<fcel>JoghurtBanane<fcel>5,50<fcel>50 Stk<fcel>7 % VAT (S)<fcel>275,00<nl>
+<|im_end|>
+===== PAGE 2 =====
+<fcel>4000050986428(GLN)Bruttopreis : 5,50<lcel><lcel><lcel><nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Beschreibung<fcel>Fälligkeit05.03.2019<fcel>Teilzahlung<nl>
+<fcel>Umsatzsteueraufschlüsselung:<lcel><lcel><lcel><nl>
+<fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<lcel><fcel>UST. %<fcel>UST.-Betrag<nl>
+<fcel>VAT (S)<fcel>275,00<fcel>7<fcel>19,25<nl>
+<fcel>VAT (S)<fcel>198,00<fcel>19<fcel>37,62<nl>
+<fcel>Belegsummen:<lcel><lcel><lcel><nl>
+<ecel><fcel>Positionssumme<lcel><fcel>473,00<nl>
+<ecel><fcel>Gesamtbetrag der Zuschläge<lcel><fcel>0,00<nl>
+<ecel><fcel>Gesamtbetrag der Abschläge<lcel><fcel>-0,00<nl>
+<ecel><fcel>Rechnungssumme ohne USt.<lcel><fcel>473,00<nl>
+<ecel><fcel>Steuerbetrag<lcel><fcel>56,87<nl>
+<ecel><fcel>Bruttosumme<lcel><fcel>529,87<nl>
+<ecel><fcel>Erhaltene Anzahlungen<lcel><fcel>-0,00<nl>
+<ecel><fcel>Zahlbetrag<lcel><fcel>529,87<nl>
+<|im_end|>

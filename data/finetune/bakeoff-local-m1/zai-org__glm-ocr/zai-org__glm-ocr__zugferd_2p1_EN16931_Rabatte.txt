@@ -1,0 +1,47 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  zugferd_2p1_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  111.84s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. 471102 vom 05.06.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung : EUR
+
+Liefer- und Leistungsdatum : 03.06.2018
+
+Bestellung : 2013-471331
+
+Verkäufer: 471102 vom 05.06.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung : EUR
+
+Liefer- und Leistungsdatum : 03.06.2018
+
+Bestellung : 2013-471331
+===== PAGE 2 =====
+<table><thead><tr><th>Pos</th><th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th><th>Beschreibung</th><th>Nettopreis</th><th>Menge</th><th>Steuer</th><th>Entgelt</th></tr></thead><tbody><tr><td></td><td>KR3M<br>4012345001235<br>(GLN)</td><td>Kunstrasen<br>grün 3m breit</td><td>3,33</td><td>3 m²</td><td>19 % VAT (S)</td><td>10,00</td></tr><tr><td></td><td colspan="6">Bruttopreis: 4,00 Abschlag: 0,67</td></tr><tr><td>1</td><td colspan="6">Wir erlauben uns Ihnen folgende Positionen aus der Lieferung Nr. 2018-51112<br>in Rechnung zu stellen:</td></tr><tr><td></td><td colspan="6">300cm x 100 cm</td></tr><tr><td>2</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td></td><td colspan="6">Bruttopreis: 5,50</td></tr><tr><td>3</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>4</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>5</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>6</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>7</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>8</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>9</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>10</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>11</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>12</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>13</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>14</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>15</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>16</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>17</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>18</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>19</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>20</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>21</td><td>SFK5<br>4000050986428<br>(GLN)</td><td>Schweinesteak</td><td>5,50</td><td>5 kg</td><td>7 % VAT (S)</td><td>27,50</td></tr><tr><td>22</td><td>SFK5<br>4000050986428<br>(GLN)</td
+===== PAGE 3 =====
+Belegsummen:
+
+Positionssumme 202,70
+Gesamtbetrag der Zuschläge 5,80
+Gesamtbetrag der Abschläge -14,73
+Rechnungssumme ohne USt. 193,77
+Steuerbetrag 21,30
+Bruttosumme 215,07
+Erhaltene Anzahlungen -50,00
+Zahlbetrag 165,07

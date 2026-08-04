@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet thesis thesis-clean clean
+.PHONY: help install test lint format typecheck audit-prompts glossary experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet thesis thesis-clean clean
 
 # Default target — list available commands.
 help:
@@ -8,6 +8,8 @@ help:
 	@echo "  lint            uv run ruff check (lint only; no fix)"
 	@echo "  format          uv run ruff format (apply formatting)"
 	@echo "  typecheck       uv run mypy src tests"
+	@echo "  audit-prompts   corpus-backed audit of the structurer prompt surface (ADR-058)"
+	@echo "  glossary        print the field glossary + per-alias corpus grounding (RAW=1 for prompt text)"
 	@echo "  experiment      jupytext + papermill on NB=experiments/<name>.py CFG=configs/<name>.yaml"
 	@echo "  eda             Quarto render NB=experiments/<name>.py CFG=configs/<name>.yaml -> single chapter HTML + PDF (ADR-024)"
 	@echo "  eda-book        Quarto render the full multi-chapter Book per _quarto.yml -> _book/index.html + _book/Horus-EDA.pdf (ADR-025)"
@@ -46,6 +48,20 @@ format:
 
 typecheck:
 	uv run mypy src tests scripts app
+
+# Corpus-backed audit of the structurer prompt surface (ADR-058). Fails when a
+# `prompt_alias` appears in 0 corpus transcripts (a false claim about what invoices
+# print, and wasted prompt budget per ADR-048) or when a glossary description embeds a
+# ground-truth value (evaluation contamination). Unlike `make test` this needs the
+# corpus + cached transcripts on disk, so it is a separate target rather than a pytest.
+# CFG selects the reader lineage whose transcripts define "printed" (ADR-057 winner).
+audit-prompts:
+	uv run python scripts/audit_field_prompts.py --config $(or $(CFG),configs/finetune-structurer.yaml)
+
+# Print the rendered field glossary with per-alias corpus grounding counts.
+# `make glossary RAW=1` prints the exact prompt text with no annotations.
+glossary:
+	uv run python scripts/dump_field_glossary.py $(if $(RAW),--raw,)
 
 # Jupytext-paired experiment runner (B2=A notebook discipline + horus-config-discipline).
 # Usage: make experiment NB=experiments/<name>.py CFG=configs/<name>.yaml

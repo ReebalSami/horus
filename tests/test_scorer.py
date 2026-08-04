@@ -22,6 +22,7 @@ from horus.eval.ground_truth import FieldType, GroundTruth, GroundTruthField
 from horus.eval.scorer import (
     DOCUMENT_FIELDS,
     FIELD_GROUPS,
+    SIGNAL_OUTCOMES,
     FieldResult,
     InvoiceFieldScores,
     Outcome,
@@ -38,6 +39,7 @@ from horus.eval.scorer import (
     f1_from_counts,
     group_level_counts,
     group_level_f1,
+    is_signal_bearing,
     label_outcome_counts,
     presence_conditional_counts,
     presence_conditional_f1,
@@ -651,6 +653,54 @@ def _fr(
     )
 
 
+# ---- signal-bearing predicate (guards the per-field reporting defect) ----
+
+
+def test_signal_outcomes_is_exactly_tp_fp_fn() -> None:
+    """`SIGNAL_OUTCOMES` is the TP/FP/FN set; TN and EXCLUDED are signal-free."""
+    assert SIGNAL_OUTCOMES == frozenset({"TP", "FP", "FN"})
+    assert all(is_signal_bearing(o) for o in ("TP", "FP", "FN"))
+    assert not is_signal_bearing("TN")
+    assert not is_signal_bearing("EXCLUDED")
+
+
+def test_is_signal_bearing_agrees_with_label_outcome_counts() -> None:
+    """The predicate must match what `label_outcome_counts` actually tallies.
+
+    Guards against drift between the shared predicate and the F1 aggregators: if a
+    future outcome kind is added, this fails rather than silently letting the new
+    kind leak into per-field means.
+    """
+    all_outcomes: tuple[Outcome, ...] = ("TP", "FP", "FN", "TN", "EXCLUDED")
+    for outcome in all_outcomes:
+        tallied = bool(label_outcome_counts([_fr("f", outcome, gt_present=True)]))
+        assert tallied is is_signal_bearing(outcome), (
+            f"{outcome}: label_outcome_counts tallied={tallied} but "
+            f"is_signal_bearing={is_signal_bearing(outcome)}"
+        )
+
+
+def test_tn_scores_one_and_must_be_filtered() -> None:
+    """Documents the hazard `is_signal_bearing` exists to prevent.
+
+    A TN (GT absent AND prediction absent) scores 1.0, so an unfiltered mean over
+    ``FieldResult.score`` rises with how often a field is absent rather than with
+    read quality. Three aggregation sites shipped that defect — `rounding_amount`
+    reported a perfect 1.000 off 29/29 TN. See `eval/per-field-reporting-audit.md`.
+    """
+    absent_gt = GroundTruthField(
+        bt_code="BT-29",
+        raw_value=None,
+        normalized_value=None,
+        xpath="/x",
+        is_present=False,
+    )
+    tn = _score_one_field("seller_gln", None, absent_gt, cfg=EvalConfig())
+    assert tn.outcome == "TN"
+    assert tn.score == 1.0
+    assert not is_signal_bearing(tn.outcome)
+
+
 # ---- partition + public f1 helper ----
 
 
@@ -1081,13 +1131,96 @@ def test_optional_zero_money_empty_is_none() -> None:
 
 
 def test_optional_zero_totals_have_predicted_hook() -> None:
-    """All four optional EN16931 totals carry the symmetric predicted hook."""
-    from horus.eval.ground_truth import FIELDS
-    from horus.eval.normalizers import _normalize_predicted_optional_zero_money
+    """All four optional EN16931 totals carry a symmetric predicted-zero hook.
 
-    keys = ("allowance_total_amount", "charge_total_amount", "prepaid_amount", "rounding_amount")
-    for key in keys:
-        assert FIELDS[key].predicted_normalize is _normalize_predicted_optional_zero_money
+    ADR-058 splits which hook: BT-107/108/113 are non-negative by spec and use the
+    sign-folding variant (a page prints the deduction as "-14,73"), while BT-114
+    (rounding) is legitimately signed and keeps the plain variant — a -0.02 rounding
+    correction is a genuinely different value from +0.02.
+    """
+    from horus.eval.ground_truth import FIELDS
+    from horus.eval.normalizers import (
+        _normalize_predicted_nonneg_money,
+        _normalize_predicted_optional_zero_money,
+    )
+
+    for key in ("allowance_total_amount", "charge_total_amount", "prepaid_amount"):
+        assert FIELDS[key].predicted_normalize is _normalize_predicted_nonneg_money, (
+            f"{key} is non-negative by EN16931 spec → must sign-fold"
+        )
+    assert (
+        FIELDS["rounding_amount"].predicted_normalize is _normalize_predicted_optional_zero_money
+    ), "BT-114 is legitimately signed → must NOT sign-fold"
+
+
+def test_nonneg_money_folds_printed_minus_sign() -> None:
+    """ADR-058: a page-printed deduction ("-14,73") folds to the unsigned GT form.
+
+    EN16931 BT-107/108/113 are non-negative magnitudes and the GT stores them
+    unsigned, but German invoices print them as deductions ("Gesamtbetrag der
+    Abschläge | -14,73"; "Bereits gezahlt | -50,00"). Representation-only.
+    """
+    from horus.eval.normalizers import _normalize_predicted_nonneg_money
+
+    assert _normalize_predicted_nonneg_money("-14,73 €") == "14.73"
+    assert _normalize_predicted_nonneg_money("-50,00") == "50.00"
+    assert _normalize_predicted_nonneg_money("14,73") == "14.73"
+    assert _normalize_predicted_nonneg_money("-1.234,56") == "1234.56"
+
+
+def test_nonneg_money_preserves_optional_zero_rule() -> None:
+    """Signed and unsigned structural zeros both remain ABSENT (ADR-043/051)."""
+    from horus.eval.normalizers import _normalize_predicted_nonneg_money
+
+    assert _normalize_predicted_nonneg_money("0,00") is None
+    assert _normalize_predicted_nonneg_money("-0,00") is None
+    assert _normalize_predicted_nonneg_money("") is None
+    assert _normalize_predicted_nonneg_money("n/a") is None
+
+
+def test_nonneg_money_still_penalizes_wrong_magnitude() -> None:
+    """The fold is representation-only: a wrong number stays wrong."""
+    from horus.eval.normalizers import _normalize_predicted_nonneg_money
+
+    assert _normalize_predicted_nonneg_money("-14,74") != "14.73"
+
+
+def test_nonneg_money_fold_is_two_sided() -> None:
+    """The BT-107/108/113 fold MUST run on the GT side too, or it inverts.
+
+    Regression guard for the asymmetry bug: the corpus is not sign-consistent —
+    `zugferd_2p0_BASIC_Rechnungskorrektur` (a credit note) carries GT BT-107 = -0.23
+    while every other allowance is positive. A predicted-only fold would turn a model
+    that correctly copies "-0,23" into "0.23" and then score it FN against the
+    unfolded GT "-0.23". Folding both sides makes sign irrelevant in BOTH directions.
+    """
+    from horus.eval.ground_truth import FIELDS, _normalize_nonneg_money
+
+    for key in ("allowance_total_amount", "charge_total_amount", "prepaid_amount"):
+        assert FIELDS[key].normalize is _normalize_nonneg_money, (
+            f"{key} folds the predicted side, so its GT side MUST fold too"
+        )
+
+    # The real corpus value that exposed the bug.
+    assert _normalize_nonneg_money("-0.23") == "0.23"
+    assert _normalize_nonneg_money("0.23") == "0.23"
+    # GT-side fold agrees with the predicted-side fold on the same magnitude.
+    from horus.eval.normalizers import _normalize_predicted_nonneg_money
+
+    assert _normalize_nonneg_money("-0.23") == _normalize_predicted_nonneg_money("-0,23")
+
+
+def test_signed_totals_keep_their_sign() -> None:
+    """The fold is scoped: required totals and BT-114 stay signed.
+
+    `EN16931_Einfach_negativePaymentDue` is a real fixture with a negative payable,
+    so folding money globally would destroy real information.
+    """
+    from horus.eval.ground_truth import FIELDS, _normalize_money
+
+    for key in ("due_payable_amount", "grand_total_amount", "rounding_amount"):
+        assert FIELDS[key].normalize is _normalize_money, f"{key} must stay signed"
+    assert _normalize_money("-12.34") == "-12.34"
 
 
 def test_optional_zero_predicted_zero_vs_absent_gt_is_tn() -> None:

@@ -1,0 +1,129 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p1_EN16931_AbweichenderZahlungsempf
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  58.69s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+
+ZUGFeRD-Version : 2.1 vom 24.03.2020  
+Stylesheet-Version: 2.0 vom 18.10.2018  
+Codelisten-Version: 3.0 vom 15.11.2019  
+(c) AWV e.V. 2020
+
+---
+
+## Handelsrechnung Nr. 471102 vom 05.03.2018
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017  
+Währung : EUR  
+
+Liefer- und Leistungsdatum : 05.03.2018
+
+---
+
+### Verkäufer:
+
+**Nummer** : 549910  
+**Globale Nummer**: 4000001123452 (GTIN)  
+**Lieberant GmbH**  
+Lieberantenstraße 20  
+DE 80333 München  
+
+**Steuernummer** : 201/113/40209  
+**USt.-Id.-Nr.** : DE123456789
+
+---
+
+### Käufer:
+
+**Nummer** : GE2020211  
+**Kunden AG Mitte**  
+Kundenstraße 15  
+DE 69876 Frankfurt
+
+---
+
+### Abweichender Zahlungsempfänger:
+
+**Nummer** : 4711  
+**Factoring GmbH**
+
+---
+
+Rechnung gemäß Bestellung vom 01.03.2018.
+
+Qualifizierung der Textart: REG
+
+**Lieberant GmbH**  
+Lieberantenstraße 20  
+80333 München  
+Deutschland  
+Geschäftsführer: Hans Muster  
+Handelsregisternummer: H A 123
+
+---
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | Steuer | Entgelt |
+|-----|--------------|--------------|--------------|------------|-------|--------|---------|
+| 1   |              |              | Trennblätter | 9,90       | 20 Stk | 19 % VAT (S) | 198,00 |
+|     |              | TB100A4      | A4           |            |       |        |         |
+|     |              | 4012345001235 | (GLN)        |            |       |        |         |
+
+**Bruttoreis : 9,90**
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+2
+ARNR2
+4000050986428
+(GLN)
+
+Joghurt
+Banane
+
+5,50
+50 Stk
+7 % VAT (S)
+275,00
+
+Bruttopreis : 5,50
+
+## Zahlungsbedingungen:
+
+| Beschreibung | Fälligkeit | Teilzahlung |
+|--------------|------------|-------------|
+| Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% | | |
+| Skonto innerhalb 10 Tagen bis 15.03.2018 | | |
+
+## Zahlungsart:
+
+Zahlungstyp (codiert): 58
+
+Verkäufer-IBAN : DE12123456781234567890
+
+## Umsatzsteueraufschlüsselung:
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Steuerbasisbetrag | USt. % | USt.-Betrag |
+|-----------------|-----------|--------------|-------------------|--------|-------------|
+| VAT (S)         |           |              | 275,00            | 7      | 19,25       |
+| VAT (S)         |           |              | 198,00            | 19     | 37,62       |
+
+## Belegsummen:
+
+| Positionssumme | 473,00 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 473,00 |
+| Steuerbetrag | 56,87 |
+| **Bruttosumme** | **529,87** |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **529,87** |
+```<|im_end|>

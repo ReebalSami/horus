@@ -1,0 +1,757 @@
+{
+  "label": "qwen-tier1",
+  "structurer_model": "google/gemma-4-E4B-it",
+  "adapter_dir": null,
+  "n_total": 29,
+  "n_ok": 29,
+  "n_failed": 0,
+  "mean_micro_f1": 0.8615988462955173,
+  "mean_overall_micro_f1": 0.8189444594968095,
+  "mean_presence_conditional_f1": 0.9057969492827248,
+  "mean_spurious_emission_rate": 0.13648614309311438,
+  "per_field_mean": {
+    "allowance_total_amount": 0.0,
+    "billing_period_end": 0.2222222222222222,
+    "billing_period_start": 0.2857142857142857,
+    "buyer_address": 0.7337134441133295,
+    "buyer_name": 0.9639162561576355,
+    "buyer_order_reference": 0.42857142857142855,
+    "buyer_reference": 0.65,
+    "buyer_vat_id": 0.42857142857142855,
+    "charge_total_amount": 0.8,
+    "delivery_date": 0.7619047619047619,
+    "document_type": 0.9310344827586207,
+    "due_payable_amount": 0.896551724137931,
+    "grand_total_amount": 0.9310344827586207,
+    "invoice_currency_code": 0.9310344827586207,
+    "invoice_number": 0.9655172413793104,
+    "issue_date": 0.8620689655172413,
+    "line_total_amount": 0.7931034482758621,
+    "payment_due_date": 0.8421052631578947,
+    "payment_means_code": 0.38461538461538464,
+    "payment_means_text": 0.12931034482758622,
+    "payment_reference": 0.20909090909090908,
+    "prepaid_amount": 0.6,
+    "seller_account_name": 0.4444444444444444,
+    "seller_address": 0.7370704383671381,
+    "seller_bic": 0.4444444444444444,
+    "seller_gln": 0.7058823529411765,
+    "seller_iban": 0.4666666666666667,
+    "seller_name": 0.900712274785144,
+    "seller_tax_id": 0.4,
+    "seller_vat_id": 0.8214285714285714,
+    "tax_basis_total_amount": 0.9310344827586207,
+    "tax_rate": 0.8181818181818182,
+    "tax_total_amount": 0.8620689655172413
+  },
+  "per_field_f1": {
+    "allowance_total_amount": 0.0,
+    "billing_period_end": 0.36363636363636365,
+    "billing_period_start": 0.4444444444444444,
+    "buyer_address": 0.9824561403508771,
+    "buyer_name": 0.9824561403508771,
+    "buyer_order_reference": 0.6,
+    "buyer_reference": 0.787878787878788,
+    "buyer_vat_id": 0.6,
+    "charge_total_amount": 0.888888888888889,
+    "delivery_date": 0.8648648648648648,
+    "document_type": 0.9642857142857143,
+    "due_payable_amount": 0.9454545454545454,
+    "grand_total_amount": 0.9642857142857143,
+    "invoice_currency_code": 0.9642857142857143,
+    "invoice_number": 0.9824561403508771,
+    "issue_date": 0.9259259259259259,
+    "line_total_amount": 0.8846153846153846,
+    "payment_due_date": 0.9142857142857143,
+    "payment_means_code": 0.5555555555555556,
+    "payment_means_text": 0.2857142857142857,
+    "payment_reference": 0.3333333333333333,
+    "prepaid_amount": 0.7499999999999999,
+    "seller_account_name": 0.6153846153846153,
+    "seller_address": 0.9824561403508771,
+    "seller_bic": 0.6153846153846154,
+    "seller_gln": 0.8275862068965518,
+    "seller_iban": 0.6363636363636365,
+    "seller_name": 0.9642857142857143,
+    "seller_tax_id": 0.5714285714285715,
+    "seller_vat_id": 0.9019607843137256,
+    "tax_basis_total_amount": 0.9642857142857143,
+    "tax_rate": 0.9,
+    "tax_total_amount": 0.9259259259259259
+  },
+  "per_field_outcomes": {
+    "allowance_total_amount": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 6,
+      "TN": 23,
+      "EXCLUDED": 0
+    },
+    "billing_period_end": {
+      "TP": 2,
+      "FP": 6,
+      "FN": 1,
+      "TN": 20,
+      "EXCLUDED": 0
+    },
+    "billing_period_start": {
+      "TP": 2,
+      "FP": 4,
+      "FN": 1,
+      "TN": 22,
+      "EXCLUDED": 0
+    },
+    "buyer_address": {
+      "TP": 28,
+      "FP": 0,
+      "FN": 1,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "buyer_name": {
+      "TP": 28,
+      "FP": 0,
+      "FN": 1,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "buyer_order_reference": {
+      "TP": 6,
+      "FP": 7,
+      "FN": 1,
+      "TN": 15,
+      "EXCLUDED": 0
+    },
+    "buyer_reference": {
+      "TP": 13,
+      "FP": 7,
+      "FN": 0,
+      "TN": 9,
+      "EXCLUDED": 0
+    },
+    "buyer_vat_id": {
+      "TP": 3,
+      "FP": 1,
+      "FN": 3,
+      "TN": 22,
+      "EXCLUDED": 0
+    },
+    "charge_total_amount": {
+      "TP": 4,
+      "FP": 0,
+      "FN": 1,
+      "TN": 24,
+      "EXCLUDED": 0
+    },
+    "delivery_date": {
+      "TP": 16,
+      "FP": 1,
+      "FN": 4,
+      "TN": 8,
+      "EXCLUDED": 0
+    },
+    "document_type": {
+      "TP": 27,
+      "FP": 0,
+      "FN": 2,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "due_payable_amount": {
+      "TP": 26,
+      "FP": 0,
+      "FN": 3,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "grand_total_amount": {
+      "TP": 27,
+      "FP": 0,
+      "FN": 2,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "invoice_currency_code": {
+      "TP": 27,
+      "FP": 0,
+      "FN": 2,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "invoice_number": {
+      "TP": 28,
+      "FP": 0,
+      "FN": 1,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "issue_date": {
+      "TP": 25,
+      "FP": 0,
+      "FN": 4,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "line_total_amount": {
+      "TP": 23,
+      "FP": 2,
+      "FN": 4,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "payment_due_date": {
+      "TP": 16,
+      "FP": 1,
+      "FN": 2,
+      "TN": 10,
+      "EXCLUDED": 0
+    },
+    "payment_means_code": {
+      "TP": 5,
+      "FP": 0,
+      "FN": 8,
+      "TN": 16,
+      "EXCLUDED": 0
+    },
+    "payment_means_text": {
+      "TP": 2,
+      "FP": 7,
+      "FN": 3,
+      "TN": 17,
+      "EXCLUDED": 0
+    },
+    "payment_reference": {
+      "TP": 2,
+      "FP": 1,
+      "FN": 7,
+      "TN": 19,
+      "EXCLUDED": 0
+    },
+    "prepaid_amount": {
+      "TP": 3,
+      "FP": 0,
+      "FN": 2,
+      "TN": 24,
+      "EXCLUDED": 0
+    },
+    "rounding_amount": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "TN": 29,
+      "EXCLUDED": 0
+    },
+    "seller_account_name": {
+      "TP": 4,
+      "FP": 5,
+      "FN": 0,
+      "TN": 20,
+      "EXCLUDED": 0
+    },
+    "seller_address": {
+      "TP": 28,
+      "FP": 0,
+      "FN": 1,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "seller_bic": {
+      "TP": 4,
+      "FP": 4,
+      "FN": 1,
+      "TN": 20,
+      "EXCLUDED": 0
+    },
+    "seller_gln": {
+      "TP": 12,
+      "FP": 3,
+      "FN": 2,
+      "TN": 12,
+      "EXCLUDED": 0
+    },
+    "seller_iban": {
+      "TP": 7,
+      "FP": 3,
+      "FN": 5,
+      "TN": 14,
+      "EXCLUDED": 0
+    },
+    "seller_name": {
+      "TP": 27,
+      "FP": 0,
+      "FN": 2,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "seller_tax_id": {
+      "TP": 6,
+      "FP": 0,
+      "FN": 9,
+      "TN": 14,
+      "EXCLUDED": 0
+    },
+    "seller_vat_id": {
+      "TP": 23,
+      "FP": 1,
+      "FN": 4,
+      "TN": 1,
+      "EXCLUDED": 0
+    },
+    "tax_basis_total_amount": {
+      "TP": 27,
+      "FP": 0,
+      "FN": 2,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "tax_rate": {
+      "TP": 9,
+      "FP": 1,
+      "FN": 1,
+      "TN": 5,
+      "EXCLUDED": 13
+    },
+    "tax_total_amount": {
+      "TP": 25,
+      "FP": 0,
+      "FN": 4,
+      "TN": 0,
+      "EXCLUDED": 0
+    }
+  },
+  "per_group_f1": {
+    "line_items": 0.7857142857142858,
+    "skonto": 0.33333333333333337,
+    "vat_breakdown": 0.8068965517241379
+  },
+  "per_group_outcomes": {
+    "line_items": {
+      "TP": 308,
+      "FP": 60,
+      "FN": 108,
+      "TN": 63,
+      "EXCLUDED": 0
+    },
+    "skonto": {
+      "TP": 2,
+      "FP": 0,
+      "FN": 8,
+      "TN": 5,
+      "EXCLUDED": 0
+    },
+    "vat_breakdown": {
+      "TP": 117,
+      "FP": 28,
+      "FN": 28,
+      "TN": 11,
+      "EXCLUDED": 0
+    }
+  },
+  "per_group_cell_f1": {
+    "line_items.line_amount": 0.8031496062992126,
+    "line_items.line_id": 0.7826086956521738,
+    "line_items.name": 0.7903225806451613,
+    "line_items.net_price": 0.880597014925373,
+    "line_items.quantity": 0.888888888888889,
+    "line_items.seller_assigned_id": 0.30769230769230765,
+    "line_items.vat_rate": 0.6909090909090909,
+    "skonto.days": 0.33333333333333337,
+    "skonto.percent": 0.33333333333333337,
+    "vat_breakdown.category_code": 0.6666666666666666,
+    "vat_breakdown.rate_percent": 0.810810810810811,
+    "vat_breakdown.tax_amount": 0.8888888888888888,
+    "vat_breakdown.taxable_amount": 0.8205128205128205
+  },
+  "per_group_cell_outcomes": {
+    "line_items.line_amount": {
+      "TP": 51,
+      "FP": 19,
+      "FN": 6,
+      "TN": 1,
+      "EXCLUDED": 0
+    },
+    "line_items.line_id": {
+      "TP": 45,
+      "FP": 5,
+      "FN": 20,
+      "TN": 7,
+      "EXCLUDED": 0
+    },
+    "line_items.name": {
+      "TP": 49,
+      "FP": 5,
+      "FN": 21,
+      "TN": 2,
+      "EXCLUDED": 0
+    },
+    "line_items.net_price": {
+      "TP": 59,
+      "FP": 5,
+      "FN": 11,
+      "TN": 2,
+      "EXCLUDED": 0
+    },
+    "line_items.quantity": {
+      "TP": 60,
+      "FP": 5,
+      "FN": 10,
+      "TN": 2,
+      "EXCLUDED": 0
+    },
+    "line_items.seller_assigned_id": {
+      "TP": 6,
+      "FP": 6,
+      "FN": 21,
+      "TN": 44,
+      "EXCLUDED": 0
+    },
+    "line_items.vat_rate": {
+      "TP": 38,
+      "FP": 15,
+      "FN": 19,
+      "TN": 5,
+      "EXCLUDED": 0
+    },
+    "skonto.basis_amount": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "TN": 5,
+      "EXCLUDED": 0
+    },
+    "skonto.days": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 4,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "skonto.percent": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 4,
+      "TN": 0,
+      "EXCLUDED": 0
+    },
+    "vat_breakdown.category_code": {
+      "TP": 19,
+      "FP": 0,
+      "FN": 19,
+      "TN": 8,
+      "EXCLUDED": 0
+    },
+    "vat_breakdown.rate_percent": {
+      "TP": 30,
+      "FP": 13,
+      "FN": 1,
+      "TN": 2,
+      "EXCLUDED": 0
+    },
+    "vat_breakdown.tax_amount": {
+      "TP": 36,
+      "FP": 7,
+      "FN": 2,
+      "TN": 1,
+      "EXCLUDED": 0
+    },
+    "vat_breakdown.taxable_amount": {
+      "TP": 32,
+      "FP": 8,
+      "FN": 6,
+      "TN": 0,
+      "EXCLUDED": 0
+    }
+  },
+  "per_invoice": [
+    {
+      "stem": "Avoir_FR_type380_EN16931",
+      "ok": true,
+      "micro_f1": 0.8750000000000001,
+      "overall_micro_f1": 0.787878787878788,
+      "presence_conditional_f1": 0.8750000000000001,
+      "spurious_emission_rate": 0.0,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "Avoir_FR_type381_MINIMUM",
+      "ok": true,
+      "micro_f1": 0.5217391304347827,
+      "overall_micro_f1": 0.3076923076923077,
+      "presence_conditional_f1": 0.5714285714285715,
+      "spurious_emission_rate": 0.10526315789473684,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "EN16931_AbweichenderZahlungsempf",
+      "ok": true,
+      "micro_f1": 0.9545454545454545,
+      "overall_micro_f1": 0.9555555555555556,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.16666666666666666,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "EN16931_Einfach_DueDate",
+      "ok": true,
+      "micro_f1": 1.0,
+      "overall_micro_f1": 0.975,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.0,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "EN16931_Physiotherapeut",
+      "ok": true,
+      "micro_f1": 0.923076923076923,
+      "overall_micro_f1": 0.9577464788732395,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.2,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "EN16931_Sachversicherung_berechneter_Steuersatz",
+      "ok": true,
+      "micro_f1": 0.9142857142857143,
+      "overall_micro_f1": 0.9259259259259259,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.17647058823529413,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "Facture_UE_BASICWL",
+      "ok": true,
+      "micro_f1": 0.7027027027027026,
+      "overall_micro_f1": 0.5714285714285714,
+      "presence_conditional_f1": 0.7647058823529412,
+      "spurious_emission_rate": 0.25,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "MustangGnuaccountingBeispielRE-20170509_505",
+      "ok": true,
+      "micro_f1": 0.75,
+      "overall_micro_f1": 0.7088607594936709,
+      "presence_conditional_f1": 0.7894736842105263,
+      "spurious_emission_rate": 0.18181818181818182,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "MustangGnuaccountingBeispielRE-20171118_506",
+      "ok": true,
+      "micro_f1": 0.7804878048780488,
+      "overall_micro_f1": 0.8409090909090908,
+      "presence_conditional_f1": 0.8205128205128205,
+      "spurious_emission_rate": 0.2,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "XRECHNUNG_Betriebskostenabrechnung",
+      "ok": true,
+      "micro_f1": 0.9600000000000001,
+      "overall_micro_f1": 0.9577464788732395,
+      "presence_conditional_f1": 0.9600000000000001,
+      "spurious_emission_rate": 0.0,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "ZUGFeRD_1p0_COMFORT_SEPA_Prenotification",
+      "ok": true,
+      "micro_f1": 0.7906976744186046,
+      "overall_micro_f1": 0.7532467532467534,
+      "presence_conditional_f1": 0.8717948717948718,
+      "spurious_emission_rate": 0.3333333333333333,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "ZUGFeRD_1p0_EXTENDED_Kostenrechnung",
+      "ok": true,
+      "micro_f1": 0.7222222222222222,
+      "overall_micro_f1": 0.5,
+      "presence_conditional_f1": 0.7647058823529412,
+      "spurious_emission_rate": 0.15384615384615385,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "ZUGFeRD_2_fully_compliant_complete",
+      "ok": true,
+      "micro_f1": 0.5625000000000001,
+      "overall_micro_f1": 0.6578947368421053,
+      "presence_conditional_f1": 0.6206896551724138,
+      "spurious_emission_rate": 0.21428571428571427,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "fail3",
+      "ok": true,
+      "micro_f1": 0.717948717948718,
+      "overall_micro_f1": 0.6923076923076923,
+      "presence_conditional_f1": 0.7567567567567568,
+      "spurious_emission_rate": 0.18181818181818182,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p0_BASIC_Einfach",
+      "ok": true,
+      "micro_f1": 0.923076923076923,
+      "overall_micro_f1": 0.9152542372881356,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.1875,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p0_BASIC_Rechnungskorrektur",
+      "ok": true,
+      "micro_f1": 0.7741935483870969,
+      "overall_micro_f1": 0.761904761904762,
+      "presence_conditional_f1": 0.8571428571428571,
+      "spurious_emission_rate": 0.17647058823529413,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p0_EN16931_Miete",
+      "ok": true,
+      "micro_f1": 0.9268292682926829,
+      "overall_micro_f1": 0.9752066115702479,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.2,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p0_EN16931_Rabatte",
+      "ok": true,
+      "micro_f1": 0.9565217391304348,
+      "overall_micro_f1": 0.9310344827586207,
+      "presence_conditional_f1": 0.9777777777777777,
+      "spurious_emission_rate": 0.1,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p0_EXTENDED_Fremdwaehrung",
+      "ok": true,
+      "micro_f1": 0.92,
+      "overall_micro_f1": 0.9142857142857143,
+      "presence_conditional_f1": 0.9583333333333334,
+      "spurious_emission_rate": 0.2222222222222222,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p0_EXTENDED_Kostenrechnung",
+      "ok": true,
+      "micro_f1": 0.8780487804878048,
+      "overall_micro_f1": 0.5842696629213484,
+      "presence_conditional_f1": 0.9473684210526316,
+      "spurious_emission_rate": 0.21428571428571427,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_BASIC_Taxifahrt",
+      "ok": true,
+      "micro_f1": 0.9444444444444444,
+      "overall_micro_f1": 0.927536231884058,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.11764705882352941,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Einfach_DueDate",
+      "ok": true,
+      "micro_f1": 1.0,
+      "overall_micro_f1": 0.8611111111111112,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.0,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Elektron",
+      "ok": true,
+      "micro_f1": 0.9473684210526316,
+      "overall_micro_f1": 0.8955223880597015,
+      "presence_conditional_f1": 0.9473684210526316,
+      "spurious_emission_rate": 0.0,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Elektron_embedded",
+      "ok": true,
+      "micro_f1": 0.9047619047619048,
+      "overall_micro_f1": 0.8181818181818182,
+      "presence_conditional_f1": 0.9268292682926829,
+      "spurious_emission_rate": 0.08333333333333333,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Miete",
+      "ok": true,
+      "micro_f1": 0.9230769230769231,
+      "overall_micro_f1": 0.9203539823008849,
+      "presence_conditional_f1": 0.972972972972973,
+      "spurious_emission_rate": 0.13333333333333333,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Physiotherapeut",
+      "ok": true,
+      "micro_f1": 0.9473684210526316,
+      "overall_micro_f1": 0.9714285714285714,
+      "presence_conditional_f1": 1.0,
+      "spurious_emission_rate": 0.13333333333333333,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Rabatte",
+      "ok": true,
+      "micro_f1": 0.9545454545454545,
+      "overall_micro_f1": 0.9298245614035088,
+      "presence_conditional_f1": 0.9545454545454545,
+      "spurious_emission_rate": 0.0,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Sachversicherung_berechneter_Steuersatz",
+      "ok": true,
+      "micro_f1": 0.8823529411764706,
+      "overall_micro_f1": 0.8846153846153846,
+      "presence_conditional_f1": 0.967741935483871,
+      "spurious_emission_rate": 0.17647058823529413,
+      "structure_seconds": 0.0,
+      "error": null
+    },
+    {
+      "stem": "zugferd_2p1_MINIMUM_Rechnung",
+      "ok": true,
+      "micro_f1": 0.9285714285714286,
+      "overall_micro_f1": 0.8666666666666666,
+      "presence_conditional_f1": 0.962962962962963,
+      "spurious_emission_rate": 0.05,
+      "structure_seconds": 0.0,
+      "error": null
+    }
+  ]
+}

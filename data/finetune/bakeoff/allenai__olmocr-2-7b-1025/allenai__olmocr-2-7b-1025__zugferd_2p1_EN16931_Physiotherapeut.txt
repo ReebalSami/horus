@@ -1,0 +1,109 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_EN16931_Physiotherapeut
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  57.37s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. R18-31 vom 03.10.2018
+
+Anwendungsempfehlung: urn:cen.eu:en16931:2017
+Währung: EUR
+
+Verkäufer:
+
+Physiotherapeutin
+Tanja Tinder
+Musterstraße 12
+
+DE 12345 Beispielstadt
+
+Telefon: 015119630027
+E-Mail: tanja.tinder@beispiel-provider.de
+USt.-Id.-Nr.: DE136695976
+
+Käufer:
+
+Liselotte Müller
+Rechnungsstraße 12
+
+DE 12345 Beispielstadt
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuer</th>
+    <th>Entgelt</th>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>Physiotherapie</td>
+    <td>26,00</td>
+    <td>10 Stk</td>
+    <td>0 % VAT (E)</td>
+    <td>260,00</td>
+  </tr>
+  <tr>
+    <td colspan="7">Behandlungen aufgrund der Verordnung von Frau Dr. Heilerin vom 05.09.2018 an folgenden Terminen:<br>11.09.2018; 14.09.2018; 19.09.2018; 24.09.2018;<br>27.09.2018; 11.10.2018; 15.10.2018; 17.10.2018;<br>22.10.2018; 30.10.2018</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Hausbesuch</td>
+    <td>12,00</td>
+    <td>10 Stk</td>
+    <td>0 % VAT (E)</td>
+    <td>120,00</td>
+  </tr>
+  <tr>
+    <td colspan="7">An folgenden Terminen: 11.09.2018; 14.09.2018;<br>19.09.2018; 24.09.2018; 27.09.2018; 11.10.2018;<br>15.10.2018; 17.10.2018; 22.10.2018; 30.10.2018</td>
+  </tr>
+</table>
+
+Zahlungsbedingungen:<|im_end|>
+===== PAGE 2 =====
+Beschreibung
+Den Rechnungsbetrag überweisen Sie bitte bis zum 21.11.2018 auf das unten angegebene Konto.
+
+Fälligkeit: 21.11.2018
+
+Teilzahlung
+
+Zahlungsart:
+
+Zahlungstyp (codiert): 30
+
+Verkäufer-Kontoname: Tanja Tinder
+Verkäufer-IBAN: DE02120300000000202051
+
+Umsatzsteueraufschlüsselung:
+
+Art (Kategorie)    Warenwert Zu-/Abschlag Steuerbasisbetrag    USt. %    USt.-Betrag
+VAT (E)
+Steuerfreie
+Leistungen nach §4 Nr. 14 UStG
+380,00    0    0,00
+
+Belegsummen:
+
+Positionssumme    380,00
+Gesamtbetrag der Zuschläge
+Gesamtbetrag der Abschläge
+Rechnungssumme ohne USt.    380,00
+Steuerbetrag    0,00
+Bruttosumme    380,00
+Erhaltene Anzahlungen
+Zahlbetrag    380,00<|im_end|>

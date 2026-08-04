@@ -37,7 +37,7 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 from horus.config import EvalConfig
 from horus.eval import structurer
@@ -67,8 +67,19 @@ __all__ = [
     "target_self_score",
 ]
 
-# The Arm-B reader whose cached transcripts the structurer consumes (ADR-034/038).
-DEFAULT_READER_MODEL = "ibm-granite/granite-docling-258M-mlx"
+# The Arm-B reader whose cached transcripts the structurer consumes (ADR-034/038),
+# switched to ADR-057's bake-off winner. Kept in step with
+# `FinetuneConfig.reader_model` and configs/finetune-structurer.yaml: this constant
+# and that field name the SAME concept, so leaving one on the superseded granite
+# lineage made "the default reader" ambiguous (ADR-058 finding 4, ADR-059).
+# The superseded granite transcripts remain on disk per ADR-011 retention and are
+# still selectable via `--reader-model`.
+#
+# Note `scripts/finetune_seal_split.py` takes its `--reader-model` default from here.
+# The split is already SEALED and committed (data/finetune/split.json); it must not be
+# re-derived, or the no-HARKing guarantee is void. Both lineages happen to yield the
+# same 146 GT-bearing ready records, so this change cannot silently reshape it.
+DEFAULT_READER_MODEL = "Qwen/Qwen3-VL-4B-Instruct"
 # Where the pilot-13 / baseline reader pass archives transcripts (pilot-13.yaml).
 DEFAULT_TRANSCRIPT_DIR = Path("docs/sources/transcripts-multipage")
 
@@ -280,26 +291,54 @@ def _oracle_print_form(rec: GroundTruthField, spec: FieldSpec) -> str | None:
     return v
 
 
+# Repeating groups whose rows are numbered on a real page, mapped to the sub-field
+# holding that number. Such a row leads with the GT value bare and unlabelled, the
+# way the column reads, instead of also emitting it as a "<label>: <value>" cell —
+# the structurer returned the labelled form verbatim (line_id="Pos: 1", 65 FNs).
+# `line_items` qualifies because BT-126 IS the printed "Pos" column; the VAT
+# breakdown and Skonto tiers have no position column, so numbering their rows would
+# put a number on the page that is not a value (ADR-059).
+_ROW_ORDINAL_CELL: Final[dict[str, str]] = {"line_items": "line_id"}
+
+
 def render_oracle_transcript(gt: GroundTruth) -> str:
     """Render the GT as the text a PERFECT reader would produce (attribution audit).
 
     Emulates an ideal reader transcript of the invoice page: one
-    ``<german_label>: <printed value>`` line per present flat field, plus one
+    ``<printed label>: <printed value>`` line per present flat field, plus one
     labeled line per repeating-group row. Feeding this to the structurer measures
     the structurer + predicted-normalizer ceiling INDEPENDENT of reading quality —
     the gap to `target_self_score` (≈0.9975) is pure downstream loss.
 
-    Two honesty caveats (documented for the audit report):
+    Labels come from ``FieldSpec.rendered_label`` — the corpus-MEASURED
+    ``printed_label`` where one exists, else the canonical ``german_label``
+    (ADR-059). Rendering the spec term unconditionally, as this function
+    originally did, made the "perfect" page print wordings that occur in 0/146
+    real transcripts and cost the ceiling arm real accuracy: the structurer scored
+    0.000 on ``charge_total_amount`` here while scoring 0.889 on genuine reader
+    text, because it recognises "Gesamtbetrag der Zuschläge" (88/146) and not the
+    spec's "Summe Zuschläge" (0/146). 5 fields keep a synthetic label because no
+    printed form exists for them at all; ``make audit-prompts`` enumerates them.
+
+    Repeating-group rows render as ``<label>: <value>`` cells joined by ``" | "``.
+    Groups listed in `_ROW_ORDINAL_CELL` lead with their GT row position, bare and
+    unlabelled, because that is how a position column reads on a page; every other
+    group leads with a dash so the row carries no number that is not a value.
+
+    Remaining honesty caveats (documented for the audit report):
       - DATE / MONEY / RATE values are German-print-formatted, so the structurer's
         locale conversion IS exercised (that's part of its real job).
-      - Label→field mapping is trivially easy here (labels ARE the registry's
-        german_label). Real pages use varied labels, so this is an UPPER bound.
+      - One label per field, one field per line, and group labels repeated on every
+        row: a real page prints the billing period as ONE range under ONE heading,
+        and line items as a TABLE with column headers stated once. So this remains
+        an UPPER bound on layout, even though the label WORDING is now
+        corpus-grounded.
     """
     lines: list[str] = []
     for key, spec in FIELDS.items():
         printed = _oracle_print_form(gt.header[key], spec)
         if printed is not None:
-            lines.append(f"{spec.german_label}: {printed}")
+            lines.append(f"{spec.rendered_label}: {printed}")
     group_titles = {
         "vat_breakdown": "Umsatzsteueraufstellung",
         "skonto": "Zahlungsbedingungen (Skonto)",
@@ -311,17 +350,47 @@ def render_oracle_transcript(gt: GroundTruth) -> str:
             continue
         lines.append("")
         lines.append(f"{group_titles[group]}:")
-        for i, row in enumerate(rows, start=1):
+        ordinal_key = _ROW_ORDINAL_CELL.get(group)
+        for row in rows:
+            # Groups with a real position column lead with that GT position, bare, the
+            # way the column reads on the page; the rest lead with a dash. Never
+            # `enumerate`: it fabricated positions that CONTRADICT the GT (on
+            # EN16931_Physiotherapeut the GT line_ids are "0"/"1" and enumerate printed
+            # "1."/"2."), and on groups with no position column the bare ordinal was
+            # read as data — the structurer returned it as rate_percent on VAT rows
+            # whose "Steuersatz" cell is absent (rate_percent FP 2 -> 7). See ADR-059.
+            prefix = "  - "
             cells = []
             for sub_key, sub_spec in sub_fields.items():
                 rec = row.get(sub_key)
                 if rec is None:
                     continue
                 printed = _oracle_print_form(rec, sub_spec)
-                if printed is not None:
-                    cells.append(f"{sub_spec.german_label} {printed}")
+                if printed is None:
+                    continue
+                # A row is ONE line, so a value containing newlines would split it
+                # and the block would stop parsing as rows entirely. Some CII
+                # `name` elements hold a whole product block ("GTIN 4123456000014\n
+                # Art-Nr-Lieferant ZS9997\nZitronensäure 100ml\n…"), which broke the
+                # line-item table on 1 of 29 val invoices. Flat fields deliberately
+                # keep their newlines: a multi-line address block under one label is
+                # what a page actually prints, and there is no row contract to break.
+                printed = " ".join(printed.split())
+                if sub_key == ordinal_key:
+                    prefix = f"  {printed}. "
+                    continue
+                # Colon-separated, exactly like the flat lines above. Without it the
+                # cell is "<label> <value>", which only reads correctly while the
+                # labels are long German compounds: once ADR-059 replaced them with
+                # the SHORT forms real pages print, "Positionsnummer 1" became
+                # "Pos 1" and the structurer faithfully returned line_id="Pos 1"
+                # (65 FNs), while "Umsatzsteuer S" made it give up and emit
+                # category_code=null (38 FNs) — 103 cells lost on PERFECT input,
+                # purely to punctuation. A label must be separable from its value by
+                # construction, not by being too wordy to mistake for one.
+                cells.append(f"{sub_spec.rendered_label}: {printed}")
             if cells:
-                lines.append(f"  {i}. " + " | ".join(cells))
+                lines.append(prefix + " | ".join(cells))
     return "\n".join(lines)
 
 

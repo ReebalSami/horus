@@ -1,0 +1,231 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EXTENDED_Kostenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  156.99s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. KR87654321012 vom 06.10.2018
+### KOSTENRECHNUNG
+
+Testkennzeichen : true
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended
+
+Rechnungswährung : EUR
+
+Liefer- und Leistungsdatum : 30.09.2018
+
+Weitere Referenz : A777123, Art der Referenz: Rechnungsdatenblatt
+
+---
+
+## Verkäufer:
+
+**Nummer** : 549910  
+**Globale Nummer**: 4333741000005 (GTIN)  
+**MUSTERLIEFERANT GMBH**  
+BAHNHOFSTRASSE 99  
+DE 99199 MUSTERHAUSEN  
+
+**Telefon** : +49 932 431 500  
+**E-Mail** : max.mustermann@musterlieferant.de  
+**Steuernummer** : 201/113/40209
+
+---
+
+## Käufer/Leistungsempfänger:
+
+**Nummer** : 339420  
+**Globale Nummer**: 4304171000002 (GTIN)  
+**MUSTER-KUNDE GMBH**  
+KUNDENWEG 88  
+DE 40235 DÜSSELDORF
+
+---
+
+## Abweichender Warenempfänger:
+
+**Globale Nummer**: 4304171088093 (GTIN)  
+**MUSTER-MARKT**  
+7322  
+HAUPTSTRASSE 44  
+DE 31157 SARSTEDT
+
+---
+
+## Abweichender Rechnungsempfänger:
+
+**Nummer** : 339420  
+**Globale Nummer**: 4304171000002 (GTIN)  
+**MUSTER-KUNDE GMBH**  
+KUNDENWEG 88  
+DE 40235 DÜSSELDORF
+
+---
+
+Qualifizierung der Textart: **Price conditions**, Qualifizierung des Textes: **ST3**  
+Es bestehen Rabatt- oder Bonusvereinbarungen.
+
+Qualifizierung der Textart: **Additional sale/purchase conditions**, Qualifizierung des Textes: **EEV**  
+Der Verkäufer bleibt Eigentümer der Waren bis zur vollständigen Erfüllung der Kaufpreisforderung.
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+Qualifizierung der Textart: Regulatory information
+
+MUSTERLIEFERANT GMBH
+BAHNHOFSTRASSE 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Max Mustermann
+UST-IdNr: DE123456789
+Telefon: +49 932 431 0
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | USt. | Positions- | Positions- |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  | Art-Nr |  |  |  |  |  | betrag | ohne |
+|  | (Art) |  |  |  |  |  |  | USt. |
+| 1 | WA997 | Wirkarbeit | 0,0520 | 10000 KWH | 19 % | 52,00 |  |  |
+|  | 4123456000014 | HT |  |  |  |  |  |  |
+|  | (GTIN) |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |
+===== PAGE 3 =====
+```markdown
+# Zahlungsbedingungen:
+
+**Beschreibung**
+
+Skontovereinbarung: 2% bei Zahlung innerhalb 10 Tagen
+nach Rechnungsdatum
+
+| Bezug | Innerhalb | Basisbetrag | Prozentsatz % | Betrag |
+|-------|-----------|-------------|---------------|--------|
+| Skonto | 10 Tag(e) |             | 2             |        |
+
+# Zu- und Abschläge:
+
+| Art | % | Basisbetrag | Basismenge | Steuer | Betrag |
+|-----|---|-------------|------------|--------|--------|
+| Abschlag Sonderabbatt |   | 410,10      |            | 19 % UST (S) | -21,55 |
+| Transportkosten: Frachbetrag |   |             |            | 19 % UST (S) | 15,00 |
+
+# Steueraufschlüsselung:
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|-----------|--------------|-------------|--------|--------------|
+| Umsatzsteuer (S) | 410,10    | -6,55        | 403,55      | 19     | 76,67        |
+
+# Belegsummen:
+
+| Positionssumme | 410,10 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 15,00 |
+| Gesamtbetrag der Abschläge | -21,55 |
+| Rechnungssumme ohne USt. | 403,55 |
+| Steuerbetrag in EUR | 76,67 |
+| **Bruttosumme** | **480,22** |
+| Erhaltene Anzahlungen | -0,00 |
+| Zahlbetrag | 480,22 |
+```<|im_end|>

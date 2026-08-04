@@ -1,0 +1,107 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  zugferd_2p1_EN16931_Miete
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  33.95s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version : 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Mietrechnung Nr. 9314110911/00/M/00/N vom 01.10.2018
+
+Geschäftsprozess : Beispielgeschäftsprozess
+Anwendungsempfehlung : urn:cen.eu:en16931:2017
+Währung : EUR
+
+Liefer- und Leistungsdatum : 29.09.2018
+
+Bestellung : B123456789
+Lieferavis : L87654321012345
+
+Verkäufer:
+Nummer : 549910
+Globale Nummer: 4333741000005 (GTIN)
+MUSTER-Autovermietung
+Musterstr. 99
+DE 99199 MUSTERHAUSEN
+
+USt.-Id.-Nr. : DE136695976
+
+Käufer:
+Nummer : 9314110911
+MUSTER-KUNDE GMBH
+KUNDENWEG 88
+DE 40235 DUESSELDORF
+
+Qualifizierung der Textart: REG
+MUSTER-Autovermietung GMBH
+Musterstr. 99
+99199 MUSTERHAUSEN
+Geschäftsführung:
+Maxima Musterfrau
+USt-IdNr: DE136695976
+Telefon: +49 711-50885524
+www.musterlieferant.de
+HRB Nr. 372876
+Amtsgericht Musterstadt
+GLN 4304171000002
+
+Bei Rückfragen:
+Telefon: +49 711-50885524
+E-Mail : info@muster-autovermietung.de
+
+Übergabe am 29.09.2018/ 10:35
+    Ort: Frankfurt a. M.
+    km: 17791<|im_end|>
+===== PAGE 2 =====
+<fcel>Rückgabe am 01.10.2018/ 10:19
+Ort: Frankfurt a. M.
+km: 18664<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Übernahme: Frankfurt
+Datum: 01.10.2018
+Zeit: 10:19
+km/out: 177791
+km/in: 18664
+km gefahren: 873
+Kennzeichen: M-MM 0000
+CO2: 150
+Bruttolistenpreis: 68300<lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Art-Nr-Kunde
+Art-Nr-Lief.
+Art-Nr
+(Art)<fcel>Beschreibung<fcel>Nettopreis<fcel>Menge<fcel>Steuer<fcel>Entgelt<nl>
+<fcel>1<fcel>Miettage<fcel>86,55<fcel>2 Stk<fcel>19 % VAT (S)<fcel>173,10<nl>
+<ecel><fcel>Weitere Eigenschaften:
+Fahrzeug-Kennzeichen: = M-MM 0000<lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Navigationssystem - Garantie<fcel>5,04<fcel>2 Stk<fcel>19 % VAT (S)<fcel>10,08<nl>
+<fcel>2<fcel>Inklusiv-Kilometer waren: 873<lcel><lcel><lcel><lcel><nl>
+<fcel>3<fcel>Vollkasko<fcel>23,10<fcel>2 Stk<fcel>19 % VAT (S)<fcel>46,20<nl>
+<fcel>4<fcel>minimale Selbstbeteiligung<fcel>15,55<fcel>2 Stk<fcel>19 % VAT (S)<fcel>31,10<nl>
+<fcel>5<fcel>Personen-Unfallversicherung<fcel>7,98<fcel>2 Stk<fcel>19 % VAT (S)<fcel>15,96<nl>
+<fcel>6<fcel>Choice Upgrade<fcel>5,04<fcel>2 Stk<fcel>19 % VAT (S)<fcel>10,08<nl>
+<fcel>Zahlungsbedingungen:<lcel><lcel><lcel><lcel><lcel><nl>
+<ecel><fcel>Beschreibung<lcel><fcel>Fälligkeit<lcel><fcel>Teilzahlung<nl>
+<|im_end|>
+===== PAGE 3 =====
+<fcel>Beschreibung<fcel>Fälligkeit<fcel>Teilzahlung<nl>
+<fcel>Die Leistung wurde erbracht im Zeitraum zwischen Übergabe und Rückgabe. Der Rechnungsbetrag wird über Ihre MasterCard-Kreditkarte abgebucht. Dies ist keine Aufforderung zur Zahlung. Rechnung für Ihre Unterlagen.<lcel><lcel><nl>
+<fcel>Umsatzsteueraufschlüsselung:<lcel><lcel><nl>
+<fcel>Art (Kategorie) Warenwert Zu-/Abschlag Steuerbasisbetrag<fcel>USt. %<fcel>USt.-Betrag<nl>
+<fcel>VAT (S)<fcel>286,52<fcel>19 54,44<nl>
+<fcel>Belegsummen:<lcel><lcel><nl>
+<fcel>Positionssumme<lcel><fcel>286,52<nl>
+<fcel>Gesamtbetrag der Zuschläge<lcel><fcel>0,00<nl>
+<fcel>Gesamtbetrag der Abschläge<lcel><fcel>-0,00<nl>
+<fcel>Rechnungssumme ohne USt.<lcel><fcel>286,52<nl>
+<fcel>Steuerbetrag<lcel><fcel>54,44<nl>
+<fcel>Bruttosumme<lcel><fcel>340,96<nl>
+<fcel>Erhaltene Anzahlungen<lcel><fcel>-0,00<nl>
+<fcel>Zahlbetrag<lcel><fcel>340,96<nl><|im_end|>

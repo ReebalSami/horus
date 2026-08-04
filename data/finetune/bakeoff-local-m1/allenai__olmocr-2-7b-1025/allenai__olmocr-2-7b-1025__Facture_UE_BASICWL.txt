@@ -1,0 +1,46 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  Facture_UE_BASICWL
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  124.36s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+**Invoice FA-2017-0008**
+
+**Delivery Address**
+Me gusta olive
+87 camino de la calor
+Spain
+
+**Sales Contact**
+Me gusta olive
+Pedro Sanchez
+Spain
+
+**Due Date**
+11/03/2017
+
+**Payment Terms**
+30% advance payment, balance at 30 days
+
+**Customer Reference**
+COMPRA0832
+
+**Customer VAT Number**
+ESA12345674
+
+**Incoterms**
+DELIVERED DUTY UNPAID
+
+**Payment**
+SEPA Wire transfer
+IBAN: FR20 1242 1242 1242 1242 1242 1242 124 124 - BIC: FIDCFR21XXX - Bank: Banque Fiducial
+
+**Notes**
+Free shipping (amount > 300 €)
+
+**French VAT exemption according to articles 262 ter I (for products) and/or 283-2 (for services) of "CGI"**

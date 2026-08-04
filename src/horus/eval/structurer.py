@@ -44,7 +44,7 @@ from typing import Any
 
 from horus.eval.adapters_json import recover_json_object
 from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS
-from horus.eval.schema import InvoiceFields, validate_and_repair
+from horus.eval.schema import InvoiceFields
 
 __all__ = [
     "build_structuring_input",
@@ -126,6 +126,69 @@ def build_structuring_input(structuring_prompt: str, reader_text: str) -> str:
     )
 
 
+# The backfill below reads three registry-defined names. Bind them to the registry
+# at import time so a rename in `ground_truth` fails LOUDLY here instead of silently
+# turning the repair into a no-op (the same fail-fast-at-boot discipline the config
+# layer uses). A silently-disabled repair would re-introduce the BT-119 zero this
+# function exists to fix, and nothing downstream would notice.
+_TAX_RATE_KEY = "tax_rate"
+_VAT_GROUP_KEY = "vat_breakdown"
+_VAT_RATE_CELL = "rate_percent"
+
+if _TAX_RATE_KEY not in FIELDS:
+    raise RuntimeError(
+        f"structurer: flat field {_TAX_RATE_KEY!r} is missing from the FIELDS registry; "
+        "the single-rate tax_rate backfill (ADR-058) cannot be wired."
+    )
+if _VAT_GROUP_KEY not in REPEATING_GROUPS:
+    raise RuntimeError(
+        f"structurer: repeating group {_VAT_GROUP_KEY!r} is missing from REPEATING_GROUPS; "
+        "the single-rate tax_rate backfill (ADR-058) cannot be wired."
+    )
+if _VAT_RATE_CELL not in REPEATING_GROUPS[_VAT_GROUP_KEY][1]:
+    raise RuntimeError(
+        f"structurer: cell {_VAT_RATE_CELL!r} is missing from the {_VAT_GROUP_KEY!r} group; "
+        "the single-rate tax_rate backfill (ADR-058) cannot be wired."
+    )
+
+
+def _backfill_single_tax_rate(
+    flat: dict[str, str | None],
+    full: dict[str, Any],
+) -> dict[str, str | None]:
+    """Fill a null flat ``tax_rate`` from the model's OWN single-rate VAT breakdown.
+
+    ADR-058. The oracle probe (perfect GT-rendered input) showed the structurer
+    reliably filling ``vat_breakdown[].rate_percent`` while leaving the flat
+    ``tax_rate`` null — the flat key reads as redundant once the table is emitted.
+    BT-119 is the *document-level* rate, which is well-defined exactly when the
+    invoice carries ONE distinct rate (the multi-rate case is scored EXCLUDED per
+    ADR-045/052), so this copies the value across in precisely that case.
+
+    Repair, not invention — the same charter as ``validate_and_repair`` (ADR-035):
+    the value comes from the model's own emission, never from the ground truth.
+    No-ops when the flat value is already set, when no breakdown was emitted, or
+    when two or more distinct rates appear (there is no single document rate to
+    state, and null is then the correct answer).
+    """
+    if flat.get(_TAX_RATE_KEY) is not None:
+        return flat
+    rows = full.get(_VAT_GROUP_KEY)
+    if not isinstance(rows, list):
+        return flat
+    # `rate_percent` is already a canonical RATE string here: the schema's
+    # `_coerce_by_type` ran during `model_validate`, so 19 / 19.0 / "19 %" / "19,00"
+    # all arrive as "19" and an unparseable rate arrives as None. No re-coercion.
+    rates = {
+        row[_VAT_RATE_CELL]
+        for row in rows
+        if isinstance(row, dict) and row.get(_VAT_RATE_CELL) is not None
+    }
+    if len(rates) == 1:
+        flat[_TAX_RATE_KEY] = next(iter(rates))
+    return flat
+
+
 def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:  # noqa: ARG001
     """Parse one structuring-model output into the scored 19-key predicted dict.
 
@@ -135,13 +198,19 @@ def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:  #
     ``dict[str, str | None]`` the scorer consumes. Unrecoverable JSON yields an
     all-null dict (honest; the model is treated as having extracted nothing).
 
+    One cross-field repair runs last: ``_backfill_single_tax_rate`` copies a
+    single-rate VAT breakdown into the flat ``tax_rate`` (ADR-058).
+
     ``model_id`` is accepted for harness-side signature parity with
     ``adapters.py`` / ``adapters_json.py`` but is unused — structuring is
     model-agnostic (the recovery ladder + typed repair need no per-model
     dispatch). ``# noqa: ARG001`` suppresses the unused-argument warning.
     """
+    # One recover + one validate: `to_scored_dict` and `to_full_dict` are two views
+    # of the SAME validated model, so the cross-field repair costs no second parse.
     parsed = recover_json_object(raw_text)
-    return validate_and_repair(parsed)
+    fields = InvoiceFields.model_validate(parsed if parsed is not None else {})
+    return _backfill_single_tax_rate(fields.to_scored_dict(), fields.to_full_dict())
 
 
 def to_predicted_dict_multipage(

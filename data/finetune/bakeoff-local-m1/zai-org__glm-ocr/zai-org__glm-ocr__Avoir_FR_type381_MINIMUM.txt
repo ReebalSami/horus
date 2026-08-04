@@ -1,0 +1,41 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    zai-org/GLM-OCR
+# Invoice:  Avoir_FR_type381_MINIMUM
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  32.14s total
+# Adapter:  regex
+# Prompt:   Recognize all text in the image and output in markdown format
+
+===== PAGE 1 =====
+Avoir AV-2017-0005
+
+Adresse de livraison
+Ma jolie boutique
+35 rue de la République
+69001 Lyon
+France
++33 4 72 07 08 55
+sav@majolieboutique.net
+
+Ma jolie boutique
+Alexandre Payet
+35 rue de la République
+69001 Lyon
+France
+
+Date de facture
+16/11/2017
+Conditions de paiement
+Paiement immédiat
+Date d'échéance
+16/11/2017
+Votre référence
+PO445
+
+Contact commercial
+Tony Dubois
++33 4 72 07 08 56
++33 6 11 22 33 44
+tony.dubois@aubonmoulin.fr

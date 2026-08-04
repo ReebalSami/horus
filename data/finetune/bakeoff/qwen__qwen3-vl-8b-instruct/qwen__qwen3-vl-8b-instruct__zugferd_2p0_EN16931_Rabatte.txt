@@ -1,0 +1,186 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-8B-Instruct
+# Invoice:  zugferd_2p0_EN16931_Rabatte
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  148.96s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Handelsrechnung Nr. 471102 vom 05.06.2018
+
+**Anwendungsempfehlung**: urn:cen.eu:en16931:2017  
+**Rechnungswährung**: EUR  
+
+**Liefer- und Leistungsdatum**: 03.06.2018  
+**Bestellung**: 2013-471331  
+
+---
+
+## Verkäufer:
+
+**Globale Nummer**: 4000001123452 (GTIN)  
+**Lieferant GmbH**  
+Lieferantenstraße 20  
+DE 80333 München  
+
+**Steuernummer**: 201/113/40209  
+**USt.-Id.-Nr.**: DE123456789  
+
+---
+
+## Käufer/Leistungsempfänger:
+
+**Nummer**: GE2020211  
+**Globale Nummer**: 4000001987658 (GTIN)  
+**Kunden AG Mitte**  
+Kundenstraße 15  
+DE 69876 Frankfurt  
+
+---
+
+**Rechnung gemäß Bestellung Nr. 2018-471331 vom 01.03.2018.**
+
+---
+
+### Qualifizierung der Textart: Price conditions
+
+**Es bestehen Rabatt- und Bonusvereinbarungen.**
+
+---
+
+### Qualifizierung der Textart: Regulatory information
+
+**Lieferant GmbH**  
+Lieferantenstraße 20  
+80333 München  
+Deutschland  
+
+**Geschäftsführer**: Hans Muster  
+**Handelsregisternummer**: H A 123
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Art-Nr (Art) | Beschreibung | Nettopreis | Menge | USt. | Positions-betrag ohne USt. |
+|-----|---------------|---------------|--------------|--------------|------------|-------|------|-----------------------------|
+| 1   | KR3M          | 4012345001235 (GLN) | Kunstrasen grün 3m breit | 3,3333 | 3 m² | 19 % | 10,00 |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |            |       |      |                             |
+|     |               |               |              |              |           
+===== PAGE 3 =====
+```markdown
+**Belegsummen:**
+
+| Positionssumme | 202,70 |
+| --- | --- |
+| Gesamtbetrag der Zuschläge | 5,80 |
+| Gesamtbetrag der Abschläge | -14,73 |
+| Rechnungssumme ohne USt. | 193,77 |
+| Steuerbetrag in EUR | 21,30 |
+| **Bruttosumme** | **215,07** |
+| Erhaltene Anzahlungen | -50,00 |
+| **Zahlbetrag** | **165,07** |
+
+file:///C:/Users/jenny.hertzfeldt/AppData/Local/Temp/tmp0001.html 21.01.2019
+```<|im_end|>

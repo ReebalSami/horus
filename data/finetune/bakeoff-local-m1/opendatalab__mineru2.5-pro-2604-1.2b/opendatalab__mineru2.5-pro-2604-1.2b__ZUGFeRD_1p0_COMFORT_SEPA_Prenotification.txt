@@ -1,0 +1,42 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  ZUGFeRD_1p0_COMFORT_SEPA_Prenotification
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  306.63s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+<fcel>Rechnungsersteller
+Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
+GLN 4000001123452<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Rechnungsempfänger
+Kunden AG Mitte
+Hans Muster
+Kundenstraße 15
+69876 Frankfurt
+Deutschland
+GLN 4000001987658<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Unsere
+Pos Art.Nr.<fcel>Artikelbeschreibung<fcel>Menge<fcel>Meng.-einheit<fcel>Preis/ Einheit<fcel>Betrag<fcel>UST.%<ecel><nl>
+<fcel>1 TB100A4<fcel>Trennblätter A4
+GTIN: 4012345001235<fcel>20<fcel>Stk.<fcel>9,90<fcel>198,00<fcel>19<ecel><nl>
+<fcel>2 ARNR2<fcel>Joghurt Banane
+GTIN: 4000050986428<fcel>50<fcel>Stk.<fcel>5,50<fcel>275,00<fcel>7<ecel><nl>
+<fcel>Rechnungssumme Netto (excl. USt.)<lcel><lcel><lcel><lcel><fcel>473,00<ecel><ecel><nl>
+<fcel>Steuerbasisbetrag USt. 7%<lcel><lcel><lcel><lcel><fcel>275,00<fcel>19,25<ecel><nl>
+<fcel>Steuerbasisbetrag USt. 19%<lcel><lcel><lcel><lcel><fcel>198,00<fcel>37,62<ecel><nl>
+<fcel>Rechnungssumme Brutto (inkl. USt.)<lcel><lcel><lcel><lcel><fcel>529,87<ecel><ecel><nl>
+<fcel>Zahlungsinformationen:
+Der Betrag in Höhe von EUR 529,87 wird am 20.03.2014 von Ihrem Konto mit IBAN DE21860000000086001055 und BIC MARKDEF1860, Deutsche Bundesbank -Filiale Leipzig- per SEPA-Lastschrift eingezogen.
+Mandatsreferenz: REF A-123, Gläubiger-Identifikationsnummer: DE98ZZZ09999999999<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<fcel>Bank-/Steuerinformationen
+Kontonr.: 1234 5678 90 IBAN-Nr.: DE08 7009 0100 1234 5678 90 Handelsreg.: H A 123
+BLZ: 700 901 00 BIC: GENODEF1M04 USt.-Identnr.: DE123456789
+Bankname: Hausbank München Geschäftsf.: Hans Muster Steuernr.: 201/113/40209<lcel><lcel><lcel><lcel><lcel><lcel><lcel><nl>
+<|im_end|>

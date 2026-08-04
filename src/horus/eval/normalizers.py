@@ -401,6 +401,31 @@ def _normalize_predicted_optional_zero_money(raw: str) -> str | None:
     return norm
 
 
+def _normalize_predicted_nonneg_money(raw: str) -> str | None:
+    """Spec-non-negative optional totals (BT-107/108/113): optional-zero + sign-fold.
+
+    ADR-058. Same optional-zero rule as
+    :func:`_normalize_predicted_optional_zero_money`, plus: a leading minus sign is
+    DROPPED. German invoices print these totals *as deductions*
+    ("Gesamtbetrag der Abschläge | -14,73"; "Bereits gezahlt | -50,00"), so a model
+    that faithfully copies the page emits ``-50.00`` against a GT of ``50.00`` and
+    scores FN for being correct — measured on the reader arms, which emitted
+    ``-50.0`` / ``-500.00`` for BT-113. Same as-printed-vs-as-stored representation
+    class as ADR-046/048/051/056.
+
+    The GT side folds identically via :func:`_normalize_nonneg_money`, so the rule is
+    symmetric in both directions and no sign convention is arbitrarily privileged.
+
+    Representation-only: the MAGNITUDE still has to match, so a model that reads the
+    wrong number still scores FN. Deliberately NOT applied to BT-114
+    (``rounding_amount``), which is legitimately signed.
+    """
+    norm = _normalize_predicted_optional_zero_money(raw)
+    if norm is None:
+        return None
+    return norm[1:] if norm.startswith("-") else norm
+
+
 # A model often appends the line's GTIN/EAN to the seller article number with an
 # explicit "(GTIN)" marker: "PFA5 4000001234578 (GTIN)" or, run-on,
 # "KR3M4012345001235(GTIN)". The GT BT-155 is the bare seller article id

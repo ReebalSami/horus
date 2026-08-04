@@ -1,0 +1,195 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EXTENDED_Warenrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  145.87s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Handelsrechnung Nr. R87654321012345 vom 06.08.2018
+### WARENRECHNUNG
+
+Testkennzeichen : true  
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended  
+Rechnungswährung : EUR  
+
+Liefer- und Leistungsdatum : 05.08.2018  
+
+Bestellung : B123456789  
+Weitere Referenz : A456123, Art der Referenz: Rechnungsdatenblatt  
+
+---
+
+### Verkäufer:
+Nummer : 549910  
+Globale Nummer: 4333741000005 (GTIN)  
+**MUSTERLIEFERANT GMBH**  
+BAHNHOFSTRASSE 99  
+DE 99199 MUSTERHAUSEN  
+
+Telefon : +49 932 431 500  
+E-Mail : max.mustermann@musterlieferant.de  
+USt.-Id.-Nr. : DE123456789  
+
+---
+
+### Käufer/Leistungsempfänger:
+Nummer : 009420  
+Globale Nummer: 4304171000002 (GTIN)  
+**MUSTER-KUNDE GMBH**  
+KUNDENWEG 88  
+DE 40235 DÜSSELDORF  
+
+---
+
+### Abweichender Warenempfänger:
+Globale Nummer: 4304171088093 (GTIN)  
+**MUSTER-MARKT**  
+8211  
+HAUPTSTRASSE 44  
+DE 31157 SARSTEDT  
+
+---
+
+### Abweichender Rechnungsempfänger:
+Nummer : 009420  
+Globale Nummer: 4304171000002 (GTIN)  
+**MUSTER-KUNDE GMBH**  
+KUNDENWEG 88  
+DE 40235 DÜSSELDORF  
+
+---
+
+Qualifizierung der Textart: Price conditions, Qualifizierung des Textes: ST3  
+Es bestehen Rabatt- oder Bonusvereinbarungen.
+
+Qualifizierung der Textart: Additional sale/purchase conditions, Qualifizierung des Textes: EEV  
+Der Verkäufer bleibt Eigentümer der Waren bis zu vollständigen Erfüllung der Kaufpreisforderung.
+
+Qualifizierung der Textart: Regulatory information
+
+**MUSTERLIEFERANT GMBH**  
+BAHNHOFSTRASSE 99  
+99199 MUSTERHAUSEN  
+
+Geschäftsführung:  
+Max Mustermann  
+USt-IdNr: DE123456789  
+Telefon: +49 932 431 0  
+www.musterlieferant.de  
+HRB Nr. 372876  
+Amtsgericht Musterstadt  
+GLN 4304171000002  
+WEEE-Reg-Nr.: DE87654321
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+Leergutwert: 46,50
+
+Wichtige Information: Bei Bestellungen bis zum 19.12. ist die Auslieferung bis spätestens 23.12. garantiert.
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | USt. | Positions- | Positions- |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  | Art-Nr |  |  |  |  |  | betrag | ohne USt. |
+| 1 | ZS997 | 4123456000014 | Zitronensäure 100ml | 1,0000 | 100 Stk | 19 % | 100,00 |  |
+|  | (GTIN) |  |  |  |  |  |  |  |
+|  |  |  | Bruttoreis : 1,0000 |  |  |  |  |  |
+|  |  |  | * Anzahl Packstücke: 4 Karton |  |  |  |  |  |
+|  |  |  | Weitere Eigenschaften: |  |  |  |  |  |
+|  |  |  | Verpackungsart: = BO |  |  |  |  |  |
+| 2 | GZ250 | 4123456000021 | Gelierzucker Extra 250g | 1,4500 | 50 Stk | 7 % | 72,50 |  |
+|  | (GTIN) |  |  |  |  |  |  |  |
+|  |  |  | Bruttoreis : 1,5000 Abschlag : 0,0300 |  |  |  |  |  |
+|  |  |  | Artikelrabatt 1 |  |  |  |  |  |
+|  |  |  | Abschlag : 0,0200 Artikelrabatt 2 |  |  |  |  |  |
+|  |  |  | * Anzahl Packstücke: 1 Karton |  |  |  |  |  |
+| 3 | GZ250 | 4123456000021 | Gelierzucker Extra 250g | 0,0000 | 10 Stk | 7 % | 0,00 |  |
+|  | (GTIN) |  |  |  |  |  |  |  |
+|  |  |  | Bruttoreis : 0,0000 |  |  |  |  |  |
+|  |  |  | Artikel wie vereinbart ohne Berechnung |  |  |  |  |  |
+|  |  |  | * Anzahl Packstücke: 1 Karton |  |  |  |  |  |
+| 4 | 2031 | 4100130013294 | Bierbrau Pils 20/0500 | 12,0000 | 15 Stk | 19 % | 180,00 |  |
+|  | (GTIN) |  |  |  |  |  |  |  |
+|  |  |  | Bruttoreis : 12,0000 |  |  |  |  |  |
+|  |  |  | EAN-VKE: 4100130913297 |  |  |  |  |  |
+|  |  |  | * Anzahl Packstücke: 20 Flasche |  |  |  |  |  |
+|  |  |  | Weitere Eigenschaften: |  |  |  |  |  |
+|  |  |  | Verpackung: = Kiste |  |  |  |  |  |
+| 5 | 1805 | 2001015001325 | Leergutpfand 20 x 0,51 | 3,1000 | 15 Stk | 19 % | 46,50 |  |
+|  | (GTIN) |  |  |  |  |  |  |  |
+|  |  |  | Bruttoreis : 3,1000 |  |  |  |  |  |
+|  |  |  | * Anzahl Packstücke: 1 Getränkekiste |  |  |  |  |  |
+|  |  |  | Weitere Eigenschaften: |  |  |  |  |  |
+|  |  |  | Verpackung: = unverpackt |  |  |  |  |  |
+| 6 | MP107 | 4123456000038 | Mischpalette Joghurt Karton 3 x 20 | 29,1000 | 2 Stk | 7 % | 58,20 |  |
+|  | (GTIN) |  |  |  |  |  |  |  |
+|  |  |  | Bruttoreis : 30,0000 Abschlag : 0,9000 Artikelrabatt 1 |  |  |  |  |  |
+|  |  |  | * Anzahl Packstücke: 1 Palette |  |  |  |  |  |
+```<|im_end|>
+===== PAGE 3 =====
+```markdown
+# Weitere Eigenschaften:
+
+Verpackung: = Karton
+
+## Basisartikel:
+
+| Art-Nr-Lief. | Art-Nr-Kunde | Art-Nr. (Art) | Beschreibung | Menge |
+|--------------|--------------|---------------|--------------|-------|
+| JOG103       | 4123456001035 | Erdbeer 20 x 150g Becher (GTIN) | 20 Stk |
+| JOG203       | 4123456002032 | Banane 20 x 150g Becher (GTIN) | 20 Stk |
+| JOG303       | 4123456003039 | Schoko 20 x 150g Becher (GTIN) | 20 Stk |
+
+---
+
+## Zahlungsbedingungen:
+
+**Beschreibung**
+
+Bei Zahlung innerhalb 14 Tagen gewähren wir 2,0% Skonto.
+
+| Bezug | Innerhalb | Basisbetrag | Prozentsatz % | Betrag |
+|-------|-----------|-------------|---------------|--------|
+| Skonto | 14 Tag(e) |             | 2             |        |
+
+---
+
+## Zu- und Abschläge:
+
+| Art | % | Basisbetrag | Basismenge | Steuer | Betrag |
+|-----|---|-------------|------------|--------|--------|
+| Abschlag | Rechnungsrabatt 1 | 2 | 280,00 | 19 % UST (S) | -5,60 |
+| Abschlag | Rechnungsrabatt 1 | 2 | 130,70 | 7 % UST (S) | -2,61 |
+| Abschlag | Rechnungsrabatt 2 | 2 | 280,00 | 19 % UST (S) | -2,50 |
+| Abschlag | Rechnungsrabatt 2 | 2 | 130,70 | 7 % UST (S) | -0,50 |
+| Transportkosten | | | | 19 % UST (S) | 3,00 |
+
+---
+
+## Steueraufschlüsselung:
+
+| Art (Kategorie) | Warenwert | Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|-----------|--------------|-------------|--------|--------------|
+| Umsatzsteuer (S) | 326,50 | -5,10 | 321,40 | 19 | 61,07 |
+| Umsatzsteuer (S) | 130,70 | -3,11 | 127,59 | 7 | 8,93 |
+
+---
+
+## Belegsummen:
+
+| Positionssumme | 457,20 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 3,00 |
+| Gesamtbetrag der Abschläge | -11,21 |
+| Rechnungssumme ohne USt. | 448,99 |
+| Steuerbetrag in EUR | 70,00 |
+| **Bruttosumme** | **518,99** |
+| Erhaltene Anzahlungen | -0,00 |
+| **Zahlbetrag** | **518,99** |
+```<|im_end|>

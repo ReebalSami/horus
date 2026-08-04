@@ -1,0 +1,300 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  ZUGFeRD_2_fully_compliant_complete
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  192.90s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Die Vordefinierte Firma
+Waldstrasse 86-90
+13403 Berlin
+Deutschland
+
+Tel: +49 (030) 41092-0
+Fax: +49 (030) 41092-111
+email: info@vordefiniert.de
+UStID#DE12345618938
+
+Rechnung
+
+Firma
+Elektromarkt Bamby
+Adlerstrasse 452
+D-07545 GERA
+
+Information
+Belegnummer 90005178
+Belegdatum 07.01.1997
+Kunden Nummer 1175
+Bestellnummer 4970 (03.01.1997)
+Währung DEM
+
+Terms of Payment
+Incoterms CIP Gera
+Description Frachtfrei versichert
+Gross Weight 308,500 KG
+Net Weight 308,500 KG
+Volume 0,750 M3
+
+Position Material/Beschreibung
+10 M-01
+Sony Sunny01
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+20 M-02
+Highscreen MS 1775P
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+30 M-10
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 15F/Fe
+Dieses Gerät ist strahlungsarm gemäß DIN
+
+Position Material/Beschreibung
+40 M-12
+MAG DX 

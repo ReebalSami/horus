@@ -1,0 +1,37 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    opendatalab/MinerU2.5-Pro-2604-1.2B
+# Invoice:  fail3
+# Pages:    1
+# DPI:      300
+# Errors:   0/1
+# Extract:  349.27s total
+# Adapter:  regex
+# Prompt:   OCR this document.
+
+===== PAGE 1 =====
+USt. Satz Nettopreis Ust.-Betrag
+7% 160,00 € 11,20 €
+19% 336,00 € 63,84 €
+USt. Gesamt: 75,04 €
+Bahnstr. 42
+88802 Spielkreis
+Kundennummer:2
+Rechnung # RE-20170509/505 von 09.05.2017
+Leistungsdatum 07.05.2017
+USt. Gesamt: 75,04 €
+Gesamtbetrag: 571,04 €
+Bitte überweisen Sie bis zum 30.05.2017.
+Powered by GnuAccounting
+USt-ID: DE136695976
+IBAN DE88200800000970375700
+BIC COBADEFFXXX
+Commerzbank vormals Dresdner Bank
+Kontoinhaber: Max Mustermann
+Bei Spiel GmbH
+Ecke 12
+12345 Stadthausen
+fon (555) 23 78 -0
+fax (555) 23 78 -51
+info@localhost.local
+http://localhost/
+Seite 1/1<|content_end|><|im_end|>

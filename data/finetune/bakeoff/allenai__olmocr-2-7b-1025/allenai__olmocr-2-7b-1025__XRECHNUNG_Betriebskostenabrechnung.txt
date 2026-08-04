@@ -1,0 +1,199 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  XRECHNUNG_Betriebskostenabrechnung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  78.47s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Handelsrechnung (380)  Nr. 471102  vom  05.03.2018
+
+Währung: EUR
+Abrechnungszeitraum: 01.01.2010 bis 31.12.2010
+Leitwege-ID: 04011000-12345-34
+Weitere Referenz: Abrechnung 2010
+Art der Referenz: Referenzpapier (916)
+
+<table>
+  <tr>
+    <th>Verkäufer</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>Globale Nummer:</td>
+    <td>4000001123452 (GLN)</td>
+  </tr>
+  <tr>
+    <td>Name:</td>
+    <td>Grundbesitz GmbH & Co.</td>
+  </tr>
+  <tr>
+    <td>Ansprechpartner:</td>
+    <td>Max Mustermann</td>
+  </tr>
+  <tr>
+    <td>Abteilung:</td>
+    <td>Muster-Einkauf</td>
+  </tr>
+  <tr>
+    <td>Anschrift:</td>
+    <td>Musterstraße 42</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>DE 75645 Frankfurt</td>
+  </tr>
+  <tr>
+    <td>Telefon:</td>
+    <td>+49891234567</td>
+  </tr>
+  <tr>
+    <td>E-Mail:</td>
+    <td>Max@Mustermann.de</td>
+  </tr>
+  <tr>
+    <td>Steuernummer:</td>
+    <td>201/113/40209</td>
+  </tr>
+  <tr>
+    <td>USt.-Id.-Nr.:</td>
+    <td>DE136695976</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Käufer/Leistungsempfänger</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>Name:</td>
+    <td>Beispielmieter GmbH</td>
+  </tr>
+  <tr>
+    <td>Anschrift:</td>
+    <td>Verwaltung Straße 40<br>DE 12345 Musterstadt</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Abweichender Warenempfänger</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>Anschrift:</td>
+    <td>Verwaltung Straße 40<br>Einheit: 5.OG rechts<br>DE 12345 Musterstadt</td>
+  </tr>
+</table><|im_end|>
+===== PAGE 2 =====
+Beispiel-Rechnungen für ZUGFeRD 2.2, (c) FeRD 2022
+
+Bemerkungen
+
+Bemerkung: Rechnung gemäß Betriebskostenrechnung vom 21.11.2011.
+
+Betreff: REG Regulatory information
+
+Grundbesitz GmbH & Co.
+Musterstraße 42
+75645 Frankfurt
+Deutschland
+Geschäftsführer: Hans Muster
+Handelsregisternummer: H A 123
+
+Inhalt
+
+Positionsdaten
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr (Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuersatz</th>
+    <th>Nettobetrag</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>4012345001235 (GTIN)</td>
+    <td>Abrechnungskreis 1</td>
+    <td>15.387,08</td>
+    <td>1</td>
+    <td>19 %</td>
+    <td>15.387,08</td>
+  </tr>
+</table>
+
+Umsatzsteueraufschlüsselung
+
+<table>
+  <tr>
+    <th>Art (Kategorie)</th>
+    <th>Warenwert</th>
+    <th>Zu-/Abschlag</th>
+    <th>Basisbetrag</th>
+    <th>Steuersatz [%]</th>
+    <th>Steuerbetrag</th>
+  </tr>
+  <tr>
+    <td>Umsatzsteuer (S)</td>
+    <td></td>
+    <td></td>
+    <td>15.387,08</td>
+    <td>19</td>
+    <td>2.923,55</td>
+  </tr>
+</table>
+
+Belegsummen
+
+Positionssumme 15.387,08
+
+Gesamtbetrag der Zuschläge 0,00
+
+Gesamtbetrag der Abschläge -0,00
+
+Rechnungssumme ohne USt. 15.387,08
+
+Steuerbetrag 2.923,55
+
+Bruttosumme 18.310,63
+
+Erhaltene Anzahlungen -17808,00
+
+Zahlbetrag 502,63<|im_end|>
+===== PAGE 3 =====
+Zahlungsbedingungen
+
+Beschreibung | Fälligkeit | Teilzahlung
+04.04.2018
+
+Zahlungsart
+
+Zahlung per SEPA Überweisung.
+
+Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG
+Kontoname: Kunden AG
+IBAN: DE02120300000000202051
+Verkäufer-BIC: BYLADEM1001
+
+Rechnungsbegleitende Unterlagen
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Dateiname</th>
+    <th>Art</th>
+  </tr>
+  <tr>
+    <td>Betriebskostenabrechnung</td>
+    <td>Betriebskostenabrechnung.pdf</td>
+    <td>application/pdf</td>
+  </tr>
+</table><|im_end|>

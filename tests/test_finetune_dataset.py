@@ -8,10 +8,17 @@ they are guarded by `skip_if_no_corpus` and simply don't collect when the corpus
 from __future__ import annotations
 
 import json
+import re
 
 import pytest
 
-from horus.eval.ground_truth import FIELDS
+from horus.eval.ground_truth import (
+    FIELDS,
+    REPEATING_GROUPS,
+    FieldSpec,
+    GroundTruth,
+    GroundTruthField,
+)
 from horus.finetune import dataset
 from tests._corpus import EINFACH_PDF, skip_if_no_corpus
 
@@ -89,3 +96,239 @@ def test_build_example_composes_question_and_json_answer() -> None:
     parsed = json.loads(example["answer"])
     assert isinstance(parsed, dict)
     assert "invoice_number" in parsed
+
+
+# ---------------------------------------------------------------------------
+# printed_label / rendered_label guards (ADR-059) — hermetic, no corpus needed
+# ---------------------------------------------------------------------------
+#
+# `make audit-prompts` is the exhaustive corpus-backed gate (it measures every
+# rendered label against the 146 transcripts). These run in `make test` with no
+# corpus on disk, so CI catches the structural mistakes.
+
+
+def _all_specs() -> list[tuple[str, FieldSpec]]:
+    """Every FieldSpec rendered into the oracle transcript, flat + group cells."""
+    specs: list[tuple[str, FieldSpec]] = list(FIELDS.items())
+    for group, (_row_xpath, sub_fields) in REPEATING_GROUPS.items():
+        specs.extend((f"{group}.{sub_key}", spec) for sub_key, spec in sub_fields.items())
+    return specs
+
+
+def test_printed_label_is_never_a_value_shape() -> None:
+    """A printed_label must be a LABEL, never a concrete value (ADR-059).
+
+    Same leak class the description guard blocks: `printed_label` is rendered into
+    the oracle transcript the structurer reads, so a value-shaped label would hand
+    the model an answer. A label legitimately contains no digits at all in this
+    registry, so the check is strict.
+    """
+    forbidden = {
+        "VAT-id shape": re.compile(r"\b[A-Z]{2}\d{6,}\b"),
+        "IBAN shape": re.compile(r"\b[A-Z]{2}\d{2}[0-9A-Z]{10,}\b"),
+        "German date": re.compile(r"\b\d{1,2}\.\d{1,2}\.\d{4}\b"),
+        "ISO date": re.compile(r"\b\d{4}-\d{2}-\d{2}\b"),
+        "decimal amount": re.compile(r"\b\d+[.,]\d{2}\b"),
+    }
+    for qualified, spec in _all_specs():
+        label = spec.printed_label
+        if label is None:
+            continue
+        for shape, pattern in forbidden.items():
+            match = pattern.search(label)
+            assert match is None, (
+                f"{qualified} printed_label embeds a {shape}: {match.group(0)!r} — "
+                "the oracle transcript would leak a ground-truth value"
+            )
+
+
+def test_rendered_label_prefers_printed_label_and_falls_back() -> None:
+    """`rendered_label` resolves printed_label first, german_label otherwise."""
+    allowance = FIELDS["allowance_total_amount"]
+    assert allowance.printed_label == "Gesamtbetrag der Abschläge"
+    assert allowance.rendered_label == allowance.printed_label
+
+    # A documented no-printed-label exception falls back to the canonical term.
+    doctype = FIELDS["document_type"]
+    assert doctype.printed_label is None
+    assert doctype.rendered_label == doctype.german_label == "Belegart"
+
+
+def test_german_label_still_carries_the_spec_term() -> None:
+    """The EN16931 term must NOT be overwritten by the printed form (ADR-037/059).
+
+    `adapters.py` compiles the FROZEN regex baseline from `german_label`, so
+    rewriting it in place would silently move published numbers. The two facts stay
+    in two attributes; this pins the separation for the fields where they differ.
+    """
+    for key, printed, spec_term in (
+        ("allowance_total_amount", "Gesamtbetrag der Abschläge", "Summe Nachlässe"),
+        ("charge_total_amount", "Gesamtbetrag der Zuschläge", "Summe Zuschläge"),
+        ("line_total_amount", "Positionssumme", "Summe Nettobeträge"),
+    ):
+        assert FIELDS[key].printed_label == printed
+        assert FIELDS[key].german_label == spec_term
+
+
+@skip_if_no_corpus
+def test_render_oracle_transcript_uses_printed_labels() -> None:
+    """The oracle page must print corpus wordings, not EN16931 jargon (ADR-059).
+
+    The renderer had NO test coverage, which is how it shipped labels occurring in
+    0/146 transcripts — costing the ceiling arm real accuracy on BT-107/108.
+    """
+    gt, err = dataset.load_groundtruth(EINFACH_PDF)
+    assert err is None
+    assert gt is not None
+
+    text = dataset.render_oracle_transcript(gt)
+
+    # Present-and-corrected: the totals block uses the FeRD display labels.
+    assert "Positionssumme:" in text
+    assert "Rechnungssumme ohne USt.:" in text
+    assert "Bruttosumme:" in text
+    # Absent: the spec jargon that no invoice prints must never reach the model.
+    for jargon in (
+        "Summe Nettobeträge",
+        "Steuerlicher Bemessungsbetrag",
+        "Umsatzsteuer gesamt",
+        "Bruttobetrag",
+        "Summe Nachlässe",
+        "Summe Zuschläge",
+    ):
+        assert jargon not in text, f"oracle transcript still prints spec jargon {jargon!r}"
+
+
+@skip_if_no_corpus
+def test_oracle_group_cells_separate_label_from_value() -> None:
+    """Every repeating-group cell must render as ``<label>: <value>`` (ADR-059).
+
+    The regression guard for a 103-cell loss on PERFECT input. Cells used to render
+    as ``"<label> <value>"``, which only reads correctly while the labels are long
+    German compounds. Once the corpus-measured short labels landed,
+    ``"Positionsnummer 1"`` became ``"Pos 1"`` and the structurer returned
+    ``line_id="Pos 1"``; ``"Umsatzsteuer S"`` made it emit ``category_code=null``.
+    Both are label/value ambiguity, not model weakness — so the invariant is
+    structural: the label must be recoverable from the cell by splitting on ": ".
+    """
+    gt, _ = dataset.load_groundtruth(EINFACH_PDF)
+    assert gt is not None
+
+    known_labels = {
+        spec.rendered_label
+        for _group, (_row_xpath, sub_fields) in REPEATING_GROUPS.items()
+        for spec in sub_fields.values()
+    }
+    # A group row is either "  - <cells>" or "  <position>. <cells>"; matching on
+    # that shape avoids duplicating the renderer's private group-title dict, which
+    # would silently stop matching if a title were reworded.
+    row_re = re.compile(r"^ {2}(?:- |(?P<ordinal>\S+)\. )(?P<cells>.+)$")
+
+    checked = 0
+    for line in dataset.render_oracle_transcript(gt).splitlines():
+        match = row_re.match(line)
+        if match is None:
+            continue
+        for cell in match.group("cells").split(" | "):
+            assert ": " in cell, (
+                f"group cell {cell!r} has no label/value separator — a short label "
+                "glued to its value is indistinguishable from the value itself"
+            )
+            label = cell.split(": ", 1)[0]
+            assert label in known_labels, (
+                f"group cell {cell!r} does not start with a registry label; "
+                f"parsed {label!r}, which is not one of the known cell labels"
+            )
+            checked += 1
+    assert checked, "no group cells rendered — the invariant was not exercised"
+
+
+def test_oracle_group_row_survives_a_multiline_cell_value() -> None:
+    """A group row occupies exactly ONE line, whatever the value contains (ADR-059).
+
+    Hermetic on purpose — the corpus is gitignored, so a corpus-gated test would
+    never run in CI, and this is the invariant that silently broke there. Some CII
+    ``name`` elements carry a whole product block rather than a name
+    ("GTIN 4123456000014\\nArt-Nr-Lieferant ZS9997\\nZitronensäure 100ml"), which
+    split one line item across four lines on 1 of 29 val invoices: the "perfect"
+    page stopped parsing as a table at all.
+
+    Flat fields keep their newlines, so the test pins BOTH behaviours: a multi-line
+    address under one label is what a real page prints.
+    """
+    absent = {
+        key: GroundTruthField(
+            bt_code=spec.bt_code,
+            raw_value=None,
+            normalized_value=None,
+            xpath=spec.xpath,
+            is_present=False,
+        )
+        for key, spec in FIELDS.items()
+    }
+    address = "MUSTERLIEFERANT GMBH\nBahnstr. 42\n12345 Musterstadt"
+    absent["seller_address"] = GroundTruthField(
+        bt_code=FIELDS["seller_address"].bt_code,
+        raw_value=address,
+        normalized_value=address,
+        xpath=FIELDS["seller_address"].xpath,
+        is_present=True,
+    )
+
+    _row_xpath, line_item_fields = REPEATING_GROUPS["line_items"]
+    multiline_name = "GTIN 4123456000014\nArt-Nr-Lieferant ZS9997\nZitronensäure 100ml"
+    values = {"line_id": "1", "name": multiline_name, "net_price": "10.00"}
+    row = {
+        key: GroundTruthField(
+            bt_code=spec.bt_code,
+            raw_value=values[key],
+            normalized_value=values[key],
+            xpath=spec.xpath,
+            is_present=True,
+        )
+        for key, spec in line_item_fields.items()
+        if key in values
+    }
+
+    text = dataset.render_oracle_transcript(GroundTruth(header=absent, line_items=[row]))
+    body = text.split("Rechnungspositionen:", 1)[1].strip()
+
+    assert len(body.splitlines()) == 1, f"one line item rendered across >1 line:\n{body}"
+    assert "Art-Nr-Lieferant ZS9997 Zitronensäure 100ml" in body
+    # The flat address keeps its line breaks — no row contract applies to it.
+    assert address in text
+
+
+@skip_if_no_corpus
+def test_oracle_line_item_ordinal_is_the_gt_position() -> None:
+    """A row's leading number must be its GT position, never a counter (ADR-059).
+
+    The renderer used ``enumerate(rows, start=1)``, so a page could assert a
+    position the GT contradicts — on a 0-based invoice the GT line_ids are "0"/"1"
+    while the page printed "1."/"2.". A "perfect" transcript that disagrees with the
+    ground truth it was rendered from cannot bound anything.
+    """
+    gt, _ = dataset.load_groundtruth(EINFACH_PDF)
+    assert gt is not None
+    assert gt.line_items, "fixture has no line items to exercise the ordinal"
+
+    expected = [row["line_id"].normalized_value for row in gt.line_items]
+    text = dataset.render_oracle_transcript(gt)
+    body = text.split("Rechnungspositionen:", 1)[1]
+
+    rendered: list[str] = []
+    for line in body.splitlines():
+        if not line.strip():
+            if rendered:
+                break
+            continue
+        match = re.match(r"^ {2}(\S+)\. ", line)
+        assert match is not None, f"line-item row {line!r} lost its position ordinal"
+        rendered.append(match.group(1))
+
+    assert rendered == expected, (
+        f"rendered line-item positions {rendered} do not match the GT {expected}"
+    )
+    # The position must not ALSO appear as a labelled cell: emitting both is what
+    # made the structurer return the labelled form verbatim (line_id="Pos: 1").
+    assert "Pos: " not in text

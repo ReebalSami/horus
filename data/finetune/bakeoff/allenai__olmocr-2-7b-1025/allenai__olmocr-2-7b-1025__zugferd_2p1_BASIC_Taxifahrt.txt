@@ -1,0 +1,100 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p1_BASIC_Taxifahrt
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  45.10s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Stylesheet Lesbarmachung der XML-Daten von ZUGFeRD-Rechnungen
+ZUGFeRD-Version: 2.1 vom 24.03.2020
+Stylesheet-Version: 2.0 vom 18.10.2018
+Codelisten-Version: 3.0 vom 15.11.2019
+(c) AWV e.V. 2020
+
+Handelsrechnung Nr. TX-471102 vom 30.10.2019
+
+Anwendungsempfehlung : urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
+Währung      : EUR
+
+Liefer- und Leistungsdatum   : 29.10.2019
+
+Verkäufer:
+Taxiunternehmen TX GmbH
+Lieferantenstraße 20
+DE 10369 Berlin
+
+USt.-Id.-Nr. : DE123456789
+
+Käufer:
+Taxi-Gast AG Mitte
+Hans Mustermann
+Kundenstraße 15
+DE 13351 Berlin
+
+Rechnung gemäß Taxifahrt vom 29.10.2019
+
+Taxiunternehmen TX GmbH
+Lieferantenstraße 20
+10369 Berlin
+Deutschland
+Geschäftsführer: Hans Mustermann
+Handelsregisternummer: H A 123
+
+Unsere GLN: 4000001123452
+Ihre GLN: 4000001987658
+Ihre Kundennummer: GE2020211
+
+<table>
+  <tr>
+    <th>Pos</th>
+    <th>Art-Nr-Kunde<br>Art-Nr-Lief.<br>Art-Nr<br>(Art)</th>
+    <th>Beschreibung</th>
+    <th>Nettopreis</th>
+    <th>Menge</th>
+    <th>Steuer</th>
+    <th>Entgelt</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td></td>
+    <td>Grundpreis (Pauschale)</td>
+    <td>3,90</td>
+    <td>1 Stk</td>
+    <td>7 % VAT (S)</td>
+    <td>3,90</td>
+  </tr>
+</table><|im_end|>
+===== PAGE 2 =====
+2
+Stadtfahrt - 2,00 Euro je gefahrene Kilometer
+2,00
+6 Stk
+7 % VAT (S)
+13,00
+
+Zahlungsbedingungen:
+
+Beschreibung
+Fälligkeit
+Teilzahlung
+29.11.2019
+
+Umsatzsteueraufschlüsselung:
+
+Art (Kategorie)    Warenwert    Zu-/Abschlag    Steuerbasisbetrag    USt. %    USt.-Betrag
+VAT (S)                        16,90        7                1,18
+
+Belegsummen:
+
+Positionssumme                16,90
+Gesamtbetrag der Zuschläge    0,00
+Gesamtbetrag der Abschläge    -0,00
+Rechnungssumme ohne USt.      16,90
+Steuerbetrag                  1,18
+Bruttosumme                    18,08
+
+Zahlbetrag                    18,08<|im_end|>

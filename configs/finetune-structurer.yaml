@@ -21,7 +21,10 @@ structurer_model: google/gemma-4-E4B-it
 structuring_prompt_config: configs/arm-b.yaml
 corpus_root: data/raw/german/zugferd-corpus
 transcript_dir: docs/sources/transcripts-multipage
-reader_model: ibm-granite/granite-docling-258M-mlx
+# ADR-057: canonical reader lineage switched to the bake-off winner (Qwen3-VL-4B,
+# bf16 CUDA regeneration of all 146 GT-bearing invoices, blank-page guard active).
+# The superseded granite transcripts stay in the same dir per ADR-011 retention.
+reader_model: Qwen/Qwen3-VL-4B-Instruct
 split_path: data/finetune/split.json
 adapter_dir: data/finetune/adapter
 eval_max_tokens: 2048

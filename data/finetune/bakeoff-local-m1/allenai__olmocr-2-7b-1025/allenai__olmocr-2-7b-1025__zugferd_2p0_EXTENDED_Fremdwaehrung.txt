@@ -1,0 +1,198 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    allenai/olmOCR-2-7B-1025
+# Invoice:  zugferd_2p0_EXTENDED_Fremdwaehrung
+# Pages:    3
+# DPI:      300
+# Errors:   0/3
+# Extract:  442.94s total
+# Adapter:  regex
+# Prompt:   Recognize all the text in the image.
+
+===== PAGE 1 =====
+Handelsrechnung Nr. 47110815 vom 31.10.2018
+RECHNUNG
+
+Verkäufer:
+Nummer: 12345676
+Rohstoff AG Salzgitter
+Marktstr. 153
+DE 38226 Salzgitter
+
+USt.-Id.-Nr.: DE123456789
+
+Abweichender Warenempfänger:
+Nummer: 75969815
+Metallbau Leipzig GmbH & Co. KG
+Eichenpromenade 37
+DE 12347 Metallstadt
+
+Abweichender Zahlungsempfänger:
+Globale Nummer: 432156789 (DUNS)
+Global Supplies Financial Services
+Friedrichichstraße 165
+DE 12345 Berlin
+===== PAGE 2 =====
+Qualifizierung der Textart: Regulatory information
+Mitglieder der Geschäftsleitung
+H. Meier Geschäftsführer
+T. Müller Prokurist
+HRB Braunschweig 12345
+
+Qualifizierung der Textart: General information
+Vom 17. Dezember 2018 bis 6. Januar 2019 haben wir Betriebsferien.
+
+Art-Nr-Kunde
+Pos
+Art-Nr
+Art
+Zu- und Abschläge:
+Art
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellaneaous)
+Zuschlag Einwegverpackung (Miscellane
+===== PAGE 3 =====
+Art (Kategorie) Umsatzsteuer (S) 850,00
+% Basisbetrag 8,75
+Basismenge 858,75
+Steuer 19 %
+UST 19 %
+(S) 163,16
+Belegsummen:
+Positionssumme 850,00
+Zu-/Abschlag 8,75
+Basisbetrag 858,75
+USt. 19 %
+Steuer 19 %
+(S) 163,16
+Rechnungssumme 858,75
+Erhaltene Anzahlungen 850,00
+Zahlbetrag 850,00
+Bruttosumme 1021,91
+Erhaltene Anzahlungen 521,91
+Zahlbetrag 521,91

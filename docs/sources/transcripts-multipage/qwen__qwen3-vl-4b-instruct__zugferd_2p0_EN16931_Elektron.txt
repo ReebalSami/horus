@@ -1,0 +1,107 @@
+# Multi-page transcript (ADR-014 PR(c))
+# Model:    Qwen/Qwen3-VL-4B-Instruct
+# Invoice:  zugferd_2p0_EN16931_Elektron
+# Pages:    2
+# DPI:      300
+# Errors:   0/2
+# Extract:  54.56s total
+# Adapter:  regex
+# Prompt:   Extract all text and structure from this invoice. Return as markdown.
+
+===== PAGE 1 =====
+```markdown
+# Stylesheet zur Lesbarmachung der XML-Daten von ZUGFeRD 2.0-Rechnungen
+
+## Baurechnung Nr. 181301674 vom 25.04.2018
+
+**Geschäftsprozess** : Baurechnung  
+**Anwendungsempfehlung** : urn:cen.eu:en16931:2017  
+**Rechnungswährung** : EUR  
+
+**Liefer- und Leistungsdatum** : 06.03.2018  
+
+**Referenz des Käufers** : Liselotte Müller-Lüdenscheid  
+**Zahlungsreferenz** : Rechnung 181301674  
+**Buchungsreferenz** : 420  
+
+**Weitere Referenz** : 13130162, Art der Referenz: Referenzpapier  
+**Weitere Referenz** : 42389, Art der Referenz: Referenzpapier  
+
+---
+
+### Verkäufer:
+
+**ELEKTRON Industrieservice GmbH**  
+Erfurter Strasse 13  
+DE 74465 Demoort  
+
+**USt.-Id.-Nr.** : DE136695976  
+
+---
+
+### Käufer/Leistungsempfänger:
+
+**Nummer** : 16259  
+**ConsultingService GmbH**  
+Musterstr. 18  
+DE 76138 Karlsruhe  
+
+---
+
+### Rapport-Nr.: 42389 vom 08.03.2018
+
+Im 2. OG BT1 Besprechungsraum eine Bemerhalterung an die Decke montiert. Dafür eine Deckenplatte ausgesägt. Beamerhalterung zur Montage auseinander gebaut. Ein Stromkabel für den Beamer, ein HDMI Kabel und ein VGA Kabel durch die Halterung gezogen. Beamerhalterung wieder zusammengebaut und Beamer montiert. Beamer verkabelt und ausgerichtet. Decke geschlossen.
+
+---
+
+| Pos | Art-Nr-Kunde | Art-Nr-Lief. | Beschreibung | Nettopreis | Menge | USt. | Positions- | 
+|-----|--------------|--------------|--------------|------------|-------|------|-------------|
+|     | Art-Nr       | (Art)        |              |            |       |      | betrag ohne USt. |
+| 01  | TGA          | Obermonteur/Monteur | 43,2000 | 3 Std      | 19 %  | 129,60 |
+
+**Bruttopreis : 43,2000**
+
+**01 Beamermontage**  
+Für die doppelte Verlegung, falls erforderlich.
+```<|im_end|>
+===== PAGE 2 =====
+```markdown
+02 Beamer- 122,5000 1 H87 19 % 122,50
+Deckenhalterung
+Bruttopreis : 122,5000
+02 Außerhalb Angebot
+
+---
+
+**Zahlungsbedingungen:**
+
+**Beschreibung**  
+Zahlbar sofort rein netto
+
+**Zahlungsart:**
+
+Zahlungstyp (codiert): 58 - per SEPA ÜBERWEISUNG  
+IBAN : DE5467894567876500
+
+---
+
+**Steueraufschlüsselung:**
+
+| Art (Kategorie) | Warenwert Zu-/Abschlag | Basisbetrag | USt. % | Steuerbetrag |
+|-----------------|------------------------|-------------|--------|--------------|
+| Umsatzsteuer (S) |                        | 252,10      | 19     | 47,90        |
+
+---
+
+**Belegsummen:**
+
+| Positionssumme | 252,10 |
+|----------------|--------|
+| Gesamtbetrag der Zuschläge | 0,00 |
+| Gesamtbetrag der Abschläge | -0,00 |
+| Rechnungssumme ohne USt. | 252,10 |
+| Steuerbetrag in EUR | 47,90 |
+| **Bruttosumme** | **300,00** |
+| Erhaltene Anzahlungen | -0,00 |
+| Zahlbetrag | 300,00 |
+```<|im_end|>
