@@ -6,7 +6,7 @@ normalizer-level changes (ADR-058's sign-folding + `tax_rate` backfill) must be
 measured as a *delta against frozen generations*, otherwise a representation fix
 is indistinguishable from a model change. This script makes that delta explicit:
 
-    make eval-compare BEFORE=<old.json> AFTER=<new.json>
+    uv run python scripts/compare_eval_reports.py <before.json> <after.json>
 
 It reads the JSON emitted by `finetune_evaluate.py --out`, so it works for any
 pair of arms (oracle / zero-shot / fine-tuned) and any pair of runs (pre-fix vs
@@ -19,12 +19,19 @@ Reported per field:
   to *which* outcome bucket changed (an FN→TP move is a real fix; an FN→EXCLUDED
   move is a scope change and must be justified separately)
 * ``NEW`` / ``GONE`` markers for fields that gained or lost signal-bearing
-  outcomes entirely — the case ADR-057's reporting defect hid
+  outcomes entirely — the case the per-field reporting defect hid
 
 Exit code is always 0: this is a reporting tool, not a gate.
 
-References: ADR-058 (the fixes being measured), ADR-057 (the per-field reporting
-defect that motivated honest before/after accounting), ADR-013 (scorer contract).
+Note reports written before the ADR-058 accumulator refactor carry no
+``per_field_f1`` / ``per_field_outcomes`` keys at all, so comparing against one
+shows every field as ``NEW``. Re-derive the older side with ``--score-only``
+(which loads no model) rather than reading a pre-refactor JSON.
+
+References: ADR-058 (the fixes being measured, and the per-field reporting defect
+that motivated honest before/after accounting — see
+``eval/per-field-reporting-audit.md``), ADR-059 (the oracle-label correction),
+ADR-013 (scorer contract).
 """
 
 from __future__ import annotations

@@ -321,6 +321,32 @@ class FieldSpec:
             duplicated 26×16 times on every extracted record. Also re-used by
             PR(b)'s Layer 2 adapter as the search anchor when extracting the
             predicted value from raw VLM text.
+
+            This is the CANONICAL EN16931 German business term, which for many
+            fields is spec jargon no invoice actually prints ("Summe Nachlässe",
+            "Steuerlicher Bemessungsbetrag"). It is deliberately NOT corrected to
+            the printed wording: `adapters.py` compiles its label-anchored search
+            patterns from this value, and those patterns define the FROZEN regex
+            baseline whose published numbers must never move (ADR-037). Use
+            ``printed_label`` for "what pages actually print".
+        printed_label: optional corpus-measured label a real invoice page prints
+            for this field, used ONLY by ``dataset.render_oracle_transcript`` when
+            synthesizing the perfect-reader ("oracle") transcript (ADR-059).
+            ``None`` (default) = fall back to ``german_label``.
+
+            Exists because conflating "the standard's term" with "what pages print"
+            silently corrupted the structurer ceiling: the oracle arm rendered
+            labels occurring in 0/146 corpus transcripts, and the model scored
+            0.000 on `charge_total_amount` reading a PERFECT page while scoring
+            0.889 reading a real one. Two distinct facts now live in two distinct
+            attributes, so a change to either cannot move the other.
+
+            Deliberately NOT derived from ``prompt_aliases[0]``: the alias list is
+            ordered for PROMPT usefulness, so reusing it here would make a prompt
+            edit silently re-baseline the oracle arm — reintroducing exactly the
+            one-value-two-purposes defect this attribute fixes. Every value is
+            measured against the canonical reader transcripts and gated by
+            ``make audit-prompts``; the hit count is recorded inline.
         xpath: lxml XPath expression returning element node(s). Resolved against
             `CII_NAMESPACES`. Convention: ends at the leaf element, NOT at
             `/text()` — the parser reads `.text` from the element so it can
@@ -374,6 +400,18 @@ class FieldSpec:
     predicted_normalize: Callable[[str], str | None] | None = None
     description: str | None = None
     prompt_aliases: tuple[str, ...] | None = None
+    printed_label: str | None = None
+
+    @property
+    def rendered_label(self) -> str:
+        """The label the oracle-transcript renderer prints for this field (ADR-059).
+
+        ``printed_label`` when the corpus measurement supplied one, else the
+        canonical ``german_label``. Single resolution point so the renderer, the
+        audit gate, and any diagnostic agree on what the oracle page will show —
+        a second copy of this precedence rule is how the two would drift.
+        """
+        return self.printed_label or self.german_label
 
 
 # ---------------------------------------------------------------------------
@@ -464,6 +502,10 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="delivery_date",
         bt_code="BT-72",
         german_label="Liefer-/Leistungsdatum",
+        # 85/146. The slashed spec form is 0/146; pages print compounds
+        # ("Liefer- und Leistungsdatum" 41, "Liefers- und Leistungsdatum" 19) that all
+        # contain this stem, so the stem has the widest grounding.
+        printed_label="Leistungsdatum",
         xpath=(
             f"{_HEADER_DELIVERY}/ram:ActualDeliverySupplyChainEvent"
             "/ram:OccurrenceDateTime/udt:DateTimeString"
@@ -487,6 +529,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="seller_vat_id",
         bt_code="BT-31",
         german_label="USt-IdNr. (Verkäufer)",
+        # 91/146 (the parenthesized spec form is 0/146).
+        printed_label="USt.-Id.-Nr",
         xpath=(
             f"{_HEADER_AGREEMENT}/ram:SellerTradeParty"
             "/ram:SpecifiedTaxRegistration/ram:ID[@schemeID='VA']"
@@ -533,6 +577,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="seller_gln",
         bt_code="BT-29 (scheme 0088)",
         german_label="GLN (Verkäufer)",
+        # 68/146 ("Globale Nummer" 64 is the long form; the short code is printed more).
+        printed_label="GLN",
         xpath=(f"{_HEADER_AGREEMENT}/ram:SellerTradeParty/ram:GlobalID[@schemeID='0088']"),
         normalize=_normalize_string,
         field_type="CODE",
@@ -577,6 +623,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="buyer_vat_id",
         bt_code="BT-48",
         german_label="USt-IdNr. (Käufer)",
+        # 91/146. Same printed label as the seller's VAT id — pages distinguish them by
+        # block position, not wording, and the renderer emits one line per field.
+        printed_label="USt.-Id.-Nr",
         xpath=(
             f"{_HEADER_AGREEMENT}/ram:BuyerTradeParty"
             "/ram:SpecifiedTaxRegistration/ram:ID[@schemeID='VA']"
@@ -597,6 +646,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="line_total_amount",
         bt_code="BT-106",
         german_label="Summe Nettobeträge",
+        # 88/146 (the FeRD "Belegsummen" display label; spec form is 0/146).
+        printed_label="Positionssumme",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:LineTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
@@ -612,6 +663,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="tax_basis_total_amount",
         bt_code="BT-109",
         german_label="Steuerlicher Bemessungsbetrag",
+        # 88/146.
+        printed_label="Rechnungssumme ohne USt.",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TaxBasisTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
@@ -627,6 +680,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="tax_total_amount",
         bt_code="BT-110",
         german_label="Umsatzsteuer gesamt",
+        # 90/146.
+        printed_label="Steuerbetrag",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TaxTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
@@ -641,6 +696,10 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="grand_total_amount",
         bt_code="BT-112",
         german_label="Bruttobetrag",
+        # 89/146. NOT "Gesamtbetrag" despite its higher 99/146: that string is a prefix
+        # of the allowance/charge labels ("Gesamtbetrag der Abschläge/Zuschläge"), so
+        # rendering it here would make the oracle page ambiguous between three fields.
+        printed_label="Bruttosumme",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:GrandTotalAmount",
         normalize=_normalize_money,
         field_type="MONEY",
@@ -672,6 +731,10 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="tax_rate",
         bt_code="BT-119",
         german_label="Umsatzsteuersatz",
+        # 27/146. NOT "USt." despite its higher 108/146: that is a generic VAT marker
+        # occurring inside "USt.-Id.-Nr" and "Rechnungssumme ohne USt.", not a rate
+        # label. Specificity beats raw frequency when choosing a rendered label.
+        printed_label="Steuersatz",
         xpath=f"{_HEADER_SETTLEMENT}/ram:ApplicableTradeTax/ram:RateApplicablePercent",
         normalize=_normalize_rate,
         field_type="RATE",
@@ -694,6 +757,10 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="seller_address",
         bt_code="BG-5",
         german_label="Anschrift (Verkäufer)",
+        # NO printed_label (ADR-059 exception 1/5): a composite address sits UNLABELLED
+        # in the letterhead block. "Anschrift" does occur 27/146 but as part of
+        # Rechnungs-/Lieferanschrift, i.e. a different thing; a grounded-but-wrong label
+        # would be worse than an honest synthetic one. Oracle stays synthetic here.
         xpath=f"{_HEADER_AGREEMENT}/ram:SellerTradeParty/ram:PostalTradeAddress",
         normalize=_normalize_string,
         field_type="STRING",
@@ -705,6 +772,7 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="buyer_address",
         bt_code="BG-8",
         german_label="Anschrift (Käufer)",
+        # NO printed_label (ADR-059 exception 2/5) — same reason as seller_address.
         xpath=f"{_HEADER_AGREEMENT}/ram:BuyerTradeParty/ram:PostalTradeAddress",
         normalize=_normalize_string,
         field_type="STRING",
@@ -719,6 +787,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="document_type",
         bt_code="BT-3",
         german_label="Belegart",
+        # NO printed_label (ADR-059 exception 3/5): pages print the document-type WORD
+        # itself ("Rechnung" 121/146) as a heading, never a "Belegart:" label in front of
+        # it. There is no label to render — only a value (ADR-046).
         xpath="/rsm:CrossIndustryInvoice/rsm:ExchangedDocument/ram:TypeCode",
         normalize=_normalize_doctype,
         field_type="CODE",
@@ -744,6 +815,10 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="billing_period_start",
         bt_code="BT-73",
         german_label="Abrechnungszeitraum Beginn",
+        # 13/146. Pages print ONE range under ONE heading ("Abrechnungszeitraum
+        # 01.10.2018 bis 31.10.2018"), never a separate Beginn/Ende label, so start and
+        # end deliberately render the same heading (see the renderer's range note).
+        printed_label="Abrechnungszeitraum",
         xpath=f"{_HEADER_SETTLEMENT}/ram:BillingSpecifiedPeriod/ram:StartDateTime/udt:DateTimeString",
         normalize=_normalize_date,
         field_type="DATE",
@@ -766,6 +841,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="billing_period_end",
         bt_code="BT-74",
         german_label="Abrechnungszeitraum Ende",
+        # 13/146 — same single heading as billing_period_start (see there).
+        printed_label="Abrechnungszeitraum",
         xpath=f"{_HEADER_SETTLEMENT}/ram:BillingSpecifiedPeriod/ram:EndDateTime/udt:DateTimeString",
         normalize=_normalize_date,
         field_type="DATE",
@@ -785,6 +862,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="payment_due_date",
         bt_code="BT-9",
         german_label="Fälligkeitsdatum (Zahlungsziel)",
+        # 69/146. "Fälligkeitsdatum" and "Zahlungsziel" are both 0/146; the bare stem is
+        # what pages print (often inside the free-text terms line, per ADR-047).
+        printed_label="Fälligkeit",
         xpath=f"{_PAYMENT_TERMS}/ram:DueDateDateTime/udt:DateTimeString",
         normalize=_normalize_date,
         field_type="DATE",
@@ -795,6 +875,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="payment_means_code",
         bt_code="BT-81",
         german_label="Zahlungsart (Code)",
+        # 29/146. Pages label the payment method "Zahlungsart" and print the WORD, never
+        # the numeric code (ADR-048's as-printed-vs-as-stored class).
+        printed_label="Zahlungsart",
         xpath=f"{_SETTLEMENT_PAYMENT_MEANS}/ram:TypeCode",
         normalize=_normalize_string,
         field_type="CODE",
@@ -830,6 +913,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="seller_iban",
         bt_code="BT-84",
         german_label="IBAN (Zahlungsempfänger)",
+        # 72/146. Only the bare code is printed; the parenthesized spec form is 0/146.
+        printed_label="IBAN",
         xpath=(f"{_SETTLEMENT_PAYMENT_MEANS}/ram:PayeePartyCreditorFinancialAccount/ram:IBANID"),
         normalize=_normalize_string,
         field_type="CODE",
@@ -867,6 +952,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="payment_reference",
         bt_code="BT-83",
         german_label="Verwendungszweck",
+        # 32/146 ("Verwendungszweck" itself is 0/146).
+        printed_label="Referenz",
         xpath=f"{_HEADER_SETTLEMENT}/ram:PaymentReference",
         normalize=_normalize_string,
         field_type="STRING",
@@ -882,6 +969,8 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="prepaid_amount",
         bt_code="BT-113",
         german_label="Bereits gezahlt",
+        # 80/146 ("Bereits gezahlt" and "Vorauszahlung" are both 0/146).
+        printed_label="Anzahlung",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:TotalPrepaidAmount",
         normalize=_normalize_nonneg_money,
         field_type="MONEY",
@@ -903,6 +992,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="allowance_total_amount",
         bt_code="BT-107",
         german_label="Summe Nachlässe",
+        # 88/146. The spec term is 0/146, and rendering it into the oracle page is what
+        # made this field score 0.000 on PERFECT input (ADR-059).
+        printed_label="Gesamtbetrag der Abschläge",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:AllowanceTotalAmount",
         normalize=_normalize_nonneg_money,
         field_type="MONEY",
@@ -931,6 +1023,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="charge_total_amount",
         bt_code="BT-108",
         german_label="Summe Zuschläge",
+        # 88/146. The spec term is 0/146 — the direct cause of this field scoring 0.000
+        # on the oracle arm while scoring 0.889 on real reader text (ADR-059).
+        printed_label="Gesamtbetrag der Zuschläge",
         xpath=f"{_SETTLEMENT_TOTALS}/ram:ChargeTotalAmount",
         normalize=_normalize_nonneg_money,
         field_type="MONEY",
@@ -956,6 +1051,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="rounding_amount",
         bt_code="BT-114",
         german_label="Rundungsbetrag",
+        # NO printed_label (ADR-059 exception 4/5): "Rundungsbetrag" / "Rundung" /
+        # "Rundungsdifferenz" are ALL 0/146. BT-114 occurs on exactly 1/146 invoices and
+        # that page prints no rounding label, so there is nothing to ground against.
         xpath=f"{_SETTLEMENT_TOTALS}/ram:RoundingAmount",
         normalize=_normalize_money,
         field_type="MONEY",
@@ -1087,6 +1185,9 @@ VAT_BREAKDOWN_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="category_code",
         bt_code="BT-118",
         german_label="Steuerkategorie",
+        # 97/146. "Steuerkategorie" is 0/146; the VAT table prints the German WORD, which
+        # is exactly the asymmetry the predicted-side normalizer below exists for.
+        printed_label="Umsatzsteuer",
         xpath="ram:CategoryCode",
         normalize=_normalize_string,
         field_type="CODE",
@@ -1107,6 +1208,8 @@ VAT_BREAKDOWN_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="taxable_amount",
         bt_code="BT-116",
         german_label="Bemessungsgrundlage",
+        # 90/146 ("Bemessungsgrundlage" is 0/146).
+        printed_label="Basisbetrag",
         xpath="ram:BasisAmount",
         normalize=_normalize_money,
         field_type="MONEY",
@@ -1132,6 +1235,9 @@ SKONTO_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="percent",
         bt_code="BT-DE-skonto-percent",
         german_label="Skonto-Prozentsatz",
+        # 36/146. Pages state Skonto as free text ("3% Skonto innerhalb 14 Tagen", the
+        # form ADR-047 parses), so the bare keyword is the only grounded label.
+        printed_label="Skonto",
         xpath="ram:CalculationPercent",
         normalize=_normalize_rate,
         field_type="RATE",
@@ -1140,6 +1246,8 @@ SKONTO_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="days",
         bt_code="BT-DE-skonto-days",
         german_label="Skonto-Tage",
+        # 52/146 ("Skonto-Tage" is 0/146) — the printed unit in the same free-text line.
+        printed_label="Tage",
         xpath="ram:BasisPeriodMeasure",
         normalize=_normalize_string,
         field_type="CODE",
@@ -1148,6 +1256,10 @@ SKONTO_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="basis_amount",
         bt_code="BT-DE-skonto-basis",
         german_label="Skonto-Basisbetrag",
+        # NO printed_label (ADR-059 exception 5/5): "Skonto-Basisbetrag" / "Skontobasis" /
+        # "Skontobetrag" / "Bezugsbetrag" are ALL 0/146. The generic "Basisbetrag" (90/146)
+        # is the VAT table's taxable-base column, NOT a Skonto basis — borrowing it would
+        # render a grounded but WRONG label. Free-text Skonto lines carry no basis label.
         xpath="ram:BasisAmount",
         normalize=_normalize_money,
         field_type="MONEY",
@@ -1164,6 +1276,8 @@ LINE_ITEM_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="line_id",
         bt_code="BT-126",
         german_label="Positionsnummer",
+        # 98/146. The line-table column header is "Pos" ("Positionsnummer" is 0/146).
+        printed_label="Pos",
         xpath="ram:AssociatedDocumentLineDocument/ram:LineID",
         normalize=_normalize_string,
         field_type="CODE",
@@ -1180,6 +1294,9 @@ LINE_ITEM_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="seller_assigned_id",
         bt_code="BT-155",
         german_label="Artikelnummer (Verkäufer)",
+        # 96/146. "Artikelnummer" / "Artikel-Nr" / "Artikelnr." are all 0/146; the printed
+        # column header uses the hyphenated short form.
+        printed_label="Art-Nr",
         xpath="ram:SpecifiedTradeProduct/ram:SellerAssignedID",
         normalize=_normalize_string,
         field_type="CODE",
@@ -1192,6 +1309,9 @@ LINE_ITEM_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="net_price",
         bt_code="BT-146",
         german_label="Einzelpreis (netto)",
+        # 107/146. NOT the bare "Preis" (115/146): that is ambiguous with the line total
+        # column. "Einzelpreis" alone is only 1/146.
+        printed_label="Nettopreis",
         xpath="ram:SpecifiedLineTradeAgreement/ram:NetPriceProductTradePrice/ram:ChargeAmount",
         normalize=_normalize_money,
         field_type="MONEY",
@@ -1208,6 +1328,9 @@ LINE_ITEM_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="vat_rate",
         bt_code="BT-152",
         german_label="USt-Satz (Position)",
+        # 27/146 ("USt-Satz" is 0/146). Same printed rate label as the VAT table's
+        # rate_percent — the row context, not the wording, distinguishes them.
+        printed_label="Steuersatz",
         xpath="ram:SpecifiedLineTradeSettlement/ram:ApplicableTradeTax/ram:RateApplicablePercent",
         normalize=_normalize_rate,
         field_type="RATE",
@@ -1216,6 +1339,9 @@ LINE_ITEM_FIELDS: Final[dict[str, FieldSpec]] = {
         english_key="line_amount",
         bt_code="BT-131",
         german_label="Positionsbetrag (netto)",
+        # 96/146. "Positionsbetrag" / "Gesamtpreis" / "Zeilensumme" are all 0/146; the
+        # line table's amount column is headed "Summe".
+        printed_label="Summe",
         xpath=(
             "ram:SpecifiedLineTradeSettlement"
             "/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount"

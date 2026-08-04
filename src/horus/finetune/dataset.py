@@ -67,8 +67,19 @@ __all__ = [
     "target_self_score",
 ]
 
-# The Arm-B reader whose cached transcripts the structurer consumes (ADR-034/038).
-DEFAULT_READER_MODEL = "ibm-granite/granite-docling-258M-mlx"
+# The Arm-B reader whose cached transcripts the structurer consumes (ADR-034/038),
+# switched to ADR-057's bake-off winner. Kept in step with
+# `FinetuneConfig.reader_model` and configs/finetune-structurer.yaml: this constant
+# and that field name the SAME concept, so leaving one on the superseded granite
+# lineage made "the default reader" ambiguous (ADR-058 finding 4, ADR-059).
+# The superseded granite transcripts remain on disk per ADR-011 retention and are
+# still selectable via `--reader-model`.
+#
+# Note `scripts/finetune_seal_split.py` takes its `--reader-model` default from here.
+# The split is already SEALED and committed (data/finetune/split.json); it must not be
+# re-derived, or the no-HARKing guarantee is void. Both lineages happen to yield the
+# same 146 GT-bearing ready records, so this change cannot silently reshape it.
+DEFAULT_READER_MODEL = "Qwen/Qwen3-VL-4B-Instruct"
 # Where the pilot-13 / baseline reader pass archives transcripts (pilot-13.yaml).
 DEFAULT_TRANSCRIPT_DIR = Path("docs/sources/transcripts-multipage")
 
@@ -284,22 +295,34 @@ def render_oracle_transcript(gt: GroundTruth) -> str:
     """Render the GT as the text a PERFECT reader would produce (attribution audit).
 
     Emulates an ideal reader transcript of the invoice page: one
-    ``<german_label>: <printed value>`` line per present flat field, plus one
+    ``<printed label>: <printed value>`` line per present flat field, plus one
     labeled line per repeating-group row. Feeding this to the structurer measures
     the structurer + predicted-normalizer ceiling INDEPENDENT of reading quality —
     the gap to `target_self_score` (≈0.9975) is pure downstream loss.
 
-    Two honesty caveats (documented for the audit report):
+    Labels come from ``FieldSpec.rendered_label`` — the corpus-MEASURED
+    ``printed_label`` where one exists, else the canonical ``german_label``
+    (ADR-059). Rendering the spec term unconditionally, as this function
+    originally did, made the "perfect" page print wordings that occur in 0/146
+    real transcripts and cost the ceiling arm real accuracy: the structurer scored
+    0.000 on ``charge_total_amount`` here while scoring 0.889 on genuine reader
+    text, because it recognises "Gesamtbetrag der Zuschläge" (88/146) and not the
+    spec's "Summe Zuschläge" (0/146). 5 fields keep a synthetic label because no
+    printed form exists for them at all; ``make audit-prompts`` enumerates them.
+
+    Remaining honesty caveats (documented for the audit report):
       - DATE / MONEY / RATE values are German-print-formatted, so the structurer's
         locale conversion IS exercised (that's part of its real job).
-      - Label→field mapping is trivially easy here (labels ARE the registry's
-        german_label). Real pages use varied labels, so this is an UPPER bound.
+      - One label per field, one field per line: a real page prints the billing
+        period as ONE range under ONE heading, and line items as a TABLE with
+        shared column headers. So this remains an UPPER bound on layout, even
+        though the label WORDING is now corpus-grounded.
     """
     lines: list[str] = []
     for key, spec in FIELDS.items():
         printed = _oracle_print_form(gt.header[key], spec)
         if printed is not None:
-            lines.append(f"{spec.german_label}: {printed}")
+            lines.append(f"{spec.rendered_label}: {printed}")
     group_titles = {
         "vat_breakdown": "Umsatzsteueraufstellung",
         "skonto": "Zahlungsbedingungen (Skonto)",
@@ -319,7 +342,7 @@ def render_oracle_transcript(gt: GroundTruth) -> str:
                     continue
                 printed = _oracle_print_form(rec, sub_spec)
                 if printed is not None:
-                    cells.append(f"{sub_spec.german_label} {printed}")
+                    cells.append(f"{sub_spec.rendered_label} {printed}")
             if cells:
                 lines.append(f"  {i}. " + " | ".join(cells))
     return "\n".join(lines)

@@ -13,9 +13,29 @@ Checks performed, per field:
 reader transcripts? An alias with 0 hits is UNFOUNDED: either invented, or a
 different corpus's wording. Reported so it can be justified or dropped.
 
-**B. label grounding** — same check for ``german_label``, which additionally feeds
-the oracle transcript renderer, so an ungrounded label makes the oracle arm
-*easier* than any real page (an optimistic ceiling).
+**B. rendered-label grounding** — the label `render_oracle_transcript` prints
+(``FieldSpec.rendered_label``: ``printed_label`` if set, else ``german_label``)
+must occur in the corpus. This one GATES (ADR-059), because an ungrounded oracle
+label does not merely make the ceiling optimistic — it makes it WRONG in an
+unpredictable direction: `charge_total_amount` scored 0.000 on the perfect page
+while scoring 0.889 on real reader text, purely because the spec wording
+"Summe Zuschläge" occurs 0/146 while "Gesamtbetrag der Zuschläge" occurs 88/146.
+
+Five fields have no printed label anywhere in the corpus (composite addresses,
+document type, rounding, Skonto basis); they are listed in
+``_NO_PRINTED_LABEL_REASONS`` with a written reason each and reported as
+documented exceptions. A field NOT on that list whose rendered label is
+ungrounded fails the gate; a field ON the list whose label turns out to BE
+grounded also fails, so the exception list cannot silently go stale.
+
+Checked for the flat ``FIELDS`` registry **and** for every repeating-group cell
+(``vat_breakdown`` / ``skonto`` / ``line_items``) — the group cells are rendered
+into the same oracle page but were previously never audited at all, which hid 10
+further ungrounded labels on the surface carrying the most gradable cells.
+
+Note ``german_label`` itself is deliberately NOT required to be grounded: it is
+the canonical EN16931 term, it is not prompt text, and `adapters.py` compiles the
+FROZEN regex baseline from it (ADR-037).
 
 **C. missing aliases** — for each invoice where the field's GT value is present,
 find the transcript line carrying that value and report its leading label. A
@@ -48,7 +68,35 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from horus.eval.ground_truth import FIELDS  # noqa: E402
+from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS, FieldSpec  # noqa: E402
+
+# Fields for which NO printed label exists anywhere in the corpus, so
+# `render_oracle_transcript` necessarily falls back to the synthetic EN16931 term.
+# Each entry needs a written reason; the gate fails on an ungrounded label that is
+# NOT here, and equally on an entry here whose label IS grounded (a stale
+# exception). Keys are qualified with the group name for repeating-group cells,
+# since sub-field names are only unique within their group.
+_NO_PRINTED_LABEL_REASONS: dict[str, str] = {
+    "seller_address": (
+        "composite address, printed UNLABELLED in the letterhead block; 'Anschrift' "
+        "(27/146) occurs only inside Rechnungs-/Lieferanschrift, a different thing"
+    ),
+    "buyer_address": (
+        "composite address, printed UNLABELLED in the customer block (as seller_address)"
+    ),
+    "document_type": (
+        "pages print the type WORD itself as a heading ('Rechnung' 121/146), never a "
+        "'Belegart:' label in front of it — there is a value but no label (ADR-046)"
+    ),
+    "rounding_amount": (
+        "'Rundungsbetrag' / 'Rundung' / 'Rundungsdifferenz' all 0/146; BT-114 occurs on "
+        "1/146 invoices and that page prints no rounding label"
+    ),
+    "skonto.basis_amount": (
+        "all Skonto-basis spellings 0/146; the generic 'Basisbetrag' (90/146) is the VAT "
+        "table's taxable-base column, so borrowing it would render a WRONG label"
+    ),
+}
 
 # `_canon` is private but deliberately reused: it is the transcript canonicalizer the
 # #114 findability audit validated (lowercase + markdown-strip + German umlaut fold +
@@ -145,15 +193,42 @@ def main() -> int:
     #   * an ungrounded ALIAS is text sent to the model claiming "invoices print this",
     #     which is false and costs prompt budget (ADR-048: over-glossing is
     #     net-NEGATIVE) -> gates.
-    #   * an ungrounded german_label is NOT in the prompt. It is the canonical EN16931
-    #     German term used for reporting and for rendering the oracle transcript, so
-    #     "not printed by this corpus" is expected for spec-style names -> advisory.
+    #   * an ungrounded RENDERED label is the text the oracle page shows the model, so
+    #     it silently corrupts the ceiling measurement (ADR-059) -> gates, unless the
+    #     field is a documented no-printed-label exception.
+    #   * `german_label` on its own is neither: not prompt text, and the frozen regex
+    #     baseline compiles from it (ADR-037) -> not checked here at all.
     unfounded_aliases: list[str] = []
     unfounded_labels: list[str] = []
+    stale_exceptions: list[str] = []
+    documented_exceptions: list[str] = []
     leaks: list[str] = []
     missing: list[str] = []
     glossed_no_alias: list[str] = []
     too_long: list[str] = []
+
+    def check_rendered_label(qualified: str, spec: FieldSpec) -> list[str]:
+        """Gate one spec's oracle-rendered label; returns findings to print."""
+        found: list[str] = []
+        label = spec.rendered_label
+        hits = sum(1 for f in folded.values() if _fold(label) in f)
+        reason = _NO_PRINTED_LABEL_REASONS.get(qualified)
+        if hits == 0 and reason is None:
+            found.append(
+                f"  UNGROUNDED ORACLE LABEL   {label!r} — 0/{len(folded)} transcripts; "
+                "the oracle page would show a wording no invoice prints"
+            )
+            unfounded_labels.append(f"{qualified}: {label!r}")
+        elif hits == 0:
+            found.append(f"  documented exception — no printed label exists ({reason})")
+            documented_exceptions.append(qualified)
+        elif reason is not None:
+            found.append(
+                f"  STALE EXCEPTION   {label!r} is grounded ({hits}/{len(folded)}) but "
+                "still listed in _NO_PRINTED_LABEL_REASONS — remove the entry"
+            )
+            stale_exceptions.append(f"{qualified}: {label!r} ({hits}/{len(folded)})")
+        return found
 
     print(f"corpus: {len(usable)} invoices with GT + cached transcript")
     print(f"reader: {cfg.reader_model}")
@@ -164,14 +239,8 @@ def main() -> int:
         aliases = spec.prompt_aliases or ()
         findings: list[str] = []
 
-        # --- B. label grounding -------------------------------------------------
-        label_hits = sum(1 for f in folded.values() if _fold(spec.german_label) in f)
-        if label_hits == 0:
-            findings.append(
-                f"  unfounded label   {spec.german_label!r} — 0/{len(folded)} "
-                "transcripts (advisory: not prompt text)"
-            )
-            unfounded_labels.append(f"{key}: {spec.german_label!r}")
+        # --- B. rendered-label grounding (GATES; ADR-059) -----------------------
+        findings.extend(check_rendered_label(key, spec))
 
         # --- A. alias grounding -------------------------------------------------
         for alias in aliases:
@@ -240,7 +309,7 @@ def main() -> int:
                 label = _leading_label(clean, anchor if anchor else "")
                 if _LABELLIKE_RE.search(label):
                     observed[label] += 1
-        known = {_fold(a) for a in (*aliases, spec.german_label)}
+        known = {_fold(a) for a in (*aliases, spec.german_label, spec.rendered_label)}
         novel = [
             (lbl, n) for lbl, n in observed.most_common() if _fold(lbl) not in known and n >= 2
         ]
@@ -255,20 +324,40 @@ def main() -> int:
                 print(finding)
             print()
 
-    print("=" * 78)
-    print("GATING (prompt surface — text the model actually reads)")
-    print(f"  UNGROUNDED ALIASES  : {len(unfounded_aliases)}")
-    print(f"  LEAKED GT VALUES    : {len(leaks)}")
-    print("ADVISORY")
-    print(f"  ungrounded labels   : {len(unfounded_labels)}  (german_label; not in prompt)")
-    print(f"  glossed w/o aliases : {len(glossed_no_alias)}  {glossed_no_alias}")
-    print(f"  long descriptions   : {len(too_long)}  {too_long}")
-    print(f"  labels not listed   : {len(missing)}")
+    # Repeating-group cells are rendered into the same oracle page as the flat
+    # fields, so their labels need the same gate. Only the label check applies:
+    # group cells carry no description/aliases (deliberately — ADR-053 measured
+    # glossing them as net-negative), so checks A/C/D have nothing to inspect.
+    if not args.field:
+        for group, (_row_xpath, sub_fields) in REPEATING_GROUPS.items():
+            for sub_key, sub_spec in sub_fields.items():
+                qualified = f"{group}.{sub_key}"
+                group_findings = check_rendered_label(qualified, sub_spec)
+                if group_findings:
+                    print(f"{qualified}  ({sub_spec.bt_code})")
+                    for finding in group_findings:
+                        print(finding)
+                    print()
 
-    failed = bool(unfounded_aliases or leaks)
+    print("=" * 78)
+    print("GATING (text the model actually reads — prompt surface + oracle page)")
+    print(f"  UNGROUNDED ALIASES        : {len(unfounded_aliases)}")
+    print(f"  LEAKED GT VALUES          : {len(leaks)}")
+    print(f"  UNGROUNDED ORACLE LABELS  : {len(unfounded_labels)}  {unfounded_labels}")
+    print(f"  STALE LABEL EXCEPTIONS    : {len(stale_exceptions)}  {stale_exceptions}")
+    print("ADVISORY")
+    print(
+        f"  documented no-label fields: {len(documented_exceptions)}  {documented_exceptions}"
+        "  (oracle stays synthetic for these, by design)"
+    )
+    print(f"  glossed w/o aliases       : {len(glossed_no_alias)}  {glossed_no_alias}")
+    print(f"  long descriptions         : {len(too_long)}  {too_long}")
+    print(f"  labels not listed         : {len(missing)}")
+
+    failed = bool(unfounded_aliases or leaks or unfounded_labels or stale_exceptions)
     print()
     print(
-        "RESULT: FAIL — prompt surface has ungrounded/leaking content" if failed else "RESULT: PASS"
+        "RESULT: FAIL — ungrounded/leaking content reaches the model" if failed else "RESULT: PASS"
     )
     return 1 if failed else 0
 
