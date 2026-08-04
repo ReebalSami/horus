@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import re
+from pathlib import Path
 
 import pytest
 
@@ -19,6 +20,7 @@ from horus.eval.ground_truth import (
     GroundTruth,
     GroundTruthField,
 )
+from horus.eval.harness import _model_slug
 from horus.finetune import dataset
 from tests._corpus import EINFACH_PDF, skip_if_no_corpus
 
@@ -332,3 +334,155 @@ def test_oracle_line_item_ordinal_is_the_gt_position() -> None:
     # The position must not ALSO appear as a labelled cell: emitting both is what
     # made the structurer return the labelled form verbatim (line_id="Pos: 1").
     assert "Pos: " not in text
+
+
+# ---------------------------------------------------------------------------
+# build_heldout_records — the private Belege set as InvoiceRecords (ADR-040)
+# ---------------------------------------------------------------------------
+
+# Source filenames deliberately DIFFER from the sanitized ids, so a test asserting
+# `stem == id` actually proves the id is used rather than coinciding with it. These
+# stand in for the private originals (vendor + subject in the filename).
+_HELDOUT_PDFS: dict[str, str] = {
+    "belege-de-email-001": "german/email/Rechnung_Musterfirma_2024-03.pdf",
+    "belege-de-email-002": "german/iphone-pdf-scan/IMG_4821.pdf",
+}
+_HELDOUT_CHANNELS: dict[str, str] = {
+    "belege-de-email-001": "email",
+    "belege-de-email-002": "iphone-pdf-scan",
+}
+
+
+def _write_heldout_corpus(tmp_path: Path, *, broken_gt_for: str | None = None) -> Path:
+    """Create a synthetic held-out corpus tree (index.json + one GT file per id).
+
+    Synthetic by construction — never real invoice content — so this runs in CI
+    without the private corpus, which `.gitignore` blocks in full. Ids are written to
+    the index unsorted to exercise the sort.
+    """
+    corpus = tmp_path / "self-collected"
+    (corpus / "gt").mkdir(parents=True)
+    for invoice_id in _HELDOUT_PDFS:
+        gt_path = corpus / "gt" / f"{invoice_id}.gt.json"
+        if invoice_id == broken_gt_for:
+            gt_path.write_text("{ this is not valid json", encoding="utf-8")
+            continue
+        gt_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "id": invoice_id,
+                    "fields": {"invoice_number": "RG-001", "grand_total_amount": "1.234,56"},
+                }
+            ),
+            encoding="utf-8",
+        )
+    index = {
+        "items": [
+            {
+                "id": invoice_id,
+                "pdf": pdf_rel,
+                "gt": f"gt/{invoice_id}.gt.json",
+                "language": "german",
+                "channel": _HELDOUT_CHANNELS[invoice_id],
+                "verified": False,
+            }
+            for invoice_id, pdf_rel in reversed(list(_HELDOUT_PDFS.items()))
+        ]
+    }
+    (corpus / "index.json").write_text(json.dumps(index), encoding="utf-8")
+    return corpus
+
+
+def test_heldout_record_stems_are_sanitized_ids_not_filenames(tmp_path: Path) -> None:
+    """`stem` must be the sanitized index id, never the private source filename.
+
+    `stem` names the output transcript, so a leaked source filename would write a
+    file whose NAME carries vendor and subject — the one identifier ADR-040 forbids
+    outside the ignored tree. Returned sorted, like the synthetic path.
+    """
+    corpus = _write_heldout_corpus(tmp_path)
+    records = dataset.build_heldout_records(corpus, transcript_dir=tmp_path / "out")
+
+    assert [rec.stem for rec in records] == ["belege-de-email-001", "belege-de-email-002"]
+    for rec in records:
+        assert rec.stem != rec.pdf_path.stem, (
+            f"stem {rec.stem!r} equals the source filename stem — the private "
+            "filename has leaked into the transcript name"
+        )
+
+
+def test_heldout_records_load_gt_and_group_by_language_channel(tmp_path: Path) -> None:
+    """GT comes from the hand-authored JSON, repaired; subdir is language/channel."""
+    corpus = _write_heldout_corpus(tmp_path)
+    records = dataset.build_heldout_records(corpus, transcript_dir=tmp_path / "out")
+
+    assert [rec.subdir for rec in records] == ["german/email", "german/iphone-pdf-scan"]
+    first = records[0]
+    assert first.has_gt
+    assert first.gt is not None
+    # Locale repair must run on the GT side, identically to the prediction side.
+    assert first.gt.header["grand_total_amount"].normalized_value == "1234.56"
+    assert first.gt.header["invoice_number"].is_present
+    # A field absent from the draft stays an honest null, never an invented value.
+    assert not first.gt.header["seller_name"].is_present
+
+
+def test_heldout_records_absent_corpus_is_empty(tmp_path: Path) -> None:
+    """No index.json → [] so CI and fresh clones auto-skip (ADR-023)."""
+    assert dataset.build_heldout_records(tmp_path / "nonexistent") == []
+
+
+def test_heldout_records_survive_a_malformed_gt(tmp_path: Path) -> None:
+    """One unparseable hand-authored GT must not abort the whole set.
+
+    Same per-invoice robustness contract `load_groundtruth` gives the factur-x route:
+    the bad record comes back with `gt=None` and a recorded reason, and the good one
+    is unaffected. Silently dropping it would shrink the set without saying so.
+    """
+    corpus = _write_heldout_corpus(tmp_path, broken_gt_for="belege-de-email-001")
+    records = dataset.build_heldout_records(corpus, transcript_dir=tmp_path / "out")
+
+    assert len(records) == 2
+    broken, intact = records[0], records[1]
+    assert broken.stem == "belege-de-email-001"
+    assert broken.gt is None
+    assert broken.gt_error is not None
+    assert not broken.has_gt
+    assert intact.has_gt
+
+
+def test_heldout_records_detect_an_existing_transcript(tmp_path: Path) -> None:
+    """transcript_path is set iff a reader-slug-named transcript already exists.
+
+    This is what makes the reader pass resume-safe over the held-out set.
+    """
+    corpus = _write_heldout_corpus(tmp_path)
+    out = tmp_path / "out"
+    out.mkdir()
+
+    before = dataset.build_heldout_records(corpus, transcript_dir=out)
+    assert all(rec.transcript_path is None for rec in before)
+
+    slug = _model_slug(dataset.DEFAULT_READER_MODEL)
+    (out / f"{slug}__belege-de-email-001.txt").write_text("transcript", encoding="utf-8")
+
+    after = dataset.build_heldout_records(corpus, transcript_dir=out)
+    assert after[0].has_transcript
+    assert not after[1].has_transcript
+
+
+def test_heldout_default_paths_stay_inside_the_private_tree() -> None:
+    """Held-out transcripts and rasters must never default outside the ignored tree.
+
+    A real invoice's transcript reproduces its content verbatim. Pointing this at the
+    tracked `docs/sources/` tree the synthetic corpus uses would commit private
+    documents, so the invariant is pinned rather than left to reviewer attention.
+    """
+    assert dataset.DEFAULT_HELDOUT_CORPUS_ROOT == Path("data/self-collected")
+    for path in (
+        dataset.DEFAULT_HELDOUT_TRANSCRIPT_DIR,
+        dataset.DEFAULT_HELDOUT_RASTER_CACHE,
+    ):
+        assert path.is_relative_to(dataset.DEFAULT_HELDOUT_CORPUS_ROOT)
+        assert "docs" not in path.parts
