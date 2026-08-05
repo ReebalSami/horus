@@ -1,10 +1,10 @@
 """Tests for the Layer-2 structurer (`src/horus/eval/structurer.py`, ADR-038).
 
 The structurer turns a structuring model's (Gemma's) reasoning-then-strict-JSON
-output into the canonical 19-field scored dict via the shared `adapters_json`
+output into the canonical full-registry scored dict via the shared `adapters_json`
 recovery ladder + `InvoiceFields.validate_and_repair` (ADR-035). Covers:
 
-  - clean JSON -> 19-key dict with locale coercion (German date/money/rate)
+  - clean JSON -> full-registry dict with locale coercion (German date/money/rate)
   - JSON recovered from a reasoning wrapper + markdown fences
   - garbage / empty -> honest all-null (never raises) — the tax-domain guardrail
   - per-page multipage merge (first-non-None-wins; page 1 dominant)
@@ -78,7 +78,7 @@ def test_to_predicted_dict_clean_json_coerces_locale() -> None:
         }
     )
     out = structurer.to_predicted_dict(raw, _MODEL)
-    # Exactly the 19 scored keys (never purpose_summary).
+    # Exactly the 34 scored keys (never purpose_summary).
     assert set(out) == set(FIELDS)
     assert out["invoice_number"] == "471102"
     assert out["issue_date"] == "2018-03-05"  # DD.MM.YYYY -> ISO
@@ -126,14 +126,14 @@ def test_to_predicted_groups_recovers_missing_brace(_rabatte_missing_brace: str)
 
 
 def test_to_predicted_dict_garbage_is_all_null() -> None:
-    """Unparseable output -> all-null 19-key dict (honest; never raises)."""
+    """Unparseable output -> all-null full-registry dict (honest; never raises)."""
     out = structurer.to_predicted_dict("this is not json at all <eos>", _MODEL)
     assert set(out) == set(FIELDS)
     assert all(value is None for value in out.values())
 
 
 def test_to_predicted_dict_empty_is_all_null() -> None:
-    """Empty output -> all-null 19-key dict."""
+    """Empty output -> all-null full-registry dict."""
     out = structurer.to_predicted_dict("", _MODEL)
     assert set(out) == set(FIELDS)
     assert all(value is None for value in out.values())
@@ -159,7 +159,7 @@ def test_multipage_first_non_null_wins() -> None:
 
 
 def test_multipage_empty_list_is_all_null() -> None:
-    """No pages -> all-null 19-key dict."""
+    """No pages -> all-null full-registry dict."""
     out = structurer.to_predicted_dict_multipage([], _MODEL)
     assert set(out) == set(FIELDS)
     assert all(value is None for value in out.values())

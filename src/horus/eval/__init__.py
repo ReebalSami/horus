@@ -5,7 +5,7 @@ loop per `docs/prompts/stages/02-brainstorm.md` v2 §5.5): VLM extraction →
 XML-grounded ground truth → per-field F1 + heatmap. Module additions land
 incrementally as the 3-PR split progresses:
 
-  - PR(a) — ADR-012 — ground_truth: CII XML → 16-field English-keyed dict.
+  - PR(a) — ADR-012 — ground_truth: CII XML → English-keyed field dict.
             Ships `parse_cii_xml`, `GroundTruth`, `GroundTruthField`,
             `FieldSpec`, `FIELDS`, `CII_NAMESPACES`.
   - PR(b) — ADR-013 — scorer: VLM output → predicted dict → per-field F1

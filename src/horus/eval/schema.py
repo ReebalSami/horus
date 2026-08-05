@@ -4,13 +4,14 @@ The structurer (Gemma-4, both arms per ADR-034) emits a JSON object; local MLX
 has **no constrained decoding** (ADR-018), so type safety + locale robustness
 are enforced **post-hoc** here rather than at decode time. This module is:
 
-  1. The **typed schema** — a Pydantic model of the 19 scored canonical fields
-     (ADR-012's 16 + ADR-035's `tax_rate` / `seller_address` / `buyer_address`)
+  1. The **typed schema** — a Pydantic model of the 34 scored canonical fields
+     (ADR-012's 16 + ADR-035's `tax_rate` / `seller_address` / `buyer_address`
+     + ADR-041's 15 full-coverage document-identity / payment / totals fields)
      plus the **non-scored** `purpose_summary` (rendered in the Streamlit app
      only; excluded from every F1 metric — it is NOT in `FIELDS`).
   2. The **validate/repair entry point** — `validate_and_repair(raw)` maps a
      model's (possibly messy, possibly mixed-case) JSON dict to the canonical
-     19-key `dict[str, str | None]` the scorer (`scorer.score`) consumes:
+     full-registry `dict[str, str | None]` the scorer (`scorer.score`) consumes:
      case-insensitive key matching, per-field-type locale coercion (German
      `1.234,56` / `DD.MM.YYYY` / `19 %`), honest `null` on missing/unparseable.
   3. The canonical **JSON-arm fine-tuning target** (#88) — the same typed shape
@@ -173,8 +174,8 @@ class LineItemLine(BaseModel):
 class InvoiceFields(BaseModel):
     """Typed, locale-repaired German-canonical invoice schema (ADR-035).
 
-    19 scored fields (ADR-012's 16 + `tax_rate` / `seller_address` /
-    `buyer_address`) carried as canonical `str | None`, plus the non-scored
+    The scored fields (ADR-012's 16 + ADR-035's `tax_rate` / `seller_address` /
+    `buyer_address` + ADR-041's 15) carried as canonical `str | None`, plus the non-scored
     `purpose_summary`. Construct via `model_validate(raw_dict)` (the
     `mode="before"` validator does case-insensitive key matching + per-type
     coercion) or via the `validate_and_repair` convenience wrapper.
@@ -265,7 +266,7 @@ class InvoiceFields(BaseModel):
         return coerced
 
     def to_scored_dict(self) -> dict[str, str | None]:
-        """Return the 19 scored canonical fields (excludes `purpose_summary`).
+        """Return the 34 scored canonical fields (excludes `purpose_summary`).
 
         This is the `dict[str, str | None]` shape `scorer.score` consumes —
         keyed by exactly `FIELDS`. `purpose_summary` is omitted (non-scored).
@@ -282,7 +283,7 @@ class InvoiceFields(BaseModel):
 
 
 def validate_and_repair(raw: Mapping[str, Any] | None) -> dict[str, str | None]:
-    """Validate + locale-repair a model's JSON dict into the scored 19-key dict.
+    """Validate + locale-repair a model's JSON dict into the scored full-registry dict.
 
     The post-hoc validation path of ADR-035: parse (upstream, via the
     `adapters_json` recovery ladder) → `validate_and_repair` → `scorer.score`.
@@ -295,7 +296,7 @@ def validate_and_repair(raw: Mapping[str, Any] | None) -> dict[str, str | None]:
         raw: the parsed model JSON object (or `None` if recovery failed).
 
     Returns:
-        `dict[str, str | None]` keyed by exactly the 19 scored `FIELDS` keys.
+        `dict[str, str | None]` keyed by exactly the 34 scored `FIELDS` keys.
     """
     if raw is None:
         raw = {}

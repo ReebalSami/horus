@@ -1,6 +1,6 @@
 """Tests for the ADR-035 canonical-schema extension (corpus-independent).
 
-Covers the 16→19 field extension end-to-end WITHOUT the ZUGFeRD corpus on disk
+Covers the 16→19→34 field extensions end-to-end WITHOUT the ZUGFeRD corpus on disk
 (so these run in CI): the `RATE` normalizers (GT + predicted, byte-identical
 canonical), composite-address parsing in `parse_cii_xml` over in-memory CII
 XML, the `FIELDS` / `FIELDS_V1` registry extension, the `InvoiceFields`
@@ -310,7 +310,7 @@ def test_zero_rate_tax_rate_scores_excluded() -> None:
     assert result.per_field["tax_rate"].outcome == "EXCLUDED"
 
 
-def test_parse_header_has_19_keys() -> None:
+def test_parse_header_has_all_canonical_keys() -> None:
     """Parsed header always carries all 34 canonical keys (corpus-independent)."""
     gt = parse_cii_xml(_v2_invoice())
     assert set(gt.header.keys()) == set(FIELDS.keys())
@@ -335,7 +335,7 @@ def test_model_scored_fields_match_registry() -> None:
 
 
 def test_to_scored_dict_excludes_purpose_summary() -> None:
-    """to_scored_dict has exactly the 19 FIELDS keys; purpose_summary is non-scored."""
+    """to_scored_dict has exactly the 34 FIELDS keys; purpose_summary is non-scored."""
     model = InvoiceFields.model_validate({"purpose_summary": "Beratungsleistung Q1"})
     scored = model.to_scored_dict()
     assert set(scored.keys()) == set(FIELDS)
@@ -369,7 +369,7 @@ def test_validate_and_repair_honest_null_on_missing_and_unparseable() -> None:
 
 
 def test_validate_and_repair_drops_unknown_keys_and_returns_19() -> None:
-    """Unknown keys (nested / hallucinated) are dropped; result is the 19 scored keys."""
+    """Unknown keys (nested / hallucinated) are dropped; result is the 34 scored keys."""
     out = validate_and_repair({"foobar": "x", "seller": {"name": "Y"}, "invoice_number": "Z"})
     assert set(out.keys()) == set(FIELDS)
     assert out["invoice_number"] == "Z"
@@ -377,7 +377,7 @@ def test_validate_and_repair_drops_unknown_keys_and_returns_19() -> None:
 
 
 def test_validate_and_repair_none_and_non_dict_input() -> None:
-    """None / non-Mapping input → all-None 19-key dict (no crash)."""
+    """None / non-Mapping input → all-None full-registry dict (no crash)."""
     for bad in (None, ["a", "b"], "string", 42):
         out = validate_and_repair(bad)  # type: ignore[arg-type]
         assert set(out.keys()) == set(FIELDS)

@@ -102,7 +102,7 @@ _MANUAL_GT_PROVENANCE = "manual-json"
 
 
 def empty_gt_fields() -> dict[str, None]:
-    """Return a fresh `{english_key: None}` dict over exactly the 19 scored `FIELDS`.
+    """Return a fresh `{english_key: None}` dict over exactly the 34 scored `FIELDS`.
 
     The all-absent starting point for a new GT draft (every field honestly null
     until populated). Keyed in `FIELDS` declaration order.
@@ -127,7 +127,7 @@ def gt_document(
     """Assemble a canonical GT JSON document (the on-disk shape, see module docstring).
 
     `fields` is merged onto `empty_gt_fields()` so the result always carries exactly
-    the 19 `FIELDS` keys (unknown keys are dropped; missing keys stay `None`). Used
+    every `FIELDS` key (unknown keys are dropped; missing keys stay `None`). Used
     by the drafting pass and the dashboard review page so both write byte-consistent
     files that `build_groundtruth_from_json` round-trips.
     """
@@ -204,7 +204,7 @@ def build_groundtruth_from_mapping(
     """Build a `GroundTruth` from a hand-authored field mapping (the JSON GT route).
 
     Produces the same `GroundTruth(header={english_key: GroundTruthField})` shape as
-    `parse_cii_xml`, so `scorer.score` consumes it unchanged. For each of the 19
+    `parse_cii_xml`, so `scorer.score` consumes it unchanged. For each of the
     `FIELDS`:
 
       - **absent** — key missing, value `None`, or empty/whitespace-only string →

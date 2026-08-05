@@ -17,7 +17,7 @@ Public surface (lazy-imported by callers):
                         `get_tracker(cfg)` factory + `DEFAULT_TRACKER`
   - `horus.config`    — `ExperimentConfig` schema (Pydantic Settings + YAML; see ADR-004)
   - `horus.eval`      — pilot #13 evaluation harness: `parse_cii_xml` + `GroundTruth` +
-                        `FIELDS` registry (CII XML → 16-field English-keyed dict; see ADR-012)
+                        `FIELDS` registry (CII XML → English-keyed field dict; see ADR-012)
 """
 
 __version__ = "0.1.0"

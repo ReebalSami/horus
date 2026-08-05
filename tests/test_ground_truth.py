@@ -9,7 +9,7 @@ Covers the 11 test cases declared in the PR(a) plan:
 5. `test_normalization_dates`                          — format codes 102 / 203 / 204
 6. `test_normalization_money`                          — 2-decimal canonical + sign preservation
 7. `test_normalization_strings`                        — NFC + whitespace handling
-8. `test_fields_registry_consistency`                  — all 16 rows well-formed
+8. `test_fields_registry_consistency`                  — all registry rows well-formed
 9. `test_fields_registry_xpath_executable`             — XPaths compile against CII_NAMESPACES
 10. `test_ground_truth_dataclass_forward_compat`       — wrapper dataclass shape proven
 11. `test_tristate_semantics`                          — absent vs present-empty distinction
@@ -89,7 +89,7 @@ EINFACH_EXPECTED: dict[str, tuple[str, str]] = {
 
 
 def test_parse_einfach_smoke() -> None:
-    """Parse `EN16931_Einfach.cii.xml` → 16-key dict; spot-check 15 present fields."""
+    """Parse `EN16931_Einfach.cii.xml` → full-registry dict; spot-check 15 present fields."""
     assert EINFACH_CII.exists(), f"Test fixture missing: {EINFACH_CII}"
 
     xml_bytes = EINFACH_CII.read_bytes()
@@ -128,7 +128,7 @@ def test_buyer_vat_id_absent_in_einfach() -> None:
     transactions, so the FeRD-shipped XML omits it. The parser must return
     a `GroundTruthField` with `is_present=False`, `raw_value=None`, and
     `normalized_value=None` — NOT skip the key entirely (the dict shape is
-    always all 16 keys; presence is signaled by the flag).
+    always every registry key; presence is signaled by the flag).
     """
     gt = parse_cii_xml(EINFACH_CII.read_bytes())
     rec = gt.header["buyer_vat_id"]
@@ -283,7 +283,7 @@ def test_two_route_dict_equivalence_en16931_corpus(
         f"produce different GroundTruth dicts. Investigate which fields differ."
     )
 
-    # Sanity: result has all 16 keys, all GroundTruthField instances
+    # Sanity: result has every registry key, all GroundTruthField instances
     assert set(gt_facturx.header.keys()) == set(FIELDS.keys())
     for rec in gt_facturx.header.values():
         assert isinstance(rec, GroundTruthField)
@@ -293,7 +293,7 @@ def test_xrechnung_documented_divergence(
     xrechnung_paired_invoice: tuple[Path, Path],
 ) -> None:
     """For every XRECHNUNG-profile paired invoice (4 fixtures): both routes parse
-    to a well-formed 16-key dict, but `issue_date` and `delivery_date` are
+    to a well-formed full-registry dict, but `issue_date` and `delivery_date` are
     expected to diverge (corpus artifact — see ADR-012 §"Negative findings").
 
     Forensic finding (captured at PR(a) authoring): the FeRD-shipped `.cii.xml`
@@ -316,7 +316,7 @@ def test_xrechnung_documented_divergence(
     gt_facturx = parse_cii_xml(facturx_bytes)
     gt_ferd = parse_cii_xml(cii_path.read_bytes())
 
-    # Both routes produce well-formed 16-key dicts
+    # Both routes produce well-formed full-registry dicts
     assert set(gt_facturx.header.keys()) == set(FIELDS.keys())
     assert set(gt_ferd.header.keys()) == set(FIELDS.keys())
 
@@ -804,7 +804,7 @@ def test_tristate_semantics_present_with_value() -> None:
 #
 # ZUGFeRD 1.0 (FeRD 2014) uses the older `CrossIndustryDocument` root + the
 # :12 / :15 ram/udt namespaces. `parse_cii_xml` auto-detects the schema by
-# root element and selects `FIELDS_V1` / `CII_NAMESPACES_V1`. The 16 EN16931
+# root element and selects `FIELDS_V1` / `CII_NAMESPACES_V1`. The EN16931
 # leaf paths are identical to v2; only 7 container element names + the
 # namespace URNs differ.
 #
@@ -834,7 +834,7 @@ V1_COMFORT_EXPECTED: dict[str, tuple[str, str]] = {
 
 @skip_if_no_v1_corpus
 def test_parse_v1_comfort_real_fixture() -> None:
-    """Real ZUGFeRD v1 PDF → factur-x extract → parse_cii_xml → 16-field dict.
+    """Real ZUGFeRD v1 PDF → factur-x extract → parse_cii_xml → full-registry dict.
 
     Exercises the v1 (`CrossIndustryDocument`) branch end-to-end on a real
     fixture via the SAME factur-x extraction route the cohort harness uses
@@ -857,7 +857,7 @@ def test_parse_v1_comfort_real_fixture() -> None:
 
     assert isinstance(gt, GroundTruth)
     assert set(gt.header.keys()) == set(FIELDS.keys()), (
-        "v1 parse must yield the same 16-key header as v2 (route-invariant shape)"
+        "v1 parse must yield the same full-registry header as v2 (route-invariant shape)"
     )
     # buyer_vat_id is genuinely absent in this invoice → tristate "absent".
     assert gt.header["buyer_vat_id"].is_present is False

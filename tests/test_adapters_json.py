@@ -75,8 +75,8 @@ def test_preprocess_nfc_normalizes_decomposed_diacritics() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_to_predicted_dict_returns_all_19_canonical_keys() -> None:
-    """Result always contains exactly the 19 canonical FIELDS keys (no extras, no missing)."""
+def test_to_predicted_dict_returns_all_canonical_keys() -> None:
+    """Result always contains exactly the 34 canonical FIELDS keys (no extras, no missing)."""
     raw = '{"invoice_number": "INV-001"}'
     result = to_predicted_dict(raw, model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
@@ -84,7 +84,7 @@ def test_to_predicted_dict_returns_all_19_canonical_keys() -> None:
 
 
 def test_to_predicted_dict_full_canonical_json_roundtrips() -> None:
-    """A JSON object with all 16 canonical keys + valid string values -> all preserved."""
+    """A JSON object with all 34 canonical keys + valid string values -> all preserved."""
     raw = (
         '{"invoice_number": "INV-001", '
         '"issue_date": "2024-01-15", '
@@ -213,7 +213,7 @@ def test_to_predicted_dict_recovers_from_trailing_comma() -> None:
 
 
 def test_to_predicted_dict_non_json_text_yields_all_none() -> None:
-    """Plain prose / OCR-style output -> all 16 canonical keys map to None."""
+    """Plain prose / OCR-style output -> every canonical key maps to None."""
     raw = (
         "Rechnung Nr. INV-001 vom 15.01.2024. Verk\u00e4ufer: Test GmbH. Gesamtbetrag: 119,00 EUR."
     )
@@ -619,7 +619,7 @@ def test_multipage_singlepage_input_works() -> None:
 
 
 def test_multipage_empty_list_yields_all_none() -> None:
-    """Empty list (no pages) → all 16 canonical keys map to None."""
+    """Empty list (no pages) → every canonical key maps to None."""
     result = to_predicted_dict_multipage([], model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
     assert all(v is None for v in result.values())
@@ -636,8 +636,8 @@ def test_multipage_all_pages_unparseable_yields_all_none() -> None:
     assert all(v is None for v in result.values())
 
 
-def test_multipage_returns_all_19_canonical_keys() -> None:
-    """Result dict always contains exactly the 19 canonical FIELDS keys."""
+def test_multipage_returns_all_canonical_keys() -> None:
+    """Result dict always contains exactly the 34 canonical FIELDS keys."""
     result = to_predicted_dict_multipage(['{"invoice_number": "X"}'], model_id="m")
     assert set(result.keys()) == set(FIELDS.keys())
     assert len(result) == 34

@@ -1,7 +1,7 @@
-"""HORUS ground-truth XML parser — CII → 16-field English-keyed dict (ADR-012).
+"""HORUS ground-truth XML parser — CII → English-keyed field dict (ADR-012).
 
 Parses a UN/CEFACT Cross Industry Invoice (CII) XML byte string and returns a
-canonical `GroundTruth` dataclass whose `header` field maps 16 English-keyed
+canonical `GroundTruth` dataclass whose `header` field maps the English-keyed
 EN16931 business terms to `GroundTruthField` records carrying raw + normalized
 value + provenance (xpath, presence flag, BT code).
 
@@ -15,7 +15,7 @@ the cosmetic diff doesn't propagate).
 Public surface (re-exported by `horus.eval`):
   - `CII_NAMESPACES`   — XPath namespace resolution table (single source of truth)
   - `FieldSpec`        — frozen dataclass; one row in the `FIELDS` catalog
-  - `FIELDS`           — `dict[english_key, FieldSpec]` of 16 in-scope BT terms
+  - `FIELDS`           — `dict[english_key, FieldSpec]` of the in-scope BT terms
   - `GroundTruthField` — frozen dataclass; one extracted record (raw + normalized
                          + provenance + presence)
   - `GroundTruth`      — frozen dataclass; top-level container with `header` dict
@@ -78,7 +78,7 @@ CII_NAMESPACES: Final[dict[str, str]] = {
 # ZUGFeRD v1 (FeRD 2014, `CrossIndustryDocument`) namespace map. ZUGFeRD 1.0
 # predates the EN16931-aligned v2 (Factur-X / ZUGFeRD 2.x): it uses the older
 # `urn:ferd:...:1p0` root namespace plus the :12 / :15 ram/udt revisions (vs
-# v2's :100). The 16 in-scope EN16931 leaf elements are byte-identical across
+# v2's :100). The in-scope EN16931 leaf elements are byte-identical across
 # both schemas; only the namespace URNs + 7 container element names differ
 # (see `_V2_TO_V1_XPATH_SUBSTITUTIONS` + docs/decisions/ADR-033). Verified by
 # extracting a real v1 COMFORT invoice and diffing against the v2 fixture.
@@ -1077,9 +1077,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
 # 4b. ZUGFeRD v1 field registry — derived from FIELDS via container substitution
 # ---------------------------------------------------------------------------
 #
-# The 16 in-scope EN16931 business terms exist in ZUGFeRD v1 with byte-IDENTICAL
+# The in-scope EN16931 business terms exist in ZUGFeRD v1 with byte-IDENTICAL
 # leaf element names + structure as v2; only the 7 *container* element names and
-# the rsm/ram/udt namespace URNs differ. Rather than duplicate the 16-row
+# the rsm/ram/udt namespace URNs differ. Rather than duplicate the full
 # registry (drift risk), `FIELDS_V1` is derived from `FIELDS` by rewriting each
 # XPath's container fragments. The namespace-URN difference is handled separately
 # by resolving the (unchanged) rsm/ram/udt prefixes against `CII_NAMESPACES_V1`
@@ -1485,13 +1485,13 @@ class GroundTruth:
     decide".
 
     Equality semantics: two `GroundTruth` instances compare equal iff their
-    `header` dicts compare equal, which compares the 16 `GroundTruthField`
+    `header` dicts compare equal, which compares every `GroundTruthField`
     records field-by-field. Used by `test_three_route_dict_equivalence_einfach`
     and the corpus-wide parametrized equivalence test.
 
     Attributes:
         header: `dict[str, GroundTruthField]` keyed by `FIELDS` english_keys.
-            The result always has all 16 keys present; absence of the field
+            The result always has every `FIELDS` key present; absence of the field
             in the XML is signaled by `is_present=False` on the record, NOT
             by missing dict entries.
         vat_breakdown: per-VAT-rate breakdown rows (BG-23), or `None` if absent.
@@ -1667,7 +1667,7 @@ def _parse_freetext_skonto(descriptions: list[str]) -> list[dict[str, GroundTrut
 
 
 def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
-    """Parse one CII XML byte string into a `GroundTruth` dict of 16 header fields.
+    """Parse one CII XML byte string into a `GroundTruth` dict of header fields.
 
     Auto-detects the CII schema version from the root element — ZUGFeRD /
     Factur-X v2 (`CrossIndustryInvoice`) or ZUGFeRD v1 (`CrossIndustryDocument`,
@@ -1675,11 +1675,11 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
     `FIELDS_V1` for v1), executes each `FieldSpec.xpath` against
     the parsed XML tree, applies `FieldSpec.normalize` to the raw element
     text if present, and assembles one `GroundTruthField` record per entry.
-    The output `GroundTruth.header` always has all 16 keys; presence of the
+    The output `GroundTruth.header` always has every registry key; presence of the
     field in the source XML is signaled by `is_present` on each record.
 
     Multi-match behavior: an XPath that matches more than one element
-    (corpus anomaly — none of the 16 in-scope fields should multi-match
+    (corpus anomaly — none of the in-scope fields should multi-match
     in valid EN16931 CII XML) triggers a `WARNING` log entry and takes the
     first match in document order. Multi-valued semantics are deferred to
     future BG-25 (line items) work per ADR-012 §"What this ADR does NOT decide".

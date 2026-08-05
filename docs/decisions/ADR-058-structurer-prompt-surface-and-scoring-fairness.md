@@ -1,12 +1,15 @@
 # ADR-058: Structurer prompt-surface + scoring-fairness correction (pre-LoRA)
 
-**Status**: Proposed
-**Date**: 2026-08-04
+**Status**: Accepted
+**Date**: 2026-08-04 / **accepted 2026-08-06** once the Tier-2 re-generation this record
+conditioned itself on was measured — see §"Measured effect (Tier 2)"
 **Supersedes (baselines, not decisions)**: the zero-shot / oracle val baselines recorded in
 `data/finetune/eval-*-val.json` prior to this record
 **Extends**: ADR-043 (GT optional-zero), ADR-045 + ADR-052 (`tax_rate` exclusions),
-ADR-046 (doctype code map), ADR-048 (`predicted_normalize` hook + "prompt-fixable is not a
-LoRA target"), ADR-049 (registry-driven glossary), ADR-051 (predicted optional-zero),
+ADR-046 (doctype code map), ADR-048 (`predicted_normalize` hook + the measured cost of
+over-glossing), ADR-064 ("a prompt-fixable gap is never a fine-tune target" — the principle
+this record leans on, mis-cited to ADR-048 until ADR-064 was written),
+ADR-049 (registry-driven glossary), ADR-051 (predicted optional-zero),
 ADR-053 (glossary stays flat-only), ADR-056 (answerability ruler), ADR-057 (canonical
 reader lineage)
 
@@ -27,7 +30,13 @@ A zero on perfect text cannot be a reading failure. It means the ground truth, t
 normalizer, the field definition, or the *prompt* is wrong. This blocked more than the
 report: `finetune/dataset.groundtruth_to_target` builds LoRA training labels from the same
 registry, so fine-tuning would have taught the structurer to reproduce broken labels, and
-ADR-048 already established that **a prompt-fixable gap must never be handed to a LoRA**.
+**a prompt-fixable gap must never be handed to a LoRA** (ADR-064).
+
+> **Citation correction 2026-08-06.** This paragraph originally attributed that principle to
+> ADR-048. It is not in ADR-048 — that record is a BT-118 scoring-fairness fix and its
+> §Alternatives explicitly calls prompt guidance "a legitimate, separately-measured
+> model-improvement experiment". The principle is sound and is now stated in its own record,
+> ADR-064, with its actual evidence. Nothing measured in this record changes.
 
 The audit was widened on user challenge ("I'm pretty sure a lot of misleading mistakes are
 in the prompts of the fields") — which proved correct, and found contamination worse than
@@ -190,7 +199,59 @@ requires Tier 2 (re-generation). The two-sided GT fold likewise shows no delta h
 current arm emitted the negative allowance — so it is a *prophylactic* correctness fix whose
 absence would have inverted that case once the glossary makes models emit the value.
 
-## Known limitation (deliberately not fixed here)
+## Measured effect (Tier 2 — re-generated arms) — added 2026-08-06
+
+This is the evidence the Tier-1 section above deferred, and the basis for accepting this
+record. Re-generated arms, `qwen-tier1` → `zero-shot-qwen-adr059` (real reader text) and
+`oracle-tier1` → `oracle-adr059` (perfect text). Reproduce with
+`uv run python scripts/compare_eval_reports.py`.
+
+| field | reader text | perfect text |
+|---|---|---|
+| `allowance_total_amount` (BT-107) | 0.000 → **0.667** | 0.000 → **0.909** |
+| `charge_total_amount` (BT-108) | 0.889 → **1.000** | 0.000 → **1.000** |
+| `prepaid_amount` (BT-113) | 0.750 → 0.750 | 0.750 → **1.000** |
+| `line_total_amount` (BT-106) | 0.885 → **0.906** | 0.906 → *0.863* |
+| `delivery_date` (BT-72) | 0.865 → 0.865 | 1.000 → *0.974* |
+| `payment_means_text` (BT-82) | 0.286 → *0.133* | 1.000 → 1.000 |
+| **flat `micro_f1`** | 0.8616 → **0.8649** | 0.9641 → **0.9743** |
+| **pooled `overall_micro_f1`** | 0.8189 → **0.8257** | 0.9676 → **0.9719** |
+
+**The success criterion is met**: BT-107/108 — the two fields this record diagnosed as
+*invisible to the prompt* — moved off zero on both arms, with the glossary repair as the only
+cause.
+
+**Three fields moved down, and none of them is a regression in the system.** Recording them
+explicitly because a "no field regresses" claim that quietly omits the fields that moved is
+worthless:
+
+- **`payment_means_text` 0.286 → 0.133 on reader text** is the **leak removal working as
+  intended**. This audit found a payment-method phrase among the 4 ground-truth values that
+  had leaked verbatim into glossary descriptions. The pre-fix 0.286 was **inflated by
+  contamination** — the prompt was handing the model the answer for the invoices carrying
+  that phrase. 0.133 is the first honest measurement of this field. The perfect-text score is
+  **1.000 both before and after**, which proves the extractor is fully capable and the loss is
+  page ambiguity, not comprehension. A number going *down* here is the evidence the leak was
+  real.
+- **`line_total_amount` 0.906 → 0.863 and `delivery_date` 1.000 → 0.974, both on perfect
+  text only** (reader text held or improved). These are **honest-ceiling corrections caused by
+  ADR-059**, which shipped alongside this record and changed what the oracle page *prints*
+  from the EN16931 schema term to the corpus-measured wording (`Summe Nettobeträge` →
+  `Positionssumme`; `Liefer-/Leistungsdatum` → `Leistungsdatum`). The model scored marginally
+  better against schema jargon than against the wording real invoices use — so the old
+  ceiling was optimistic for these two fields, and the new number is the truthful one. This is
+  exactly the failure mode ADR-059 exists to remove; see ADR-059 §"Measured effect".
+
+## Known limitation (deliberately not fixed here) — **RESOLVED by ADR-059**
+
+> **Resolved 2026-08-04 by ADR-059**, which shipped alongside this record and is the
+> "follow-up with its own re-baseline" promised in the last line of this section. It adds
+> `FieldSpec.printed_label` + the `rendered_label` property, gates rendered-label grounding in
+> `make audit-prompts` check B (flat registry **and** every repeating-group cell), and
+> maintains a bidirectionally-gated `_NO_PRINTED_LABEL_REASONS` exception list. The
+> re-baseline cost is recorded in §"Measured effect (Tier 2)" above: two fields' perfect-text
+> ceilings came *down* to their honest values. The text below is retained as the original
+> statement of the problem.
 
 22 of 34 `german_label` values do not occur in any corpus transcript. They are the canonical
 EN16931 German terms, used for reporting and — importantly — by
@@ -207,8 +268,15 @@ its own re-baseline.
 
 ## Source archival
 
-- EN16931 BT-107 / BT-108 / BT-113 / BT-114 / BT-119 semantics — `docs/sources/standards/`
-  (EN16931 core invoice model, already archived for ADR-035/041/043)
+- EN16931 BT-107 / BT-108 / BT-113 / BT-114 / BT-119 semantics —
+  `docs/sources/legal/zugferd-en16931.md` (the path recorded per ADR-041).
+  **Citation corrected 2026-08-06**: this line previously read `docs/sources/standards/`
+  "already archived for ADR-035/041/043". That directory **has never existed**, and neither
+  ADR-035 nor ADR-043 archives an external EN16931 stub at all (ADR-035 states "no new
+  external stub"). Flagged further: the file that *does* exist is `status: stub` — a
+  Mustang-Project landing page with `archived_pdf: ""` and no normative business-term list —
+  so it does **not** yet support a claim about the standard's German term names. Obtaining the
+  normative term list is tracked as outstanding work, not asserted here.
 - Corpus evidence — `docs/sources/transcripts-multipage/qwen*` (146 canonical transcripts,
   ADR-057 lineage); saved generations under `data/finetune/{oracle,zeroshot,zeroshot-qwen}-outputs/`
 - Audit artefacts — `eval/field-prompt-audit.md` (this audit), `eval/per-field-reporting-audit.md`
@@ -222,7 +290,7 @@ its own re-baseline.
   stale in two independent ways (scorer changed; prompt changed). Retained per ADR-011.
 - **Re-generation required before the LoRA gate.** ADR-054 conditions the LoRA on a
   re-baseline < 0.90. That comparison must be made against a re-generated zero-shot arm, or
-  the fine-tune would be credited with prompt-fixable gains — exactly the ADR-048 error.
+  the fine-tune would be credited with prompt-fixable gains — the error ADR-064 forbids.
 - **The prompt is now a measured artefact.** Any future alias must be justified by corpus
   occurrence or `make audit-prompts` fails.
 - **`rounding_amount` remains untested** (0 signal-bearing outcomes on val, present on

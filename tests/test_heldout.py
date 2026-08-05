@@ -57,7 +57,7 @@ EXPECTED_CANONICAL: dict[str, str] = {
 
 
 def test_mapping_yields_all_nineteen_keys() -> None:
-    """The header always carries exactly the 19 scored FIELDS keys."""
+    """The header always carries exactly the 34 scored FIELDS keys."""
     gt = build_groundtruth_from_mapping({})
     assert set(gt.header) == set(FIELDS)
 
@@ -202,7 +202,7 @@ def test_json_rejects_non_object(tmp_path: Path) -> None:
 
 
 def test_gt_document_shape_and_field_filtering() -> None:
-    """gt_document always carries 19 fields + metadata; unknown keys are dropped."""
+    """gt_document always carries every registry field + metadata; unknown keys are dropped."""
     doc = gt_document(
         invoice_id="x",
         language="english",

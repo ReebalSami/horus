@@ -4,7 +4,7 @@ Combines all four PR(b) modules + PR(a)'s parser:
 
   1. Load a saved cohort transcript (`docs/sources/transcripts/<model>.txt`)
   2. Extract the raw VLM output via `extract_transcript_body`
-  3. Convert to a 16-key predicted dict via `to_predicted_dict(raw, model_id)`
+  3. Convert to a full-registry predicted dict via `to_predicted_dict(raw, model_id)`
   4. Parse the matching CII XML via PR(a)'s `parse_cii_xml`
   5. Score predicted vs GT via `score(...)`
   6. Assert per-model F1 + outcome distribution against the empirical baseline
@@ -322,12 +322,12 @@ def test_invoice_field_scores_round_trips_through_asdict(einfach_gt: GroundTruth
 
 
 # ===========================================================================
-# 5. Aggregate sanity — counts add up to 16 across outcome categories
+# 5. Aggregate sanity — counts add up to the registry size across outcome categories
 # ===========================================================================
 
 
-def test_per_field_outcome_counts_sum_to_16(einfach_gt: GroundTruth) -> None:
-    """Across all 19 fields, the outcome categories partition the field set.
+def test_per_field_outcome_counts_sum_to_registry_size(einfach_gt: GroundTruth) -> None:
+    """Across every scored field, the outcome categories partition the field set.
 
     Sanity check: every field gets exactly one outcome ∈ {TP, FP, FN, TN, EXCLUDED}.
     """

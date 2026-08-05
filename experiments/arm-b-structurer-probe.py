@@ -58,7 +58,7 @@ from horus.vlm_extractor import COHORT_MANIFEST
 # `EN16931_Einfach` is the canonical smoke invoice; this Granite (MLX) transcript
 # carries every field (number/dates/both parties+addresses/VAT IDs/the
 # Belegsummen totals/tax rates), so a capable structurer should recover most of
-# the 19 fields. Granite's DocTags markup is intentionally left in — that is what
+# the 34 fields. Granite's DocTags markup is intentionally left in — that is what
 # the real pipeline will hand to Gemma.
 
 # %%
@@ -75,7 +75,7 @@ print(f"Transcript length: {len(reader_text)} chars", flush=True)
 # ## 2. Build the reasoning-then-strict-JSON structuring prompt
 #
 # The honesty guardrail for the tax domain is the explicit "extract only what is
-# present, else null" instruction. All 19 scored keys are requested verbatim from
+# present, else null" instruction. All scored keys are requested verbatim from
 # the field registry (single source of truth), plus the non-scored
 # `purpose_summary` for the later demo. This is a first-cut prompt; the build
 # phase refines it on dev.
@@ -140,7 +140,7 @@ print(f"\n----- Generated in {gen_seconds:.1f}s -----", flush=True)
 # ## 4. Run the output through the real recovery + validate/repair path
 #
 # Proves the end-to-end chain: model text -> JSON recovery ladder
-# (`adapters_json`) -> `validate_and_repair` -> the canonical 19-key scored dict.
+# (`adapters_json`) -> `validate_and_repair` -> the canonical full-registry scored dict.
 
 # %%
 parsed = _try_parse_json(raw_text)
@@ -155,7 +155,7 @@ print(json.dumps(repaired, indent=2, ensure_ascii=False), flush=True)
 # ## 5. Verdict
 #
 # - WORKS if: generation returned text, JSON recovered, and a meaningful number
-#   of the 19 fields are non-null (the transcript contains them all).
+#   of the 34 fields are non-null (the transcript contains them all).
 # - Records: load seconds, generation seconds, dependency used (mlx-vlm only —
 #   no mlx_lm, no new dependency).
 

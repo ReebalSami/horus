@@ -11,8 +11,9 @@ GT-rendered text), there are only three possible causes:
 3. the value is in the input and named, but the normalizer rejects the model's
    representation (a scorer bug).
 
-Cause 2 is fixable by prompt work alone and must NOT be handed to a LoRA (ADR-048's
-lesson). This script separates (1) from (2): for each invoice whose GT has the
+Cause 2 is fixable by prompt work alone and must NOT be handed to a LoRA (ADR-064;
+previously mis-cited here as ADR-048, which does not contain that rule). This script
+is step 1 of ADR-064's ordering rule — it separates (1) from (2): for each invoice whose GT has the
 field present, it renders the oracle transcript and reports whether the German
 label and the printed value are in it, plus what the model actually emitted.
 

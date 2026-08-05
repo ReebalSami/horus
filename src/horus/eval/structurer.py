@@ -1,4 +1,4 @@
-"""Layer-2 structurer — structuring-model JSON output -> validated 19-field dict (ADR-038).
+"""Layer-2 structurer — structuring-model JSON output -> validated full-registry dict (ADR-038).
 
 The shared structurer for BOTH extraction arms (ADR-034):
 
@@ -26,7 +26,7 @@ swappability):
         -> dict[str, str | None]
     to_full_dict(raw_text: str) -> dict[str, str | None]   # +purpose_summary (demo)
 
-All scored paths return the canonical 19-key dict (keyed by ``FIELDS``); the
+All scored paths return the canonical full-registry dict (keyed by ``FIELDS``); the
 non-scored ``purpose_summary`` is dropped from the scored dict (``to_scored_dict``)
 and surfaced only via ``to_full_dict`` for the Streamlit demo (ADR-035/036).
 Unparseable output -> all-null (honest; never raises) — the tax-domain guardrail
@@ -190,11 +190,11 @@ def _backfill_single_tax_rate(
 
 
 def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:  # noqa: ARG001
-    """Parse one structuring-model output into the scored 19-key predicted dict.
+    """Parse one structuring-model output into the scored full-registry predicted dict.
 
     Pipeline: recover the JSON object from the (possibly reasoning-wrapped,
     fenced, or trailing-token) model text via the shared ``adapters_json``
-    ladder -> ``InvoiceFields`` validate/repair -> the canonical 19-key
+    ladder -> ``InvoiceFields`` validate/repair -> the canonical full-registry
     ``dict[str, str | None]`` the scorer consumes. Unrecoverable JSON yields an
     all-null dict (honest; the model is treated as having extracted nothing).
 

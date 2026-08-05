@@ -247,7 +247,7 @@ def main(argv: list[str]) -> int:
         print(
             "Repeating groups EXCLUDED from this held-out run: the group rows in the "
             "signed-off key are judge-derived and unreviewed (ADR-063). The headline is "
-            "the 19 flat fields; mean_overall_micro_f1 equals mean_micro_f1 by construction."
+            "the 34 flat fields; mean_overall_micro_f1 equals mean_micro_f1 by construction."
         )
 
     def _oracle_text(rec) -> str:  # noqa: ANN001 — InvoiceRecord; ready ⇒ gt is set

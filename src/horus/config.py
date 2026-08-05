@@ -344,7 +344,7 @@ class CohortConfig(BaseModel):
             "(ADR-029). 'structurer' uses `src/horus/eval/structurer.py` — the "
             "typed Arm-A path that routes the model's reasoning-then-strict-JSON "
             "output through `InvoiceFields` + `validate_and_repair` (ADR-035): "
-            "locale coercion, honest null, 19-field scored dict. Both 'json' and "
+            "locale coercion, honest null, full-registry scored dict. Both 'json' and "
             "'structurer' require `prompt_template_override` to be set (validated "
             "at boot — fail-fast per `horus-config-discipline`). This closed enum "
             "dispatch grows past ADR-016/018's binary {regex, json}; the ADR-016 "

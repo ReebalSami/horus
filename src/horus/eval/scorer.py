@@ -182,11 +182,11 @@ class InvoiceFieldScores:
             the heatmap.
         model_id: cohort model identifier (e.g.,
             ``"ibm-granite/granite-docling-258M-mlx"``).
-        per_field: ``dict[english_key, FieldResult]`` — 16 entries (or
-            whichever subset of FIELDS was scored).
+        per_field: ``dict[english_key, FieldResult]`` — one entry per scored
+            field (the full ``FIELDS`` registry, or whichever subset was scored).
         micro_f1: aggregated TP/FP/FN across all per_field results,
             single F1.
-        macro_f1: average of per-field F1 across the 16 fields, skipping
+        macro_f1: average of per-field F1 across every scored field, skipping
             fields where the per-field denominator is 0 (the EXCLUDED-only
             edge case).
         micro_precision: TP / (TP + FP) aggregated across all fields.
@@ -857,17 +857,17 @@ def score(
 
     Args:
         predicted: ``dict[english_key, str | None]`` from
-            ``adapters.to_predicted_dict()``. Must have all 16 keys present
+            ``adapters.to_predicted_dict()``. Must have every registry key present
             (None for not-extracted). Extra keys are ignored.
         gt: ``GroundTruth`` from PR(a)'s ``parse_cii_xml()``. ``gt.header``
-            must have all 16 keys (per PR(a)'s contract).
+            must have every registry key (per PR(a)'s contract).
         cfg: ``EvalConfig`` knobs (threshold, tolerances, NFC). If ``None``,
             literature defaults are used (``EvalConfig()`` constructor).
         invoice_id: human-readable invoice ID for heatmap grouping.
         model_id: cohort model ID for heatmap grouping.
         fields: optional subset of ``FIELDS`` to score (keys must exist in
             ``FIELDS`` — their specs are always read from ``FIELDS``). Defaults
-            to all 19 fields. Pass ``ground_truth.LEGACY_EXPERIMENT_FIELDS`` to
+            to every field in ``FIELDS``. Pass ``ground_truth.LEGACY_EXPERIMENT_FIELDS`` to
             reproduce a closed milestone's 16-field in-sample baseline without
             the ADR-035 fields shifting it (ADR-037).
 
@@ -878,7 +878,7 @@ def score(
     Example:
         >>> from horus.config import EvalConfig
         >>> from horus.eval.scorer import score
-        >>> # ... predicted = {...16 keys...}, gt = parse_cii_xml(...)
+        >>> # ... predicted = {...every registry key...}, gt = parse_cii_xml(...)
         >>> result = score(predicted, gt, cfg=EvalConfig(), invoice_id="EN16931_Einfach",
         ...                model_id="ibm-granite/granite-docling-258M-mlx")  # doctest: +SKIP
         >>> result.micro_f1  # doctest: +SKIP
@@ -893,7 +893,7 @@ def score(
         pred_value = predicted.get(english_key)
         gt_field = gt.header.get(english_key)
         if gt_field is None:
-            # Defensive: PR(a)'s parser always emits all 16 keys; this would
+            # Defensive: PR(a)'s parser always emits every registry key; this would
             # be a programming error upstream. Construct a synthetic "absent"
             # GT field so the scorer doesn't crash mid-aggregation.
             gt_field = GroundTruthField(

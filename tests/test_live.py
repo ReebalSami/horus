@@ -133,7 +133,7 @@ def test_run_single_shot_parses_fields_and_summary() -> None:
     assert result.fields["invoice_number"] == "R-001"
     assert result.purpose_summary == "Office supplies"
     assert result.reader_transcript is None  # single-shot has no reader
-    assert "purpose_summary" in result.fields  # full dict, not the scored 19-key dict
+    assert "purpose_summary" in result.fields  # full dict, not the scored full-registry dict
     # The caller's prompt + token budget are passed through to the model.
     assert extractor.calls[0][1] == "EXTRACT"
     assert extractor.calls[0][2] == 1234

@@ -30,12 +30,12 @@ JSON_TRANSCRIPTS_DIR = Path("docs/sources/transcripts-json-baseline")
 
 
 # ---------------------------------------------------------------------------
-# Helpers — build a full 16-field GroundTruth + a scored TupleResult
+# Helpers — build a full-registry GroundTruth + a scored TupleResult
 # ---------------------------------------------------------------------------
 
 
 def _make_gt(present: dict[str, str]) -> GroundTruth:
-    """Full 16-key GroundTruth; keys in `present` are present-with-value, rest absent."""
+    """GroundTruth over every FIELDS key; keys in `present` are present-with-value, rest absent."""
     header: dict[str, GroundTruthField] = {}
     for key, spec in FIELDS.items():
         if key in present:
