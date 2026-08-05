@@ -15,6 +15,7 @@ from typing import Any
 
 from horus.eval.azure_invoice import (
     AZURE_FIELD_MAP,
+    AZURE_VALUE_FILTERS,
     AzureCoverage,
     AzureReading,
     coverage_summary,
@@ -214,11 +215,45 @@ def test_ambiguous_totals_both_read_the_same_azure_field() -> None:
     assert readings["tax_basis_total_amount"].value == "100,00"
 
 
-def test_vendor_tax_id_feeds_both_german_tax_number_fields() -> None:
-    """Azure merges what German invoices print as two different numbers."""
-    readings = read_analyzed_document(_document({"VendorTaxId": _field("DE123456789")}))
-    assert readings["seller_vat_id"].value == "DE123456789"
-    assert readings["seller_tax_id"].value == "DE123456789"
+def test_a_merged_vendor_tax_id_is_routed_by_format_not_copied_into_both() -> None:
+    """Azure merges what German invoices print as two different numbers.
+
+    Feeding one value into both BT-31 and BT-32 guarantees one of them is wrong, and it did:
+    the first run escalated 29 cells that were artefacts of the mapping rather than
+    disagreement about the documents. A VAT id carries a country prefix; a Steuernummer never
+    does, so the format decides which slot the value belongs in.
+    """
+    vat = read_analyzed_document(_document({"VendorTaxId": _field("DE123456789")}))
+    assert vat["seller_vat_id"].value == "DE123456789"
+    assert vat["seller_tax_id"].coverage is AzureCoverage.NOT_PRESENT
+
+    steuernummer = read_analyzed_document(_document({"VendorTaxId": _field("12/345/67890")}))
+    assert steuernummer["seller_tax_id"].value == "12/345/67890"
+    assert steuernummer["seller_vat_id"].coverage is AzureCoverage.NOT_PRESENT
+
+
+def test_vat_id_routing_tolerates_printed_spacing_and_hyphens() -> None:
+    """`DE 123 456 789` and `ATU-12345678` are VAT ids as printed, not Steuernummern."""
+    spaced = read_analyzed_document(_document({"VendorTaxId": _field("DE 123 456 789")}))
+    assert spaced["seller_vat_id"].value == "DE 123 456 789"
+    assert spaced["seller_tax_id"].coverage is AzureCoverage.NOT_PRESENT
+
+    austrian = read_analyzed_document(_document({"CustomerTaxId": _field("ATU-12345678")}))
+    assert austrian["buyer_vat_id"].value == "ATU-12345678"
+
+
+def test_a_filtered_value_is_absent_rather_than_forced_into_the_cell() -> None:
+    """Abstention, not a guess. `AZURE_VALUE_FILTERS` rejects, it never rewrites.
+
+    A rejected value must read as NOT_PRESENT so adjudication treats it as Azure making no
+    claim about that field — asserting it would manufacture a conflict out of a mapping
+    decision.
+    """
+    assert set(AZURE_VALUE_FILTERS) == {"seller_vat_id", "seller_tax_id", "buyer_vat_id"}
+    readings = read_analyzed_document(_document({"CustomerTaxId": _field("98/765/43210")}))
+    assert readings["buyer_vat_id"].coverage is AzureCoverage.NOT_PRESENT
+    assert readings["buyer_vat_id"].value is None
+    assert readings["buyer_vat_id"].is_evidence
 
 
 def test_buyer_address_prefers_customer_over_billing() -> None:

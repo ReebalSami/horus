@@ -44,7 +44,8 @@ catch.
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+import re
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Final
@@ -54,6 +55,7 @@ from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS
 __all__ = [
     "AZURE_ARRAY_FIELD_MAP",
     "AZURE_FIELD_MAP",
+    "AZURE_VALUE_FILTERS",
     "AZURE_ITEM_CELL_MAP",
     "AZURE_MODEL_ID",
     "AZURE_TAX_DETAIL_CELL_MAP",
@@ -140,8 +142,12 @@ AZURE_FIELD_MAP: Final[dict[str, tuple[str, ...]]] = {
     # reports no `VendorName`, the address recipient is still a reading of the seller name.
     "seller_name": ("VendorName", "VendorAddressRecipient"),
     "seller_address": ("VendorAddress",),
-    # Azure exposes one merged vendor tax id; German invoices carry USt-IdNr (BT-31) and
-    # Steuernummer (BT-32) as different numbers. Same source for both keys on purpose.
+    # Azure exposes ONE merged vendor tax id, but German invoices print USt-IdNr (BT-31)
+    # and Steuernummer (BT-32) as different numbers. Feeding the same value into both slots
+    # would guarantee one of them is wrong, so the value is routed by FORMAT instead:
+    # a VAT id is a country prefix plus alphanumerics, a Steuernummer never starts with
+    # letters. See `AZURE_VALUE_FILTERS` — deterministic, and it abstains when unsure rather
+    # than asserting into both.
     "seller_vat_id": ("VendorTaxId",),
     "seller_tax_id": ("VendorTaxId",),
     "seller_gln": (),
@@ -189,6 +195,29 @@ AZURE_FIELD_MAP: Final[dict[str, tuple[str, ...]]] = {
     # a number, not a name, so mapping it here would put the wrong kind of value in the cell.
     "seller_account_name": (),
     "payment_reference": (),
+}
+
+#: A VAT identifier: ISO 3166 alpha-2 country prefix followed by alphanumerics (DE123456789,
+#: ATU12345678). A German Steuernummer (`12/345/67890`) never matches, which is exactly the
+#: discrimination needed to route Azure's single `VendorTaxId` to the right EN16931 slot.
+_VAT_ID_PATTERN: Final[re.Pattern[str]] = re.compile(r"^[A-Z]{2}[A-Z0-9]{6,14}$")
+
+
+def _looks_like_vat_id(value: str) -> bool:
+    compact = "".join(value.split()).replace("-", "").upper()
+    return bool(_VAT_ID_PATTERN.match(compact))
+
+
+#: Per-field acceptance test applied to a candidate Azure value.
+#:
+#: Returning False means "this value does not belong in this field", which is recorded as
+#: NOT_PRESENT rather than forced into the cell. Introduced because mapping Azure's single
+#: merged tax id into both BT-31 and BT-32 produced 29 escalations that were artefacts of the
+#: mapping rather than genuine disagreement about the documents.
+AZURE_VALUE_FILTERS: Final[dict[str, Callable[[str], bool]]] = {
+    "seller_vat_id": _looks_like_vat_id,
+    "seller_tax_id": lambda value: not _looks_like_vat_id(value),
+    "buyer_vat_id": _looks_like_vat_id,
 }
 
 #: HORUS flat field → (Azure ARRAY field, row cell) for values Azure nests inside an array.
@@ -426,6 +455,9 @@ def read_analyzed_document(document: Mapping[str, Any]) -> dict[str, AzureReadin
                 _currency_code_from(field) if key == "invoice_currency_code" else _content_of(field)
             )
             if value is None:
+                continue
+            accepts = AZURE_VALUE_FILTERS.get(key)
+            if accepts is not None and not accepts(value):
                 continue
             reading = AzureReading(
                 key=key,
