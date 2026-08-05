@@ -144,6 +144,11 @@ class _Accumulator:
 
     cfg: EvalConfig
     structurer_model: str
+    # When False, repeating groups are not scored at all and `overall_micro_f1`
+    # collapses to the flat `micro_f1`. Set by a caller whose GROUND TRUTH for the
+    # groups is unreviewed: scoring against an unverified answer key produces a
+    # number that looks like a measurement and is not one (ADR-063).
+    score_groups: bool = True
     per_invoice: list[InvoiceEval] = field(default_factory=list)
     _score_acc: dict[str, list[float]] = field(default_factory=lambda: defaultdict(list))
     _counts: dict[str, dict[str, int]] = field(
@@ -171,7 +176,10 @@ class _Accumulator:
         """Parse + score one raw structurer generation; accumulate and return the scores."""
         assert rec.gt is not None  # callers filter on `ready`
         predicted = structurer.to_predicted_dict(raw_text, self.structurer_model)
-        predicted_groups = structurer.to_predicted_groups(raw_text)
+        # `score` treats groups as opt-in via this argument, so passing None is a true
+        # exclusion — the group cells never enter `overall_*`, rather than being scored
+        # against an empty GT and counted as spurious emissions.
+        predicted_groups = structurer.to_predicted_groups(raw_text) if self.score_groups else None
         scores = score(
             predicted,
             rec.gt,
@@ -199,9 +207,9 @@ class _Accumulator:
             # `scorer.SIGNAL_OUTCOMES`.
             if is_signal_bearing(field_result.outcome):
                 self._score_acc[field_key].append(field_result.score)
-        # `scores.repeating` is populated only when `predicted_groups` is passed
-        # (it always is here). Each cell's english_key is "<group>[<pair>].<sub>",
-        # so the sub-field name is the trailing dot-segment.
+        # `scores.repeating` is populated only when `predicted_groups` is passed, so
+        # this loop is empty on a groups-excluded run. Each cell's english_key is
+        # "<group>[<pair>].<sub>", so the sub-field name is the trailing dot-segment.
         for group_key, group_result in scores.repeating.items():
             for cell in group_result.cell_results:
                 self._group_counts[group_key][cell.outcome] += 1
@@ -254,6 +262,7 @@ def evaluate_structurer(
     progress: bool = True,
     save_outputs_dir: Path | None = None,
     reader_text_fn: Callable[[InvoiceRecord], str] | None = None,
+    score_groups: bool = True,
 ) -> EvalReport:
     """Score the structurer (optionally LoRA-adapted) over every ready record in ``records``.
 
@@ -265,6 +274,9 @@ def evaluate_structurer(
     (default: the record's cached reader transcript). The oracle-transcript
     probe passes ``lambda r: render_oracle_transcript(r.gt)`` to measure the
     structurer ceiling independent of reading quality.
+
+    ``score_groups=False`` excludes the repeating groups; use it when the corpus's
+    group rows are not part of the verified answer key (ADR-063).
     """
     cfg = eval_cfg or EvalConfig()
     ready = [r for r in records if r.ready and r.gt is not None]
@@ -281,11 +293,12 @@ def evaluate_structurer(
     if adapter_dir is not None:
         _apply_adapter(extractor, adapter_dir)
 
-    acc = _Accumulator(cfg=cfg, structurer_model=structurer_model)
+    acc = _Accumulator(cfg=cfg, structurer_model=structurer_model, score_groups=score_groups)
 
     print(
         f"Eval [{label}]: structurer={structurer_model} "
-        f"adapter={adapter_dir or '<none>'} invoices={len(ready)} max_tokens={max_tokens}",
+        f"adapter={adapter_dir or '<none>'} invoices={len(ready)} max_tokens={max_tokens} "
+        f"groups={'scored' if score_groups else 'EXCLUDED'}",
         flush=True,
     )
 
@@ -334,6 +347,7 @@ def score_saved_outputs(
     label: str = "score-only",
     adapter_dir: Path | None = None,
     progress: bool = True,
+    score_groups: bool = True,
 ) -> EvalReport:
     """Re-score generations saved by ``--save-outputs`` — no model load, no inference.
 
@@ -353,10 +367,11 @@ def score_saved_outputs(
     if not outputs_dir.is_dir():
         raise FileNotFoundError(f"Saved-outputs dir not found: {outputs_dir}")
 
-    acc = _Accumulator(cfg=cfg, structurer_model=structurer_model)
+    acc = _Accumulator(cfg=cfg, structurer_model=structurer_model, score_groups=score_groups)
     print(
         f"Re-score [{label}]: outputs={outputs_dir} structurer={structurer_model} "
-        f"invoices={len(ready)} (no inference)",
+        f"invoices={len(ready)} groups={'scored' if score_groups else 'EXCLUDED'} "
+        "(no inference)",
         flush=True,
     )
 

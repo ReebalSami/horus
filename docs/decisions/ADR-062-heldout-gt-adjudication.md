@@ -135,8 +135,13 @@ run as an "independent" reading of itself, manufacturing agreement — and it wo
 record of what produced the retracted 0.5692 (ADR-011: supersede, never delete). Repointing
 the held-out evaluation at the promoted tree is a path change; un-fabricating agreement is not.
 
-**Still outstanding**: repointing `finetune_evaluate.py`'s held-out path at `_promoted/` once
-enough documents are signed off, and the author's actual pass over the 248 cells.
+**Completed**: the author signed off all 39 documents — 248 decisions, zero pending, every
+promoted file parsing cleanly through `build_groundtruth_from_json`. Grading was repointed at
+`_promoted/` in ADR-063, which also scopes what the resulting number may claim.
+
+**Still outstanding**: repeating groups are not adjudicated cell-by-cell (rows do not align
+across channels), so their rows in the promoted key remain judge-derived and unreviewed.
+ADR-063 excludes them from held-out scoring and records the route to closing that gap.
 
 **Measured result**
 

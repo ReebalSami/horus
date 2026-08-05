@@ -298,13 +298,34 @@ class HeldoutItem:
     n_pages: int | None = None
 
 
-def load_heldout_index(corpus_root: Path) -> list[HeldoutItem]:
+def _verified_in_document(path: Path) -> bool:
+    """Read the `verified` flag out of a GT document; `False` if unreadable or absent."""
+    if not path.is_file():
+        return False
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except OSError, ValueError:
+        return False
+    return bool(data.get("verified", False)) if isinstance(data, Mapping) else False
+
+
+def load_heldout_index(corpus_root: Path, *, gt_dirname: str | None = None) -> list[HeldoutItem]:
     """Load the held-out set from `<corpus_root>/index.json`, sorted by id.
 
     Returns `[]` when the index file is absent — so tests + downstream eval runs
     auto-skip on machines without the private corpus (CI, fresh clones), mirroring
     the ZUGFeRD corpus-absent behaviour (ADR-023). `pdf`/`gt` paths in the index are
     interpreted relative to `corpus_root`.
+
+    `gt_dirname` selects which answer-key tree to read (ADR-062). The default follows
+    the index's own `gt` entry, i.e. the `gt/` draft. Passing e.g. `_promoted` resolves
+    `<corpus_root>/_promoted/<id>.gt.json` instead, which is how a grading run reaches
+    the signed-off key rather than the superseded draft.
+
+    When `gt_dirname` is given, `verified` is read from the GT DOCUMENT rather than
+    from `index.json`. The index's flag describes the draft; carrying it over would
+    let a document with no promoted file at all inherit `verified: true` and be graded
+    as though someone had signed it off — the precise failure ADR-062 exists to undo.
     """
     index_path = corpus_root / INDEX_FILENAME
     if not index_path.is_file():
@@ -315,22 +336,30 @@ def load_heldout_index(corpus_root: Path) -> list[HeldoutItem]:
     for entry in raw_items:
         if not isinstance(entry, Mapping) or "id" not in entry:
             continue
-        gt_rel = entry.get("gt") or f"{GT_DIRNAME}/{entry['id']}.gt.json"
+        invoice_id = str(entry["id"])
+        if gt_dirname is None:
+            gt_path = corpus_root / str(entry.get("gt") or f"{GT_DIRNAME}/{invoice_id}.gt.json")
+            verified = bool(entry.get("verified", False))
+        else:
+            gt_path = corpus_root / gt_dirname / f"{invoice_id}.gt.json"
+            verified = _verified_in_document(gt_path)
         items.append(
             HeldoutItem(
-                id=str(entry["id"]),
+                id=invoice_id,
                 pdf_path=corpus_root / str(entry.get("pdf", "")),
-                gt_path=corpus_root / str(gt_rel),
+                gt_path=gt_path,
                 language=str(entry.get("language", "unknown")),
                 channel=str(entry.get("channel", "unknown")),
-                verified=bool(entry.get("verified", False)),
+                verified=verified,
                 n_pages=entry.get("pages"),
             )
         )
     return sorted(items, key=lambda item: item.id)
 
 
-def build_gt_cache(corpus_root: Path, *, verified_only: bool = False) -> dict[str, GroundTruth]:
+def build_gt_cache(
+    corpus_root: Path, *, verified_only: bool = False, gt_dirname: str | None = None
+) -> dict[str, GroundTruth]:
     """Build an `{id: GroundTruth}` cache for the held-out set.
 
     The held-out counterpart of `transcripts.build_gt_cache` (which reads the
@@ -341,7 +370,7 @@ def build_gt_cache(corpus_root: Path, *, verified_only: bool = False) -> dict[st
     Streams progress to stdout (`flush=True`) per `long-running-foreground`.
     """
     cache: dict[str, GroundTruth] = {}
-    items = load_heldout_index(corpus_root)
+    items = load_heldout_index(corpus_root, gt_dirname=gt_dirname)
     print(f"Building held-out GT cache from {len(items)} indexed invoices...", flush=True)
     for item in items:
         if verified_only and not item.verified:

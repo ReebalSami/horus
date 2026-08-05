@@ -167,3 +167,67 @@ def test_score_saved_outputs_rejects_missing_dir(tmp_path: Path) -> None:
     rec = _record(tmp_path, "inv-1", _gt({"invoice_number": "1"}))
     with pytest.raises(FileNotFoundError, match="Saved-outputs dir not found"):
         score_saved_outputs([rec], tmp_path / "nope", structurer_model=STRUCTURER, progress=False)
+
+
+# ---------------------------------------------------------------------------
+# score_groups=False — excluding repeating groups whose GT is unreviewed (ADR-063)
+# ---------------------------------------------------------------------------
+
+
+def _prediction_with_line_items() -> str:
+    return json.dumps(
+        {
+            "invoice_number": "471102",
+            "line_items": [{"name": "Widget", "line_amount": "20,00", "quantity": "1"}],
+        }
+    )
+
+
+def test_excluding_groups_leaves_the_headline_equal_to_the_flat_score(tmp_path: Path) -> None:
+    """With groups off, `overall_micro_f1` must equal `micro_f1` — nothing group-shaped
+    may leak into the headline."""
+    rec = _record(tmp_path, "inv-1", _gt({"invoice_number": "471102"}))
+    outputs = tmp_path / "outputs"
+    outputs.mkdir()
+    (outputs / "inv-1.txt").write_text(_prediction_with_line_items(), encoding="utf-8")
+
+    report = score_saved_outputs(
+        [rec],
+        outputs,
+        structurer_model=STRUCTURER,
+        progress=False,
+        label="t",
+        score_groups=False,
+    )
+
+    assert report.mean_overall_micro_f1 == report.mean_micro_f1
+    assert report.per_group_f1 == {}
+    assert report.per_group_outcomes == {}
+
+
+def test_excluding_groups_is_not_the_same_as_scoring_them_against_nothing(
+    tmp_path: Path,
+) -> None:
+    """The distinction that makes the exclusion honest.
+
+    The GT here carries no line items. Scoring groups anyway charges the predicted rows
+    as false positives and drags the headline down; excluding them asks no question at
+    all. Reporting the first while calling it "groups not evaluated" would understate
+    the system for a reason that has nothing to do with the system.
+    """
+    rec = _record(tmp_path, "inv-1", _gt({"invoice_number": "471102"}))
+    outputs = tmp_path / "outputs"
+    outputs.mkdir()
+    (outputs / "inv-1.txt").write_text(_prediction_with_line_items(), encoding="utf-8")
+
+    scored = score_saved_outputs(
+        [rec], outputs, structurer_model=STRUCTURER, progress=False, label="t", score_groups=True
+    )
+    excluded = score_saved_outputs(
+        [rec], outputs, structurer_model=STRUCTURER, progress=False, label="t", score_groups=False
+    )
+
+    assert scored.mean_overall_micro_f1 < excluded.mean_overall_micro_f1
+    # The flat fields are untouched either way: the switch changes what is asked, not
+    # how the header is graded.
+    assert scored.mean_micro_f1 == excluded.mean_micro_f1

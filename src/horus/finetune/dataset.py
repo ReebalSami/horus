@@ -50,11 +50,13 @@ from horus.eval.ground_truth import (
 )
 from horus.eval.harness import _extract_groundtruth_via_facturx, _model_slug
 from horus.eval.heldout import build_groundtruth_from_json, load_heldout_index
+from horus.eval.promotion import PROMOTED_DIRNAME
 from horus.eval.scorer import InvoiceFieldScores, score
 from horus.eval.transcripts import parse_transcript, split_per_page_texts
 
 __all__ = [
     "DEFAULT_HELDOUT_CORPUS_ROOT",
+    "DEFAULT_HELDOUT_GT_DIRNAME",
     "DEFAULT_HELDOUT_RASTER_CACHE",
     "DEFAULT_HELDOUT_TRANSCRIPT_DIR",
     "DEFAULT_READER_MODEL",
@@ -98,6 +100,11 @@ DEFAULT_TRANSCRIPT_DIR = Path("docs/sources/transcripts-multipage")
 DEFAULT_HELDOUT_CORPUS_ROOT = Path("data/self-collected")
 DEFAULT_HELDOUT_TRANSCRIPT_DIR = DEFAULT_HELDOUT_CORPUS_ROOT / "_transcripts"
 DEFAULT_HELDOUT_RASTER_CACHE = DEFAULT_HELDOUT_CORPUS_ROOT / "_pagecache"
+
+# The answer-key tree a held-out grading run reads (ADR-062). `_promoted/` holds the
+# author-signed-off key; `gt/` holds the superseded draft, which is still an input
+# CHANNEL to adjudication and must never be graded against.
+DEFAULT_HELDOUT_GT_DIRNAME = PROMOTED_DIRNAME
 
 # Repeating groups carried on GroundTruth, in the JSON key the structurer emits.
 _REPEATING_GROUPS: tuple[str, ...] = ("vat_breakdown", "skonto", "line_items")
@@ -194,6 +201,7 @@ def build_heldout_records(
     *,
     transcript_dir: Path = DEFAULT_HELDOUT_TRANSCRIPT_DIR,
     reader_model: str = DEFAULT_READER_MODEL,
+    gt_dirname: str | None = DEFAULT_HELDOUT_GT_DIRNAME,
 ) -> list[InvoiceRecord]:
     """Discover the private held-out Belege set as `InvoiceRecord`s (ADR-040).
 
@@ -207,7 +215,12 @@ def build_heldout_records(
 
       - **GT route** — real invoices carry no embedded factur-x XML, so ground truth
         comes from the hand-authored `<id>.gt.json` via `build_groundtruth_from_json`
-        rather than `load_groundtruth`'s factur-x extraction.
+        rather than `load_groundtruth`'s factur-x extraction. `gt_dirname` selects the
+        tree; it defaults to the SIGNED-OFF `_promoted/` key (ADR-062), not the `gt/`
+        draft. The draft is one of the channels adjudication reads, so grading against
+        it means grading against an answer key nobody verified — the cause of the
+        retracted held-out figure. Pass `gt_dirname="gt"` only to reproduce that
+        superseded measurement deliberately.
       - **stem** — the sanitized index id (`belege-de-email-001`), never the source
         filename. `stem` names the output transcript, and source filenames are
         private (they carry vendor and subject); the id is the only identifier
@@ -219,7 +232,7 @@ def build_heldout_records(
     """
     reader_slug = _model_slug(reader_model)
     records: list[InvoiceRecord] = []
-    for item in load_heldout_index(corpus_root):
+    for item in load_heldout_index(corpus_root, gt_dirname=gt_dirname):
         try:
             gt: GroundTruth | None = build_groundtruth_from_json(item.gt_path)
             gt_error: str | None = None

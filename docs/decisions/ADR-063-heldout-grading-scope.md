@@ -1,0 +1,136 @@
+# ADR-063: Held-out grading — which answer key, and which fields it may claim
+
+**Status**: Proposed
+
+**Context**
+
+ADR-062 produced a signed-off held-out answer key: 39 documents, 463 cells promoted on a
+recorded warrant, 248 decided by the author. Grading against it is now possible. Two questions
+have to be answered before a number is reported, and both were answered wrongly last time.
+
+**1. Which tree does a grading run read?** The corpus now holds four per-invoice answer-key
+trees: `gt/` (the superseded text-layer draft), `_judge/gt/` (ADR-060), `_azure/gt/`
+(ADR-061), and `_promoted/` (the signed-off key). The first three are *input channels to
+adjudication*. Grading against `gt/` — which is what the retracted run did — compares the
+system to a key that is itself an unreviewed model draft.
+
+**2. What may the number cover?** `overall_micro_f1` pools the 19 flat fields with every
+repeating-group cell. The retracted **0.5692** was that pooled number; the flat-only
+`micro_f1` on the same run was **0.7907**. The gap is almost entirely repeating groups —
+and the group rows in the signed-off key were **never author-reviewed**. The sign-off page
+seeds them from the ADR-060 judge and the author was explicitly told to skip them.
+
+The scale is why. Groups were not adjudicated cell-by-cell because rows do not align across
+channels (ADR-062): one reader splits a line another merges, so positional comparison
+manufactures conflicts out of segmentation. Reviewing them by hand instead means 92 line-item
+rows × 7 sub-fields + 35 VAT rows × 4 = **~784 cells with no ranking and no warrant** —
+against 248 ranked header decisions. Row counts disagree across channels on 39/39 documents
+for `line_items` and 34/39 for `vat_breakdown`, so the seeded rows cannot be trusted unchecked.
+
+**Decision**
+
+**The answer key is `_promoted/`, by default, everywhere.**
+`build_heldout_records` defaults `gt_dirname` to `_promoted`; reaching the draft requires
+passing `gt_dirname="gt"` explicitly. Two guards make the default load-bearing rather than
+cosmetic:
+
+- **No silent fallback.** An invoice with no promoted file comes back `gt=None` with the
+  missing path in `gt_error`. `finetune_evaluate.py --heldout` refuses to run at all if any
+  invoice lacks a signed-off key, naming the offenders. Scoring whatever happens to exist
+  would report a subset while looking like a whole-corpus result.
+- **Verification is read from the document, not the index.** `index.json` still carries
+  `verified: true` from the old regime. Inheriting that flag would let an invoice with no
+  sign-off present as verified. When `gt_dirname` is given, `load_heldout_index` reads
+  `verified` out of the GT file itself.
+
+**The held-out headline is the 19 flat fields. Repeating groups are excluded.**
+The exclusion is structural, not a reporting convention: `score_groups=False` passes
+`predicted_groups=None`, so group cells are never scored *at all*. This is deliberately not
+the same as scoring them against an empty ground truth — that would charge every predicted
+row as a false positive and *understate* the system for a reason unrelated to the system.
+With groups off, `overall_micro_f1` equals `micro_f1` by construction, so there is no second
+number that can be quoted by mistake.
+
+**Line-item extraction keeps being measured — on the synthetic ZUGFeRD corpus**, where GT is
+extracted from the embedded factur-x XML and is exact by construction, at greater scale, for
+free. The held-out set answers *"does header extraction survive real invoices?"*; the
+synthetic set answers *"can it read a line-item table?"*. Neither question is dropped; they
+are answered on the corpus that can actually support each.
+
+**Measured result** (zero-shot, `google/gemma-4-E4B-it` structurer over Qwen3-VL-4B reader
+transcripts, re-scored offline from the frozen generations — no inference, so the delta is
+attributable to the answer key alone):
+
+| Answer key | Flat `micro_f1` | Pooled `overall_micro_f1` |
+|---|---:|---:|
+| `gt/` draft, unverified (**retracted**) | 0.7907 | 0.5692 |
+| `_promoted/` signed-off (this ADR) | **0.8767** | 0.8767 (= flat, groups excluded) |
+
+The **+0.086** on identical generations is ground-truth error in the old key, not a change in
+the system. By language and channel:
+
+| Group | n | Mean flat `micro_f1` |
+|---|---:|---:|
+| english / email | 11 | 0.9318 |
+| german / email | 18 | 0.8997 |
+| german / iphone-pdf-scan | 10 | 0.7748 |
+
+The email-vs-scan gap (0.9118 vs 0.7748) is the degraded-input penalty on real documents,
+cleanly isolated — which is the measurement the held-out set exists to produce.
+
+**Circularity** (ADR-040 §F): the promoted key is drafted by a cloud vision judge, an Azure
+specialist model, and a Cascade text-layer draft, then adjudicated and author-decided. None of
+the three is the system under test (a local Qwen3-VL reader feeding a local Gemma structurer),
+and no contestant output ever entered the key. Auto-acceptance additionally required either
+printed-text proof or two independent channels agreeing, so no single channel determined a
+cell on its own.
+
+**Alternatives considered**
+
+- **Hand-review the ~784 group cells.** Rejected: it is 3× the header workload, unranked and
+  unwarranted, to hand-annotate on 39 real invoices what the synthetic corpus already provides
+  exactly and at scale. The information gained does not justify the most expensive annotation
+  in the project.
+- **Report the pooled number anyway, with a footnote.** Rejected: the pooled number would rest
+  on unreviewed GT, which is precisely the property that forced the retraction. A footnote
+  does not make an unverified number verified.
+- **Score groups against an empty GT** (leave groups on, accept the FPs). Rejected: it
+  understates the system by charging correct line-item extractions as errors, and it reports a
+  number that looks like a measurement of group extraction while measuring nothing of the kind.
+- **Build row alignment and adjudicate groups properly.** Not rejected — deferred. It is the
+  honest path to a real-invoice line-item number, and the design (align rows on a stable cell
+  such as `line_amount`, then adjudicate within aligned rows) is known. It is out of scope for
+  unblocking the header claim, and ADR-054 froze thesis scope to Layer 1.
+- **Delete `gt/` now that it is superseded.** Rejected per ADR-011: it is still an adjudication
+  input, and it is the record of what produced the retracted figure.
+
+**Consequences**
+
+- The held-out claim the thesis may make is **header-field extraction on real invoices**,
+  stated with its scope rather than implied to cover the full schema.
+- Repeating-group performance on real invoices is an explicit, documented **limitation**, with
+  a known route to closing it if it ever becomes load-bearing.
+- Any future held-out run inherits the correct key and scope by default; reproducing the
+  superseded measurement is possible but requires saying so on the command line.
+- `overall_micro_f1` and `micro_f1` are equal on held-out reports by construction, so the two
+  cannot be confused the way they were when 0.5692 and 0.7907 came out of the same run.
+
+**Source archival**
+
+No external sources. Internal: ADR-034 (held-out eval strategy), ADR-040 (held-out set +
+circularity guard), ADR-042 (repeating-group scoring), ADR-054 (scope freeze to Layer 1),
+ADR-060/061 (the two cloud channels), ADR-062 (adjudication + promotion).
+
+**Supersession trigger**
+
+Superseded or amended if **any** of:
+
+1. Repeating-group rows in the held-out key become author-reviewed (via row-aligned
+   adjudication or direct annotation) → the exclusion is lifted and the pooled number becomes
+   reportable.
+2. A held-out grading run is wired for a contestant that *did* contribute to the answer key →
+   the circularity analysis above must be redone before any number is published.
+3. The field registry changes such that the "19 flat fields" scope no longer describes what is
+   graded.
+4. A second annotator is added and inter-annotator agreement becomes reportable → the warrant
+   classes in ADR-062 and the scope here both need revisiting.

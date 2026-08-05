@@ -353,17 +353,27 @@ _HELDOUT_CHANNELS: dict[str, str] = {
 }
 
 
-def _write_heldout_corpus(tmp_path: Path, *, broken_gt_for: str | None = None) -> Path:
+def _write_heldout_corpus(
+    tmp_path: Path,
+    *,
+    broken_gt_for: str | None = None,
+    gt_dirname: str = dataset.DEFAULT_HELDOUT_GT_DIRNAME,
+    verified: bool = True,
+) -> Path:
     """Create a synthetic held-out corpus tree (index.json + one GT file per id).
 
     Synthetic by construction — never real invoice content — so this runs in CI
     without the private corpus, which `.gitignore` blocks in full. Ids are written to
     the index unsorted to exercise the sort.
+
+    Answer keys are written to `gt_dirname`, which defaults to the tree a grading run
+    actually reads (`_promoted/`, ADR-062), so these tests exercise the real default
+    rather than a path only the tests use.
     """
     corpus = tmp_path / "self-collected"
-    (corpus / "gt").mkdir(parents=True)
+    (corpus / gt_dirname).mkdir(parents=True)
     for invoice_id in _HELDOUT_PDFS:
-        gt_path = corpus / "gt" / f"{invoice_id}.gt.json"
+        gt_path = corpus / gt_dirname / f"{invoice_id}.gt.json"
         if invoice_id == broken_gt_for:
             gt_path.write_text("{ this is not valid json", encoding="utf-8")
             continue
@@ -372,6 +382,7 @@ def _write_heldout_corpus(tmp_path: Path, *, broken_gt_for: str | None = None) -
                 {
                     "schema_version": 1,
                     "id": invoice_id,
+                    "verified": verified,
                     "fields": {"invoice_number": "RG-001", "grand_total_amount": "1.234,56"},
                 }
             ),
@@ -470,6 +481,48 @@ def test_heldout_records_detect_an_existing_transcript(tmp_path: Path) -> None:
     after = dataset.build_heldout_records(corpus, transcript_dir=out)
     assert after[0].has_transcript
     assert not after[1].has_transcript
+
+
+def test_grading_reads_the_signed_off_key_not_the_draft(tmp_path: Path) -> None:
+    """The default answer-key tree is `_promoted/`, never `gt/`.
+
+    `gt/` is one of the channels adjudication reads (ADR-062). Grading against it means
+    grading against an unverified draft that partly produced the very key it is being
+    compared to — the cause of the retracted held-out figure.
+    """
+    assert dataset.DEFAULT_HELDOUT_GT_DIRNAME == "_promoted"
+    corpus = _write_heldout_corpus(tmp_path)
+    assert (corpus / "_promoted").is_dir()
+    assert not (corpus / "gt").exists()
+
+    records = dataset.build_heldout_records(corpus, transcript_dir=tmp_path / "out")
+    assert all(rec.has_gt for rec in records)
+
+
+def test_the_superseded_draft_key_is_still_reachable_on_request(tmp_path: Path) -> None:
+    """Reproducing the old measurement must stay possible — explicitly, never by default."""
+    corpus = _write_heldout_corpus(tmp_path, gt_dirname="gt")
+    assert dataset.build_heldout_records(corpus, transcript_dir=tmp_path / "out")[0].gt is None
+
+    records = dataset.build_heldout_records(
+        corpus, transcript_dir=tmp_path / "out", gt_dirname="gt"
+    )
+    assert all(rec.has_gt for rec in records)
+
+
+def test_a_missing_signed_off_key_is_reported_never_silently_substituted(tmp_path: Path) -> None:
+    """An invoice with no promoted key must come back unusable, not fall back to the draft.
+
+    A silent fallback would grade part of the corpus against the draft while the run
+    still reported a whole-corpus number.
+    """
+    corpus = _write_heldout_corpus(tmp_path, gt_dirname="gt")
+    records = dataset.build_heldout_records(corpus, transcript_dir=tmp_path / "out")
+
+    assert [rec.gt for rec in records] == [None, None]
+    for rec in records:
+        assert rec.gt_error is not None
+        assert "_promoted" in rec.gt_error
 
 
 def test_heldout_default_paths_stay_inside_the_private_tree() -> None:

@@ -17,7 +17,11 @@ from typing import Any
 
 from horus.eval.adjudication import ProvenanceClass
 from horus.eval.ground_truth import FIELDS
-from horus.eval.heldout import build_groundtruth_from_json
+from horus.eval.heldout import (
+    INDEX_FILENAME,
+    build_groundtruth_from_json,
+    load_heldout_index,
+)
 from horus.eval.promotion import (
     PROMOTED_DIRNAME,
     PROMOTED_SCHEMA_VERSION,
@@ -292,6 +296,45 @@ def test_a_sign_off_session_resumes_from_disk(tmp_path: Path) -> None:
     # Only the author's own answers come back — an adjudicated value must not be laundered
     # into a decision by a save/load cycle.
     assert resumed == {"seller_name": "ACME GmbH"}
+
+
+def test_verification_comes_from_the_promoted_document_not_the_index(tmp_path: Path) -> None:
+    """`index.json` describes the DRAFT; its `verified` flag must not travel to the key.
+
+    The index was marked verified under the old regime. If a promoted-tree read inherited
+    that flag, an invoice with no sign-off at all would present as verified and be graded
+    as though someone had checked it.
+    """
+    (tmp_path / INDEX_FILENAME).write_text(
+        json.dumps(
+            {
+                "items": [
+                    {"id": "signed", "language": "german", "channel": "email", "verified": True},
+                    {"id": "unsigned", "language": "german", "channel": "email", "verified": True},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    save_promoted(
+        tmp_path,
+        promotion_document(
+            invoice_id="signed",
+            language="german",
+            channel="email",
+            cells=[cell("invoice_number", value="R-1")],
+            decisions={},
+            verified=True,
+        ),
+    )
+
+    by_id = {item.id: item for item in load_heldout_index(tmp_path, gt_dirname=PROMOTED_DIRNAME)}
+    assert by_id["signed"].verified is True
+    assert by_id["unsigned"].verified is False
+
+    # Without the override the index's own claim stands — the old behaviour is intact.
+    stale = {item.id: item for item in load_heldout_index(tmp_path)}
+    assert stale["unsigned"].verified is True
 
 
 def test_a_corrupt_promoted_file_reads_as_absent(tmp_path: Path) -> None:
