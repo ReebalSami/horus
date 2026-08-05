@@ -1,4 +1,4 @@
-# Rented-GPU runbook — reader bake-off + transcript regeneration (issue #55)
+# Rented-GPU runbook — reader bake-off, transcript regeneration, held-out transcription (issues #55, #114)
 
 Purpose: the M1 Pro 16 GB ceiling disqualified every full-precision reader candidate
 locally (35 GiB Metal buffers, 4-bit German-text corruption, 49 min/page bf16 — see the
@@ -139,6 +139,34 @@ rsync -avz --relative \
 line is belt-and-braces in case of exclude-pattern drift. Raster cache is NOT synced —
 `pypdfium2` re-rasterizes on the box at the same 300 DPI / PNG settings.)
 
+> **macOS `rsync --relative` gotcha (hit 2026-08-04)**: the rsync shipped with macOS
+> ignores the `./` pivot in `--relative` sources and reproduces the **full absolute
+> path** on the remote, so the block above silently lands at
+> `~/horus/Users/<you>/Projects/horus/data/…` rather than `~/horus/data/…` — while
+> still reporting a successful byte count. It also lacks `--info=stats1` (use
+> `--stats`). Either verify the destination after syncing, or drop `--relative` and
+> give each source an explicit destination, as in §2b below.
+
+### 2b. Held-out Belege set (issue #114) — replaces the corpus block above
+
+The held-out run needs only `data/self-collected` (39 real invoices + hand-authored
+GT). The synthetic corpus and the sealed split are irrelevant to it, so skip them —
+`setup.sh`'s data check accepts EITHER dataset and fails only when neither arrived.
+
+```sh
+rsync -az ~/Projects/horus/data/self-collected/index.json horus-gpu:~/horus/data/self-collected/
+rsync -az ~/Projects/horus/data/self-collected/gt/      horus-gpu:~/horus/data/self-collected/gt/
+rsync -az ~/Projects/horus/data/self-collected/german/  horus-gpu:~/horus/data/self-collected/german/
+rsync -az ~/Projects/horus/data/self-collected/english/ horus-gpu:~/horus/data/self-collected/english/
+```
+
+Do NOT sync `_pagecache` / `_text` / `_drafts` — derived, and the box re-rasterizes.
+
+This uploads REAL invoices to a rented box, which is acceptable only because the
+instance is single-tenant, EU-region, has `DeleteOnTermination=true` on its root
+volume, and is terminated at the end of the session (§6). Nothing private is
+committed: `data/self-collected/` is git-ignored in full (ADR-040).
+
 ## 3. Bootstrap (on the instance)
 
 ```sh
@@ -195,13 +223,39 @@ uv run python scripts/gpu/regen_transcripts.py --winner <model-id-from-step-4>
 (Single-line — safe to drive over `ssh` from the Windsurf terminal, unlike the heredoc
 this replaced. Resume-safe: re-running skips already-transcribed stems.)
 
+## 5B. Held-out Belege transcription (issue #114) — alternative to §4/§5
+
+Transcribes the 39 real invoices at bf16 native resolution with the canonical reader.
+The local M1 path applies the manifest `max_pixels` cap (≈150 DPI effective on an A4
+page), so a local run cannot produce comparable transcripts — that cap is the entire
+reason this step belongs on CUDA rather than on the Mac.
+
+```sh
+LD_LIBRARY_PATH= PATH=$HOME/.local/bin:$PATH uv run python scripts/transcribe_heldout.py --force-transformers
+```
+
+Resume-safe (skips ids that already have a transcript); `--limit N` and `--stems <id>`
+narrow the run; `--rasterize-only` renders page images without loading a model (the
+LLM-judge pass consumes those). Output lands at
+`data/self-collected/_transcripts/<reader-slug>__<id>.txt`, named by sanitized id only.
+
+Observed 2026-08-04 (A10G 23 GB, `Qwen/Qwen3-VL-4B-Instruct` bf16): 39 invoices /
+58 pages, **0 errors**, including a ~9 GB checkpoint fetch; ~16 min total instance
+lifetime ≈ $0.45.
+
 ## 6. Bring artifacts home + TERMINATE
 
 ```sh
 # from the Mac
 rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/bakeoff/ ~/Projects/horus/data/finetune/bakeoff/
 rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/gpu-transcripts/ ~/Projects/horus/data/finetune/gpu-transcripts/
+
+# held-out Belege transcripts (§5B) — private, stays in the git-ignored tree
+rsync -az horus-gpu:~/horus/data/self-collected/_transcripts/ ~/Projects/horus/data/self-collected/_transcripts/
 ```
+
+**Verify the artifacts are home BEFORE terminating** — the root volume is destroyed
+with the instance.
 
 (With the ssh alias from §1A/§1B, replace `ubuntu@<instance-ip>` with `horus-gpu`.)
 

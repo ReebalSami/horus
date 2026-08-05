@@ -35,6 +35,23 @@ dependencies = [
     "torchvision>=0.20",
     "transformers>=5.5.0",
     "streamlit>=1.58.0",
+    # MEASUREMENT ONLY (ADR-060): cloud vision judge that authors held-out ground
+    # truth from the page rasters, replacing text-layer-drafted GT that was proven
+    # wrong on the image-only scans. Deliberately NOT on the inference path — HORUS's
+    # delivered pipeline stays fully local, so no cloud call exists in it. Imported
+    # lazily (inside functions in `horus.eval.judge` / `scripts/judge_heldout_gt.py`)
+    # and requires ANTHROPIC_API_KEY from the git-ignored .env.
+    "anthropic>=0.120.2",
+    # MEASUREMENT ONLY (ADR-061): the SECOND held-out GT channel. `prebuilt-invoice` is
+    # a specialist (dedicated OCR + invoice field model), so its failure modes are
+    # architecturally unlike the generalist VLM judge's — which is the entire point of a
+    # second channel, since agreement between two systems that fail the same way is
+    # worth little. Taken as a dependency rather than hand-rolling REST because analysis
+    # is a long-running operation (`Operation-Location` polling) and a client that polls
+    # wrongly either burns F0 quota or reads an unconverged result. Same posture as
+    # `anthropic` above: NOT on the inference path, imported lazily, and it reads
+    # AZURE_DOCUMENT_INTELLIGENCE_{ENDPOINT,KEY} from the git-ignored .env.
+    "azure-ai-documentintelligence>=1.0.2",
 ]
 
 [dependency-groups]

@@ -49,15 +49,22 @@ from horus.eval.ground_truth import (
     GroundTruthField,
 )
 from horus.eval.harness import _extract_groundtruth_via_facturx, _model_slug
+from horus.eval.heldout import build_groundtruth_from_json, load_heldout_index
+from horus.eval.promotion import PROMOTED_DIRNAME
 from horus.eval.scorer import InvoiceFieldScores, score
 from horus.eval.transcripts import parse_transcript, split_per_page_texts
 
 __all__ = [
+    "DEFAULT_HELDOUT_CORPUS_ROOT",
+    "DEFAULT_HELDOUT_GT_DIRNAME",
+    "DEFAULT_HELDOUT_RASTER_CACHE",
+    "DEFAULT_HELDOUT_TRANSCRIPT_DIR",
     "DEFAULT_READER_MODEL",
     "DEFAULT_TRANSCRIPT_DIR",
     "InvoiceRecord",
     "build_dataset",
     "build_example",
+    "build_heldout_records",
     "build_records",
     "groundtruth_to_target",
     "load_groundtruth",
@@ -82,6 +89,22 @@ __all__ = [
 DEFAULT_READER_MODEL = "Qwen/Qwen3-VL-4B-Instruct"
 # Where the pilot-13 / baseline reader pass archives transcripts (pilot-13.yaml).
 DEFAULT_TRANSCRIPT_DIR = Path("docs/sources/transcripts-multipage")
+
+# The PRIVATE held-out Belege set (ADR-040) and its two derived artifact dirs.
+# All three sit under `data/self-collected/`, which `.gitignore` blocks in full with
+# no `!` un-ignore permitted. This placement is load-bearing, not incidental: a real
+# invoice's reader transcript reproduces the document's content verbatim (vendor,
+# addresses, amounts), so it must NEVER land in the tracked `docs/sources/`
+# transcript tree the synthetic corpus uses. Rasterized pages carry the same
+# exposure, hence the cache lives inside the ignored tree too.
+DEFAULT_HELDOUT_CORPUS_ROOT = Path("data/self-collected")
+DEFAULT_HELDOUT_TRANSCRIPT_DIR = DEFAULT_HELDOUT_CORPUS_ROOT / "_transcripts"
+DEFAULT_HELDOUT_RASTER_CACHE = DEFAULT_HELDOUT_CORPUS_ROOT / "_pagecache"
+
+# The answer-key tree a held-out grading run reads (ADR-062). `_promoted/` holds the
+# author-signed-off key; `gt/` holds the superseded draft, which is still an input
+# CHANNEL to adjudication and must never be graded against.
+DEFAULT_HELDOUT_GT_DIRNAME = PROMOTED_DIRNAME
 
 # Repeating groups carried on GroundTruth, in the JSON key the structurer emits.
 _REPEATING_GROUPS: tuple[str, ...] = ("vat_breakdown", "skonto", "line_items")
@@ -167,6 +190,68 @@ def build_records(
                 subdir=_top_subdir(pdf, corpus_root),
                 gt=gt,
                 gt_error=err,
+                transcript_path=candidate if candidate.is_file() else None,
+            )
+        )
+    return records
+
+
+def build_heldout_records(
+    corpus_root: Path = DEFAULT_HELDOUT_CORPUS_ROOT,
+    *,
+    transcript_dir: Path = DEFAULT_HELDOUT_TRANSCRIPT_DIR,
+    reader_model: str = DEFAULT_READER_MODEL,
+    gt_dirname: str | None = DEFAULT_HELDOUT_GT_DIRNAME,
+) -> list[InvoiceRecord]:
+    """Discover the private held-out Belege set as `InvoiceRecord`s (ADR-040).
+
+    The held-out counterpart of `build_records`, returning the SAME record type so
+    `run_reader_pass` and the evaluator consume real invoices through the identical
+    code path as the synthetic corpus. That identity is the point: this measurement
+    changes the DATA, not the instrument, so any difference in the resulting score
+    is attributable to the invoices rather than to a second pipeline.
+
+    Two differences from the ZUGFeRD path, both forced by the data:
+
+      - **GT route** — real invoices carry no embedded factur-x XML, so ground truth
+        comes from the hand-authored `<id>.gt.json` via `build_groundtruth_from_json`
+        rather than `load_groundtruth`'s factur-x extraction. `gt_dirname` selects the
+        tree; it defaults to the SIGNED-OFF `_promoted/` key (ADR-062), not the `gt/`
+        draft. The draft is one of the channels adjudication reads, so grading against
+        it means grading against an answer key nobody verified — the cause of the
+        retracted held-out figure. Pass `gt_dirname="gt"` only to reproduce that
+        superseded measurement deliberately.
+      - **stem** — the sanitized index id (`belege-de-email-001`), never the source
+        filename. `stem` names the output transcript, and source filenames are
+        private (they carry vendor and subject); the id is the only identifier
+        ADR-040 permits to leave the ignored tree.
+
+    Returns `[]` when the corpus is absent (no `index.json`), mirroring the
+    corpus-absent auto-skip of the synthetic path (ADR-023) so CI and fresh clones
+    are unaffected.
+    """
+    reader_slug = _model_slug(reader_model)
+    records: list[InvoiceRecord] = []
+    for item in load_heldout_index(corpus_root, gt_dirname=gt_dirname):
+        try:
+            gt: GroundTruth | None = build_groundtruth_from_json(item.gt_path)
+            gt_error: str | None = None
+        except (OSError, ValueError) as exc:
+            # One malformed or missing hand-authored GT must not abort the set — the
+            # same per-invoice robustness contract `load_groundtruth` gives the
+            # factur-x route. `ValueError` covers `json.JSONDecodeError`.
+            gt, gt_error = None, f"{type(exc).__name__}: {exc}"
+        candidate = transcript_dir / f"{reader_slug}__{item.id}.txt"
+        records.append(
+            InvoiceRecord(
+                pdf_path=item.pdf_path,
+                stem=item.id,
+                # Language/channel is the split that matters for this set: an
+                # email-native PDF and a phone photo of the same invoice are
+                # different difficulty regimes, and the coverage report groups on it.
+                subdir=f"{item.language}/{item.channel}",
+                gt=gt,
+                gt_error=gt_error,
                 transcript_path=candidate if candidate.is_file() else None,
             )
         )

@@ -23,6 +23,18 @@ without loading the structurer or running any inference:
 That isolates a scorer / normalizer / parser change from any generation change (the
 two-tier measurement in `eval/per-field-reporting-audit.md`), and is how an adapter
 A/B is compared after a LoRA run.
+
+`--heldout` swaps the sealed synthetic split for the PRIVATE held-out Belege set of
+real invoices (ADR-040) — same structurer, same prompt, same scorer, different data:
+
+    uv run python scripts/finetune_evaluate.py --heldout --label zero-shot \
+        --out data/self-collected/_eval/eval-zeroshot-heldout.json
+
+That is the generalization measurement: every number the thesis currently reports comes
+from synthetic ZUGFeRD invoices, so a real-invoice score is the only evidence that the
+pipeline works on documents it was not built around. `--split` does not apply (the whole
+set is held out by construction) and the report label is suffixed `-heldout` so it can
+never be confused with a val number.
 """
 
 from __future__ import annotations
@@ -37,7 +49,14 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from horus.finetune.config import FinetuneConfig  # noqa: E402
-from horus.finetune.dataset import build_records, render_oracle_transcript  # noqa: E402
+from horus.finetune.dataset import (  # noqa: E402
+    DEFAULT_HELDOUT_CORPUS_ROOT,
+    DEFAULT_HELDOUT_GT_DIRNAME,
+    DEFAULT_HELDOUT_TRANSCRIPT_DIR,
+    build_heldout_records,
+    build_records,
+    render_oracle_transcript,
+)
 from horus.finetune.evaluate import (  # noqa: E402
     EvalReport,
     evaluate_structurer,
@@ -125,6 +144,36 @@ def main(argv: list[str]) -> int:
         help="Re-score generations saved earlier by --save-outputs (reads DIR/<stem>.txt); "
         "loads no model and runs no inference. Isolates scorer/normalizer changes.",
     )
+    parser.add_argument(
+        "--heldout",
+        action="store_true",
+        help="Evaluate the private held-out Belege set of REAL invoices (ADR-040) instead "
+        "of the sealed synthetic split; --split does not apply.",
+    )
+    parser.add_argument(
+        "--heldout-corpus",
+        default=str(DEFAULT_HELDOUT_CORPUS_ROOT),
+        help="Held-out corpus root holding index.json (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--heldout-transcripts",
+        default=str(DEFAULT_HELDOUT_TRANSCRIPT_DIR),
+        help="Held-out reader-transcript dir (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--heldout-gt-dir",
+        default=DEFAULT_HELDOUT_GT_DIRNAME,
+        help="Answer-key sub-directory of the held-out corpus (default: %(default)s, the "
+        "author-signed-off key). Pass 'gt' only to deliberately reproduce the superseded "
+        "draft-based measurement.",
+    )
+    parser.add_argument(
+        "--heldout-score-groups",
+        action="store_true",
+        help="Also score repeating groups on the held-out set. OFF by default: the group "
+        "rows in the signed-off key are judge-derived and were never author-reviewed, so "
+        "grading against them reports an unverified number (ADR-063).",
+    )
     args = parser.parse_args(argv[1:])
     if args.score_only and args.save_outputs:
         parser.error("--score-only reads saved generations; --save-outputs would rewrite them.")
@@ -140,12 +189,37 @@ def main(argv: list[str]) -> int:
         "all": set(split.train) | set(split.val),
     }[args.split]
 
-    records = build_records(
-        Path(cfg.corpus_root),
-        transcript_dir=Path(cfg.transcript_dir),
-        reader_model=cfg.reader_model,
-    )
-    subset = [r for r in records if r.stem in stems]
+    if args.heldout:
+        # No split filtering: the entire Belege set is held out by construction, so
+        # there is nothing to hold back from it. Transcripts come from the private
+        # git-ignored tree rather than the tracked docs/sources/ dir.
+        records = build_heldout_records(
+            Path(args.heldout_corpus),
+            transcript_dir=Path(args.heldout_transcripts),
+            reader_model=cfg.reader_model,
+            gt_dirname=args.heldout_gt_dir,
+        )
+        # Refuse to grade against a partially signed-off key. Scoring whatever happens
+        # to exist would silently report a number over a subset while looking like a
+        # whole-corpus result, which is the shape of the figure that had to be
+        # retracted. `gt_error` here means the answer key is missing or malformed.
+        missing = sorted(r.stem for r in records if r.gt is None)
+        if missing and args.heldout_gt_dir == DEFAULT_HELDOUT_GT_DIRNAME:
+            parser.error(
+                f"{len(missing)} of {len(records)} invoices have no signed-off answer key in "
+                f"'{args.heldout_gt_dir}/': {', '.join(missing[:5])}"
+                f"{' ...' if len(missing) > 5 else ''}. Finish sign-off in the dashboard "
+                "(`make app` -> Ground Truth Sign-off), or check progress with "
+                "`uv run python scripts/promotion_status.py`."
+            )
+        subset = list(records)
+    else:
+        records = build_records(
+            Path(cfg.corpus_root),
+            transcript_dir=Path(cfg.transcript_dir),
+            reader_model=cfg.reader_model,
+        )
+        subset = [r for r in records if r.stem in stems]
     subset.sort(key=lambda r: r.stem)
     if args.limit > 0:
         subset = subset[: args.limit]
@@ -159,7 +233,22 @@ def main(argv: list[str]) -> int:
         label = "oracle"
     else:
         label = "finetuned" if adapter_dir else "zero-shot"
+    if args.heldout:
+        # Suffix unconditionally, including a user-supplied --label: a held-out number
+        # and a val number are not comparable, and mixing them up would silently
+        # misstate what the thesis claims.
+        label = f"{label}-heldout"
     max_tokens = args.max_tokens or cfg.eval_max_tokens
+    # Groups stay scored on the synthetic corpus, where GT comes from the embedded
+    # factur-x XML and is exact by construction. Only the held-out set opts out, and
+    # only because its group rows were never author-reviewed (ADR-063).
+    score_groups = not args.heldout or args.heldout_score_groups
+    if args.heldout and not score_groups:
+        print(
+            "Repeating groups EXCLUDED from this held-out run: the group rows in the "
+            "signed-off key are judge-derived and unreviewed (ADR-063). The headline is "
+            "the 19 flat fields; mean_overall_micro_f1 equals mean_micro_f1 by construction."
+        )
 
     def _oracle_text(rec) -> str:  # noqa: ANN001 — InvoiceRecord; ready ⇒ gt is set
         assert rec.gt is not None
@@ -171,6 +260,7 @@ def main(argv: list[str]) -> int:
             Path(args.score_only),
             structurer_model=cfg.structurer_model,
             label=label,
+            score_groups=score_groups,
         )
     else:
         report = evaluate_structurer(
@@ -182,6 +272,7 @@ def main(argv: list[str]) -> int:
             label=label,
             save_outputs_dir=Path(args.save_outputs) if args.save_outputs else None,
             reader_text_fn=_oracle_text if args.oracle else None,
+            score_groups=score_groups,
         )
     _print_summary(report)
 
