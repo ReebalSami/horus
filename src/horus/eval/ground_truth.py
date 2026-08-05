@@ -388,6 +388,24 @@ class FieldSpec:
             Nettobeträge")), rendered after the ``description`` as the model's
             label anchor (ADR-049). LABEL NAMES only — never a value. ``None``
             (default) = no alias hint rendered.
+        neutralize_when_unlocatable: when ``True``, a HELD-OUT answer that no
+            adjudication channel could locate in the page text is scored
+            **EXCLUDED** (neutral) instead of counted as a miss (ADR-065).
+            ``False`` (default) = score it normally.
+
+            Only meaningful for the held-out corpus, where each cell carries an
+            ``escalated_as`` warrant from the ADR-062 adjudication; the synthetic
+            ZUGFeRD path has no provenance and is therefore untouched, so
+            published ZUGFeRD figures cannot move.
+
+            Set ONLY where two conditions both hold: (1) no rule in EN16931
+            derives the value from other fields on the invoice, so a model cannot
+            legitimately compute it when the page is silent; and (2) it is
+            measured that the model does not in fact recover it. Both are required
+            — ``due_payable_amount`` is also frequently unlocatable as a distinct
+            printed string, but it is fixed arithmetically (gross − prepaid +
+            rounding) and the model recovers 11/12 such cells, so neutralising it
+            would discard correct answers. See ADR-065 for the evidence table.
     """
 
     english_key: str
@@ -401,6 +419,7 @@ class FieldSpec:
     description: str | None = None
     prompt_aliases: tuple[str, ...] | None = None
     printed_label: str | None = None
+    neutralize_when_unlocatable: bool = False
 
     @property
     def rendered_label(self) -> str:
@@ -907,6 +926,17 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "payment_means_code. Not the payment terms and not the due date."
         ),
         prompt_aliases=("Zahlungsart",),
+        # ADR-065. The ONLY field currently neutralised on the held-out set when no
+        # channel could locate it in the page text. Both required conditions hold:
+        #   (1) EN16931 derives a payment method from no other field — if the page is
+        #       silent, there is nothing to compute, only something to guess;
+        #   (2) measured 0/8 recovery on exactly those cells (contrast
+        #       due_payable_amount at 11/12, which IS arithmetically derived).
+        # It is also the only scoring field whose every present held-out cell is
+        # author-adjudicated: 0 with printed-text proof, 0 with two-channel
+        # agreement. Perfect-transcript score is 1.000, so the extractor is capable
+        # and the loss is page ambiguity, not comprehension.
+        neutralize_when_unlocatable=True,
     ),
     # 27. Payee bank account IBAN (BT-84).
     "seller_iban": FieldSpec(

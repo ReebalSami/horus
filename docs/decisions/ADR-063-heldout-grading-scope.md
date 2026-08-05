@@ -77,6 +77,13 @@ attributable to the answer key alone):
 | `gt/` draft, unverified (**retracted**) | 0.7907 | 0.5692 |
 | `_promoted/` signed-off (this ADR) | **0.8767** | 0.8767 (= flat, groups excluded) |
 
+> **Superseded figure, 2026-08-06.** The 0.8767 above remains the correct record of *this*
+> measurement and of the answer-key change it attributes. It is no longer the current
+> held-out number: **ADR-065** neutralised 8 cells whose value no adjudication channel could
+> locate in the page text, giving mean per-invoice **0.8825** and pooled cell F1 **0.8987**
+> on the same frozen generations. That is a ruler change, not a system change — TP and FP are
+> identical (568 / 28) and only FN moved (108 → 100).
+
 The **+0.086** on identical generations is ground-truth error in the old key, not a change in
 the system.
 
