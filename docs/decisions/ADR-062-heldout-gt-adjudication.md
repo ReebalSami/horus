@@ -110,11 +110,33 @@ throughout, because a blended percentage hides the thing that matters.
 - Both artefacts are written inside the git-ignored corpus tree; stdout carries counts and
   field NAMES only (ADR-040).
 
-**Still outstanding**: the promotion writer that stamps the accepted class into the GT
-document as `schema_version: 2`, and the Streamlit sign-off page that consumes the manifest.
-Provenance belongs **inside** the GT document rather than in a sidecar, so a warrant cannot
-desync from the value it warrants. `build_groundtruth_from_json` ignores unknown keys, so the
-published ZUGFeRD figures cannot move.
+- `src/horus/eval/promotion.py` — the writer. Turns manifest cells plus author answers into a
+  `schema_version: 2` document whose `provenance` block sits **beside** `fields`, so a warrant
+  cannot desync from the value it warrants. `build_groundtruth_from_json` reads only `fields`
+  and the three groups, so the block is invisible to the scorer and published ZUGFeRD figures
+  cannot move.
+- `app/views/heldout_review.py` — the sign-off surface, now driven by the manifest rather than
+  by the whole schema. It shows only escalations, ranked, each with every channel's reading,
+  the printed marker, and the page text; accepted cells are inspectable but read-only.
+
+Three rules the writer enforces, each of which is a way the retraction could recur:
+
+1. **An unreviewed escalation is written as `null`, never as the proposed value.** Keeping the
+   proposal because it is conveniently attached would produce an unchecked answer key that
+   looks reviewed.
+2. **No radio is pre-selected.** Defaulting to the proposed value makes "I have not looked at
+   this" indistinguishable from "I agree".
+3. **`verified` is gated on completeness, not on the checkbox.** Ticking sign-off with cells
+   outstanding saves the progress and refuses the flag, saying so.
+
+**Promotion writes to `_promoted/`, not over `gt/`.** `gt/` is still one of the three channels
+the combiner reads. Overwriting it would let the answer key reappear at the next adjudication
+run as an "independent" reading of itself, manufacturing agreement — and it would erase the
+record of what produced the retracted 0.5692 (ADR-011: supersede, never delete). Repointing
+the held-out evaluation at the promoted tree is a path change; un-fabricating agreement is not.
+
+**Still outstanding**: repointing `finetune_evaluate.py`'s held-out path at `_promoted/` once
+enough documents are signed off, and the author's actual pass over the 248 cells.
 
 **Measured result**
 
@@ -176,6 +198,11 @@ established that a measurement's own instrument must be audited before its outpu
   a review list and nothing more.
 - **Provenance in a sidecar file** — rejected: a warrant that lives apart from its value will
   desync from it.
+- **Promoting over `gt/`** (one answer-key location, no new tree) — rejected: `gt/` is an
+  adjudication channel, so the promoted key would be re-read as an independent confirmation of
+  itself on the next run. Dropping `draft` from the channel list instead would discard
+  information (its agreement with an independent reader still counts) and erase the record of
+  the retraction.
 
 **Consequences**
 

@@ -10,6 +10,12 @@ producing ground truth is inherently an annotation task.
 `verified` is authoritative in the per-invoice GT file (what the page writes); on
 save we also refresh the cached `verified` flag in `index.json` so the loader +
 datasheet stay in sync without a separate re-index run.
+
+Two write paths now live here. `save_draft` is the original whole-schema annotation
+route over `gt/`. `save_promotion` is the ADR-062 sign-off route: it consumes the
+adjudication manifest, records provenance per cell, and writes to `_promoted/` so the
+`gt/` draft stays intact as an adjudication channel instead of being overwritten by a
+key derived partly from itself.
 """
 
 from __future__ import annotations
@@ -26,6 +32,13 @@ from horus.eval.heldout import (
     gt_document,
     load_heldout_index,
 )
+from horus.eval.promotion import (
+    decisions_from_promoted,
+    load_promoted,
+    promotion_document,
+    promotion_status,
+    save_promoted,
+)
 from horus.eval.rasterize import rasterize_pdf
 
 # Repo root: app/data/heldout.py -> parents[2] == repo root.
@@ -34,6 +47,10 @@ CORPUS_ROOT = _REPO_ROOT / "data" / "self-collected"
 
 # Page-image render cache (gitignored — lives under the private data tree).
 _PAGE_CACHE = CORPUS_ROOT / "_pagecache"
+
+# Where `scripts/review_heldout_gt.py` writes the adjudication manifest (ADR-062).
+_REVIEW_DIR = CORPUS_ROOT / "_review"
+_MANIFEST_PATH = _REVIEW_DIR / "manifest.json"
 
 # The evaluation rasterization resolution (matches configs/pilot-13.yaml + live.py).
 EVAL_DPI = 300
@@ -149,6 +166,113 @@ def progress() -> tuple[int, int]:
     """Return `(n_verified, n_total)` across the indexed set."""
     items = list_items()
     return sum(1 for item in items if item.verified), len(items)
+
+
+def load_manifest() -> dict[str, object] | None:
+    """The adjudication manifest, or `None` if the review pass has not been run.
+
+    Absence is a normal state, not an error: a fresh clone has no private corpus, and a
+    corpus that has been read but not adjudicated has no manifest yet.
+    """
+    if not _MANIFEST_PATH.is_file():
+        return None
+    try:
+        data = json.loads(_MANIFEST_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def manifest_documents(manifest: Mapping[str, object]) -> dict[str, dict[str, object]]:
+    """`{invoice_id: document}` from a manifest, for lookup by the selected invoice."""
+    raw = manifest.get("documents")
+    if not isinstance(raw, list):
+        return {}
+    return {str(doc["id"]): doc for doc in raw if isinstance(doc, dict) and "id" in doc}
+
+
+def manifest_cells(document: Mapping[str, object]) -> list[dict[str, object]]:
+    """The adjudicated cells of one manifest document, in registry order."""
+    raw = document.get("cells")
+    if not isinstance(raw, list):
+        return []
+    return [cell for cell in raw if isinstance(cell, dict)]
+
+
+#: Where each adjudication channel writes its per-invoice reading, relative to the corpus
+#: root. Mirrors `CHANNEL_DIRS` in `scripts/review_heldout_gt.py`.
+_CHANNEL_DIRS: dict[str, str] = {"judge": "_judge/gt", "azure": "_azure/gt", "draft": "gt"}
+
+
+def load_channel_document(item: HeldoutItem, channel: str) -> dict[str, object] | None:
+    """One channel's raw reading of an invoice, or `None` if it has not read it.
+
+    The sign-off page needs this for the repeating groups: those are not adjudicated
+    cell-by-cell (rows do not align across channels), so their rows are seeded from the
+    ADR-060 judge — the designated GT authority — rather than from the superseded draft.
+    """
+    subdir = _CHANNEL_DIRS.get(channel)
+    if subdir is None:
+        raise KeyError(f"{channel!r} is not a known adjudication channel")
+    path = CORPUS_ROOT / subdir / f"{item.id}.gt.json"
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def load_promotion(item: HeldoutItem) -> dict[str, object] | None:
+    """The saved sign-off document for one invoice, or `None` if untouched."""
+    return load_promoted(CORPUS_ROOT, item.id)
+
+
+def resume_decisions(item: HeldoutItem) -> dict[str, str | None]:
+    """The author's own answers from a previous sign-off session (empty if none)."""
+    saved = load_promotion(item)
+    return decisions_from_promoted(saved) if saved else {}
+
+
+def sign_off_progress(
+    cells: Sequence[Mapping[str, object]], decisions: Mapping[str, object]
+) -> tuple[int, int]:
+    """`(decided, escalated)` for one document — the sign-off counter."""
+    status = promotion_status(cells, decisions)
+    return status.decided, status.escalated
+
+
+def save_promotion(
+    item: HeldoutItem,
+    *,
+    cells: Sequence[Mapping[str, object]],
+    decisions: Mapping[str, object],
+    verified: bool,
+    notes: str = "",
+    vat_breakdown: Sequence[Mapping[str, object]] | None = None,
+    skonto: Sequence[Mapping[str, object]] | None = None,
+    line_items: Sequence[Mapping[str, object]] | None = None,
+) -> Path:
+    """Write the promoted answer key for one invoice into `_promoted/`.
+
+    Deliberately does NOT touch `gt/` or `index.json`. `gt/` is still one of the channels
+    adjudication reads, so promoting over it would let the answer key reappear as an
+    independent reading of itself (ADR-062).
+    """
+    document = promotion_document(
+        invoice_id=item.id,
+        language=item.language,
+        channel=item.channel,
+        cells=cells,
+        decisions=decisions,
+        vat_breakdown=_clean_rows(vat_breakdown),
+        skonto=_clean_rows(skonto),
+        line_items=_clean_rows(line_items),
+        verified=verified,
+        notes=notes,
+    )
+    return save_promoted(CORPUS_ROOT, document)
 
 
 def _refresh_index_verified(invoice_id: str, verified: bool) -> None:
