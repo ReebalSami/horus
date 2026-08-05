@@ -10,6 +10,18 @@ the invoice id, and prints group means.
 
     uv run python scripts/heldout_breakdown.py data/self-collected/_eval/<report>.json
 
+With `--outputs <dir>` it additionally re-scores each group from the saved generations to
+report the **cell-pooled** F1 alongside the mean-of-per-invoice F1. These answer different
+questions and are easy to conflate:
+
+- **Mean of per-invoice F1** — every invoice counts once, whether it carries 12 filled
+  fields or 25. Answers *"how well does this go on a typical invoice?"* This is the figure
+  the project reports (ADR-027) because the invoice is the unit a practitioner cares about.
+- **Cell-pooled F1** — all TP/FP/FN summed across every invoice, then one F1. Field-dense
+  invoices pull harder. Answers *"what share of all extracted cells is correct?"*
+
+Neither is a maximum over invoices; both are whole-corpus figures.
+
 Privacy (ADR-040): prints ids, group names, counts and scores only. Never a field value.
 """
 
@@ -26,14 +38,36 @@ if str(_REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "src"))
 
 from horus.eval.heldout import load_heldout_index  # noqa: E402
+from horus.finetune.dataset import build_heldout_records  # noqa: E402
+from horus.finetune.evaluate import score_saved_outputs  # noqa: E402
 
 DEFAULT_CORPUS_ROOT = Path("data/self-collected")
+
+
+def _pooled_f1(per_field_outcomes: dict[str, dict[str, int]]) -> tuple[float, int, int, int]:
+    """F1 over every signal-bearing cell in a group: 2TP / (2TP + FP + FN).
+
+    TN and EXCLUDED are omitted on purpose — including them would make the number a
+    function of how often fields are absent rather than of how well they are read, the
+    defect `eval/per-field-reporting-audit.md` records.
+    """
+    tp = sum(counts.get("TP", 0) for counts in per_field_outcomes.values())
+    fp = sum(counts.get("FP", 0) for counts in per_field_outcomes.values())
+    fn = sum(counts.get("FN", 0) for counts in per_field_outcomes.values())
+    denominator = 2 * tp + fp + fn
+    return (2 * tp / denominator if denominator else 0.0), tp, fp, fn
 
 
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("report", help="Path to an eval report JSON.")
     parser.add_argument("--corpus", default=str(DEFAULT_CORPUS_ROOT))
+    parser.add_argument(
+        "--outputs",
+        default=None,
+        help="Saved-generations dir. When given, each group is re-scored (no inference) to "
+        "report the cell-pooled F1 next to the mean-of-per-invoice F1.",
+    )
     parser.add_argument(
         "--metric",
         default="micro_f1",
@@ -82,7 +116,62 @@ def main(argv: list[str]) -> int:
 
     if unknown:
         print(f"  WARN: {len(unknown)} scored invoices are absent from the index: {unknown}")
+
+    if args.outputs:
+        _print_pooled(report, Path(args.corpus), Path(args.outputs))
     return 0
+
+
+def _print_pooled(report: dict[str, object], corpus_root: Path, outputs: Path) -> None:
+    """Re-score per group from saved generations and print the cell-pooled F1.
+
+    Re-scores rather than reading the report because the report carries per-field counts
+    for the whole corpus only; per-group pooling needs per-group counts. No inference is
+    involved, so this is seconds.
+    """
+    structurer = str(report.get("structurer_model", ""))
+    records = [rec for rec in build_heldout_records(corpus_root) if rec.ready]
+    by_group: dict[str, list] = {}
+    for rec in records:
+        by_group.setdefault(rec.subdir, []).append(rec)
+
+    print("  cell-pooled F1 (all TP/FP/FN summed, then one F1):\n")
+    rows: list[tuple[str, int, float, int, int, int]] = []
+    for name, group in sorted(by_group.items()):
+        scored = score_saved_outputs(
+            group,
+            outputs,
+            structurer_model=structurer,
+            label=f"pooled:{name}",
+            progress=False,
+            score_groups=False,
+        )
+        f1, tp, fp, fn = _pooled_f1(scored.per_field_outcomes)
+        rows.append((name, len(group), f1, tp, fp, fn))
+
+    whole = score_saved_outputs(
+        records,
+        outputs,
+        structurer_model=structurer,
+        label="pooled:all",
+        progress=False,
+        score_groups=False,
+    )
+    f1, tp, fp, fn = _pooled_f1(whole.per_field_outcomes)
+    rows.append(("ALL", len(records), f1, tp, fp, fn))
+
+    print()
+    for name, n, group_f1, tp, fp, fn in rows:
+        # Precision vs recall separates the two failure modes. Leaving a field empty and
+        # inventing one are not equally bad for an accounting tool, so the split is
+        # reported rather than collapsed into F1.
+        precision = tp / (tp + fp) if tp + fp else 0.0
+        recall = tp / (tp + fn) if tp + fn else 0.0
+        print(
+            f"    {name:28s} n={n:3d}  pooled_f1={group_f1:.4f}  "
+            f"P={precision:.4f} R={recall:.4f}  TP={tp:4d} FP={fp:3d} FN={fn:3d}"
+        )
+    print()
 
 
 if __name__ == "__main__":

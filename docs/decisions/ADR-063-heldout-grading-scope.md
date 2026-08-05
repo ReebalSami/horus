@@ -67,16 +67,43 @@ attributable to the answer key alone):
 | `_promoted/` signed-off (this ADR) | **0.8767** | 0.8767 (= flat, groups excluded) |
 
 The **+0.086** on identical generations is ground-truth error in the old key, not a change in
-the system. By language and channel:
+the system.
 
-| Group | n | Mean flat `micro_f1` |
-|---|---:|---:|
-| english / email | 11 | 0.9318 |
-| german / email | 18 | 0.8997 |
-| german / iphone-pdf-scan | 10 | 0.7748 |
+### Two aggregations, both whole-corpus
 
-The email-vs-scan gap (0.9118 vs 0.7748) is the degraded-input penalty on real documents,
+`micro_f1` in the table above is the **mean of the 39 per-invoice F1 scores**. It is not a
+maximum, a best-of, or a single invoice. A second aggregation answers a different question,
+and the two are easy to conflate because both get called "micro":
+
+| Aggregation | What it weights | Held-out value |
+|---|---|---:|
+| **Mean of per-invoice F1** (reported figure, ADR-027) | each invoice once, regardless of how many fields it carries | **0.8767** |
+| **Cell-pooled F1** (all TP/FP/FN summed, then one F1) | each *cell* once, so field-dense invoices pull harder | **0.8931** |
+
+The project reports the first because the invoice is the unit a practitioner cares about —
+"how well does this go on a document I hand it". The second is the right figure for "what
+share of extracted cells is correct". Pooled sits *above* the mean here, which says the
+weakest invoices are also the sparsest: their few cells cannot drag a cell-weighted total as
+far as they drag an invoice-weighted average.
+
+### By language and acquisition channel
+
+| Group | n | Mean per-invoice F1 | Cell-pooled F1 | Precision | Recall |
+|---|---:|---:|---:|---:|---:|
+| english / email | 11 | 0.9318 | 0.9379 | 0.9805 | 0.8988 |
+| german / email | 18 | 0.8997 | 0.9051 | 0.9533 | 0.8614 |
+| german / iphone-pdf-scan | 10 | 0.7748 | 0.8239 | 0.9225 | 0.7443 |
+| **all** | 39 | **0.8767** | **0.8931** | 0.9530 | 0.8402 |
+
+The email-vs-scan gap (mean 0.9118 vs 0.7748) is the degraded-input penalty on real documents,
 cleanly isolated — which is the measurement the held-out set exists to produce.
+
+**The error profile is asymmetric and favourable**: 568 TP, **28 FP, 108 FN**. Precision
+0.9530 against recall 0.8402 — roughly four in five errors are a field left empty, not a field
+invented. For an accounting tool this is the safer direction to fail in: a missing value is
+visible to the reviewer, a fabricated one is not. Recall is where the remaining headroom is,
+and it degrades on scans (0.7443) while precision largely holds (0.9225) — i.e. poor input
+makes the system *abstain*, not hallucinate.
 
 **Circularity** (ADR-040 §F): the promoted key is drafted by a cloud vision judge, an Azure
 specialist model, and a Cascade text-layer draft, then adjudicated and author-decided. None of
