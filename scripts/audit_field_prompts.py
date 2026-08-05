@@ -43,8 +43,14 @@ frequent label that is NOT in ``prompt_aliases`` is a concrete, evidence-backed
 addition.
 
 **D. glossary hygiene** — flags fields that are glossed but have no aliases, and
-descriptions that leak a ground-truth value (the no-leakage guardrail), contain a
-stale ADR reference, or exceed a length that crowds the prompt.
+descriptions that contain a stale ADR reference or exceed a length that crowds the
+prompt.
+
+**E. no-leakage guardrail** — no ground-truth value of any invoice may appear in ANY
+string the field contributes to the prompt. Covers ``prompt_aliases`` as well as
+``description``, and runs whether or not the field is glossed: aliases render as
+"printed as: <alias>", so an answer sitting in one reaches the model just as a
+leaked description would.
 
 Run:
 
@@ -62,7 +68,9 @@ import re
 import sys
 import unicodedata
 from collections import Counter
+from collections.abc import Collection, Sequence
 from pathlib import Path
+from typing import NamedTuple
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
@@ -152,6 +160,62 @@ def _leading_label(clean: str, value: str) -> str:
     segments = [s for s in _LABEL_SPLIT_RE.split(head) if s.strip()]
     candidate = segments[-1] if segments else head
     return _WS_RE.sub(" ", candidate).strip(" .-\t|*#") or "(no label)"
+
+
+#: A ground-truth value shorter than this is vocabulary, not an answer — requiring 4+
+#: characters stops the guardrail flagging "EUR" or a one-digit VAT rate.
+MIN_LEAKED_VARIANT_CHARS = 4
+
+
+class Leak(NamedTuple):
+    """One ground-truth value found inside a string the prompt shows the model."""
+
+    surface_kind: str  # "description" | "alias"
+    surface_text: str
+    variant: str  # the GT value, in the printed form that matched
+    invoice: str  # which invoice's answer it is
+
+
+def find_leaked_value(
+    surfaces: Sequence[tuple[str, str]],
+    variants_by_invoice: Sequence[tuple[str, Collection[str]]],
+    *,
+    min_variant_chars: int = MIN_LEAKED_VARIANT_CHARS,
+) -> Leak | None:
+    """First ground-truth value appearing in any prompt-visible ``surfaces`` string.
+
+    ``surfaces`` is ``(kind, text)`` pairs — every string this field contributes to the
+    prompt, i.e. its ``description`` **and** each of its ``prompt_aliases``.
+    ``variants_by_invoice`` is ``(invoice_stem, printed_variants)``; matching the printed
+    variants rather than only the canonical value is what catches a description saying
+    ``01.06.2018`` for a GT stored as ``2018-06-01``.
+
+    Returns the first `Leak` found, or ``None``. Pure, so the guardrail is testable
+    without a corpus — it previously lived inline in `main` and could only be exercised
+    by running the whole audit.
+    """
+    for surface_kind, surface_text in surfaces:
+        folded_surface = _fold(surface_text)
+        for invoice, variants in variants_by_invoice:
+            # Sorted because `value_variants` returns a set: without this, WHICH leak is
+            # reported first would follow hash order, so a gate failure would not
+            # reproduce identically run-to-run.
+            for variant in sorted(variants):
+                # Length is judged on the value as written; a 1-3 char value is the
+                # field's vocabulary ("EUR", "19", "S"), not an answer.
+                if len(variant) < min_variant_chars:
+                    continue
+                # BOTH sides folded. `value_variants` returns values as written, while
+                # `_fold` lowercases and transliterates umlauts (ä -> ae), so comparing
+                # a raw needle against a folded haystack could only ever match values
+                # that were already lowercase ASCII. That silently exempted most German
+                # text values from the guardrail, since German nouns, company names and
+                # VAT ids are all capitalized — dates and amounts matched, "Überweisung
+                # auf unser Konto" did not. Regression-tested in
+                # tests/test_audit_field_prompts.py.
+                if _fold(variant) in folded_surface:
+                    return Leak(surface_kind, surface_text, variant, invoice)
+    return None
 
 
 def main() -> int:
@@ -265,27 +329,45 @@ def main() -> int:
             if len(spec.description) > args.max_description_chars:
                 findings.append(f"  LONG description  {len(spec.description)} chars")
                 too_long.append(f"{key} ({len(spec.description)})")
-            # No-leakage guardrail: no GT value of ANY invoice may appear in the
-            # prompt. Checked against the PRINTED variants too, not just the canonical
-            # form: a description saying "01.06.2018" leaks a GT stored as
-            # "2018-06-01", and an ISO-only comparison would wave it through.
-            folded_desc = _fold(spec.description)
-            leak_found = False
-            for rec in usable:
-                assert rec.gt is not None
-                gt_rec = rec.gt.header[key]
-                if not gt_rec.is_present:
-                    continue
-                for variant in value_variants(gt_rec.raw_value, gt_rec.normalized_value, key):
-                    # Short variants (currency codes, one-digit rates) are vocabulary,
-                    # not answers; requiring 4+ chars avoids flagging "EUR" or "19".
-                    if len(variant) >= 4 and variant in folded_desc:
-                        findings.append(f"  LEAKED GT VALUE   {variant!r} (from {rec.stem})")
-                        leaks.append(f"{key}: {variant!r}")
-                        leak_found = True
-                        break
-                if leak_found:
-                    break
+
+        # --- E. no-leakage guardrail -------------------------------------------
+        # No GT value of ANY invoice may appear in ANY string this field contributes to
+        # the prompt. Checked against the PRINTED variants too, not just the canonical
+        # form: a description saying "01.06.2018" leaks a GT stored as "2018-06-01",
+        # and an ISO-only comparison would wave it through.
+        #
+        # Covers `prompt_aliases` as well as `description`, and runs whether or not the
+        # field is glossed. Previously it was nested under `description is not None` and
+        # folded only the description, which left two holes: an alias could carry an
+        # answer unchecked, and a field with aliases but NO description got no leak
+        # check at all. Aliases render into the prompt as "printed as: <alias>", so a
+        # value there reaches the model exactly as a description would. This is not
+        # hypothetical — `payment_means_text`'s ground truth IS a payment-method
+        # phrase, so a plausible-looking alias for it is indistinguishable from an
+        # answer, and ADR-058 records an earlier description that leaked two corpus
+        # values before the guardrail existed.
+        surfaces: list[tuple[str, str]] = []
+        if spec.description is not None:
+            surfaces.append(("description", spec.description))
+        surfaces.extend(("alias", alias) for alias in aliases)
+
+        variants_by_invoice: list[tuple[str, Collection[str]]] = []
+        for rec in usable:
+            assert rec.gt is not None
+            gt_rec = rec.gt.header[key]
+            if not gt_rec.is_present:
+                continue
+            variants_by_invoice.append(
+                (rec.stem, value_variants(gt_rec.raw_value, gt_rec.normalized_value, key))
+            )
+
+        leak = find_leaked_value(surfaces, variants_by_invoice)
+        if leak is not None:
+            findings.append(
+                f"  LEAKED GT VALUE   {leak.variant!r} in {leak.surface_kind} "
+                f"{leak.surface_text!r} (from {leak.invoice})"
+            )
+            leaks.append(f"{key} [{leak.surface_kind}]: {leak.variant!r}")
 
         # --- C. missing aliases -------------------------------------------------
         observed: Counter[str] = Counter()
