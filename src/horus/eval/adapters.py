@@ -689,7 +689,7 @@ def _extract_belegsummen_totals(preprocessed: str, missing_keys: list[str]) -> d
 
 
 def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:
-    """Convert raw VLM output into the 16-field predicted dict.
+    """Convert raw VLM output into the full-registry predicted dict.
 
     This is the public surface of Layer 2 — the unified German-label
     extractor. Pipeline:
@@ -711,7 +711,7 @@ def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:
       3. Detect absence markers (``[Name fehlt]`` etc.) — these collapse
          the predicted value to ``None`` regardless of which heuristic
          extracted them.
-      4. Return a dict with all 16 ``english_keys`` present; values are
+      4. Return a dict with every ``english_key`` present; values are
          strings (when extracted) or ``None`` (when not extracted /
          absence-marked).
 
@@ -723,7 +723,7 @@ def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:
         model_id: cohort model identifier (drives Layer 1 dispatch).
 
     Returns:
-        ``dict[english_key, str | None]`` with all 16 keys from
+        ``dict[english_key, str | None]`` with every key from
         ``horus.eval.ground_truth.FIELDS``.
 
     Example:
@@ -857,7 +857,7 @@ def to_predicted_dict_multipage(
             dispatch inside the delegated ``to_predicted_dict`` call).
 
     Returns:
-        ``dict[english_key, str | None]`` with all 16 canonical FIELDS keys.
+        ``dict[english_key, str | None]`` with every canonical FIELDS key.
         Same shape as ``to_predicted_dict``.
     """
     joined = "\n\n".join(per_page_texts)

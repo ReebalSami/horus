@@ -2,6 +2,17 @@
 
 **Status**: Proposed
 
+**Correction 2026-08-06 (pre-acceptance, in place):** this record was first written saying the
+held-out headline covers "the 19 flat fields". **That count was stale by two schema
+extensions.** The registry defines **34** flat header fields (`len(horus.eval.ground_truth.FIELDS)
+== 34`), and the signed-off key carries all 34 per document. All 34 are graded; 33 carry a
+defined F1 because `rounding_amount` is absent on all 39 documents and therefore scores `TN`
+39/39 with no F1 defined. The "19" dates from the ADR-041 era, before the full-coverage flat set
+landed — ADR-048 already refers to "the flat 16/19/34 set", which is the audit trail of the two
+extensions. **No measured number changes**: 0.8767 was always computed over whatever `FIELDS`
+contained, never over a hardcoded 19. Only the prose was wrong, and the thesis sentence that
+cites this scope has to name the right count.
+
 **Context**
 
 ADR-062 produced a signed-off held-out answer key: 39 documents, 463 cells promoted on a
@@ -14,7 +25,7 @@ trees: `gt/` (the superseded text-layer draft), `_judge/gt/` (ADR-060), `_azure/
 adjudication*. Grading against `gt/` — which is what the retracted run did — compares the
 system to a key that is itself an unreviewed model draft.
 
-**2. What may the number cover?** `overall_micro_f1` pools the 19 flat fields with every
+**2. What may the number cover?** `overall_micro_f1` pools the 34 flat fields with every
 repeating-group cell. The retracted **0.5692** was that pooled number; the flat-only
 `micro_f1` on the same run was **0.7907**. The gap is almost entirely repeating groups —
 and the group rows in the signed-off key were **never author-reviewed**. The sign-off page
@@ -43,7 +54,7 @@ cosmetic:
   sign-off present as verified. When `gt_dirname` is given, `load_heldout_index` reads
   `verified` out of the GT file itself.
 
-**The held-out headline is the 19 flat fields. Repeating groups are excluded.**
+**The held-out headline is the 34 flat fields. Repeating groups are excluded.**
 The exclusion is structural, not a reporting convention: `score_groups=False` passes
 `predicted_groups=None`, so group cells are never scored *at all*. This is deliberately not
 the same as scoring them against an empty ground truth — that would charge every predicted
@@ -65,6 +76,13 @@ attributable to the answer key alone):
 |---|---:|---:|
 | `gt/` draft, unverified (**retracted**) | 0.7907 | 0.5692 |
 | `_promoted/` signed-off (this ADR) | **0.8767** | 0.8767 (= flat, groups excluded) |
+
+> **Superseded figure, 2026-08-06.** The 0.8767 above remains the correct record of *this*
+> measurement and of the answer-key change it attributes. It is no longer the current
+> held-out number: **ADR-065** neutralised 8 cells whose value no adjudication channel could
+> locate in the page text, giving mean per-invoice **0.8825** and pooled cell F1 **0.8987**
+> on the same frozen generations. That is a ruler change, not a system change — TP and FP are
+> identical (568 / 28) and only FN moved (108 → 100).
 
 The **+0.086** on identical generations is ground-truth error in the old key, not a change in
 the system.
@@ -157,7 +175,11 @@ Superseded or amended if **any** of:
    reportable.
 2. A held-out grading run is wired for a contestant that *did* contribute to the answer key →
    the circularity analysis above must be redone before any number is published.
-3. The field registry changes such that the "19 flat fields" scope no longer describes what is
-   graded.
+3. The field registry changes such that the "34 flat fields" scope no longer describes what is
+   graded. The count is already pinned in code —
+   `tests/test_ground_truth.py::test_fields_registry_consistency` asserts `len(FIELDS) == 34`
+   and documents the 16 + 3 + 15 derivation — so a registry change fails the suite loudly. The
+   drift corrected above was **prose-only**: no test and no measured number ever said 19. When
+   that test's expected count changes, this scope sentence must change with it.
 4. A second annotator is added and inter-annotator agreement becomes reportable → the warrant
    classes in ADR-062 and the scope here both need revisiting.

@@ -746,11 +746,13 @@ field_rates = (
     )
 )
 field_rates["bt_code"] = [FIELDS[f].bt_code for f in field_rates.index]
-# Sanity-check: 16 fields in, 16 fields out (FIELDS registry size).
-assert len(field_rates) == len(FIELDS) == 16, (
-    f"Expected 16 fields; got {len(field_rates)} in field_rates "
-    f"vs {len(FIELDS)} in FIELDS. Missing: "
-    f"{set(FIELDS) - set(field_rates.index)}"
+# Sanity-check: every registry field is represented in field_rates (one row each).
+# Deliberately NOT pinned to a literal count — the flat registry has grown 16 -> 19 -> 34
+# across ADR-012 / ADR-035 / ADR-041, and a hardcoded size turns every schema extension
+# into a spurious failure here (it did: this assert read `== 16` while FIELDS held 34).
+assert len(field_rates) == len(FIELDS), (
+    f"Expected one row per FIELDS entry ({len(FIELDS)}); got {len(field_rates)} "
+    f"in field_rates. Missing: {set(FIELDS) - set(field_rates.index)}"
 )
 field_rates
 

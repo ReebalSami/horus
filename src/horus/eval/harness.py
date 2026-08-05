@@ -17,7 +17,7 @@ Architecture (single-orchestrator design):
   ├── Nested: <model_id=B, invoice_id=I1>
   └── …
   Parent artifacts:
-    - cohort_heatmap.png         (rows = working_models, cols = 19 FIELDS, cells = mean ANLS*)
+    - cohort_heatmap.png         (rows = working_models, cols = FIELDS, cells = mean ANLS*)
     - cohort_summary.json        (per-profile + pooled micro/macro F1 table)
 
 Multi-page strategy (α per ADR-014 §5.2 — the model-agnostic baseline):
@@ -504,7 +504,7 @@ def _render_cohort_heatmap(
     """Render per-(model, field) ANLS-mean heatmap as a matplotlib Figure.
 
     Rows: model_ids in `aggregate.keys()` order (caller passes ordered dict).
-    Cols: the 19 FIELDS in declaration order (`list(FIELDS.keys())`).
+    Cols: the 34 FIELDS in declaration order (`list(FIELDS.keys())`).
     Cells: mean ANLS* score across all invoices for that (model, field). NaN cells
     (model produced 0 valid scores for a field) render as the colormap's "bad" color.
 

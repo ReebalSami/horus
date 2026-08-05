@@ -4,8 +4,8 @@ The question this answers: **is a structurer fine-tune the right lever on the he
 set?** A fine-tune can only recover a field the reader actually transcribed. A field the
 reader never put in the transcript can be "extracted" only by hallucination, so handing
 that loss to a LoRA run credits the fine-tune with a reading fix it cannot perform — the
-generalized form of the ADR-048 / ADR-058 rule that a prompt-fixable gap must never be
-handed to a fine-tune.
+generalized form of the ADR-064 rule that a prompt-fixable gap must never be
+handed to a fine-tune (previously mis-cited here as ADR-048, which does not contain it).
 
 So every missed cell (`FN`) is cross-tabulated against transcript answerability:
 

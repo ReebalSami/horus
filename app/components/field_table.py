@@ -135,7 +135,7 @@ def build_value_dataframe(fields: dict[str, str | None]) -> pd.DataFrame:
     There is no ground truth for an uploaded invoice, so there is no verdict, no
     score, and no colour here — just what the model extracted, in the same field
     order + English/German labels the scored explorer uses (visual consistency).
-    `fields` is the full dict (incl. `purpose_summary`); only the 19 scored keys are
+    `fields` is the full dict (incl. `purpose_summary`); only the 34 scored keys are
     tabulated (the summary is surfaced separately by the page).
     """
     rows: list[dict[str, object]] = []

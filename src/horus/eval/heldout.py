@@ -68,7 +68,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS, GroundTruth, GroundTruthField
+from horus.eval.ground_truth import (
+    FIELDS,
+    REPEATING_GROUPS,
+    FieldSpec,
+    GroundTruth,
+    GroundTruthField,
+)
 from horus.eval.schema import _coerce_repeating, validate_and_repair
 
 __all__ = [
@@ -100,9 +106,14 @@ GT_SCHEMA_VERSION = 1
 # as hand-authored (the scorer ignores `xpath`; this is for audit/debug only).
 _MANUAL_GT_PROVENANCE = "manual-json"
 
+# The ADR-062 escalation reason meaning "no adjudication channel located this value in
+# the page text; it was decided anyway". The only warrant that can neutralise a cell
+# (ADR-065) — see `_is_unlocatable_and_neutralized` for why `class` is the wrong key.
+_UNLOCATABLE_ESCALATION = "null-disputed"
+
 
 def empty_gt_fields() -> dict[str, None]:
-    """Return a fresh `{english_key: None}` dict over exactly the 19 scored `FIELDS`.
+    """Return a fresh `{english_key: None}` dict over exactly the 34 scored `FIELDS`.
 
     The all-absent starting point for a new GT draft (every field honestly null
     until populated). Keyed in `FIELDS` declaration order.
@@ -127,7 +138,7 @@ def gt_document(
     """Assemble a canonical GT JSON document (the on-disk shape, see module docstring).
 
     `fields` is merged onto `empty_gt_fields()` so the result always carries exactly
-    the 19 `FIELDS` keys (unknown keys are dropped; missing keys stay `None`). Used
+    every `FIELDS` key (unknown keys are dropped; missing keys stay `None`). Used
     by the drafting pass and the dashboard review page so both write byte-consistent
     files that `build_groundtruth_from_json` round-trips.
     """
@@ -194,17 +205,46 @@ def _repeating_records_from_rows(
     return records
 
 
+def _is_unlocatable_and_neutralized(spec: FieldSpec, provenance: Mapping[str, Any] | None) -> bool:
+    """Whether this cell is a flagged field whose value no channel found in the text.
+
+    True only when BOTH hold (ADR-065):
+
+    - the field opts in via ``FieldSpec.neutralize_when_unlocatable`` — a registry
+      decision requiring that EN16931 derives the value from no other field AND that
+      the model is measured not to recover it; and
+    - this invoice's ADR-062 warrant for the field is ``escalated_as:
+      "null-disputed"`` — the adjudication's own record that no channel could locate
+      the value in the page text.
+
+    Deliberately keyed on ``escalated_as`` rather than the ``class`` field:
+    ``author-adjudicated`` conflates cells that are merely non-verbatim (a
+    classification, a composite address block, a normalised currency code — all of
+    which the model handles well) with cells genuinely absent from the page. Only
+    ``null-disputed`` isolates the latter. Anything unexpected in the warrant — a
+    missing key, a non-mapping value, an unknown escalation — returns False, so a
+    malformed warrant can never silently neutralise a cell.
+    """
+    if not spec.neutralize_when_unlocatable or provenance is None:
+        return False
+    warrant = provenance.get(spec.english_key)
+    if not isinstance(warrant, Mapping):
+        return False
+    return warrant.get("escalated_as") == _UNLOCATABLE_ESCALATION
+
+
 def build_groundtruth_from_mapping(
     fields: Mapping[str, Any],
     *,
     vat_breakdown: Sequence[Mapping[str, Any]] | None = None,
     skonto: Sequence[Mapping[str, Any]] | None = None,
     line_items: Sequence[Mapping[str, Any]] | None = None,
+    provenance: Mapping[str, Any] | None = None,
 ) -> GroundTruth:
     """Build a `GroundTruth` from a hand-authored field mapping (the JSON GT route).
 
     Produces the same `GroundTruth(header={english_key: GroundTruthField})` shape as
-    `parse_cii_xml`, so `scorer.score` consumes it unchanged. For each of the 19
+    `parse_cii_xml`, so `scorer.score` consumes it unchanged. For each of the
     `FIELDS`:
 
       - **absent** — key missing, value `None`, or empty/whitespace-only string →
@@ -214,6 +254,18 @@ def build_groundtruth_from_mapping(
         money/date/rate coercion; ADR-035). A present-but-unparseable value keeps
         `is_present=True` with `normalized_value=None` (audit-preserving; the author
         catches it at review).
+      - **neutral (EXCLUDED)** — present, but `provenance` records that no adjudication
+        channel could locate the value in the page text (`escalated_as:
+        "null-disputed"`) AND the field is flagged
+        `FieldSpec.neutralize_when_unlocatable` → `is_present=True` with
+        `normalized_value=None`, which the scorer reads as EXCLUDED (ADR-065). Same
+        neutral encoding ADR-045/052 use for the ill-posed flat `tax_rate`.
+
+    `provenance` is the ADR-062 warrant block (`{english_key: {"escalated_as": ...}}`)
+    carried inside `schema_version: 2` held-out documents. **When it is omitted the
+    behaviour is byte-identical to before**, so the synthetic ZUGFeRD route (which has
+    no provenance and never calls this) and the superseded `gt/` draft tree are both
+    untouched — published ZUGFeRD figures cannot move.
 
     Key matching is case-insensitive (first occurrence wins), mirroring
     `InvoiceFields`'s before-validator so the JSON may use any casing.
@@ -235,10 +287,17 @@ def build_groundtruth_from_mapping(
             is_present = raw_value.strip() != ""
             if not is_present:
                 raw_value = None
+        neutralize = is_present and _is_unlocatable_and_neutralized(spec, provenance)
+        if not is_present or neutralize:
+            # Absent -> honest null. Neutralized -> present with no comparable value,
+            # which the scorer reads as EXCLUDED (ADR-065).
+            normalized_value: str | None = None
+        else:
+            normalized_value = normalized[english_key]
         header[english_key] = GroundTruthField(
             bt_code=spec.bt_code,
             raw_value=raw_value,
-            normalized_value=normalized[english_key] if is_present else None,
+            normalized_value=normalized_value,
             xpath=_MANUAL_GT_PROVENANCE,
             is_present=is_present,
         )
@@ -263,11 +322,13 @@ def build_groundtruth_from_json(path: Path) -> GroundTruth:
     fields = data.get("fields", data)
     if not isinstance(fields, Mapping):
         raise ValueError(f"GT file {path} 'fields' must be a JSON object.")
+    provenance = data.get("provenance")
     return build_groundtruth_from_mapping(
         fields,
         vat_breakdown=data.get("vat_breakdown"),
         skonto=data.get("skonto"),
         line_items=data.get("line_items"),
+        provenance=provenance if isinstance(provenance, Mapping) else None,
     )
 
 

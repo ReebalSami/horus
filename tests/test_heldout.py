@@ -56,8 +56,8 @@ EXPECTED_CANONICAL: dict[str, str] = {
 # ---------------------------------------------------------------------------
 
 
-def test_mapping_yields_all_nineteen_keys() -> None:
-    """The header always carries exactly the 19 scored FIELDS keys."""
+def test_mapping_yields_all_canonical_keys() -> None:
+    """The header always carries exactly the 34 scored FIELDS keys."""
     gt = build_groundtruth_from_mapping({})
     assert set(gt.header) == set(FIELDS)
 
@@ -202,7 +202,7 @@ def test_json_rejects_non_object(tmp_path: Path) -> None:
 
 
 def test_gt_document_shape_and_field_filtering() -> None:
-    """gt_document always carries 19 fields + metadata; unknown keys are dropped."""
+    """gt_document always carries every registry field + metadata; unknown keys are dropped."""
     doc = gt_document(
         invoice_id="x",
         language="english",
@@ -318,3 +318,128 @@ def test_empty_prediction_scores_zero_against_present_fields() -> None:
     predicted: dict[str, str | None] = dict.fromkeys(FIELDS)
     result = score(predicted, gt, invoice_id="belege-de-email-001", model_id="test")
     assert result.micro_f1 == pytest.approx(0.0)
+
+
+# ---------------------------------------------------------------------------
+# Unlocatable-cell neutralization (ADR-065) — hermetic, no corpus needed
+# ---------------------------------------------------------------------------
+#
+# A held-out answer that NO adjudication channel could locate in the page text is
+# scored EXCLUDED (neutral) rather than counted as a miss — but ONLY for a field the
+# registry flags, and ONLY on the `null-disputed` warrant. Both halves need guarding:
+# widening either one would silently discard correct answers (`due_payable_amount`
+# is unlocatable on 12 cells yet the model recovers 11, because it is arithmetically
+# derived), and the `class` field is NOT a usable key because `author-adjudicated`
+# lumps genuinely-absent cells together with merely-non-verbatim ones.
+
+_NEUTRALIZED_FIELD = "payment_means_text"
+_UNLOCATABLE = {"escalated_as": "null-disputed", "class": "author-adjudicated"}
+_LOCATED = {"escalated_as": "single-channel-proven", "class": "author-adjudicated"}
+
+
+def _score_one(fields: dict[str, str | None], provenance: dict[str, object] | None) -> str:
+    """Score `fields` against an empty prediction; return the field's outcome."""
+    gt = build_groundtruth_from_mapping(fields, provenance=provenance)
+    predicted: dict[str, str | None] = dict.fromkeys(FIELDS)
+    result = score(predicted, gt, invoice_id="x", model_id="test")
+    return result.per_field[_NEUTRALIZED_FIELD].outcome
+
+
+def test_unlocatable_cell_on_flagged_field_is_excluded() -> None:
+    """Flagged field + `null-disputed` warrant → EXCLUDED, not FN."""
+    outcome = _score_one({_NEUTRALIZED_FIELD: "per PayPal"}, {_NEUTRALIZED_FIELD: _UNLOCATABLE})
+    assert outcome == "EXCLUDED", (
+        "an answer no channel could find in the page text must be neutral, not a miss"
+    )
+
+
+def test_located_cell_on_flagged_field_is_still_scored() -> None:
+    """Flagged field + a warrant showing a channel DID find it → scored normally."""
+    outcome = _score_one({_NEUTRALIZED_FIELD: "per PayPal"}, {_NEUTRALIZED_FIELD: _LOCATED})
+    assert outcome == "FN", "a printed answer stays gradable — neutralization is per-cell"
+
+
+def test_neutralization_does_not_generalize_to_unflagged_fields() -> None:
+    """An unflagged field with the same `null-disputed` warrant is still scored.
+
+    The guard against widening the rule into a blanket "neutralize every unlocatable
+    cell", which would discard the ~9 correct answers the model produces on
+    arithmetically-derived totals.
+    """
+    gt = build_groundtruth_from_mapping(
+        {"due_payable_amount": "1.234,56"},
+        provenance={"due_payable_amount": _UNLOCATABLE},
+    )
+    predicted: dict[str, str | None] = dict.fromkeys(FIELDS)
+    result = score(predicted, gt, invoice_id="x", model_id="test")
+    assert result.per_field["due_payable_amount"].outcome == "FN"
+
+
+def test_no_provenance_leaves_scoring_unchanged() -> None:
+    """Without a provenance block nothing is neutralized (the ZUGFeRD-safety invariant).
+
+    The synthetic corpus carries no provenance, so this is what guarantees published
+    ZUGFeRD figures cannot move (ADR-062's invariant, preserved).
+    """
+    assert _score_one({_NEUTRALIZED_FIELD: "per PayPal"}, None) == "FN"
+
+
+@pytest.mark.parametrize(
+    "warrant",
+    [
+        {},  # no escalated_as key
+        {"escalated_as": None},
+        {"escalated_as": "some-future-escalation"},
+        "not-a-mapping",
+        None,
+    ],
+    ids=["missing-key", "null", "unknown-escalation", "not-a-mapping", "none"],
+)
+def test_malformed_warrant_never_neutralizes(warrant: object) -> None:
+    """Anything unexpected in the warrant fails SAFE — the cell stays scored.
+
+    A malformed or future-shaped warrant must never silently convert a miss into a
+    neutral cell, which would flatter the result for a parsing accident.
+    """
+    outcome = _score_one({_NEUTRALIZED_FIELD: "per PayPal"}, {_NEUTRALIZED_FIELD: warrant})
+    assert outcome == "FN"
+
+
+def test_absent_field_with_unlocatable_warrant_stays_absent() -> None:
+    """A field the key says is ABSENT is unaffected — neutralization needs a value.
+
+    Guards the interaction with the honesty contract: `is_present=False` must stay a
+    true negative, never become EXCLUDED.
+    """
+    gt = build_groundtruth_from_mapping(
+        {_NEUTRALIZED_FIELD: None}, provenance={_NEUTRALIZED_FIELD: _UNLOCATABLE}
+    )
+    assert gt.header[_NEUTRALIZED_FIELD].is_present is False
+    predicted: dict[str, str | None] = dict.fromkeys(FIELDS)
+    result = score(predicted, gt, invoice_id="x", model_id="test")
+    assert result.per_field[_NEUTRALIZED_FIELD].outcome == "TN"
+
+
+def test_neutralization_flows_through_the_json_route(tmp_path: Path) -> None:
+    """`build_groundtruth_from_json` reads `provenance` off the document.
+
+    The on-disk path is what the held-out evaluator actually uses, so the wiring
+    needs its own guard rather than relying on the mapping-level tests.
+    """
+    path = tmp_path / "x.gt.json"
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "id": "x",
+                "fields": {_NEUTRALIZED_FIELD: "per PayPal"},
+                "provenance": {_NEUTRALIZED_FIELD: _UNLOCATABLE},
+            }
+        ),
+        encoding="utf-8",
+    )
+    gt = build_groundtruth_from_json(path)
+    field = gt.header[_NEUTRALIZED_FIELD]
+    assert field.is_present is True
+    assert field.normalized_value is None
+    assert field.raw_value == "per PayPal", "the raw answer stays on the record for audit"

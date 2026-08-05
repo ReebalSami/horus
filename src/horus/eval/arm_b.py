@@ -12,7 +12,7 @@ reading pass (Pass 1):
     structurer (Gemma) read that *text* (no image, via `extract_text` — the
     text-only path proven in `experiments/arm-b-structurer-probe.py`), parses the
     output through the shared `structurer` module (`validate_and_repair`), scores
-    the full 19 fields (default `score()`, per ADR-037), and logs the ADR-027
+    the full `FIELDS` registry (default `score()`, per ADR-037), and logs the ADR-027
     metric surface — including the honesty axis `spurious_emission` — per invoice
     to MLflow.
 
@@ -75,7 +75,7 @@ def run_arm_b(
     Reads `<cohort.transcript_archive_dir>/<reader_slug>__<stem>.txt` for each
     invoice in `cohort.invoice_subset` (written by a prior reader cohort run),
     structures it with the single model in `cohort.working_models` via the
-    text-only path, scores the full 19 fields, and logs per-invoice + parent
+    text-only path, scores the full `FIELDS` registry, and logs per-invoice + parent
     MLflow runs (tags `approach=arm-b`). Streams per-invoice progress to stdout
     (`long-running-foreground`).
 

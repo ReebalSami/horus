@@ -1,4 +1,4 @@
-"""Layer-2 JSON adapter -- parses JSON-formatted VLM output into the 16-field predicted dict.
+"""Layer-2 JSON adapter -- parses JSON-formatted VLM output into the full-registry predicted dict.
 
 Sibling to ``src/horus/eval/adapters.py`` (the canonical regex-based path per
 ADR-013). Produced by ADR-018 to support the structured-output probe (issue #53)
@@ -10,7 +10,7 @@ Public surface IDENTICAL to ``adapters.py`` for harness-side swappability:
     to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]
 
 Both modules' ``to_predicted_dict`` return the same ``dict[str, str | None]``
-shape keyed by the 16 canonical FIELDS keys (per ADR-012). The harness selects
+shape keyed by the canonical FIELDS keys (per ADR-012). The harness selects
 between them via ``cohort.adapter_mode: Literal["regex", "json"]`` (per ADR-018
 schema addition in ``src/horus/config.py``).
 
@@ -130,12 +130,12 @@ def preprocess(raw: str, model_id: str) -> str:  # noqa: ARG001
 
 
 def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:  # noqa: ARG001
-    """Parse JSON-formatted VLM output into the 16-field predicted dict.
+    """Parse JSON-formatted VLM output into the full-registry predicted dict.
 
     Permissive JSON recovery -- see module docstring §"Permissive JSON recovery"
     for the 5-step ladder.
 
-    Always returns a dict with all 16 canonical FIELDS keys present; missing
+    Always returns a dict with every canonical FIELDS key present; missing
     keys (or all-recovery-failed cases) -> None.
 
     Design:
@@ -156,7 +156,7 @@ def to_predicted_dict(raw_text: str, model_id: str) -> dict[str, str | None]:  #
         model_id: cohort model identifier; UNUSED in this module.
 
     Returns:
-        dict keyed by all 16 canonical FIELDS keys, each mapped to ``str | None``.
+        dict keyed by every canonical FIELDS key, each mapped to ``str | None``.
     """
     parsed = _try_parse_json(raw_text)
     canonical_lower_to_canonical = {key.lower(): key for key in FIELDS}
@@ -228,7 +228,7 @@ def to_predicted_dict_multipage(
             uniform; ``# noqa: ARG001`` suppresses the lint warning).
 
     Returns:
-        dict keyed by all 16 canonical FIELDS keys, each mapped to
+        dict keyed by every canonical FIELDS key, each mapped to
         ``str | None``. Same shape as ``to_predicted_dict``.
     """
     merged: dict[str, str | None] = {key: None for key in FIELDS}

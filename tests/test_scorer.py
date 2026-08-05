@@ -490,7 +490,7 @@ def test_aggregate_macro_handles_pure_tn_field() -> None:
 def _make_full_gt(
     overrides: dict[str, GroundTruthField] | None = None,
 ) -> GroundTruth:
-    """Build a 19-key GroundTruth filled with 'absent' fields, with selective overrides."""
+    """Build a full-registry GroundTruth filled with 'absent' fields, with selective overrides."""
     from horus.eval.ground_truth import FIELDS
 
     header: dict[str, GroundTruthField] = {}
@@ -508,8 +508,8 @@ def _make_full_gt(
     return GroundTruth(header=header)
 
 
-def test_score_returns_invoice_field_scores_with_all_16_keys() -> None:
-    """The result has a `per_field` dict with all 19 FIELDS keys."""
+def test_score_returns_invoice_field_scores_with_all_canonical_keys() -> None:
+    """The result has a `per_field` dict with all 34 FIELDS keys."""
     from horus.eval.ground_truth import FIELDS
 
     gt = _make_full_gt()
@@ -520,7 +520,7 @@ def test_score_returns_invoice_field_scores_with_all_16_keys() -> None:
 
 
 def test_score_all_absent_gt_all_none_pred_is_all_tn() -> None:
-    """When GT is empty + pred is empty → all 19 are TN; F1=0 (no signal)."""
+    """When GT is empty + pred is empty → all 34 are TN; F1=0 (no signal)."""
     from horus.eval.ground_truth import FIELDS
 
     gt = _make_full_gt()
@@ -533,7 +533,7 @@ def test_score_all_absent_gt_all_none_pred_is_all_tn() -> None:
 
 
 def test_score_perfect_extraction_yields_micro_f1_1_0() -> None:
-    """When all 19 fields match → micro_f1 = 1.0."""
+    """When every scored field matches → micro_f1 = 1.0."""
     from horus.eval.ground_truth import FIELDS
 
     # Build a GT where every field is present_content with a canonical value

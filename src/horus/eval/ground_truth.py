@@ -1,7 +1,7 @@
-"""HORUS ground-truth XML parser — CII → 16-field English-keyed dict (ADR-012).
+"""HORUS ground-truth XML parser — CII → English-keyed field dict (ADR-012).
 
 Parses a UN/CEFACT Cross Industry Invoice (CII) XML byte string and returns a
-canonical `GroundTruth` dataclass whose `header` field maps 16 English-keyed
+canonical `GroundTruth` dataclass whose `header` field maps the English-keyed
 EN16931 business terms to `GroundTruthField` records carrying raw + normalized
 value + provenance (xpath, presence flag, BT code).
 
@@ -15,7 +15,7 @@ the cosmetic diff doesn't propagate).
 Public surface (re-exported by `horus.eval`):
   - `CII_NAMESPACES`   — XPath namespace resolution table (single source of truth)
   - `FieldSpec`        — frozen dataclass; one row in the `FIELDS` catalog
-  - `FIELDS`           — `dict[english_key, FieldSpec]` of 16 in-scope BT terms
+  - `FIELDS`           — `dict[english_key, FieldSpec]` of the in-scope BT terms
   - `GroundTruthField` — frozen dataclass; one extracted record (raw + normalized
                          + provenance + presence)
   - `GroundTruth`      — frozen dataclass; top-level container with `header` dict
@@ -78,7 +78,7 @@ CII_NAMESPACES: Final[dict[str, str]] = {
 # ZUGFeRD v1 (FeRD 2014, `CrossIndustryDocument`) namespace map. ZUGFeRD 1.0
 # predates the EN16931-aligned v2 (Factur-X / ZUGFeRD 2.x): it uses the older
 # `urn:ferd:...:1p0` root namespace plus the :12 / :15 ram/udt revisions (vs
-# v2's :100). The 16 in-scope EN16931 leaf elements are byte-identical across
+# v2's :100). The in-scope EN16931 leaf elements are byte-identical across
 # both schemas; only the namespace URNs + 7 container element names differ
 # (see `_V2_TO_V1_XPATH_SUBSTITUTIONS` + docs/decisions/ADR-033). Verified by
 # extracting a real v1 COMFORT invoice and diffing against the v2 fixture.
@@ -388,6 +388,24 @@ class FieldSpec:
             Nettobeträge")), rendered after the ``description`` as the model's
             label anchor (ADR-049). LABEL NAMES only — never a value. ``None``
             (default) = no alias hint rendered.
+        neutralize_when_unlocatable: when ``True``, a HELD-OUT answer that no
+            adjudication channel could locate in the page text is scored
+            **EXCLUDED** (neutral) instead of counted as a miss (ADR-065).
+            ``False`` (default) = score it normally.
+
+            Only meaningful for the held-out corpus, where each cell carries an
+            ``escalated_as`` warrant from the ADR-062 adjudication; the synthetic
+            ZUGFeRD path has no provenance and is therefore untouched, so
+            published ZUGFeRD figures cannot move.
+
+            Set ONLY where two conditions both hold: (1) no rule in EN16931
+            derives the value from other fields on the invoice, so a model cannot
+            legitimately compute it when the page is silent; and (2) it is
+            measured that the model does not in fact recover it. Both are required
+            — ``due_payable_amount`` is also frequently unlocatable as a distinct
+            printed string, but it is fixed arithmetically (gross − prepaid +
+            rounding) and the model recovers 11/12 such cells, so neutralising it
+            would discard correct answers. See ADR-065 for the evidence table.
     """
 
     english_key: str
@@ -401,6 +419,7 @@ class FieldSpec:
     description: str | None = None
     prompt_aliases: tuple[str, ...] | None = None
     printed_label: str | None = None
+    neutralize_when_unlocatable: bool = False
 
     @property
     def rendered_label(self) -> str:
@@ -907,6 +926,17 @@ FIELDS: Final[dict[str, FieldSpec]] = {
             "payment_means_code. Not the payment terms and not the due date."
         ),
         prompt_aliases=("Zahlungsart",),
+        # ADR-065. The ONLY field currently neutralised on the held-out set when no
+        # channel could locate it in the page text. Both required conditions hold:
+        #   (1) EN16931 derives a payment method from no other field — if the page is
+        #       silent, there is nothing to compute, only something to guess;
+        #   (2) measured 0/8 recovery on exactly those cells (contrast
+        #       due_payable_amount at 11/12, which IS arithmetically derived).
+        # It is also the only scoring field whose every present held-out cell is
+        # author-adjudicated: 0 with printed-text proof, 0 with two-channel
+        # agreement. Perfect-transcript score is 1.000, so the extractor is capable
+        # and the loss is page ambiguity, not comprehension.
+        neutralize_when_unlocatable=True,
     ),
     # 27. Payee bank account IBAN (BT-84).
     "seller_iban": FieldSpec(
@@ -1077,9 +1107,9 @@ FIELDS: Final[dict[str, FieldSpec]] = {
 # 4b. ZUGFeRD v1 field registry — derived from FIELDS via container substitution
 # ---------------------------------------------------------------------------
 #
-# The 16 in-scope EN16931 business terms exist in ZUGFeRD v1 with byte-IDENTICAL
+# The in-scope EN16931 business terms exist in ZUGFeRD v1 with byte-IDENTICAL
 # leaf element names + structure as v2; only the 7 *container* element names and
-# the rsm/ram/udt namespace URNs differ. Rather than duplicate the 16-row
+# the rsm/ram/udt namespace URNs differ. Rather than duplicate the full
 # registry (drift risk), `FIELDS_V1` is derived from `FIELDS` by rewriting each
 # XPath's container fragments. The namespace-URN difference is handled separately
 # by resolving the (unchanged) rsm/ram/udt prefixes against `CII_NAMESPACES_V1`
@@ -1485,13 +1515,13 @@ class GroundTruth:
     decide".
 
     Equality semantics: two `GroundTruth` instances compare equal iff their
-    `header` dicts compare equal, which compares the 16 `GroundTruthField`
+    `header` dicts compare equal, which compares every `GroundTruthField`
     records field-by-field. Used by `test_three_route_dict_equivalence_einfach`
     and the corpus-wide parametrized equivalence test.
 
     Attributes:
         header: `dict[str, GroundTruthField]` keyed by `FIELDS` english_keys.
-            The result always has all 16 keys present; absence of the field
+            The result always has every `FIELDS` key present; absence of the field
             in the XML is signaled by `is_present=False` on the record, NOT
             by missing dict entries.
         vat_breakdown: per-VAT-rate breakdown rows (BG-23), or `None` if absent.
@@ -1667,7 +1697,7 @@ def _parse_freetext_skonto(descriptions: list[str]) -> list[dict[str, GroundTrut
 
 
 def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
-    """Parse one CII XML byte string into a `GroundTruth` dict of 16 header fields.
+    """Parse one CII XML byte string into a `GroundTruth` dict of header fields.
 
     Auto-detects the CII schema version from the root element — ZUGFeRD /
     Factur-X v2 (`CrossIndustryInvoice`) or ZUGFeRD v1 (`CrossIndustryDocument`,
@@ -1675,11 +1705,11 @@ def parse_cii_xml(xml_bytes: bytes) -> GroundTruth:
     `FIELDS_V1` for v1), executes each `FieldSpec.xpath` against
     the parsed XML tree, applies `FieldSpec.normalize` to the raw element
     text if present, and assembles one `GroundTruthField` record per entry.
-    The output `GroundTruth.header` always has all 16 keys; presence of the
+    The output `GroundTruth.header` always has every registry key; presence of the
     field in the source XML is signaled by `is_present` on each record.
 
     Multi-match behavior: an XPath that matches more than one element
-    (corpus anomaly — none of the 16 in-scope fields should multi-match
+    (corpus anomaly — none of the in-scope fields should multi-match
     in valid EN16931 CII XML) triggers a `WARNING` log entry and takes the
     first match in document order. Multi-valued semantics are deferred to
     future BG-25 (line items) work per ADR-012 §"What this ADR does NOT decide".

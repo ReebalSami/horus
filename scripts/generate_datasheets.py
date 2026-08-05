@@ -68,7 +68,7 @@ DS_ZUGFERD = Datasheet(
             (
                 "What do the instances that comprise the dataset represent?",
                 "151 hybrid PDF/A-3 invoices + 88 standalone CII XML files. Each PDF "
-                "embeds a machine-readable CII XML attachment carrying the 16-field "
+                "embeds a machine-readable CII XML attachment carrying the full-registry "
                 "EN16931 ground-truth schema (BT-1 Invoice number, BT-2 Issue date, "
                 "BT-3 Invoice type code, ...). The corpus spans 4 flavors (Factur-X / "
                 "ZUGFeRD-v2 / ZUGFeRDv1 / XRechnung) and 4 profiles (MINIMUM / BASIC "
@@ -78,7 +78,7 @@ DS_ZUGFERD = Datasheet(
                 "Is there a label or target associated with each instance?",
                 "Yes. Each invoice carries its CII XML ground-truth embedded "
                 "(Factur-X / ZUGFeRD-v2 / XRechnung) or as a sidecar (88 standalone "
-                "XMLs). The 16 EN16931 fields are extracted programmatically by "
+                "XMLs). The EN16931 fields are extracted programmatically by "
                 "`src/horus/eval/ground_truth.py` per the EN16931 BT-NN identifiers.",
             ),
             (

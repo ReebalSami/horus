@@ -19,7 +19,7 @@ from ``configs/arm-{a,b}.yaml`` + ``COHORT_MANIFEST`` — nothing is hard-coded 
 unit-test with a mocked extractor and no model load.
 
 Refs: ADR-039 (this module), ADR-038 (the two arms + ``build_structuring_input``),
-ADR-035 (``InvoiceFields.to_full_dict`` — 19 scored fields + ``purpose_summary``),
+ADR-035 (``InvoiceFields.to_full_dict`` — the scored fields + ``purpose_summary``),
 ADR-014 (``rasterize_pdf`` at the 300-DPI evaluation resolution), ADR-009
 (``COHORT_MANIFEST`` prompts + ``max_tokens``).
 """
@@ -81,7 +81,7 @@ class LiveResult:
     """One live extraction outcome for the demo page (no score — there is no GT)."""
 
     method: str
-    # The full 20-key dict: the 19 scored fields + the non-scored `purpose_summary`
+    # The full 35-key dict: the 34 scored fields + the non-scored `purpose_summary`
     # (``InvoiceFields.to_full_dict`` shape). Values are canonical strings or None.
     fields: dict[str, str | None]
     page_image_paths: list[Path]

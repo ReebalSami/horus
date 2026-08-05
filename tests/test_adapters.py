@@ -407,8 +407,8 @@ def _load_transcript_body_and_model_id(name: str) -> tuple[str, str]:
     return extract_transcript_body(content), m.group(1)
 
 
-def test_to_predicted_dict_returns_all_16_keys_for_every_transcript() -> None:
-    """`to_predicted_dict` always returns all 16 FIELDS keys (None for not-extracted)."""
+def test_to_predicted_dict_returns_all_canonical_keys_for_every_transcript() -> None:
+    """`to_predicted_dict` always returns all 34 FIELDS keys (None for not-extracted)."""
     sample_raw = "Rechnungsnummer: 471102\nWährung: EUR"
     pred = to_predicted_dict(sample_raw, "test/model")
     assert set(pred.keys()) == set(FIELDS.keys())
@@ -528,6 +528,6 @@ def test_to_predicted_dict_extraction_count_baseline_per_model() -> None:
         pred = to_predicted_dict(body, model_id)
         n = sum(1 for v in pred.values() if v is not None)
         assert lo <= n <= hi, (
-            f"{transcript_name} extracted {n}/16 fields; "
+            f"{transcript_name} extracted {n}/{len(pred)} fields; "
             f"expected range [{lo}, {hi}]. If drift is intentional, update bounds."
         )

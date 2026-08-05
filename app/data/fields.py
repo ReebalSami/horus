@@ -1,4 +1,4 @@
-"""Display metadata for the 19 scored invoice fields.
+"""Display metadata for the 34 scored invoice fields.
 
 Human-readable English labels + a stable group ordering for the per-field table.
 The grouping (seller / buyer / totals / document) and the German labels are read
@@ -12,7 +12,7 @@ from __future__ import annotations
 from horus.eval.ground_truth import FIELDS
 from horus.eval.scorer import DOCUMENT_FIELDS, FIELD_GROUPS
 
-# English display labels for the 19 canonical keys. German labels come from
+# English display labels for the 34 canonical keys. German labels come from
 # FIELDS[key].german_label (the audience is German tax professionals, so both
 # are surfaced in the per-field table).
 LABELS: dict[str, str] = {
