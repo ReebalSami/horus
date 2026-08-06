@@ -1,0 +1,408 @@
+{
+  "split": "val",
+  "n_invoices": 29,
+  "mean_overall_micro_f1_recomputed": 0.8257,
+  "mean_overall_micro_f1_report": 0.8257176151171564,
+  "oracle_mean_overall_micro_f1": 0.9718728005558709,
+  "clusters": {
+    "group:line_items": {
+      "tp": 319,
+      "fp": 57,
+      "fn": 97,
+      "fn_readable": 64,
+      "fn_unreadable": 33,
+      "pooled_f1": 0.8056,
+      "mean_invoice_f1": 0.7377,
+      "n_invoices": 29
+    },
+    "group:skonto": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 8,
+      "fn_readable": 8,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.2857,
+      "mean_invoice_f1": 0.1667,
+      "n_invoices": 6
+    },
+    "group:vat_breakdown": {
+      "tp": 117,
+      "fp": 26,
+      "fn": 28,
+      "fn_readable": 27,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.8125,
+      "mean_invoice_f1": 0.7718,
+      "n_invoices": 29
+    },
+    "legacy-16": {
+      "tp": 337,
+      "fp": 16,
+      "fn": 46,
+      "fn_readable": 30,
+      "fn_unreadable": 16,
+      "pooled_f1": 0.9158,
+      "mean_invoice_f1": 0.9054,
+      "n_invoices": 29
+    },
+    "new-flat": {
+      "tp": 154,
+      "fp": 42,
+      "fn": 38,
+      "fn_readable": 26,
+      "fn_unreadable": 12,
+      "pooled_f1": 0.7938,
+      "mean_invoice_f1": 0.7964,
+      "n_invoices": 29
+    }
+  },
+  "per_field": {
+    "allowance_total_amount": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 3,
+      "fn_readable": 3,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.6667,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "billing_period_end": {
+      "tp": 2,
+      "fp": 5,
+      "fn": 1,
+      "fn_readable": 1,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.4,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "billing_period_start": {
+      "tp": 2,
+      "fp": 7,
+      "fn": 1,
+      "fn_readable": 0,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.3333,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "buyer_address": {
+      "tp": 28,
+      "fp": 0,
+      "fn": 1,
+      "fn_readable": 1,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9825,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "buyer_name": {
+      "tp": 28,
+      "fp": 0,
+      "fn": 1,
+      "fn_readable": 1,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9825,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "buyer_order_reference": {
+      "tp": 6,
+      "fp": 6,
+      "fn": 1,
+      "fn_readable": 0,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.6316,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "buyer_reference": {
+      "tp": 13,
+      "fp": 8,
+      "fn": 0,
+      "fn_readable": 0,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.7647,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "buyer_vat_id": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 3,
+      "fn_readable": 0,
+      "fn_unreadable": 3,
+      "pooled_f1": 0.6667,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "charge_total_amount": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "fn_readable": 0,
+      "fn_unreadable": 0,
+      "pooled_f1": 1.0,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "delivery_date": {
+      "tp": 16,
+      "fp": 1,
+      "fn": 4,
+      "fn_readable": 3,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.8649,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "document_type": {
+      "tp": 27,
+      "fp": 0,
+      "fn": 2,
+      "fn_readable": 0,
+      "fn_unreadable": 2,
+      "pooled_f1": 0.9643,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "due_payable_amount": {
+      "tp": 26,
+      "fp": 0,
+      "fn": 3,
+      "fn_readable": 2,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.9455,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "grand_total_amount": {
+      "tp": 27,
+      "fp": 0,
+      "fn": 2,
+      "fn_readable": 1,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.9643,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "invoice_currency_code": {
+      "tp": 26,
+      "fp": 0,
+      "fn": 3,
+      "fn_readable": 0,
+      "fn_unreadable": 3,
+      "pooled_f1": 0.9455,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "invoice_number": {
+      "tp": 27,
+      "fp": 0,
+      "fn": 2,
+      "fn_readable": 2,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9643,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "issue_date": {
+      "tp": 26,
+      "fp": 0,
+      "fn": 3,
+      "fn_readable": 3,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9455,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "line_total_amount": {
+      "tp": 24,
+      "fp": 2,
+      "fn": 3,
+      "fn_readable": 3,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9057,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "payment_due_date": {
+      "tp": 16,
+      "fp": 2,
+      "fn": 2,
+      "fn_readable": 1,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.8889,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "payment_means_code": {
+      "tp": 7,
+      "fp": 1,
+      "fn": 6,
+      "fn_readable": 5,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.6667,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "payment_means_text": {
+      "tp": 1,
+      "fp": 9,
+      "fn": 4,
+      "fn_readable": 1,
+      "fn_unreadable": 3,
+      "pooled_f1": 0.1333,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "payment_reference": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 7,
+      "fn_readable": 6,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.3636,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "prepaid_amount": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 2,
+      "fn_readable": 2,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.75,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "rounding_amount": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "fn_readable": 0,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.0,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "seller_account_name": {
+      "tp": 4,
+      "fp": 4,
+      "fn": 0,
+      "fn_readable": 0,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.6667,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "seller_address": {
+      "tp": 28,
+      "fp": 0,
+      "fn": 1,
+      "fn_readable": 1,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9825,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "seller_bic": {
+      "tp": 4,
+      "fp": 4,
+      "fn": 1,
+      "fn_readable": 0,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.6154,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "seller_gln": {
+      "tp": 13,
+      "fp": 3,
+      "fn": 1,
+      "fn_readable": 1,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.8667,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "seller_iban": {
+      "tp": 7,
+      "fp": 3,
+      "fn": 5,
+      "fn_readable": 4,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.6364,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "seller_name": {
+      "tp": 26,
+      "fp": 0,
+      "fn": 3,
+      "fn_readable": 3,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9455,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "seller_tax_id": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 10,
+      "fn_readable": 7,
+      "fn_unreadable": 3,
+      "pooled_f1": 0.5,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "seller_vat_id": {
+      "tp": 24,
+      "fp": 2,
+      "fn": 3,
+      "fn_readable": 0,
+      "fn_unreadable": 3,
+      "pooled_f1": 0.9057,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "tax_basis_total_amount": {
+      "tp": 27,
+      "fp": 0,
+      "fn": 2,
+      "fn_readable": 2,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9643,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "tax_rate": {
+      "tp": 9,
+      "fp": 1,
+      "fn": 1,
+      "fn_readable": 1,
+      "fn_unreadable": 0,
+      "pooled_f1": 0.9,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    },
+    "tax_total_amount": {
+      "tp": 26,
+      "fp": 0,
+      "fn": 3,
+      "fn_readable": 2,
+      "fn_unreadable": 1,
+      "pooled_f1": 0.9455,
+      "mean_invoice_f1": 0.0,
+      "n_invoices": 0
+    }
+  },
+  "loss_shares": {
+    "total_signal_errors": 360,
+    "fn_reader_unreadable": 62,
+    "fn_structurer_readable": 155,
+    "fp_structurer": 143
+  },
+  "missing_outputs": []
+}

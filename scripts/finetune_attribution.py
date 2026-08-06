@@ -20,7 +20,19 @@ Method — offline, over SAVED structurer generations (no VLM inference):
    *readable-but-missed* = structurer/eval fault; *unreadable* = reader fault.
 4. Print the verdict table + write ``data/finetune/attribution-val.json``.
 
-Refs: ADR-035/037 (legacy field set), ADR-041/042 (schema expansion), ADR-038 (Arm-B).
+The same split is also reported **per flat field**, which is what makes it usable
+alongside `scripts/classify_field_gaps.py`. That script classifies a field by comparing
+the reader arm against the perfect-text (oracle) arm, and a field at ceiling on perfect
+text is called a reading gap. That inference has one blind spot: the oracle page prints
+the registry's own ``printed_label``, while the reader emits whatever wording it read off
+the page. When those differ, "at ceiling on the oracle page" does not by itself prove the
+prompt copes with the READER's wording. The per-field readable-vs-unreadable FN split
+closes it directly: a reader FN whose value IS present in the transcript was available and
+not mapped (a prompt/mapping suspect), while a reader FN whose value is ABSENT could not
+have been extracted by any prompt.
+
+Refs: ADR-035/037 (legacy field set), ADR-041/042 (schema expansion), ADR-038 (Arm-B),
+ADR-064 (the prompt-vs-reader ordering rule this evidence serves).
 """
 
 from __future__ import annotations
@@ -116,8 +128,16 @@ def audit_invoice(
     structurer_model: str,
     cfg: EvalConfig,
     tallies: dict[str, ClusterTally],
+    field_tallies: dict[str, ClusterTally] | None = None,
 ) -> float:
-    """Score one saved generation, classify its outcome mass, return overall F1."""
+    """Score one saved generation, classify its outcome mass, return overall F1.
+
+    ``field_tallies``, when given, receives the SAME outcome mass keyed by flat field
+    name instead of by cluster. It reuses `ClusterTally` for its tp/fp/fn + FN-readability
+    counters; its ``per_invoice_f1`` list stays empty because a single field on a single
+    invoice has no meaningful per-invoice F1 (one outcome would score 0.0 or 1.0 and the
+    mean of those is not interpretable).
+    """
     assert rec.gt is not None and rec.transcript_path is not None
     transcript_canon = _canon(reader_text_from_transcript(rec.transcript_path))
 
@@ -138,6 +158,8 @@ def audit_invoice(
         cluster = _cluster_of_flat(key)
         raw_value = rec.gt.header[key].raw_value
         _tally_outcome(tallies[cluster], fr, raw_value, transcript_canon)
+        if field_tallies is not None:
+            _tally_outcome(field_tallies[key], fr, raw_value, transcript_canon)
         if fr.outcome in ("TP", "FP", "FN"):
             idx = ("TP", "FP", "FN").index(fr.outcome)
             per_invoice_counts[cluster][idx] += 1
@@ -203,6 +225,7 @@ def main(argv: list[str]) -> int:
 
     eval_cfg = EvalConfig()
     tallies: dict[str, ClusterTally] = defaultdict(ClusterTally)
+    field_tallies: dict[str, ClusterTally] = defaultdict(ClusterTally)
     overall_f1s: list[float] = []
     missing: list[str] = []
     for rec in ready:
@@ -217,6 +240,7 @@ def main(argv: list[str]) -> int:
                 structurer_model=cfg.structurer_model,
                 cfg=eval_cfg,
                 tallies=tallies,
+                field_tallies=field_tallies,
             )
         )
     if missing:
@@ -285,6 +309,22 @@ def main(argv: list[str]) -> int:
         )
     print()
 
+    # Per-field FN readability. Ordered by readable-but-missed count, because that is the
+    # column that can contradict a `classify_field_gaps` reading-gap verdict: the value was
+    # in the transcript and the model still did not emit it.
+    print("## Per-field FN readability (reader arm)")
+    print("| field | TP | FP | FN | FN readable (available, not mapped) | FN unreadable |")
+    print("|---|---|---|---|---|---|")
+    for key in sorted(
+        field_tallies,
+        key=lambda k: (-field_tallies[k].fn_readable, -field_tallies[k].fn, k),
+    ):
+        t = field_tallies[key]
+        if t.tp + t.fp + t.fn == 0:
+            continue
+        print(f"| {key} | {t.tp} | {t.fp} | {t.fn} | {t.fn_readable} | {t.fn_unreadable} |")
+    print()
+
     artifact = {
         "split": args.split,
         "n_invoices": len(overall_f1s),
@@ -292,6 +332,7 @@ def main(argv: list[str]) -> int:
         "mean_overall_micro_f1_report": baseline_mean,
         "oracle_mean_overall_micro_f1": oracle_mean,
         "clusters": {k: tallies[k].to_dict() for k in sorted(tallies)},
+        "per_field": {k: field_tallies[k].to_dict() for k in sorted(field_tallies)},
         "loss_shares": {
             "total_signal_errors": total_loss,
             "fn_reader_unreadable": fn_reader,
