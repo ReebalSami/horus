@@ -83,6 +83,32 @@ Until (1) and (2) are done, **no alias may cite this source as its warrant.** Re
 gap explicitly rather than letting a stub imply coverage it does not have — the same failure
 mode as ADR-058's citation of a `docs/sources/standards/` directory that never existed.
 
+## Correction (ADR-066): standards warrants stayed out of scope
+
+ADR-066's prompt-gap classification round decided **corpus-grounded only** — no alias in
+that round cites this source, or any other standard, as its warrant; every classification
+and the (zero) repairs it produced are traceable only to the 146-transcript grounding
+corpus and the two committed eval reports. This section exists so a future session does not
+read the "Outstanding" list above as an invitation to import a standards table mechanically
+without redoing the corpus-occurrence gate.
+
+A second standards source was checked for the same purpose during that round's
+investigation and carries the same risk, undocumented until now: **KoSIT's
+`xrechnung-visualization`** (Apache 2.0,
+[github.com/itplr-kosit/xrechnung-visualization](https://github.com/itplr-kosit/xrechnung-visualization),
+mirror of the canonical GitLab project) ships XSLT stylesheets that render XRechnung CII/UBL
+XML to (X)HTML with German field labels, and does contain real, useful mappings —
+`BT-72 → Lieferdatum`, `BT-107 → Summe Nachlässe` were spot-verified. But its labels are
+**context-scoped**: `Gesamtsumme` renders for **BT-109, BT-112 and BT-116** depending on
+which totals-block position the stylesheet is rendering, not one fixed field. HORUS's
+registry needs one label per `english_key`; importing the stylesheet's label table
+mechanically (e.g. a naive BT → label dict built by grepping the XSLT) would silently
+assign the same ambiguous term to multiple fields — precisely the ambiguity `description`
+and `prompt_aliases` (ADR-049) exist to remove. No stub file exists yet for this source
+under `docs/sources/`; create one (`legal/kosit-xrechnung-visualization.md`, following this
+file's frontmatter shape) before any future round cites it as a warrant, per
+`horus-source-archival`.
+
 ## Related
 
 - `docs/sources/legal/zugferd-en16931.md` — the pre-existing ZUGFeRD/EN 16931 stub (Mustang
@@ -93,6 +119,7 @@ mode as ADR-058's citation of a `docs/sources/standards/` directory that never e
   intended to give a second, standards-based warrant alongside
 - ADR-002 — this archival convention (`legal/` is the taxonomy slot for EN 16931; there is no
   `standards/` type)
+- ADR-066 — the prompt-gap classification round that added the correction above
 
 ## Secondary source consulted
 
