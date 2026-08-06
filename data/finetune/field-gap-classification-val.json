@@ -111,7 +111,7 @@
       "oracle_f1": 1.0,
       "gap": 0.8667,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.867 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.867 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "payment_reference",
@@ -120,7 +120,7 @@
       "oracle_f1": 1.0,
       "gap": 0.6364,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.636 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.636 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "seller_tax_id",
@@ -129,7 +129,7 @@
       "oracle_f1": 1.0,
       "gap": 0.5,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.500 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.500 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "seller_bic",
@@ -138,7 +138,7 @@
       "oracle_f1": 1.0,
       "gap": 0.3846,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.385 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.385 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "buyer_order_reference",
@@ -147,7 +147,7 @@
       "oracle_f1": 1.0,
       "gap": 0.3684,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.368 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.368 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "seller_account_name",
@@ -156,7 +156,7 @@
       "oracle_f1": 1.0,
       "gap": 0.3333,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.333 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.333 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "payment_means_code",
@@ -165,7 +165,7 @@
       "oracle_f1": 1.0,
       "gap": 0.3333,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.333 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.333 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "prepaid_amount",
@@ -174,7 +174,7 @@
       "oracle_f1": 1.0,
       "gap": 0.25,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.250 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.250 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "payment_due_date",
@@ -183,7 +183,7 @@
       "oracle_f1": 1.0,
       "gap": 0.1111,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.111 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.111 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "seller_vat_id",
@@ -192,7 +192,7 @@
       "oracle_f1": 1.0,
       "gap": 0.0943,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.094 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.094 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "due_payable_amount",
@@ -201,7 +201,7 @@
       "oracle_f1": 1.0,
       "gap": 0.0545,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.055 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.055 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "invoice_currency_code",
@@ -210,7 +210,7 @@
       "oracle_f1": 1.0,
       "gap": 0.0545,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.055 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.055 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "issue_date",
@@ -219,7 +219,7 @@
       "oracle_f1": 1.0,
       "gap": 0.0545,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.055 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.055 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "tax_total_amount",
@@ -228,7 +228,7 @@
       "oracle_f1": 1.0,
       "gap": 0.0545,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.055 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.055 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "grand_total_amount",
@@ -237,7 +237,7 @@
       "oracle_f1": 1.0,
       "gap": 0.0357,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.036 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.036 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "invoice_number",
@@ -246,7 +246,7 @@
       "oracle_f1": 1.0,
       "gap": 0.0357,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.036 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.036 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "tax_basis_total_amount",
@@ -255,7 +255,7 @@
       "oracle_f1": 1.0,
       "gap": 0.0357,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 1.000; the 0.036 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.036 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "document_type",
@@ -264,7 +264,7 @@
       "oracle_f1": 0.9824561403508771,
       "gap": 0.0182,
       "verdict": "reading-gap",
-      "note": "prompt proven adequate at 0.982; the 0.018 it gives up is the reader's, so glossary text cannot recover it"
+      "note": "prompt proven adequate at 0.982; glossary text cannot recover the 0.018 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
     },
     {
       "field": "buyer_address",

@@ -15,10 +15,14 @@ The two arms differ in ONE thing: the oracle arm is fed a perfect GT-rendered
 transcript, the reader arm the real reader's text (`finetune_evaluate --oracle`). So:
 
 * **A field at ceiling on perfect text has an adequate prompt.** The model found and
-  mapped the value whenever the value was legible, so whatever it loses on real reader
-  text is the reader's doing. Adding glossary text cannot help, and ADR-048 + ADR-053
-  both measured *added* glossary text as net-negative — so "hands off" is an action,
-  not an absence of one.
+  mapped the value whenever it was rendered under the registry's own label, so the prompt
+  is not what it is losing to on real reader text. Adding glossary text cannot help, and
+  ADR-048 + ADR-053 both measured *added* glossary text as net-negative — so "hands off"
+  is an action, not an absence of one. Note what this does NOT say: it is not a claim that
+  the reader failed to transcribe the value. Most such losses are values that ARE in the
+  transcript and were not mapped (ADR-066 measured 56 of 84 flat FNs as readable) — that
+  residue is the fine-tune's target, not the prompt's. Use
+  `scripts/finetune_attribution.py`'s per-field FN-readability split to tell the two apart.
 * **A field below ceiling on perfect text has a residual cause that is NOT reading.**
   It is a prompt gap, a GT/renderer bug, or a scorer bug. Which one needs the
   per-invoice instrument: `scripts/check_oracle_transcript_labels.py <field>`. This
@@ -234,8 +238,10 @@ def classify_field(
             reader_f1,
             oracle_f1,
             "reading-gap",
-            f"prompt proven adequate at {oracle_f1:.3f}; the {oracle_f1 - reader_f1:.3f} it "
-            "gives up is the reader's, so glossary text cannot recover it",
+            f"prompt proven adequate at {oracle_f1:.3f}; glossary text cannot recover the "
+            f"{oracle_f1 - reader_f1:.3f} it gives up on real text. Whether that residue is "
+            "an unreadable value or a readable-but-unmapped one is a separate question — see "
+            "finetune_attribution.py's per-field FN-readability split",
         )
 
     return Verdict(
