@@ -1,7 +1,8 @@
 # ADR-057: Reader selection — Qwen3-VL family (4B winner, one 8B sibling test)
 
-**Status**: Accepted (8B-vs-4B sub-decision pending the single pre-registered test below)
-**Date**: 2026-08-02
+**Status**: Accepted — **fully resolved 2026-08-07**; the 8B sibling test is adjudicated in
+§"8B sibling test — result" and the 4B stands confirmed. No sub-decision remains open.
+**Date**: 2026-08-02 (8B adjudication appended 2026-08-07)
 **Refs**: ADR-054 (endgame step 1 this concludes), ADR-056 (ruler fix + blank-page guard), #114 (bake-off ticket), #55 (fine-tune epic), `eval/reader-findability-audit.md` (the manual-audit evidence base), ADR-009 (cohort; §3.2 traded the 8B away for local deployability — partially superseded here for the reader role)
 
 ## Context (current-state survey)
@@ -74,6 +75,81 @@ corrected comparison. Chronology of instruments (each documented):
    Phase-A2 apparatus; the manual audit is the gold arbiter. Target state: reader
    findability ≈ ceiling (0.995 here) before structurer work begins.
 
+## 8B sibling test — result (appended 2026-08-07)
+
+**Outcome: the 4B stands confirmed.** The pre-registered rule in §Decision 2 is conjunctive
+(replace **iff** a **and** b **and** c). Clauses (a) and (c) pass; **clause (b) fails**.
+
+No new GPU spend was required. The 8B bake-off had **already been run** in the 2026-08-04
+batch and all 29 transcripts were committed under
+`data/finetune/bakeoff/qwen__qwen3-vl-8b-instruct/` — same A10G session, same manifest
+prompt/decode, so the same-hardware premise clause (c) depends on holds. The run was never
+adjudicated, which is why this ADR sat at "pending" while its evidence was already on disk.
+
+| clause | requirement | measured | verdict |
+|---|---|---|---|
+| (a) | strictly reduces the 16 audited true misses | **13** (corrected findability **0.976** vs 4B 0.970) | **PASS** |
+| (b) | no new failure class under the same audit protocol | **decode-collapse on 1/29**; 4B does this on **0/29** | **FAIL** |
+| (c) | ≤ 2.5× the 4B per-invoice wall-clock | **1.247×** (mean 59.63 s → 74.38 s over 29) | **PASS** |
+
+Clauses (a) and (c) are reproducible with
+`uv run python scripts/findability_corrected.py` (same ruler, same 23 audited exclusions)
+and from the `# Extract: <n>s total` header each transcript carries.
+
+### Why clause (b) fails
+
+On `zugferd_2p0_EXTENDED_Fremdwaehrung` the 8B **collapses into a repetition loop**. Both
+readers report `Pages: 3`, `Errors: 0/3`. The 4B emits a complete `Belegsummen` block:
+
+```
+**Bruttosumme** | 1021,91
+**Erhaltene Anzahlungen** | -500,00
+**Zahlbetrag** | 521,91
+```
+
+The 8B reaches `| Steuerbetrag in | |` and then emits **911 `&nbsp;` entities** in a single
+5,466-character repeated run, never producing the three summation values. It loses **BT-112
+grand total, BT-115 due payable, and BT-113 prepaid** — three of its 13 misses, all on this
+one invoice, all domain-critical money fields. Its wall-clock on this invoice is 179.95 s vs
+the 4B's 78.50 s (2.3×, against a 1.247× corpus mean), consistent with spending the token
+budget on the loop.
+
+A scan for degenerate generation (≥ 50 `&nbsp;`, or any ≥ 10× repeated substring run over 400
+chars) finds **8B: 1/29, 4B: 0/29**.
+
+This is a **new class for the Qwen family**. The 4B's characterised mechanism is "reads every
+margin block; rare character-level slips INSIDE values" — corrupted-but-present values, which
+are detectable downstream by checksums and validation. An unbounded decode collapse that
+truncates the monetary summation is not a character slip; it is the **MinerU-2605 loop-collapse
+class** this project already rejected on evidence (ADR-056, 0.753). Clause (b) exists precisely
+to stop a better headline number from buying a worse mechanism, which is the same reasoning
+that rejected olmOCR at +0.022 F1 in §Options 1.
+
+### Honest limits of this adjudication
+
+- The 23 page-impossible exclusions in `data/finetune/findability-exclusions.json` were
+  derived from the **4B/olmOCR** manual audit. The 8B's 13 misses have **not** had an
+  independent manual judge pass, so some may be (V) ruler-variant or (P) not-findable rather
+  than true reader errors. That would move (a) further in the 8B's favour, not against it —
+  so the conclusion is unaffected, because the rule fails on (b), not (a).
+- Only 3 of the 13 are the collapse. The other 10 are composite-address and multi-line-name
+  normalisation gaps plus the same FR-VAT digit-run the 4B also misses; spot checks confirm
+  the content **is** present in the 8B transcript for those, so they are ruler-shaped, not
+  reader-shaped.
+- One invoice is a small denominator. The rule as written asks whether a new failure *class*
+  appears, not how often — deliberately, because a silent unbounded failure is a
+  qualitative risk in the Steuerberater domain, not a rate to be averaged.
+
+### Consequences
+
+- Reader stays `Qwen/Qwen3-VL-4B-Instruct`. The canonical transcript lineage in
+  `docs/sources/transcripts-multipage/` is **unchanged**, so no regeneration and no
+  re-baseline: the fine-tune gate remains **0.8257** on sealed validation (< 0.90).
+- The model-jumping freeze in §Decision 2 now binds fully: any future reader swap is a new ADR.
+- §Decision 4's target state (reader findability ≈ ceiling before structurer work) is met as
+  far as the pre-registered budget allows — 0.970 against a 0.995 text-layer ceiling, with the
+  one candidate authorised to close that gap having been tested and rejected on mechanism.
+
 ## Source archival
 
 Per `horus-source-archival`: HF model cards verified via the HF API this session
@@ -85,7 +161,9 @@ Per `horus-source-archival`: HF model cards verified via the HF API this session
 
 ## Supersession trigger
 
-- The 8B sub-decision self-resolves by the pre-registered rule in §Decision 2.
+- ~~The 8B sub-decision self-resolves by the pre-registered rule in §Decision 2.~~
+  **Resolved 2026-08-07** — see §"8B sibling test — result": clause (b) failed, 4B confirmed.
+  Re-opening this would require a new ADR under the §Decision 2 model-jumping freeze.
 - If the regenerated-lineage re-baseline does not lift materially over 0.6771
   (< +0.10), ADR-054's supersession trigger governs (revised recovery plan).
 - If a future reader candidate is proposed, it must beat the corrected-findability +

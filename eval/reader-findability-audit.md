@@ -74,6 +74,7 @@ The finalists are **statistically tied on corrected findability** but fail in
 | reader | corrected findability | real misses | failure mechanism |
 |---|---|---|---|
 | Qwen3-VL-4B | **0.970** | 16 | reads every margin block; rare character-level slips INSIDE values (f→b, extra digit) |
+| Qwen3-VL-8B | 0.976 | 13 | fewer misses, but **decode-collapses on 1/29** (`Fremdwaehrung`: 911 `&nbsp;`, 5,466-char repeat run) and loses BT-112/113/115 — see ADR-057 §"8B sibling test — result" |
 | olmOCR-2-7B | 0.965 | 19 | flawless characters, but silently DROPS letterhead/footer/header blocks — exactly where IBAN, BIC, USt-ID, seller identity, Beleg-Nr live |
 | PDF text layer (ceiling) | 0.995 | 3 | stylesheet quirks (2 fixture names not in text layer) |
 | granite (canonical) | 0.830 | 92 | prior baseline, same corrected ruler |
@@ -86,5 +87,24 @@ that invoice alone scores 0.047 → 0.885 with the guard-equivalent transcript).
 The reader decision (with the domain-weighting argument — silent loss of banking
 fields vs rare in-value character slips) is ratified in ADR-057.
 
+## 8B sibling test (2026-08-07)
+
+The pre-registered sibling test in ADR-057 §Decision 2 was adjudicated from the
+already-committed 2026-08-04 bake-off artifacts (no new GPU run). It **fails clause (b)**
+— a decode-collapse failure class the 4B does not exhibit (8B 1/29, 4B 0/29) — so the 4B
+stands confirmed despite winning clauses (a) 13 < 16 and (c) 1.247× ≤ 2.5×.
+
+Reproduce the counts and the per-miss list:
+
+```sh
+uv run python scripts/findability_corrected.py
+uv run python scripts/findability_corrected.py --detail Qwen/Qwen3-VL-8B-Instruct
+```
+
+Note the 8B's 13 misses have **not** had an independent manual judge pass; the 23
+exclusions in `findability-exclusions.json` were derived from the 4B/olmOCR audit. That
+caveat can only move clause (a) further in the 8B's favour, and the rule fails on (b).
+
 Provenance: #114, ADR-056 (ruler fix), ADR-057 (reader selection), session audit
-2026-08-02. All judged against `data/raw/smoke/multipage/` rasters at 300 DPI.
+2026-08-02; 8B adjudication 2026-08-07. All judged against `data/raw/smoke/multipage/`
+rasters at 300 DPI.
