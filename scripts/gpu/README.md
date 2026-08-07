@@ -243,6 +243,69 @@ Observed 2026-08-04 (A10G 23 GB, `Qwen/Qwen3-VL-4B-Instruct` bf16): 39 invoices 
 58 pages, **0 errors**, including a ~9 GB checkpoint fetch; ~16 min total instance
 lifetime ≈ $0.45.
 
+## 5C. Structurer LoRA fine-tune (issue #55, ADR-067 + ADR-068)
+
+Why here and not on the Mac: a 4-example / 4-iteration path-validation smoke ran long
+enough to be cancelled on the M1 Pro 16 GB, against a real budget of ~600 forward passes
+(ADR-068). `mlx-vlm` is Apple-only, so this uses TRL + PEFT instead.
+
+### Step 0 — smoke the path first (~2 min)
+
+Never start a multi-hour run on never-executed code:
+
+```sh
+uv run python scripts/finetune_train_cuda.py --limit-train 4 --epochs 1 --max-length 4096
+```
+
+Expect: dev carve printed, LoRA target count printed, a dev-loss line, and an adapter at
+`data/finetune/adapter/`. **The smoke's adapter is meaningless** — delete it before the
+real run so it cannot be mistaken for a result.
+
+### Step 1 — the matched bf16 baseline (MANDATORY before any adapter number)
+
+The committed `0.8257` is MLX **4-bit** on Apple Silicon. This box runs **bf16**. A
+`finetuned_bf16 − zeroshot_4bit` delta measures the adapter *plus* a quantisation change
+(ADR-068). Re-measure first:
+
+```sh
+uv run python scripts/finetune_evaluate.py --backend cuda --split val --label zero-shot-bf16 --out data/finetune/eval-zeroshot-bf16-val.json
+uv run python scripts/finetune_evaluate.py --backend cuda --split val --oracle --label oracle-bf16 --out data/finetune/eval-oracle-bf16-val.json
+```
+
+### Step 2 — train both arms (ADR-067's 2×2)
+
+```sh
+uv run python scripts/finetune_train_cuda.py --config configs/finetune-structurer.yaml
+uv run python scripts/finetune_train_cuda.py --config configs/finetune-structurer-oracle.yaml
+```
+
+Each prints the per-epoch dev-loss curve and marks the selected epoch. Selection is on the
+**dev slice carved from TRAIN**, never on the sealed 29. Provenance (chosen epoch, full
+curve, dev stem list + hash) is written to
+`<adapter_dir>/horus_training_provenance.json`.
+
+The oracle-arm adapter is an **instrument, not a product** — it is trained on text no real
+document produces and must never be reported as a deliverable.
+
+### Step 3 — the 2×2 evaluation
+
+Sealed val is scored **once per cell**. No re-picking an epoch after seeing these numbers.
+
+```sh
+# reader-trained adapter
+uv run python scripts/finetune_evaluate.py --backend cuda --split val --adapter data/finetune/adapter --label ft-reader-on-reader --out data/finetune/eval-ft-reader-on-reader-val.json
+uv run python scripts/finetune_evaluate.py --backend cuda --split val --adapter data/finetune/adapter --oracle --label ft-reader-on-oracle --out data/finetune/eval-ft-reader-on-oracle-val.json
+
+# oracle-trained adapter (instrument)
+uv run python scripts/finetune_evaluate.py --backend cuda --split val --adapter data/finetune/adapter-oracle --label ft-oracle-on-reader --out data/finetune/eval-ft-oracle-on-reader-val.json
+uv run python scripts/finetune_evaluate.py --backend cuda --split val --adapter data/finetune/adapter-oracle --oracle --label ft-oracle-on-oracle --out data/finetune/eval-ft-oracle-on-oracle-val.json
+```
+
+Reading the grid (ADR-067): `ft-reader-on-reader` is the only deployable number;
+`ft-oracle-on-reader` tests whether schema-learning transfers to noisy text;
+`ft-reader-on-oracle` tests whether noise-training cost clean accuracy;
+`ft-oracle-on-oracle` measures headroom above the 0.9719 clean ceiling.
+
 ## 6. Bring artifacts home + TERMINATE
 
 ```sh
@@ -252,6 +315,13 @@ rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/gpu-transcripts/ ~/Project
 
 # held-out Belege transcripts (§5B) — private, stays in the git-ignored tree
 rsync -az horus-gpu:~/horus/data/self-collected/_transcripts/ ~/Projects/horus/data/self-collected/_transcripts/
+
+# fine-tune (§5C): both adapters + their selection provenance + the 6 eval reports.
+# The provenance JSONs are what make the chosen epoch auditable after the box is gone,
+# so bring them home BEFORE terminating.
+rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/adapter/ ~/Projects/horus/data/finetune/adapter/
+rsync -avz ubuntu@<instance-ip>:~/horus/data/finetune/adapter-oracle/ ~/Projects/horus/data/finetune/adapter-oracle/
+rsync -avz --include='eval-*bf16*.json' --include='eval-ft-*.json' --exclude='*' ubuntu@<instance-ip>:~/horus/data/finetune/ ~/Projects/horus/data/finetune/
 ```
 
 **Verify the artifacts are home BEFORE terminating** — the root volume is destroyed
