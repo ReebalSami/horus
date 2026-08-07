@@ -52,6 +52,20 @@ dependencies = [
     # `anthropic` above: NOT on the inference path, imported lazily, and it reads
     # AZURE_DOCUMENT_INTELLIGENCE_{ENDPOINT,KEY} from the git-ignored .env.
     "azure-ai-documentintelligence>=1.0.2",
+    # CUDA LoRA training stack (ADR-068). `mlx-vlm` above is Apple-Silicon-only and could
+    # not complete even a 4-example smoke on an M1 Pro 16 GB, so the structurer fine-tune
+    # runs on the same rented A10G class already proven for the reader bake-off.
+    #
+    # Deliberately NOT platform-gated, unlike `mlx-vlm`: all four are pure Python, and
+    # keeping them installable on macOS is what lets the hermetic tests in
+    # `tests/test_finetune_cuda.py` actually run in CI. Gating them would make the CUDA
+    # trainer untestable on every machine that runs the test suite. The trainer itself
+    # refuses to start without a visible CUDA device, so no accidental local training.
+    # `torch` (already declared above) supplies the platform-appropriate build.
+    "peft>=0.18.0",
+    "trl>=0.25.0",
+    "accelerate>=1.10.0",
+    "datasets>=4.0.0",
 ]
 
 [dependency-groups]
@@ -126,6 +140,13 @@ ignore_missing_imports = true
 # ADR-011: mlflow 3.12.0 ships no py.typed; same override pattern as factur-x / fpdf / mineru / mlx_vlm.
 [[tool.mypy.overrides]]
 module = ["mlflow", "mlflow.*"]
+ignore_missing_imports = true
+
+# ADR-068: the CUDA LoRA training stack. `peft` and `trl` DO ship py.typed (no override
+# needed — and `trl`'s types are what caught the float-vs-int `lora_alpha` mismatch);
+# `datasets` does not.
+[[tool.mypy.overrides]]
+module = ["datasets", "datasets.*"]
 ignore_missing_imports = true
 
 # ADR-014: pypdfium2 4.30 ships no py.typed marker (`__file__` resolves to

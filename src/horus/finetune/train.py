@@ -31,10 +31,16 @@ import numpy as np
 from horus.config import EvalConfig
 from horus.finetune.config import FinetuneConfig
 from horus.finetune.dataset import build_dataset, build_records
-from horus.finetune.split import load_split
+from horus.finetune.split import carve_dev, load_split
 from horus.vlm_extractor import MLXVLMExtractor, get_extractor
 
-__all__ = ["FinetuneResult", "run_finetune"]
+__all__ = [
+    "FinetuneResult",
+    "build_lr_schedule",
+    "checkpoint_path",
+    "materialize_checkpoint",
+    "run_finetune",
+]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -65,6 +71,71 @@ class FinetuneResult:
     assistant_id: int
     flagged: list[tuple[str, float]]
     excluded: list[tuple[str, float, float]]
+    dev_stems: list[str]
+    checkpoint_iters: list[int]
+
+
+def checkpoint_path(adapter_dir: Path | str, iteration: int) -> Path:
+    """Path mlx_vlm writes an intermediate checkpoint to (``{it:07d}_adapters.safetensors``)."""
+    return Path(adapter_dir) / f"{iteration:07d}_adapters.safetensors"
+
+
+def materialize_checkpoint(adapter_dir: Path | str, iteration: int, dest: Path | str) -> Path:
+    """Lay out one intermediate checkpoint as a directory ``apply_lora_layers`` can load.
+
+    mlx_vlm saves every checkpoint as a SIBLING file (``0000117_adapters.safetensors``, …)
+    next to a single shared ``adapter_config.json``, but ``apply_lora_layers`` only ever
+    reads ``<dir>/adapters.safetensors``. So the per-epoch checkpoints exist yet cannot be
+    evaluated as-is; without this the whole per-epoch selection design is decorative.
+
+    Copies (never moves) the requested checkpoint to ``<dest>/adapters.safetensors`` and the
+    shared config to ``<dest>/adapter_config.json``. Returns ``dest``.
+    """
+    import shutil
+
+    src = checkpoint_path(adapter_dir, iteration)
+    if not src.exists():
+        available = sorted(p.name for p in Path(adapter_dir).glob("*_adapters.safetensors"))
+        raise FileNotFoundError(
+            f"no checkpoint at iteration {iteration} ({src}). Available: {available or 'none'}"
+        )
+    config = Path(adapter_dir) / "adapter_config.json"
+    if not config.exists():
+        raise FileNotFoundError(
+            f"{config} is missing — apply_lora_layers needs it alongside the weights"
+        )
+    dest_dir = Path(dest)
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dest_dir / "adapters.safetensors")
+    shutil.copy2(config, dest_dir / "adapter_config.json")
+    return dest_dir
+
+
+def build_lr_schedule(
+    *,
+    learning_rate: float,
+    iters: int,
+    schedule: str,
+    warmup_ratio: float,
+    min_ratio: float,
+) -> Any:
+    """Return an mlx learning-rate schedule (or the bare float for ``constant``).
+
+    Warmup matters more than usual here: the LoRA B matrix starts at zero, so the first
+    optimizer steps carry the least informative gradients of the whole run, and this run is
+    short enough (~10^2 steps) that a bad first step is a meaningful fraction of it. The
+    cosine tail keeps the final epoch from walking away from a good middle.
+    """
+    import mlx.optimizers as optim
+
+    if schedule == "constant":
+        return learning_rate
+
+    warmup_steps = max(1, int(round(iters * warmup_ratio)))
+    decay_steps = max(1, iters - warmup_steps)
+    warmup = optim.linear_schedule(0.0, learning_rate, warmup_steps)
+    decay = optim.cosine_decay(learning_rate, decay_steps, learning_rate * min_ratio)
+    return optim.join_schedules([warmup, decay], [warmup_steps])
 
 
 def _to_messages_item(example: dict[str, str]) -> dict[str, Any]:
@@ -199,15 +270,33 @@ def run_finetune(
     np.random.seed(cfg.train.seed)
 
     prompt = cfg.structuring_prompt()
-    train_recs, val_recs = build_split_records(cfg)
+    train_recs, _sealed_val_recs = build_split_records(cfg)
+
+    # The in-training validation signal comes from a dev slice carved out of TRAIN, never
+    # from the sealed val. Before this, `val_dataset` was the sealed 29 with
+    # `val_batches=-1`, so every run computed loss over the exact set the headline number
+    # is reported on. That is a look at the answer sheet even when nothing is selected on
+    # it, and it makes per-epoch checkpoint selection impossible to do honestly.
+    # `_sealed_val_recs` is deliberately unused here; the sealed set is touched once, by
+    # `finetune_evaluate.py`, after the epoch has already been chosen.
+    dev_slice = carve_dev(train_recs, dev_fraction=cfg.dev_fraction, seed=cfg.dev_seed)
+    dev_stems = set(dev_slice.dev)
+    fit_recs = [r for r in train_recs if r.stem not in dev_stems]
+    dev_recs = [r for r in train_recs if r.stem in dev_stems]
+    print(
+        f"Dev carve (from TRAIN, seed={cfg.dev_seed}, frac={cfg.dev_fraction}): "
+        f"{len(fit_recs)} fit / {len(dev_recs)} dev; sealed val untouched",
+        flush=True,
+    )
+
     train_examples, flagged, excluded = build_dataset(
-        train_recs,
+        fit_recs,
         structuring_prompt=prompt,
         eval_cfg=eval_cfg,
         min_self_overall=cfg.min_self_overall,
     )
     val_examples, _, _ = build_dataset(
-        val_recs,
+        dev_recs,
         structuring_prompt=prompt,
         eval_cfg=eval_cfg,
         min_self_overall=cfg.min_self_overall,
@@ -287,12 +376,17 @@ def run_finetune(
             assistant_id = turn_end
             print(f"completion-masking ON; boundary=turn-end token id={assistant_id}", flush=True)
 
-    iters = (
-        override_iters
-        if override_iters
-        else (len(train_ds) // cfg.train.batch_size) * cfg.train.epochs
-    )
-    steps_per_save = cfg.train.steps_per_save or (iters + 1)  # > iters ⇒ only the final save fires
+    iters_per_epoch = max(1, len(train_ds) // cfg.train.batch_size)
+    iters = override_iters if override_iters else iters_per_epoch * cfg.train.epochs
+    if cfg.train.steps_per_save:
+        steps_per_save = cfg.train.steps_per_save
+    elif cfg.train.checkpoint_every_epoch:
+        steps_per_save = iters_per_epoch
+    else:
+        steps_per_save = iters + 1  # > iters ⇒ only the final save fires
+    # mlx_vlm writes `<parent>/{it:07d}_adapters.safetensors` alongside the rolling
+    # `adapters.safetensors` at every save, which is what makes per-epoch selection possible.
+    checkpoint_iters = [it for it in range(1, iters + 1) if it % steps_per_save == 0]
     adapter_dir = Path(cfg.adapter_dir)
     adapter_file = adapter_dir / "adapters.safetensors"
 
@@ -300,9 +394,11 @@ def run_finetune(
         batch_size=cfg.train.batch_size,
         iters=iters,
         steps_per_report=cfg.train.steps_per_report,
-        steps_per_eval=max(iters, 1),  # val loss at it==1 and it==iters (endpoints)
+        # Dev loss every epoch (not just at the endpoints) — with ~10^2 optimizer steps the
+        # overfitting turn, if it comes, happens between epochs and is invisible at endpoints.
+        steps_per_eval=max(1, min(iters_per_epoch, iters)),
         steps_per_save=steps_per_save,
-        val_batches=-1,  # use the entire val split for a stable val-loss endpoint
+        val_batches=-1,  # entire dev slice ⇒ a stable, low-variance dev-loss curve
         max_seq_length=max_seq_length,
         adapter_file=str(adapter_file),
         grad_checkpoint=False,  # applied manually above (mlx_vlm's misses gemma-4's nested layers)
@@ -310,7 +406,14 @@ def run_finetune(
         grad_clip=cfg.train.grad_clip,
         gradient_accumulation_steps=cfg.train.gradient_accumulation_steps,
     )
-    optimizer = optim.Adam(learning_rate=cfg.train.learning_rate)
+    lr_schedule = build_lr_schedule(
+        learning_rate=cfg.train.learning_rate,
+        iters=iters,
+        schedule=cfg.train.lr_schedule,
+        warmup_ratio=cfg.train.warmup_ratio,
+        min_ratio=cfg.train.lr_min_ratio,
+    )
+    optimizer = optim.Adam(learning_rate=lr_schedule)
 
     if cfg.train.free_vision_audio:
         freed = _free_unused_towers(model)
@@ -338,11 +441,15 @@ def run_finetune(
                 _LOGGER.warning("could not raise wired limit to %.1f GB: %s", target_gb, exc)
 
     print(
-        f"Training: iters={iters} epochs={cfg.train.epochs} batch={cfg.train.batch_size} "
-        f"grad_accum={cfg.train.gradient_accumulation_steps} lr={cfg.train.learning_rate} "
-        f"rank={cfg.lora.rank} alpha={cfg.lora.alpha} -> {adapter_file}",
+        f"Training: iters={iters} ({iters_per_epoch}/epoch × {cfg.train.epochs}) "
+        f"batch={cfg.train.batch_size} grad_accum={cfg.train.gradient_accumulation_steps} "
+        f"lr={cfg.train.learning_rate} schedule={cfg.train.lr_schedule} "
+        f"warmup={cfg.train.warmup_ratio} rank={cfg.lora.rank} alpha={cfg.lora.alpha} "
+        f"-> {adapter_file}",
         flush=True,
     )
+    if checkpoint_iters:
+        print(f"Per-epoch checkpoints at iters: {checkpoint_iters}", flush=True)
     train(
         model=model,
         optimizer=optimizer,
@@ -368,4 +475,6 @@ def run_finetune(
         assistant_id=assistant_id,
         flagged=flagged,
         excluded=excluded,
+        dev_stems=sorted(dev_slice.dev),
+        checkpoint_iters=checkpoint_iters,
     )
