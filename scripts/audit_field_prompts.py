@@ -39,12 +39,53 @@ FROZEN regex baseline from it (ADR-037).
 
 **C. missing aliases** — for each invoice where the field's GT value is present,
 find the transcript line carrying that value and report its leading label. A
-frequent label that is NOT in ``prompt_aliases`` is a concrete, evidence-backed
-addition.
+frequent label that is NOT in ``prompt_aliases`` is a candidate addition.
 
-**D. glossary hygiene** — flags fields that are glossed but have no aliases, and
-descriptions that contain a stale ADR reference or exceed a length that crowds the
-prompt.
+This channel is ADVISORY, and it is only useful if what it proposes is safe to
+paste. Two filters make that true, both added after the raw channel was found to
+be dominated by noise rather than findings:
+
+- **Answer-shaped candidates are dropped** (``is_answer_shaped``). ``_leading_label``
+  is a heuristic over reader markup; when a value sits in an unlabelled cell it
+  happily returns the neighbouring *value*. The raw channel therefore proposed
+  ``'MUSTERLIEFERANT GMBH'``, ``'IBAN DE88200800000970375700'``,
+  ``'BIC COBADEFFXXX'``, ``'EUR'`` and ``'Handelsrechnung Nr. 471102 vom'`` —
+  ground-truth answers, i.e. exactly what check E exists to keep out of the
+  prompt. A diagnostic must not propose what its own gate would reject.
+- **The ``(no label)`` sentinel is dropped**, having reached ×122 on
+  ``grand_total_amount``. "the value is printed with no label" is a real
+  observation, but it is not a candidate alias, and at that frequency it buried
+  the genuine findings.
+
+Label comparison is folded through ``_label_form`` on BOTH sides. Without that the
+channel reported labels that were *already listed*: observed labels come from
+``_leading_label``, which trims framing punctuation, while the known-set was built
+from raw registry text — so every alias ending in ``.`` (``'Rechnungssumme ohne
+USt.'``, ``'Steuernr.'``, ``'Kunden-Nr.'``) could never match its own printed form.
+
+The channel is also **deterministic**, which it previously was not. ``value_variants``
+returns a *set*, and the variant used to locate the value in a line was "first one
+found" — so string hashing decided where the line was cut and therefore which label
+was reported. Two runs disagreed about the corpus: ``'Liefer- und Leistungsdatum'``
+came out ×38 or ×40, ``'Handels'`` ×40 or ×56. Needles are now sorted longest-first
+(the longer variant is the more specific anchor), the same defect ``find_leaked_value``
+already sorts away.
+
+Labels are extracted from the **folded** line, so they are reported lower-cased and
+umlaut-transliterated. That is deliberate: ``value_variants`` returns canonicalized
+values, so a needle only matched a raw line when the printed value happened to be
+lower-case ASCII. Every text-valued field (``document_type``'s word, a company name)
+failed that test, the old code passed an empty anchor, ``str.find("")`` returned 0, and
+the "label" became whatever trailed the whole line — the source of ``'Handels'``,
+``'Bau'``, ``'Date de'`` and ``'Rückgabe am 0'``. Folding both sides keeps every field
+in scope and removes that class outright; lower-cased German stays perfectly readable.
+
+**D. glossary hygiene** — flags fields that are glossed but carry no aliases,
+descriptions long enough to crowd the prompt, and aliases on a field that has no
+``description`` at all. That last case is silent dead weight: ``render_field_glossary``
+skips unglossed fields entirely (ADR-049), so such aliases are gated by checks A and
+E yet never reach the model. Flagging it stops "add the printed label as an alias"
+from being a no-op on the 12 unglossed fields.
 
 **E. no-leakage guardrail** — no ground-truth value of any invoice may appear in ANY
 string the field contributes to the prompt. Covers ``prompt_aliases`` as well as
@@ -147,6 +188,25 @@ _LABEL_SPLIT_RE = re.compile(r"[:|]")
 # reporting them as "labels seen" buries the real findings in noise.
 _LABELLIKE_RE = re.compile(r"[^\W\d_]{3,}", re.UNICODE)
 
+#: Characters that frame a printed label rather than belonging to it — a trailing
+#: colon/period, list bullets, leftover markup pipes.
+_LABEL_EDGE_CHARS = " .-\t|*#"
+
+#: What `_leading_label` returns when nothing precedes the value on the line. Named
+#: because check C must recognize and drop it: "printed with no label" is an
+#: observation, not a proposable alias.
+NO_LABEL = "(no label)"
+
+
+def _label_form(text: str) -> str:
+    """Normalize to the shape a *printed* label takes: collapsed WS, no framing punctuation.
+
+    Applied to BOTH sides of check C's comparison. Applying it to observed labels only
+    (the original behaviour) meant an alias written with its trailing period could never
+    equal its own stripped printed form, so listed aliases were reported as missing.
+    """
+    return _WS_RE.sub(" ", text).strip(_LABEL_EDGE_CHARS)
+
 
 def _leading_label(clean: str, value: str) -> str:
     """Best-effort extraction of the label introducing ``value``.
@@ -154,12 +214,16 @@ def _leading_label(clean: str, value: str) -> str:
     ``clean`` must already have DocTags replaced by ``|`` separators (the caller does
     this once per line). Takes the last delimited segment left of the value: table
     rows carry several cells per line, and the nearest one is the label.
+
+    Best-effort really means best-effort: on an unlabelled cell this returns whatever
+    text happens to sit left of the value, which is frequently another VALUE. Callers
+    must filter (see ``is_answer_shaped``) before treating a result as a label.
     """
     idx = clean.find(value)
     head = clean[:idx] if idx > 0 else clean
     segments = [s for s in _LABEL_SPLIT_RE.split(head) if s.strip()]
     candidate = segments[-1] if segments else head
-    return _WS_RE.sub(" ", candidate).strip(" .-\t|*#") or "(no label)"
+    return _label_form(candidate) or NO_LABEL
 
 
 #: A ground-truth value shorter than this is vocabulary, not an answer — requiring 4+
@@ -216,6 +280,78 @@ def find_leaked_value(
                 if _fold(variant) in folded_surface:
                     return Leak(surface_kind, surface_text, variant, invoice)
     return None
+
+
+#: A variant shorter than this cannot anchor a label: 1-2 character fragments occur
+#: all over a page, so the cut position they imply is meaningless.
+MIN_ANCHOR_CHARS = 3
+
+
+def order_needles(variants: Collection[str], *, min_chars: int = MIN_ANCHOR_CHARS) -> list[str]:
+    """Deterministic, most-specific-first ordering of a field's printed value variants.
+
+    Check C locates a GT value inside a transcript line and reports the text to its
+    left, so *which* variant matches decides where the line is cut and therefore which
+    label is reported. ``value_variants`` returns a **set**, so "first match wins" over
+    an unordered collection let CPython's string hashing pick the answer: consecutive
+    runs of the audit reported ``'Liefer- und Leistungsdatum'`` ×38 or ×40 and
+    ``'Handels'`` ×40 or ×56 on the same corpus. A diagnostic that contradicts itself
+    between runs cannot be used as a work list.
+
+    Longest-first because a longer variant pins the printed value more tightly (a page
+    printing ``05.03.2018`` should anchor on that, not on a 3-char fragment of it); the
+    lexicographic tie-break makes the order total, so the result depends only on the
+    input. ``find_leaked_value`` sorts for the same reason.
+
+    Duplicates collapse, so the result is an ordered set of *distinct* anchors for any
+    input collection, not just for the ``set`` the caller happens to pass today. A
+    repeated needle would only make the ``next()`` scan re-test a string it has already
+    rejected.
+    """
+    return sorted({v for v in variants if len(v) >= min_chars}, key=lambda v: (-len(v), v))
+
+
+def is_answer_shaped(
+    label: str,
+    variants_by_invoice: Sequence[tuple[str, Collection[str]]],
+    *,
+    min_variant_chars: int = MIN_LEAKED_VARIANT_CHARS,
+) -> bool:
+    """True when a check-C label candidate carries a ground-truth answer.
+
+    The filter that makes the advisory channel safe to act on. ``_leading_label``
+    cannot tell a label from a neighbouring value, so without this the audit proposes
+    the corpus's own answers as aliases — and pasting one in would be the ADR-058 leak,
+    reintroduced by the very tool meant to prevent it.
+
+    Two rules, because a candidate label and a prose description need different
+    thresholds:
+
+    - **Exact equality at any length.** A standalone candidate that *is* the answer is
+      an answer, however short: ``'EUR'`` is `invoice_currency_code`'s ground truth.
+      Check E deliberately ignores sub-``min_variant_chars`` values because inside a
+      sentence they are vocabulary; here the candidate is the whole string, so that
+      reasoning does not carry over.
+    - **Containment at ``min_variant_chars`` or longer.** Catches an answer embedded in
+      a longer candidate (``'IBAN DE88…'``, ``'Handelsrechnung Nr. 471102 vom'``, and
+      the ``document_type`` word inside a PDF footer) while leaving genuine labels that
+      merely share a short substring alone.
+
+    Pure, so it is testable without a corpus.
+    """
+    folded_label = _fold(label)
+    if not folded_label:
+        return False
+    for _invoice, variants in variants_by_invoice:
+        for variant in variants:
+            folded_variant = _fold(variant)
+            if not folded_variant:
+                continue
+            if folded_label == folded_variant:
+                return True
+            if len(variant) >= min_variant_chars and folded_variant in folded_label:
+                return True
+    return False
 
 
 def main() -> int:
@@ -275,6 +411,7 @@ def main() -> int:
     leaks: list[str] = []
     missing: list[str] = []
     glossed_no_alias: list[str] = []
+    alias_not_glossed: list[str] = []
     too_long: list[str] = []
 
     def check_rendered_label(qualified: str, spec: FieldSpec) -> list[str]:
@@ -329,6 +466,17 @@ def main() -> int:
             if len(spec.description) > args.max_description_chars:
                 findings.append(f"  LONG description  {len(spec.description)} chars")
                 too_long.append(f"{key} ({len(spec.description)})")
+        elif aliases:
+            # `render_field_glossary` emits a line only for fields carrying a
+            # `description` (ADR-049), so these aliases are checked by A and E but never
+            # rendered. Advisory, not gating: the aliases are inert, not contaminating.
+            # It is still a defect, because it looks like the field got a printed-label
+            # hint when the model never sees one.
+            findings.append(
+                f"  ALIASES BUT NOT GLOSSED — {len(aliases)} alias(es) set, no description, "
+                "so render_field_glossary skips the field and none of them reach the model"
+            )
+            alias_not_glossed.append(key)
 
         # --- E. no-leakage guardrail -------------------------------------------
         # No GT value of ANY invoice may appear in ANY string this field contributes to
@@ -378,28 +526,35 @@ def main() -> int:
                 continue
             # The printed form is what a page shows, so search the printed variants
             # (German-grouped amounts, dd.mm.yyyy dates) not just the CII raw value.
-            needles = [
-                v
-                for v in value_variants(gt_rec.raw_value, gt_rec.normalized_value, key)
-                if len(v) >= 3
-            ]
+            # `order_needles` makes the choice of anchor deterministic — see its docstring.
+            needles = order_needles(value_variants(gt_rec.raw_value, gt_rec.normalized_value, key))
             # Scan EVERY line, not just the first hit: a money value like "0,23"
             # also occurs in unrelated line-item cells, and first-match would report
             # that neighbouring number as the label. Numeric-only candidates are
             # dropped below, which leaves the real text label standing.
             for line in texts[rec.stem].splitlines():
-                clean = _DOCTAG_RE.sub("|", line)
-                folded_line = _fold(clean)
-                matched = next((n for n in needles if n in folded_line), None)
-                if matched is None:
+                # Match and cut on the SAME (folded) text. `needles` are canonicalized by
+                # `value_variants`, so testing them against the raw line only ever
+                # succeeded for lower-case ASCII values; every text-valued field fell
+                # through to an empty anchor and reported a whole-line slice as its label.
+                folded_line = _fold(_DOCTAG_RE.sub("|", line))
+                anchor = next((n for n in needles if n in folded_line), None)
+                if anchor is None:
                     continue
-                anchor = next((n for n in needles if n in clean), None)
-                label = _leading_label(clean, anchor if anchor else "")
+                label = _leading_label(folded_line, anchor)
                 if _LABELLIKE_RE.search(label):
                     observed[label] += 1
-        known = {_fold(a) for a in (*aliases, spec.german_label, spec.rendered_label)}
+        # `_label_form` on the registry side too: observed labels arrive already
+        # stripped of framing punctuation, so comparing them against raw registry text
+        # reported listed aliases as missing (every alias ending in '.').
+        known = {_fold(_label_form(a)) for a in (*aliases, spec.german_label, spec.rendered_label)}
         novel = [
-            (lbl, n) for lbl, n in observed.most_common() if _fold(lbl) not in known and n >= 2
+            (lbl, n)
+            for lbl, n in observed.most_common()
+            if lbl != NO_LABEL
+            and _fold(lbl) not in known
+            and not is_answer_shaped(lbl, variants_by_invoice)
+            and n >= 2
         ]
         if novel:
             shown = ", ".join(f"{lbl!r}×{n}" for lbl, n in novel[:5])
@@ -439,6 +594,7 @@ def main() -> int:
         "  (oracle stays synthetic for these, by design)"
     )
     print(f"  glossed w/o aliases       : {len(glossed_no_alias)}  {glossed_no_alias}")
+    print(f"  aliases but not glossed   : {len(alias_not_glossed)}  {alias_not_glossed}")
     print(f"  long descriptions         : {len(too_long)}  {too_long}")
     print(f"  labels not listed         : {len(missing)}")
 

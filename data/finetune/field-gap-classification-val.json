@@ -1,0 +1,315 @@
+{
+  "reader_report": "data/finetune/eval-zeroshot-qwen-adr059-val.json",
+  "oracle_report": "data/finetune/eval-oracle-adr059-val.json",
+  "oracle_outputs": "data/finetune/oracle-adr059-fixed-outputs",
+  "adequate_f1": 0.98,
+  "min_oracle_errors": 2,
+  "fields": [
+    {
+      "field": "line_total_amount",
+      "bt_code": "BT-106",
+      "reader_f1": 0.9056603773584906,
+      "oracle_f1": 0.8627450980392156,
+      "gap": -0.0429,
+      "verdict": "label-mapping",
+      "note": "perfect text scores BELOW reader text (0.863 < 0.906) — the model maps the oracle page's label worse than the reader's own wording"
+    },
+    {
+      "field": "seller_iban",
+      "bt_code": "BT-84",
+      "reader_f1": 0.6363636363636365,
+      "oracle_f1": 0.8,
+      "gap": 0.1636,
+      "verdict": "prompt-candidate",
+      "note": "4 FN + 0 FP with the value in plain text — cause is prompt, GT/renderer, or scorer; escalate per-invoice"
+    },
+    {
+      "field": "seller_name",
+      "bt_code": "BT-27",
+      "reader_f1": 0.9454545454545454,
+      "oracle_f1": 0.9454545454545454,
+      "gap": 0.0,
+      "verdict": "prompt-candidate",
+      "note": "3 FN + 0 FP with the value in plain text — cause is prompt, GT/renderer, or scorer; escalate per-invoice"
+    },
+    {
+      "field": "billing_period_start",
+      "bt_code": "BT-73",
+      "reader_f1": 0.3333333333333333,
+      "oracle_f1": 0.8,
+      "gap": 0.4667,
+      "verdict": "marginal",
+      "note": "a single error on perfect text (1 FN + 0 FP over 3 gradable cells) — too thin to justify perturbing a prompt whose additions measured net-negative"
+    },
+    {
+      "field": "billing_period_end",
+      "bt_code": "BT-74",
+      "reader_f1": 0.4,
+      "oracle_f1": 0.8571428571428571,
+      "gap": 0.4571,
+      "verdict": "marginal",
+      "note": "a single error on perfect text (0 FN + 1 FP over 4 gradable cells) — too thin to justify perturbing a prompt whose additions measured net-negative"
+    },
+    {
+      "field": "buyer_vat_id",
+      "bt_code": "BT-48",
+      "reader_f1": 0.6666666666666666,
+      "oracle_f1": 0.923076923076923,
+      "gap": 0.2564,
+      "verdict": "marginal",
+      "note": "a single error on perfect text (0 FN + 1 FP over 7 gradable cells) — too thin to justify perturbing a prompt whose additions measured net-negative"
+    },
+    {
+      "field": "allowance_total_amount",
+      "bt_code": "BT-107",
+      "reader_f1": 0.6666666666666666,
+      "oracle_f1": 0.9090909090909091,
+      "gap": 0.2424,
+      "verdict": "marginal",
+      "note": "a single error on perfect text (1 FN + 0 FP over 6 gradable cells) — too thin to justify perturbing a prompt whose additions measured net-negative"
+    },
+    {
+      "field": "buyer_reference",
+      "bt_code": "BT-46",
+      "reader_f1": 0.7647058823529412,
+      "oracle_f1": 0.962962962962963,
+      "gap": 0.1983,
+      "verdict": "marginal",
+      "note": "a single error on perfect text (0 FN + 1 FP over 14 gradable cells) — too thin to justify perturbing a prompt whose additions measured net-negative"
+    },
+    {
+      "field": "delivery_date",
+      "bt_code": "BT-72",
+      "reader_f1": 0.8648648648648648,
+      "oracle_f1": 0.9743589743589743,
+      "gap": 0.1095,
+      "verdict": "marginal",
+      "note": "a single error on perfect text (1 FN + 0 FP over 20 gradable cells) — too thin to justify perturbing a prompt whose additions measured net-negative"
+    },
+    {
+      "field": "seller_gln",
+      "bt_code": "BT-29 (scheme 0088)",
+      "reader_f1": 0.8666666666666666,
+      "oracle_f1": 0.9655172413793104,
+      "gap": 0.0989,
+      "verdict": "marginal",
+      "note": "a single error on perfect text (0 FN + 1 FP over 15 gradable cells) — too thin to justify perturbing a prompt whose additions measured net-negative"
+    },
+    {
+      "field": "tax_rate",
+      "bt_code": "BT-119",
+      "reader_f1": 0.9,
+      "oracle_f1": 0.9523809523809523,
+      "gap": 0.0524,
+      "verdict": "marginal",
+      "note": "a single error on perfect text (0 FN + 1 FP over 11 gradable cells) — too thin to justify perturbing a prompt whose additions measured net-negative"
+    },
+    {
+      "field": "payment_means_text",
+      "bt_code": "BT-82",
+      "reader_f1": 0.13333333333333333,
+      "oracle_f1": 1.0,
+      "gap": 0.8667,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.867 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "payment_reference",
+      "bt_code": "BT-83",
+      "reader_f1": 0.3636363636363636,
+      "oracle_f1": 1.0,
+      "gap": 0.6364,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.636 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "seller_tax_id",
+      "bt_code": "BT-32",
+      "reader_f1": 0.5,
+      "oracle_f1": 1.0,
+      "gap": 0.5,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.500 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "seller_bic",
+      "bt_code": "BT-86",
+      "reader_f1": 0.6153846153846154,
+      "oracle_f1": 1.0,
+      "gap": 0.3846,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.385 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "buyer_order_reference",
+      "bt_code": "BT-13",
+      "reader_f1": 0.631578947368421,
+      "oracle_f1": 1.0,
+      "gap": 0.3684,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.368 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "seller_account_name",
+      "bt_code": "BT-85",
+      "reader_f1": 0.6666666666666666,
+      "oracle_f1": 1.0,
+      "gap": 0.3333,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.333 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "payment_means_code",
+      "bt_code": "BT-81",
+      "reader_f1": 0.6666666666666667,
+      "oracle_f1": 1.0,
+      "gap": 0.3333,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.333 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "prepaid_amount",
+      "bt_code": "BT-113",
+      "reader_f1": 0.7499999999999999,
+      "oracle_f1": 1.0,
+      "gap": 0.25,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.250 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "payment_due_date",
+      "bt_code": "BT-9",
+      "reader_f1": 0.8888888888888888,
+      "oracle_f1": 1.0,
+      "gap": 0.1111,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.111 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "seller_vat_id",
+      "bt_code": "BT-31",
+      "reader_f1": 0.9056603773584906,
+      "oracle_f1": 1.0,
+      "gap": 0.0943,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.094 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "due_payable_amount",
+      "bt_code": "BT-115",
+      "reader_f1": 0.9454545454545454,
+      "oracle_f1": 1.0,
+      "gap": 0.0545,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.055 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "invoice_currency_code",
+      "bt_code": "BT-5",
+      "reader_f1": 0.9454545454545454,
+      "oracle_f1": 1.0,
+      "gap": 0.0545,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.055 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "issue_date",
+      "bt_code": "BT-2",
+      "reader_f1": 0.9454545454545454,
+      "oracle_f1": 1.0,
+      "gap": 0.0545,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.055 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "tax_total_amount",
+      "bt_code": "BT-110",
+      "reader_f1": 0.9454545454545454,
+      "oracle_f1": 1.0,
+      "gap": 0.0545,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.055 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "grand_total_amount",
+      "bt_code": "BT-112",
+      "reader_f1": 0.9642857142857143,
+      "oracle_f1": 1.0,
+      "gap": 0.0357,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.036 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "invoice_number",
+      "bt_code": "BT-1",
+      "reader_f1": 0.9642857142857143,
+      "oracle_f1": 1.0,
+      "gap": 0.0357,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.036 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "tax_basis_total_amount",
+      "bt_code": "BT-109",
+      "reader_f1": 0.9642857142857143,
+      "oracle_f1": 1.0,
+      "gap": 0.0357,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 1.000; glossary text cannot recover the 0.036 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "document_type",
+      "bt_code": "BT-3",
+      "reader_f1": 0.9642857142857143,
+      "oracle_f1": 0.9824561403508771,
+      "gap": 0.0182,
+      "verdict": "reading-gap",
+      "note": "prompt proven adequate at 0.982; glossary text cannot recover the 0.018 it gives up on real text. Whether that residue is an unreadable value or a readable-but-unmapped one is a separate question — see finetune_attribution.py's per-field FN-readability split"
+    },
+    {
+      "field": "buyer_address",
+      "bt_code": "BG-8",
+      "reader_f1": 0.9824561403508771,
+      "oracle_f1": 0.9824561403508771,
+      "gap": 0.0,
+      "verdict": "closed",
+      "note": "at ceiling on both arms (0.982); nothing to repair"
+    },
+    {
+      "field": "buyer_name",
+      "bt_code": "BT-44",
+      "reader_f1": 0.9824561403508771,
+      "oracle_f1": 0.9824561403508771,
+      "gap": 0.0,
+      "verdict": "closed",
+      "note": "at ceiling on both arms (0.982); nothing to repair"
+    },
+    {
+      "field": "charge_total_amount",
+      "bt_code": "BT-108",
+      "reader_f1": 1.0,
+      "oracle_f1": 1.0,
+      "gap": 0.0,
+      "verdict": "closed",
+      "note": "at ceiling on both arms (1.000); nothing to repair"
+    },
+    {
+      "field": "seller_address",
+      "bt_code": "BG-5",
+      "reader_f1": 0.9824561403508771,
+      "oracle_f1": 0.9824561403508771,
+      "gap": 0.0,
+      "verdict": "closed",
+      "note": "at ceiling on both arms (0.982); nothing to repair"
+    },
+    {
+      "field": "rounding_amount",
+      "bt_code": "BT-114",
+      "reader_f1": null,
+      "oracle_f1": null,
+      "gap": 0.0,
+      "verdict": "untested",
+      "note": "no gradable cells on either arm (TN=29); an F1 of 0.000 here is undefined, not a failure"
+    }
+  ]
+}
