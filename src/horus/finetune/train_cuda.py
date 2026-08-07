@@ -251,7 +251,8 @@ def run_finetune_cuda(
     )
     print(f"gating: flagged={len(flagged)} excluded={len(excluded)}", flush=True)
 
-    train_ds = Dataset.from_list(build_prompt_completion_records(train_examples))
+    train_pc = build_prompt_completion_records(train_examples)
+    train_ds = Dataset.from_list(train_pc)
     dev_ds = Dataset.from_list(build_prompt_completion_records(dev_examples))
 
     resolved_model_id = model_id or cfg.structurer_model
@@ -263,6 +264,33 @@ def run_finetune_cuda(
         device_map="auto",
     )
     model.config.use_cache = False  # incompatible with gradient checkpointing
+
+    # Apply Liger explicitly. Passing `use_liger_kernel=True` to SFTConfig alone silently
+    # no-opped here (zero log output, memory profile unchanged, still OOM) because the model
+    # is instantiated before the trainer sees it. Patching by hand and asserting the result
+    # means the config knob cannot quietly mean nothing.
+    if cfg.train.use_liger_kernel:
+        from liger_kernel.transformers import _apply_liger_kernel_to_instance
+
+        before = type(model).__name__
+        _apply_liger_kernel_to_instance(model=model)
+        model_type = getattr(model.config, "model_type", "<unknown>")
+        patched = any(
+            "liger" in type(module).__module__.lower() for _, module in model.named_modules()
+        )
+        print(
+            f"Liger: requested=True model_type={model_type} wrapper={before} "
+            f"patched_modules={'YES' if patched else 'NO'}",
+            flush=True,
+        )
+        if not patched:
+            raise RuntimeError(
+                f"use_liger_kernel=True but no Liger module was installed for model_type "
+                f"{model_type!r}. Refusing to continue: the run would silently use the "
+                f"unfused loss and OOM at long sequence length. Either set "
+                f"use_liger_kernel: false and use a larger GPU (ADR-068's documented "
+                f"fallback), or add support for this architecture."
+            )
 
     target_modules = language_model_linear_names(model)
     print(f"LoRA targets: {len(target_modules)} language-model linears", flush=True)
@@ -285,7 +313,44 @@ def run_finetune_cuda(
         task_type="CAUSAL_LM",
     )
 
-    max_length = override_max_length or cfg.train.max_seq_length_cap
+    # Honour the config's documented `max_seq_length: 0 = auto` semantics, mirroring
+    # `train._auto_max_seq_length`. Previously this always used the CAP, which both wasted
+    # compute and hid how close the real data sits to the ceiling.
+    if override_max_length:
+        max_length = override_max_length
+    elif cfg.train.max_seq_length > 0:
+        max_length = cfg.train.max_seq_length
+    else:
+        tokenizer = processor.tokenizer if hasattr(processor, "tokenizer") else processor
+        token_lengths = [
+            len(
+                tokenizer(
+                    tokenizer.apply_chat_template(
+                        rec["prompt"] + rec["completion"],
+                        tokenize=False,
+                        add_generation_prompt=False,
+                    )
+                )["input_ids"]
+            )
+            for rec in train_pc
+        ]
+        longest = max(token_lengths)
+        rounded = ((longest + 255) // 256) * 256
+        max_length = min(rounded, cfg.train.max_seq_length_cap)
+        n_truncated = sum(1 for length in token_lengths if length > max_length)
+        print(
+            f"auto max_length={max_length} (longest example {longest} tokens, "
+            f"cap {cfg.train.max_seq_length_cap})",
+            flush=True,
+        )
+        if n_truncated:
+            # Loud, because truncation silently removes the tail of a reader transcript —
+            # the model would be trained to produce a full answer from partial input.
+            print(
+                f"WARNING: {n_truncated}/{len(token_lengths)} examples exceed max_length "
+                f"and WILL BE TRUNCATED — their targets no longer match their inputs.",
+                flush=True,
+            )
     epochs = override_epochs if override_epochs is not None else float(cfg.train.epochs)
     adapter_dir = Path(cfg.adapter_dir)
 
@@ -299,6 +364,8 @@ def run_finetune_cuda(
         warmup_ratio=cfg.train.warmup_ratio,
         max_grad_norm=cfg.train.grad_clip,
         gradient_checkpointing=cfg.train.grad_checkpoint,
+        use_liger_kernel=cfg.train.use_liger_kernel,
+        activation_offloading=cfg.train.activation_offloading,
         bf16=True,
         max_length=max_length,
         # Asserted, not inferred. The default is None ("auto: True for prompt-completion

@@ -1,6 +1,8 @@
 # ADR-067: Structurer LoRA — recipe, 2×2 attribution design, and pre-registration
 
-**Status**: Proposed (pre-registration — authored BEFORE any training run)
+**Status**: Accepted — executed 2026-08-07. **Outcome: negative on all four cells.** The
+pre-registration below was honoured in full: one recipe, no sweep, sealed val scored once per
+cell, and clause 4 ("success is not required") invoked. Results: `eval/structurer-lora-2x2-results.md`.
 **Date**: 2026-08-07
 **Refs**: #55 (fine-tune epic), ADR-054 (the conditional-LoRA gate this executes), ADR-057
 (reader selection — the transcripts trained on), ADR-059 (the oracle instrument this reuses),
@@ -158,6 +160,47 @@ after the fact.
 6. **No hyperparameter sweep.** One configuration, pre-registered above. Sweeping and then
    reporting the best on sealed val is the failure mode this whole apparatus exists to prevent.
    A sweep, if ever run, must be selected on dev and disclosed as a sweep.
+
+## Measured outcome (added after the run; pre-registration above is unedited)
+
+One stack throughout: bf16, CUDA A10G, greedy, sealed val 29/29 parsed.
+
+| structurer | reader input | oracle input |
+|---|---|---|
+| zero-shot (matched baseline) | **0.8480** | **0.9778** |
+| LoRA, reader-trained | 0.8246 (**−0.0234**) | 0.9583 (−0.0196) |
+| LoRA, oracle-trained | 0.8354 (−0.0126) | 0.9303 (−0.0476) |
+
+**Every cell regressed.** Per clause 4 this is reported, not rescued: no sweep was run, no
+alternative recipe tried.
+
+Three findings worth carrying into the thesis:
+
+1. **The matched-baseline discipline (clause 3 / ADR-068) changed the conclusion.** Naively
+   comparing the bf16 adapter (0.8246) to the committed MLX-4-bit baseline (0.8257) gives
+   −0.0011 — "no meaningful change". The matched comparison gives **−0.0234**, ~21× larger.
+   The adapter's damage and the bf16-over-4-bit gain (+0.0223) nearly cancel, so skipping the
+   re-baseline would have reported the LoRA as neutral. That is not a rounding error; it is the
+   opposite of the finding.
+2. **Selection worked; there was nothing better to select.** Dev loss ran
+   0.0965 → 0.3095 → 0.3799 → 0.3644 → 0.3150 → 0.3078, tripling after epoch 1. The rule picked
+   `checkpoint-13` (end of epoch 1), the least-adapted checkpoint. The reported regression is
+   therefore the *best* this recipe produces. Had the sealed 29 still been the `val_dataset`
+   (the pre-ADR-067 behaviour), selection would have run on the reported set and this statement
+   would not be available.
+3. **Mechanism: over-emission.** Spurious emission rose 0.1575 → 0.2012 on reader input while
+   flat micro-F1 barely moved (0.8843 → 0.8798) — the damage sits in fields whose correct answer
+   is "absent". Training on 100 mostly-populated examples appears to teach that emitting a value
+   is usually right. The oracle-trained adapter, with no reader noise to fit, regressed *less* on
+   reader input, which is consistent with that reading.
+
+Clause 5 resolves as: **no capability-gain claim and no robustness claim is licensed.** The
+oracle arm did not lift above the zero-shot oracle ceiling (0.9303 and 0.9583 both sit below
+0.9778), so there is no evidence of a capability gain, and the reader arm fell, so there is no
+evidence of improved noise robustness.
+
+Scope of the negative claim: *this* pre-registered recipe (rank 8, LR 1e-4, n=100) regressed.
+That is not "fine-tuning cannot help" — one configuration was tried, by design.
 
 ## Source archival
 

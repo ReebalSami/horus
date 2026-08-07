@@ -1,6 +1,7 @@
 # ADR-068: Fine-tune venue — CUDA + TRL/PEFT, with a matched-stack baseline re-measurement
 
-**Status**: Proposed
+**Status**: Accepted — executed 2026-08-07. The mandated re-baseline **changed the conclusion**
+of ADR-067 (see Measured outcome). Results: `eval/structurer-lora-2x2-results.md`.
 **Date**: 2026-08-07
 **Refs**: #55 (fine-tune epic), ADR-067 (the recipe this hosts), ADR-007 (dual-track local-VLM
 decision this partially supersedes for *training*), ADR-057 (the reader bake-off that proved
@@ -134,6 +135,48 @@ Two defects were caught by the newly-available type information rather than by r
 the alpha/rank scaling that defines adapter strength — now refused rather than truncated), and
 `completion_only_loss` defaults to `None`/"auto" (now asserted, since that one flag decides
 whether loss covers the ~3 k-token prompt).
+
+## Measured outcome (added after the run)
+
+**The predicted confound was real, and it would have inverted the reported conclusion.**
+
+| comparison | delta | reading |
+|---|---|---|
+| bf16 adapter 0.8246 vs committed **MLX 4-bit** 0.8257 | −0.0011 | "the LoRA is neutral" |
+| bf16 adapter 0.8246 vs **matched bf16** 0.8480 | **−0.0234** | a real regression |
+
+The adapter's damage (−0.0234) and the bf16-over-4-bit gain (**+0.0223**) nearly cancel. A run
+that had skipped the mandatory re-baseline would have concluded "no effect" — not off by a
+rounding error, but off by the entire finding. The re-baseline cost ~80 min of A10G time.
+This is the strongest justification the record could have asked for.
+
+**Secondary, independently useful**: bf16 0.8480 vs MLX 4-bit 0.8257 quantifies what local
+4-bit quantisation costs the structurer (**+0.0223** for full precision) on identical inputs
+and prompt. Both figures are retained — the 4-bit number describes what actually runs on the
+target hardware, which is a genuine claim for a privacy-first local system.
+
+### Two implementation findings from the run
+
+1. **Liger does not patch `Gemma4ForConditionalGeneration`.** Gemma's 262,144-token vocabulary
+   makes the logits tensor the dominant training memory cost (~3.2 GB bf16 at 6k tokens, ~6.4 GB
+   upcast for cross-entropy, plus its gradient) — that, not activations, OOM'd the 24 GB A10G.
+   Liger's fused linear cross-entropy is the textbook fix and liger 0.8.1's registry *does* list
+   `gemma4`, but passing `use_liger_kernel=True` to `SFTConfig` silently no-opped (zero log
+   output, memory profile unchanged, same OOM) because the model is instantiated before the
+   trainer sees it; calling `_apply_liger_kernel_to_instance` directly installed **zero** Liger
+   modules. The trainer now applies Liger explicitly and **raises** if nothing was patched,
+   rather than continuing unfused and OOMing 40 minutes later.
+2. **`activation_offloading=True` was the working lever** (TRL-native, bf16 preserved). The
+   deficit was under 1 GB, and offloading saved activations to CPU cleared it. Precision was
+   never traded, so no confound was introduced to fix a memory problem — which was the whole
+   point of rejecting 4-bit QLoRA above.
+
+Also corrected during the run: the CUDA path ignored the config's documented
+`max_seq_length: 0 = auto` semantics and always used the **cap** (8192). The real longest
+example is 6094 tokens, so auto now picks 6144 — and, more importantly, a cap of 4096 would
+have silently truncated **26 of 100** training examples, training the model to produce a full
+answer from partial input. Measuring the length distribution before touching `max_length` is
+what kept that from happening.
 
 ## Source archival
 

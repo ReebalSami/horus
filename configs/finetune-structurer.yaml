@@ -57,6 +57,12 @@ train:
   train_on_completions: true # mask loss to the assistant turn (the JSON answer) only
   grad_clip: 1.0
   grad_checkpoint: true       # required: 7.5B 4-bit + seq ~3k OOMs without it on M1 Pro 16 GB
+  # CUDA-only (ADR-068). Liger would be the better fix (fused linear cross-entropy, no
+  # full logits tensor for Gemma's 262,144-token vocabulary) but liger 0.8.1 patches
+  # nothing into `Gemma4ForConditionalGeneration` — verified on an A10G. Offloading saved
+  # activations to CPU is the working lever. Both ignored on MLX.
+  use_liger_kernel: false
+  activation_offloading: true
   free_vision_audio: true     # text-only SFT: drop the unused vision+audio towers (frees ~GB)
   wired_limit_gb: 0.0         # 12.7 GB Metal cap is hard (raises above it are rejected); leave default
   seed: 42

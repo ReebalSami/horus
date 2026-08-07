@@ -49,6 +49,19 @@ class TrainParams(BaseModel):
     train_on_completions: bool = True
     grad_clip: float = Field(default=1.0, gt=0)
     grad_checkpoint: bool = False  # trade compute for memory (M1 Pro 16 GB safety valve)
+    # CUDA-only (ADR-068). Gemma's vocabulary is 262,144 tokens, so at ~6k sequence the
+    # logits tensor alone is ~3.2 GB in bf16 and ~6.4 GB upcast for cross-entropy, plus its
+    # gradient — that, not activations, is what OOM'd a 24 GB A10G. Liger's fused linear
+    # cross-entropy would avoid materializing full logits, but liger 0.8.1 installs no
+    # modules into `Gemma4ForConditionalGeneration` (verified on an A10G: registry hit for
+    # model_type 'gemma4', zero patched modules, memory profile unchanged). The trainer
+    # RAISES rather than silently continuing unfused. Left here for the day liger supports
+    # this wrapper. Ignored by the MLX path.
+    use_liger_kernel: bool = False
+    # CUDA-only (ADR-068). Offload saved activations to CPU between forward and backward.
+    # Trades PCIe bandwidth for VRAM; at batch=1 the step is already latency-bound, so the
+    # cost is small relative to not running at all. Ignored by the MLX path.
+    activation_offloading: bool = False
     # Release gemma-4's vision + audio towers before a TEXT-ONLY SFT. They are never
     # invoked when pixel_values=None (verified in gemma4.py get_input_embeddings), so
     # dropping their multi-GB un-quantized weights reclaims the headroom a 7.5B-4bit

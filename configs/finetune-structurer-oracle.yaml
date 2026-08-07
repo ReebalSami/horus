@@ -59,6 +59,12 @@ train:
   train_on_completions: true
   grad_clip: 1.0
   grad_checkpoint: true
+  # CUDA-only (ADR-068). Liger would be the better fix (fused linear cross-entropy, no
+  # full logits tensor for Gemma's 262,144-token vocabulary) but liger 0.8.1 patches
+  # nothing into `Gemma4ForConditionalGeneration` — verified on an A10G. Offloading saved
+  # activations to CPU is the working lever. Both ignored on MLX.
+  use_liger_kernel: false
+  activation_offloading: true
   free_vision_audio: true
   wired_limit_gb: 0.0
   seed: 42

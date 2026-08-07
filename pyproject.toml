@@ -66,6 +66,13 @@ dependencies = [
     "trl>=0.25.0",
     "accelerate>=1.10.0",
     "datasets>=4.0.0",
+    # Liger fused linear cross-entropy (ADR-068). Gemma's 262,144-token vocabulary makes
+    # the logits tensor the dominant memory cost at ~6k sequence length — it, not
+    # activations, is what OOM'd a 24 GB A10G. UNLIKE the four above this IS platform-gated:
+    # liger ships Triton/CUDA kernels with no macOS wheel, so an ungated declaration would
+    # break `uv sync` on the dev machine. `TrainParams.use_liger_kernel` defaults False and
+    # the flag is only read on the CUDA path, so its absence locally is inert.
+    "liger-kernel>=0.6.0 ; sys_platform == 'linux'",
 ]
 
 [dependency-groups]
@@ -147,6 +154,13 @@ ignore_missing_imports = true
 # `datasets` does not.
 [[tool.mypy.overrides]]
 module = ["datasets", "datasets.*"]
+ignore_missing_imports = true
+
+# ADR-068: liger-kernel is Linux-gated (Triton/CUDA kernels, no macOS wheel), so it is
+# absent when typechecking on the dev machine. The import is inside a `use_liger_kernel`
+# guard that defaults False.
+[[tool.mypy.overrides]]
+module = ["liger_kernel", "liger_kernel.*"]
 ignore_missing_imports = true
 
 # ADR-014: pypdfium2 4.30 ships no py.typed marker (`__file__` resolves to
