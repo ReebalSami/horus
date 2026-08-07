@@ -123,32 +123,52 @@ def build_prompt_completion_records(examples: list[dict[str, str]]) -> list[dict
     ]
 
 
-def language_model_linear_names(model: Any) -> list[str]:
-    """Fully-qualified `nn.Linear` names under the language model, excluding the LM head.
+#: The conventional LoRA surface for a decoder LLM: attention projections + MLP projections.
+#: Deliberately EXCLUDES gemma-4's per-layer-embedding projections (`per_layer_input_gate`,
+#: `per_layer_model_projection`, `per_layer_projection`), which are an architectural
+#: specialty of this family rather than a standard adaptation target — adapting them would
+#: be an unstudied choice smuggled in under "all linears".
+STANDARD_LORA_SUFFIXES: frozenset[str] = frozenset(
+    {"q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"}
+)
 
-    PEFT matches `target_modules` strings as name *suffixes*, so passing bare names like
-    ``q_proj`` would also adapt identically-named projections in the vision/audio towers.
-    The MLX path restricted LoRA to ``model.language_model`` (`find_all_linear_names`), and
-    this run must adapt the same tensors to stay comparable — so fully-qualified names are
-    collected and passed verbatim.
+
+def language_model_linear_names(model: Any) -> list[str]:
+    """Fully-qualified names of the standard LoRA projections inside the text tower.
+
+    PEFT matches `target_modules` as name *suffixes*, so bare names like ``q_proj`` would
+    also adapt identically-named projections in the vision and audio towers — gemma-4 has
+    `q_proj`-style linears in both. Fully-qualified paths are therefore collected and passed
+    verbatim, mirroring the MLX path's restriction of LoRA to the language model.
+
+    The text tower is located by *searching* the module tree rather than assuming it is a
+    direct child: on gemma-4 the real path is ``model.language_model``, one level deeper than
+    the outer `AutoModelForCausalLM` wrapper.
     """
     import torch.nn as nn
 
-    language_model = getattr(model, "language_model", None)
+    lm_name, language_model = None, None
+    for name, module in model.named_modules():
+        if name.endswith("language_model"):
+            lm_name, language_model = name, module
+            break
     if language_model is None:
         raise ValueError(
-            "model has no `language_model` submodule — cannot scope LoRA to the text tower; "
-            "refusing to adapt the whole model, which would not be comparable to the MLX run"
+            "no `language_model` submodule found anywhere in the module tree — cannot scope "
+            "LoRA to the text tower; refusing to adapt the whole model, which would pull in "
+            "the vision and audio towers and not be comparable to the MLX run"
         )
 
-    prefix = "language_model."
     names = [
-        prefix + name
+        f"{lm_name}.{name}"
         for name, module in language_model.named_modules()
-        if isinstance(module, nn.Linear) and not name.endswith("lm_head")
+        if isinstance(module, nn.Linear) and name.rsplit(".", 1)[-1] in STANDARD_LORA_SUFFIXES
     ]
     if not names:
-        raise ValueError("found no nn.Linear modules under `language_model`")
+        raise ValueError(
+            f"found no standard LoRA projections under {lm_name!r} "
+            f"(looked for {sorted(STANDARD_LORA_SUFFIXES)})"
+        )
     return sorted(names)
 
 

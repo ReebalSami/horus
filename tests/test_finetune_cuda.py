@@ -155,6 +155,111 @@ def test_prompt_completion_preserves_order() -> None:
     assert [r["prompt"][0]["content"] for r in records] == ["Q0", "Q1", "Q2", "Q3"]
 
 
+# --------------------------------------------------------------- LoRA target scoping
+
+
+def _fake_gemma4_tree() -> Any:
+    """A module tree mirroring gemma-4-E4B's real topology (verified on an A10G).
+
+    Three properties matter and all three broke a naive implementation:
+      * the text tower is at ``model.language_model`` \u2014 NOT a direct child;
+      * the vision/audio towers contain identically-named projections, and PEFT matches
+        `target_modules` by suffix, so bare names would adapt them too;
+      * the text tower also holds gemma-4's per-layer-embedding projections, which are not
+        a standard LoRA target.
+    """
+    import torch.nn as nn
+
+    class Attn(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.q_proj = nn.Linear(4, 4)
+            self.k_proj = nn.Linear(4, 4)
+            self.v_proj = nn.Linear(4, 4)
+            self.o_proj = nn.Linear(4, 4)
+
+    class Layer(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.self_attn = Attn()
+            self.gate_proj = nn.Linear(4, 4)
+            self.up_proj = nn.Linear(4, 4)
+            self.down_proj = nn.Linear(4, 4)
+            # gemma-4 specialty; must NOT be adapted.
+            self.per_layer_input_gate = nn.Linear(4, 4)
+            self.per_layer_projection = nn.Linear(4, 4)
+
+    class LanguageModel(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.layers = nn.ModuleList([Layer(), Layer()])
+            self.per_layer_model_projection = nn.Linear(4, 4)
+
+    class VisionTower(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.q_proj = nn.Linear(4, 4)  # decoy: same suffix, different tower
+            self.down_proj = nn.Linear(4, 4)
+
+    class Inner(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.language_model = LanguageModel()
+            self.vision_tower = VisionTower()
+
+    class Outer(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.model = Inner()
+            self.lm_head = nn.Linear(4, 4)
+
+    return Outer()
+
+
+def test_lora_targets_are_found_one_level_deep() -> None:
+    """The GPU smoke failed here: the text tower is not a direct child of the model."""
+    from horus.finetune.train_cuda import language_model_linear_names
+
+    names = language_model_linear_names(_fake_gemma4_tree())
+
+    assert names, "must locate the nested language_model"
+    assert all(n.startswith("model.language_model.") for n in names)
+
+
+def test_lora_targets_exclude_other_towers_and_the_head() -> None:
+    from horus.finetune.train_cuda import language_model_linear_names
+
+    names = language_model_linear_names(_fake_gemma4_tree())
+
+    assert not any("vision_tower" in n for n in names)
+    assert not any(n.endswith("lm_head") for n in names)
+
+
+def test_lora_targets_exclude_per_layer_embedding_projections() -> None:
+    """gemma-4's PLE projections are an architectural specialty, not a LoRA target."""
+    from horus.finetune.train_cuda import language_model_linear_names
+
+    names = language_model_linear_names(_fake_gemma4_tree())
+
+    assert not any("per_layer" in n for n in names)
+    # 2 layers x (4 attention + 3 MLP)
+    assert len(names) == 14
+
+
+def test_lora_target_scoping_refuses_a_model_with_no_text_tower() -> None:
+    import torch.nn as nn
+
+    from horus.finetune.train_cuda import language_model_linear_names
+
+    class NoTextTower(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.q_proj = nn.Linear(4, 4)
+
+    with pytest.raises(ValueError, match="no `language_model` submodule"):
+        language_model_linear_names(NoTextTower())
+
+
 # ------------------------------------------------------------------- config wiring
 
 

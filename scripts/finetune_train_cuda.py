@@ -60,10 +60,12 @@ def main(argv: list[str]) -> int:
     print(f"  epochs (budget)      : {result.epochs}")
     print(f"  max_length           : {result.max_length}")
     print(f"  LoRA target modules  : {len(result.target_modules)}")
+    # These count training EXAMPLES rejected/flagged by the self-consistency gate, not
+    # LoRA modules — the distinction matters when reading a run log next to the line above.
     if result.excluded:
-        print(f"  excluded targets     : {len(result.excluded)} (self-score gate)")
+        print(f"  examples excluded    : {len(result.excluded)} (self-consistency gate)")
     if result.flagged:
-        print(f"  flagged targets      : {len(result.flagged)} (kept; scorer under-credits)")
+        print(f"  examples flagged     : {len(result.flagged)} (kept; scorer under-credits)")
 
     curve = result.eval_loss_by_epoch()
     if curve:
