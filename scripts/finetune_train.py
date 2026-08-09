@@ -4,8 +4,14 @@
     uv run python scripts/finetune_train.py --config configs/finetune-structurer.yaml
 
 Reads every knob from the YAML (horus-config-discipline). Trains on the sealed TRAIN split
-only; the held-out VAL split is used solely for the val-loss endpoints. Saves a LoRA adapter
-to ``cfg.adapter_dir`` that `scripts/finetune_evaluate.py --adapter <dir>` then scores.
+only, minus a deterministic dev slice carved out of it (ADR-067) which supplies the
+in-training validation loss. The sealed VAL split is **not touched here at all** — it is
+scored exactly once, by `scripts/finetune_evaluate.py --adapter <dir>`, after the epoch has
+already been chosen on dev.
+
+Saves a LoRA adapter to ``cfg.adapter_dir`` plus one checkpoint per epoch
+(``{iter:07d}_adapters.safetensors``); `horus.finetune.train.materialize_checkpoint` lays a
+chosen checkpoint out as a directory the evaluator can load.
 """
 
 from __future__ import annotations

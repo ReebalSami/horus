@@ -116,6 +116,25 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--config", default="configs/finetune-structurer.yaml")
     parser.add_argument("--split", choices=["val", "train", "all"], default="val")
     parser.add_argument(
+        "--backend",
+        choices=["mlx", "cuda"],
+        default="mlx",
+        help=(
+            "Inference stack. 'mlx' (default) = Apple Silicon 4-bit, which produced every "
+            "committed report. 'cuda' = bf16 transformers + PEFT, required to score adapters "
+            "from finetune_train_cuda.py. Numbers are NOT comparable across backends "
+            "(ADR-068): re-measure the zero-shot baseline on whichever one you use."
+        ),
+    )
+    parser.add_argument(
+        "--base-model-id",
+        default=None,
+        help=(
+            "Base HF repo for --backend cuda. Defaults to cfg.structurer_model, which is the "
+            "canonical repo; COHORT_MANIFEST's MLX mirror is not used on this path."
+        ),
+    )
+    parser.add_argument(
         "--adapter",
         default=None,
         help="LoRA adapter dir (omit for the zero-shot baseline).",
@@ -254,6 +273,23 @@ def main(argv: list[str]) -> int:
         assert rec.gt is not None
         return render_oracle_transcript(rec.gt)
 
+    # On CUDA the extractor is built here and injected: COHORT_MANIFEST maps the structurer
+    # to an MLX 4-bit mirror, and evaluate_structurer's own adapter fuser is mlx-only, so a
+    # PEFT adapter could not otherwise be applied (ADR-068).
+    injected_extractor = None
+    if args.backend == "cuda" and not args.score_only:
+        from horus.finetune.structurer_cuda import CudaStructurerExtractor
+
+        injected_extractor = CudaStructurerExtractor(
+            args.base_model_id or cfg.structurer_model,
+            adapter_dir=adapter_dir,
+        )
+        injected_extractor.load()
+        print(
+            "Backend: transformers-cuda bf16. NOT comparable with the committed MLX 4-bit "
+            "reports (ADR-068) — compare only against a bf16 baseline from this same backend."
+        )
+
     if args.score_only:
         report = score_saved_outputs(
             subset,
@@ -273,6 +309,7 @@ def main(argv: list[str]) -> int:
             save_outputs_dir=Path(args.save_outputs) if args.save_outputs else None,
             reader_text_fn=_oracle_text if args.oracle else None,
             score_groups=score_groups,
+            extractor=injected_extractor,
         )
     _print_summary(report)
 

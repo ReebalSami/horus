@@ -38,6 +38,28 @@
 % TODO: German B2B invoices only. No claim of transfer to other languages, other
 % document classes (contracts, bank statements, receipts) or other jurisdictions.
 
+\subsection{The Structurer Was Held Constant, Not Selected}
+\label{sec:lim-structurer-selection}
+% TODO (ADR-067): state the asymmetry plainly. The READER was chosen competitively --
+% five candidates, a deterministic findability ruler, an invoice-by-invoice manual audit
+% of every residual miss, and a rejection decided on failure MECHANISM rather than
+% headline score (ADR-056/057). The STRUCTURER was not: gemma-4-E4B-it was fixed as the
+% controlled variable so the reader and the prompt surface could be studied against a
+% stable back end, and no structurer bake-off was ever run.
+%
+% Why this is defensible: holding it constant is what makes the reader comparison and the
+% prompt-repair work interpretable at all, and swapping it would have invalidated every
+% committed baseline. Why it is still a limitation: no claim can be made that this
+% structurer is the best available choice, and the fine-tune results in
+% Sec.~\ref{sec:results-finetune} are conditional on it. A different structurer could
+% plausibly close the reader-noise gap without any fine-tuning.
+%
+% Note the related asymmetry worth reporting: on perfect (oracle) input this structurer
+% already scores 0.9719 overall micro-F1, above the 0.90 target, so the measured shortfall
+% is robustness to reader noise rather than capability. That is why the fine-tune is
+% evaluated as a 2x2 (train on reader/oracle text x evaluate on reader/oracle text)
+% instead of as a single before/after -- see Sec.~\ref{sec:method-finetune}.
+
 \subsection{Measurement Constructs}
 \label{sec:lim-measurement}
 % TODO: the reading-quality proxy (whether a ground-truth value is findable in the

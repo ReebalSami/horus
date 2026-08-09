@@ -16,6 +16,7 @@ Refs: ADR-038 (Arm-B structurer prompt), `horus-config-discipline`; plan
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, Field
@@ -48,6 +49,19 @@ class TrainParams(BaseModel):
     train_on_completions: bool = True
     grad_clip: float = Field(default=1.0, gt=0)
     grad_checkpoint: bool = False  # trade compute for memory (M1 Pro 16 GB safety valve)
+    # CUDA-only (ADR-068). Gemma's vocabulary is 262,144 tokens, so at ~6k sequence the
+    # logits tensor alone is ~3.2 GB in bf16 and ~6.4 GB upcast for cross-entropy, plus its
+    # gradient — that, not activations, is what OOM'd a 24 GB A10G. Liger's fused linear
+    # cross-entropy would avoid materializing full logits, but liger 0.8.1 installs no
+    # modules into `Gemma4ForConditionalGeneration` (verified on an A10G: registry hit for
+    # model_type 'gemma4', zero patched modules, memory profile unchanged). The trainer
+    # RAISES rather than silently continuing unfused. Left here for the day liger supports
+    # this wrapper. Ignored by the MLX path.
+    use_liger_kernel: bool = False
+    # CUDA-only (ADR-068). Offload saved activations to CPU between forward and backward.
+    # Trades PCIe bandwidth for VRAM; at batch=1 the step is already latency-bound, so the
+    # cost is small relative to not running at all. Ignored by the MLX path.
+    activation_offloading: bool = False
     # Release gemma-4's vision + audio towers before a TEXT-ONLY SFT. They are never
     # invoked when pixel_values=None (verified in gemma4.py get_input_embeddings), so
     # dropping their multi-GB un-quantized weights reclaims the headroom a 7.5B-4bit
@@ -61,6 +75,19 @@ class TrainParams(BaseModel):
     steps_per_report: int = Field(default=10, ge=1)
     # 0 → save only the final adapter (no intermediate checkpoints).
     steps_per_save: int = Field(default=0, ge=0)
+    # Constant LR is what mlx_vlm's example uses, but every current small-data LoRA
+    # recommendation pairs a cosine decay with a short warmup: the first few steps of a
+    # freshly-initialised adapter are the least trustworthy gradients in the run, and
+    # decaying the tail is what stops the last epoch from undoing the good middle.
+    lr_schedule: Literal["constant", "cosine"] = "cosine"
+    # Fraction of total iters spent warming up from 0 to `learning_rate`.
+    warmup_ratio: float = Field(default=0.03, ge=0.0, lt=0.5)
+    # Floor for the cosine decay, as a fraction of `learning_rate`.
+    lr_min_ratio: float = Field(default=0.1, ge=0.0, le=1.0)
+    # Save a checkpoint every epoch so a non-overfit one can be CHOSEN rather than
+    # assumed. With 117 training invoices the epoch count dominates the outcome, and
+    # keeping only the final adapter makes that choice unavailable after the fact.
+    checkpoint_every_epoch: bool = True
 
 
 class FinetuneConfig(BaseModel):
@@ -81,6 +108,20 @@ class FinetuneConfig(BaseModel):
     reader_model: str = "Qwen/Qwen3-VL-4B-Instruct"
     split_path: str = "data/finetune/split.json"
     adapter_dir: str = "data/finetune/adapter"
+    # Which text the structurer is trained ON (ADR-067 2x2 attribution design):
+    #   "reader" - cached Qwen3-VL-4B transcripts; the deployable adapter.
+    #   "oracle" - GT-rendered perfect transcripts (`render_oracle_transcript`); an
+    #              instrument, not a product. Separates "learned the output schema" from
+    #              "learned to survive reader noise", because Gemma already scores 0.9719
+    #              on perfect text, so a reader-arm gain could otherwise be either one.
+    # The invoice SET is identical for both arms (readiness still gates membership), so
+    # the two adapters differ only in the input distribution they saw.
+    input_arm: Literal["reader", "oracle"] = "reader"
+    # Dev slice carved out of the sealed TRAIN side (never out of val) so the epoch can be
+    # selected without spending a look at the sealed validation set. See
+    # `horus.finetune.split.carve_dev`; `split.json` itself is never rewritten.
+    dev_fraction: float = Field(default=0.15, gt=0.0, lt=1.0)
+    dev_seed: int = 4242
     eval_max_tokens: int = Field(default=2048, ge=64)
     min_self_overall: float = Field(default=0.95, ge=0.0, le=1.0)
     lora: LoraParams = Field(default_factory=LoraParams)

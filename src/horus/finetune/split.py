@@ -24,11 +24,15 @@ from pathlib import Path
 
 from horus.finetune.dataset import InvoiceRecord
 
-__all__ = ["Split", "load_split", "seal_split", "write_split"]
+__all__ = ["DevSlice", "Split", "carve_dev", "load_split", "seal_split", "write_split"]
 
 DEFAULT_SPLIT_PATH = Path("data/finetune/split.json")
 _DEFAULT_VAL_FRACTION = 0.2
 _DEFAULT_SEED = 42
+# Distinct from _DEFAULT_SEED so the dev carve is independent of the original
+# train/val shuffle rather than replaying the same permutation one level down.
+_DEFAULT_DEV_SEED = 4242
+_DEFAULT_DEV_FRACTION = 0.15
 
 # Profile keywords probed in order; first hit wins. "BASICWL" before "BASIC" so the
 # without-lines variant isn't swallowed by the "BASIC" prefix.
@@ -98,6 +102,101 @@ class Split:
             "train": sorted(self.train),
             "val": sorted(self.val),
         }
+
+
+@dataclass(frozen=True)
+class DevSlice:
+    """A development slice carved out of the sealed TRAIN side.
+
+    Exists so a checkpoint can be chosen without looking at the sealed validation set.
+    Selecting an epoch on ``Split.val`` and then reporting ``Split.val`` as the headline
+    would be HARKing: the number would be the best of N looks, not one honest look.
+
+    This is a *derivation*, not a re-seal. ``split.json`` is never rewritten, so its
+    ``sha256_train`` / ``sha256_val`` fingerprints keep verifying and the original sealing
+    guarantee is undisturbed. ``dev`` ⊂ ``Split.train``, and ``Split.val`` is untouched.
+    """
+
+    seed: int
+    dev_fraction: float
+    train: list[str]
+    dev: list[str]
+    strata: dict[str, dict[str, int]]
+
+    @property
+    def sha256_train(self) -> str:
+        return _sha256_of_stems(self.train)
+
+    @property
+    def sha256_dev(self) -> str:
+        return _sha256_of_stems(self.dev)
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "dev_seed": self.seed,
+            "dev_fraction": self.dev_fraction,
+            "n_train": len(self.train),
+            "n_dev": len(self.dev),
+            "sha256_train_after_carve": self.sha256_train,
+            "sha256_dev": self.sha256_dev,
+            "strata": self.strata,
+            "train": sorted(self.train),
+            "dev": sorted(self.dev),
+        }
+
+
+def carve_dev(
+    train_records: list[InvoiceRecord],
+    *,
+    dev_fraction: float = _DEFAULT_DEV_FRACTION,
+    seed: int = _DEFAULT_DEV_SEED,
+) -> DevSlice:
+    """Split already-sealed TRAIN records into (smaller train, dev), stratified and seeded.
+
+    Same stratified-shuffle procedure as `seal_split`, one level down, so both carves have
+    identical behaviour and neither can silently over-represent a corpus segment.
+
+    Pass only records whose stems are in ``Split.train``. Passing validation records would
+    defeat the entire point, so the caller is responsible for that — `run_finetune` derives
+    them from `build_split_records`, which reads the two sides separately.
+    """
+    if not 0.0 < dev_fraction < 1.0:
+        raise ValueError(f"dev_fraction must be in (0, 1), got {dev_fraction}")
+
+    by_stratum: dict[str, list[InvoiceRecord]] = defaultdict(list)
+    for rec in sorted(train_records, key=lambda r: r.stem):
+        by_stratum[_stratum(rec)].append(rec)
+
+    rng = random.Random(seed)
+    train: list[str] = []
+    dev: list[str] = []
+    strata: dict[str, dict[str, int]] = {}
+    for stratum in sorted(by_stratum):
+        members = sorted(by_stratum[stratum], key=lambda r: r.stem)
+        rng.shuffle(members)
+        n_dev = round(len(members) * dev_fraction)
+        # Never empty a stratum's training side to fill dev: a stratum of 1 keeps its
+        # single member in train (round(1 * 0.15) == 0 already, but a larger fraction
+        # or a 2-member stratum could otherwise take everything).
+        n_dev = min(n_dev, len(members) - 1) if len(members) > 1 else 0
+        dev_members = members[:n_dev]
+        train_members = members[n_dev:]
+        dev.extend(r.stem for r in dev_members)
+        train.extend(r.stem for r in train_members)
+        strata[stratum] = {"train": len(train_members), "dev": len(dev_members)}
+
+    if not dev:
+        raise ValueError(
+            f"dev_fraction={dev_fraction} produced an empty dev slice over "
+            f"{len(train_records)} records — raise it or shrink the stratification"
+        )
+    return DevSlice(
+        seed=seed,
+        dev_fraction=dev_fraction,
+        train=sorted(train),
+        dev=sorted(dev),
+        strata=strata,
+    )
 
 
 def seal_split(

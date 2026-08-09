@@ -35,6 +35,7 @@ import json
 import logging
 import re
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Final
@@ -489,17 +490,35 @@ def reader_text_from_transcript(transcript_path: Path) -> str:
     return "\n\n".join(split_per_page_texts(body))
 
 
-def build_example(rec: InvoiceRecord, *, structuring_prompt: str) -> dict[str, str]:
+def build_example(
+    rec: InvoiceRecord,
+    *,
+    structuring_prompt: str,
+    reader_text_fn: Callable[[InvoiceRecord], str] | None = None,
+) -> dict[str, str]:
     """Build one supervised (question, answer) training pair for a ready invoice.
 
     ``question`` is composed EXACTLY as `arm_b.run_arm_b` composes the structurer
     input (`build_structuring_input` on the raw prompt + reader text) so training
     input == inference input. ``answer`` is the canonical target JSON (JSON-only,
     no reasoning — fine-tuning teaches a clean, parse-stable object).
+
+    ``reader_text_fn`` overrides where the input text comes from (default: the record's
+    cached reader transcript). Mirrors the identically-named parameter on
+    `evaluate.evaluate_structurer`, so an oracle-input TRAINING arm and the oracle-input
+    EVAL arm share one renderer rather than two implementations that can drift
+    (pass ``lambda r: render_oracle_transcript(r.gt)``).
+
+    The ``ready`` guard stays in force even when the text is overridden: readiness is what
+    defines the sealed split's membership, so relaxing it for the oracle arm would train
+    that arm on a DIFFERENT invoice set and destroy comparability between the two arms.
     """
     if rec.gt is None or rec.transcript_path is None:
         raise ValueError(f"build_example requires a ready record; {rec.stem} is not ready")
-    reader_text = reader_text_from_transcript(rec.transcript_path)
+    if reader_text_fn is not None:
+        reader_text = reader_text_fn(rec)
+    else:
+        reader_text = reader_text_from_transcript(rec.transcript_path)
     question = structurer.build_structuring_input(structuring_prompt, reader_text)
     answer = json.dumps(groundtruth_to_target(rec.gt), ensure_ascii=False)
     return {"stem": rec.stem, "question": question, "answer": answer}
@@ -511,6 +530,7 @@ def build_dataset(
     structuring_prompt: str,
     eval_cfg: EvalConfig | None = None,
     min_self_overall: float = 0.95,
+    reader_text_fn: Callable[[InvoiceRecord], str] | None = None,
 ) -> tuple[list[dict[str, str]], list[tuple[str, float]], list[tuple[str, float, float]]]:
     """Build (question, answer) pairs for every ready invoice, gated by self-consistency.
 
@@ -539,5 +559,7 @@ def build_dataset(
             continue
         if scores.overall_micro_f1 < 0.999:
             flagged.append((rec.stem, scores.overall_micro_f1))
-        examples.append(build_example(rec, structuring_prompt=structuring_prompt))
+        examples.append(
+            build_example(rec, structuring_prompt=structuring_prompt, reader_text_fn=reader_text_fn)
+        )
     return examples, flagged, excluded

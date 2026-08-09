@@ -263,6 +263,7 @@ def evaluate_structurer(
     save_outputs_dir: Path | None = None,
     reader_text_fn: Callable[[InvoiceRecord], str] | None = None,
     score_groups: bool = True,
+    extractor: Any = None,
 ) -> EvalReport:
     """Score the structurer (optionally LoRA-adapted) over every ready record in ``records``.
 
@@ -277,21 +278,34 @@ def evaluate_structurer(
 
     ``score_groups=False`` excludes the repeating groups; use it when the corpus's
     group rows are not part of the verified answer key (ADR-063).
+
+    ``extractor`` injects a pre-configured text-only structurer instead of resolving one
+    from `COHORT_MANIFEST`. Required on CUDA (ADR-068): the manifest maps the structurer to
+    an MLX 4-bit mirror and `_apply_adapter` uses mlx's fuser, so a PEFT adapter trained by
+    `train_cuda.py` is otherwise unscoreable. It must already be `load()`-ed and carry its
+    own adapter; ``adapter_dir`` is then recorded in the report but not applied here.
+    Passing nothing preserves the original MLX path exactly.
     """
     cfg = eval_cfg or EvalConfig()
     ready = [r for r in records if r.ready and r.gt is not None]
     if not ready:
         raise ValueError("evaluate_structurer received no ready records (need GT + transcript).")
 
-    extractor = get_extractor(structurer_model)
-    if not isinstance(extractor, MLXVLMExtractor):
+    if extractor is None:
+        extractor = get_extractor(structurer_model)
+        if not isinstance(extractor, MLXVLMExtractor):
+            raise ValueError(
+                f"structurer {structurer_model!r} must be an MLX model (text-only "
+                f"extract_text); got {type(extractor).__name__}."
+            )
+        extractor.load()
+        if adapter_dir is not None:
+            _apply_adapter(extractor, adapter_dir)
+    elif not hasattr(extractor, "extract_text"):
         raise ValueError(
-            f"structurer {structurer_model!r} must be an MLX model (text-only extract_text); "
-            f"got {type(extractor).__name__}."
+            f"injected extractor {type(extractor).__name__} has no extract_text(); the "
+            "structurer pass is text-only (see horus.eval.live.TextExtractor)"
         )
-    extractor.load()
-    if adapter_dir is not None:
-        _apply_adapter(extractor, adapter_dir)
 
     acc = _Accumulator(cfg=cfg, structurer_model=structurer_model, score_groups=score_groups)
 
