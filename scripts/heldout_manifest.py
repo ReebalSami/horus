@@ -11,7 +11,8 @@ Two modes (issue #78 / HND-5):
              Idempotent: existing ids are preserved (read back from index.json) so
              adding invoices never renumbers the frozen set.
 
-  datasheet  Read index.json + the verified GT files and write a SANITIZED markdown
+  datasheet  Read index.json + the SIGNED-OFF GT files (`_promoted/`, per ADR-062 — not
+             the superseded `gt/` draft) and write a SANITIZED markdown
              datasheet (counts, language/channel mix, page distribution, per-field
              presence rate, and the id↔sha256 freeze table). NO source filenames and
              NO field values — safe to git-track under docs/. This is the public,
@@ -46,6 +47,7 @@ from horus.eval.heldout import (
     build_gt_cache,
     load_heldout_index,
 )
+from horus.finetune.dataset import DEFAULT_HELDOUT_GT_DIRNAME
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CORPUS_ROOT = PROJECT_ROOT / "data" / "self-collected"
@@ -193,7 +195,13 @@ def build_index(corpus_root: Path) -> Path:
 
 def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
     """Write a sanitized, git-trackable datasheet (counts + presence + freeze hashes)."""
-    items = load_heldout_index(corpus_root)
+    # Read the SIGNED-OFF key, not the draft. `gt/` is an input channel to adjudication and
+    # "must never be graded against" (ADR-062); reporting its `verified` flags made the public
+    # datasheet claim 0/39 author-verified while every published held-out figure was computed
+    # against the 39 signed-off `_promoted/` documents. Passing `gt_dirname` also means
+    # `verified` is read per-document, so an invoice with no promoted file counts as unverified
+    # instead of inheriting the draft's flag.
+    items = load_heldout_index(corpus_root, gt_dirname=DEFAULT_HELDOUT_GT_DIRNAME)
     if not items:
         raise SystemExit(
             f"No index found at {corpus_root / INDEX_FILENAME}. Run "
@@ -205,10 +213,11 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
     page_values = [item.n_pages for item in items if item.n_pages is not None]
     n_verified = sum(1 for item in items if item.verified)
 
-    # Per-field presence over ALL drafted GT (aggregate counts only; no values).
-    # Drafts are Cascade-authored, author-verified field-by-field in the review
-    # page; the verified count is reported separately so the caveat is explicit.
-    gt_cache = build_gt_cache(corpus_root)
+    # Per-field presence over the SIGNED-OFF GT (aggregate counts only; no values). Drafts are
+    # Cascade-authored and then author-verified field-by-field in the review page, which writes
+    # `_promoted/`; the verified count is still reported separately so a partially-signed-off
+    # set cannot silently read as complete.
+    gt_cache = build_gt_cache(corpus_root, gt_dirname=DEFAULT_HELDOUT_GT_DIRNAME)
     presence: dict[str, int] = dict.fromkeys(FIELDS, 0)
     for gt in gt_cache.values():
         for key, field in gt.header.items():
@@ -245,11 +254,12 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
         lines.append(f"| Pages | per-invoice | {page_summary} |")
     lines.append("")
 
-    lines.append("## Field-presence rate (drafted GT)\n")
+    lines.append("## Field-presence rate (signed-off GT)\n")
     if n_drafted:
         lines.append(
-            f"Across the {n_drafted} drafted invoices ({n_verified} author-verified), "
-            "how often each field is present (honest nulls for absent fields):\n"
+            f"Across the {n_drafted} invoices with a signed-off answer key "
+            f"({n_verified} author-verified), how often each field is present "
+            "(honest nulls for absent fields):\n"
         )
         lines.append("| Field | Present | Rate |")
         lines.append("| --- | --- | --- |")
@@ -258,7 +268,10 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
             rate = count / n_drafted
             lines.append(f"| `{key}` | {count}/{n_drafted} | {rate:.0%} |")
     else:
-        lines.append("*(No ground truth drafted yet — re-run after drafting.)*")
+        lines.append(
+            "*(No signed-off ground truth yet — draft it, sign it off in the review page, "
+            "then re-run.)*"
+        )
     lines.append("")
 
     lines.append("## Freeze table (id \u2194 sha256)\n")
