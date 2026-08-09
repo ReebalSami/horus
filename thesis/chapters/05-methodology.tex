@@ -20,10 +20,12 @@ The \textbf{reading} stage is a \ac{VLM} that receives a rasterised page and emi
 text. It is given no schema, no field list and no instruction about invoices; it is asked to
 transcribe. The \textbf{structuring} stage is a second, text-only model that receives that
 transcript together with a field specification and emits a \ac{JSON} object. The
-\textbf{validate-and-repair} stage is deterministic code: it normalises representations,
-checks arithmetic identities that the invoice standard guarantees, and repairs what can be
-repaired by rule. No model runs in the third stage, which matters when attributing an error
---- a defect there is a program defect, reproducible and fixable, not a sampling artefact.
+\textbf{validate-and-repair} stage is deterministic code: it recovers the record from
+imperfectly formed model output, matches emitted keys to the field registry, canonicalises
+each value by its declared type, and leaves a field absent when it cannot be parsed
+(\S\ref{sec:design-validation}). No model runs in the third stage, which matters when
+attributing an error --- a defect there is a program defect, reproducible and fixable, not a
+sampling artefact.
 
 Two properties of the pipeline are contractual rather than incidental, and both affect how it
 must be scored.
@@ -398,7 +400,8 @@ than picking the more convenient instrument.
 The central empirical question of this thesis is not \emph{how well does the pipeline score}
 but \emph{which stage limits it}. Answering that requires separating two stages that share a
 token stream and an architecture, so no architectural boundary does the separating for us.
-Three instruments do it instead, illustrated in Figure~\ref{fig:pipeline}.
+Three instruments do it instead; the two that attach to the transcript are shown in
+Figure~\ref{fig:pipeline}.
 
 \textbf{Instrument one: re-score stored predictions by field group.} Predictions are archived,
 so they can be re-scored by cluster --- core header fields, extended header fields, line

@@ -13,15 +13,15 @@
 
 \begin{tikzpicture}[
     font=\small,
-    node distance=9mm,
+    node distance=7mm,
     stage/.style={
       draw=horusaccent, line width=0.8pt, rounded corners=2pt,
-      fill=horuswash, text width=2.6cm, align=center,
+      fill=horuswash, text width=2.2cm, align=center,
       minimum height=1.6cm, inner sep=4pt,
     },
     endpoint/.style={
       draw=horusmuted, line width=0.6pt, rounded corners=1pt,
-      fill=white, text width=2.0cm, align=center,
+      fill=white, text width=1.6cm, align=center,
       font=\scriptsize, minimum height=1.0cm, inner sep=4pt,
     },
     instrument/.style={
@@ -37,22 +37,31 @@
   \node[endpoint] (page) {page image\\\itshape 300\,dpi};
   \node[stage, right=of page] (reader) {\textbf{Reader}\\[2pt]\scriptsize a vision model
     transcribes the page};
-  \node[stage, right=22mm of reader] (structurer) {\textbf{Structurer}\\[2pt]\scriptsize a
+  \node[stage, right=14mm of reader] (structurer) {\textbf{Structurer}\\[2pt]\scriptsize a
     language model fills the schema};
-  \node[stage, right=18mm of structurer] (repair) {\textbf{Validate\\and repair}\\[2pt]
+  \node[stage, right=12mm of structurer] (repair) {\textbf{Validate\\and repair}\\[2pt]
     \scriptsize deterministic rules, no model};
   \node[endpoint, right=of repair] (final) {validated\\record};
 
   \draw[flow] (page) -- (reader);
-  \draw[flow] (reader) -- node[onflow, above=1pt] {transcript\\\itshape plain text}
-    (structurer);
-  \draw[flow] (structurer) -- node[onflow, above=1pt] {draft record\\\itshape JSON} (repair);
+  \draw[flow] (reader) -- (structurer);
+  \draw[flow] (structurer) -- (repair);
   \draw[flow] (repair) -- (final);
+
+  %% The artefact names sit ABOVE the row rather than on the arrows: the gaps between
+  %% stages are narrower than the labels, so an on-arrow label would collide with the
+  %% boxes on both sides.
+  \node[onflow, anchor=south] (arte1)
+    at ($(reader.north east)!0.5!(structurer.north west) + (0,3mm)$)
+    {transcript\\\itshape plain text};
+  \node[onflow, anchor=south] (arte2)
+    at ($(structurer.north east)!0.5!(repair.north west) + (0,3mm)$)
+    {draft record\\\itshape JSON};
 
   \begin{scope}[on background layer]
     \node[
       draw=horusmuted, line width=0.5pt, rounded corners=3pt, dotted,
-      fit=(page)(reader)(structurer)(repair)(final),
+      fit=(page)(reader)(structurer)(repair)(final)(arte1)(arte2),
       inner xsep=7pt, inner ysep=9pt,
     ] (box) {};
   \end{scope}

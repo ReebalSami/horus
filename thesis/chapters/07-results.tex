@@ -111,11 +111,14 @@ different ways}, which is the substantive finding:
 \end{itemize}
 
 For this application the second failure mode is preferable, and the reason is the honest-null
-contract rather than the score. A dropped block produces a confident absence with no signal
-that anything is missing. A character slip produces a value that fails the arithmetic and
-format checks of the validate-and-repair stage, so the pipeline can flag it. An error that the
-system can detect is worth more than an error of equal magnitude that it cannot. The
-general-purpose model was selected.
+contract rather than the score. A dropped block produces an absence, and under the honest-null
+contract an absence is exactly what a genuinely missing field also produces --- so the failure
+is camouflaged by the system's own convention, and it removes several legally mandatory
+particulars at once, systematically, on every document sharing that layout. A character slip
+produces a value that is present and wrong: it is attached to a named field, so a reviewer has
+something concrete to check against the page, and the misreading is per-value rather than
+per-region. An error a reviewer can see is worth more than an error of equal magnitude that
+looks like a legitimate blank. The general-purpose model was selected.
 
 \subsection{A pre-registered test that failed}
 
@@ -221,8 +224,8 @@ rejected by a comparison rule. A gap of the second kind is a specification defec
 repairing it by fine-tuning would credit the adapter with a gain that a one-line change would
 have produced.
 
-The classification escalated three candidate fields for per-document inspection. **All three
-turned out not to be specification-fixable.** One was a net-versus-gross confusion between two
+The classification escalated three candidate fields for per-document inspection.
+\textbf{All three turned out not to be specification-fixable.} One was a net-versus-gross confusion between two
 labels that were both already grounded, and it landed mostly on the \emph{perfect-text} arm ---
 which means there was no headroom to recover. One emitted a character-identical value on almost
 every document that carried it, with most of its remaining misses caused by a

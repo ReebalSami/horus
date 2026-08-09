@@ -38,8 +38,8 @@ qualitative: one model transcribes characters near-flawlessly but silently drops
 footer regions, which is exactly where a German invoice prints tax identifiers and bank details;
 the other reads every region but occasionally slips a character inside a value
 (\S\ref{sec:results-reader}). For this application the second is preferable, because a corrupted
-value fails a downstream format or arithmetic check while a dropped block produces a confident
-absence.
+value is attached to a named field and can be checked against the page, whereas a dropped block
+produces an absence indistinguishable from a field the document never carried.
 
 \textbf{(2) Does splitting reading from structuring beat a single model going straight from page
 to structured output?} On the evidence gathered here, yes --- but the evidence is weaker than the

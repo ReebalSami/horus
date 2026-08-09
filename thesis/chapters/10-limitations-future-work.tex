@@ -294,7 +294,16 @@ template.
 
 What a firm would additionally need: throughput and batching, audit logging of every extraction
 with its provenance, and the review interface that the precision-over-recall error profile
-(\S\ref{sec:results-heldout}) makes viable. The prototype of
+(\S\ref{sec:results-heldout}) makes viable.
+
+One specific and cheap addition belongs here. The validate-and-repair stage does not currently
+check the arithmetic identities the invoice standard guarantees --- line amounts summing to the
+line total, taxable base plus tax equalling the grand total, the amount due following from the
+grand total and any prepayment (\S\ref{sec:design-validation}). Those identities are
+deterministic, require no model, and would convert a class of silent misreading into a flagged
+document. They would not improve any score reported in this thesis, which is precisely why they
+were not built; they would improve the reviewability of the output, which is what a firm would
+actually be buying. The prototype of
 Chapter~\ref{ch:implementation} includes a review surface for exactly this reason, but it was
 built to support the evaluation rather than a firm's daily workflow, and the difference between
 those two is substantial.

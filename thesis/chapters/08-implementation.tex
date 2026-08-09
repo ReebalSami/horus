@@ -1,20 +1,208 @@
 \chapter{Implementation and Prototype}
 \label{ch:implementation}
 
-% Status: partial. The observability + demo application exists; deployment
-% packaging is in progress. Describes what was BUILT (the design lives in
-% Ch.~\ref{ch:system-design}, the measurements in Ch.~\ref{ch:results}).
+The previous chapters describe a design (Chapter~\ref{ch:system-design}), a measurement
+protocol (Chapter~\ref{ch:methodology}) and what the measurement found
+(Chapter~\ref{ch:results}). This chapter describes the artefact: the software that runs the
+pipeline, produces the numbers, and lets a human look at what the system did.
+
+It is deliberately short on inventory and long on the few structural choices that had
+methodological consequences. Three of them recur: configuration is data rather than code,
+every experiment is resumable and records its own provenance, and every research surface
+recomputes what it displays from the stored per-field outcomes rather than showing a summary
+written earlier. Each of those choices is the reason some claim elsewhere in this thesis can
+be checked rather than taken on trust.
 
 \section{Software Architecture}
 \label{sec:sys-architecture}
-% TODO: how the implemented components fit together into a local-only deployable
-% system: configuration-driven experiments, the extraction harness, the scoring
-% registry, experiment tracking, and the reproducibility primitives.
+
+The implementation is a Python package with a strictly one-directional dependency structure,
+which matters less as a matter of taste than as a matter of what can be tested in isolation.
+
+At the base sit the pure functions: value normalisation, ground-truth extraction from the
+embedded invoice representation, and the scoring rules. These import nothing from the layers
+above them, take data in and return data out, and are consequently testable without a model,
+a corpus or a network. Above them sit the pipeline stages --- rasterisation, the vision-model
+wrapper, the transcript-to-record structurer, the typed schema with its repair pass. Above
+those sits the orchestration harness, and beside everything sits configuration and run
+tracking.
+
+One detail of that layering is worth naming because it prevented a specific class of error.
+The prediction-side normalisers are imported by both the scorer and the typed schema, and
+import neither. Before that arrangement, canonicalisation existed in two places, and the two
+could disagree --- which is exactly the failure mode Chapter~\ref{ch:measurement-validity}
+documents when a rule was applied to one side of a comparison and not the other. A single
+implementation with two consumers makes the asymmetric case impossible to write by accident.
+
+\subsection{Configuration as data}
+
+Every knob of every experiment --- model identifiers, dataset paths, seeds, decoding
+settings, prompt strings, token budgets, thresholds, tracking metadata --- lives in a
+versioned configuration file. Experiments take exactly one argument: the path to that file.
+No experiment reads a constant from its own source.
+
+The configuration is a typed schema validated before anything else happens. Two properties of
+that schema do real work. Unknown keys are rejected rather than ignored, so a misspelt setting
+fails immediately instead of silently taking its default --- a failure mode that is
+particularly insidious in machine-learning code, where a run with a wrong setting still
+completes and still produces a number. And validation happens before any model is loaded, so a
+malformed configuration costs a second rather than the several minutes it takes to read
+quantised weights into memory.
+
+Overlay composition is supported: a small file can override selected keys of a base
+configuration, deep-merging into it, so a development variant of a sweep does not duplicate the
+full specification. Environment variables can override individual settings, which is how
+credentials stay out of the repository.
+
+\subsection{The orchestration harness}
+
+The evaluation sweeps in this thesis are cross-products --- several models against several
+dozen documents --- executed on a laptop. Three properties follow from that setting rather than
+from architectural preference.
+
+\textbf{Every cell is an independent unit of work.} Each (model, document) pair is rasterised,
+run, scored and recorded on its own. A failure in one cell is caught, recorded with its error
+class, and does not stop the sweep; a model that fails to load marks its whole row with a
+reason and the harness moves to the next model. A sweep that aborts on the first failure would
+have made the cohort survey of \S\ref{sec:results-preliminary} impossible, because several of
+the candidate models failed in exactly that way.
+
+\textbf{Sweeps are resumable.} Before running a cell the harness asks the tracking store
+whether that cell already completed, and skips it if so. Interrupting a multi-hour sweep and
+restarting it therefore costs only the cell in flight. This is not a convenience feature: on
+this hardware a full sweep does not reliably fit into one uninterrupted session, and without
+resumability the practical choice would have been between smaller sweeps and unreliable ones.
+
+\textbf{Every cell records its own provenance.} Each run carries the configuration that
+produced it, the model identifier, the document identifier, the per-field outcomes and the raw
+model output as stored artefacts. The tracking metadata lives in a local database and the
+artefacts on the local filesystem; nothing leaves the machine. This is what makes the
+re-scoring of Chapter~\ref{ch:measurement-validity} possible, and it is also what makes a
+number in this thesis traceable to the run that produced it rather than to a note.
+
+\subsection{Two training executors, one data path}
+
+The adaptation study of \S\ref{sec:results-adaptation} had to move off the local machine, for
+reasons \S\ref{sec:method-repro} states. That created a risk worth naming: two training paths
+means two opportunities for the training data to differ, and a difference there would have
+made the two arms incomparable and the whole grid uninterpretable.
+
+The implementation avoids that by sharing everything except the executor. Both paths read the
+same sealed split and verify its recorded fingerprints, carve the same selection slice, load
+the same instruction string from the same configuration file, and construct their training
+targets with the same code, including the consistency gate that discards any example whose
+constructed target does not itself score perfectly against the reference. Only the code that
+performs the optimisation differs. The checkpoint-selection rule is likewise delegated to
+standard trainer configuration --- select on the lowest loss over the held-back slice, evaluate
+once per epoch --- rather than implemented by hand, so the executed rule cannot drift from the
+registered one, and the sealed validation set is never passed to the trainer at all.
+
+\subsection{Verification}
+
+The project carries a test suite of 1{,}265 tests. Its composition reflects where the risk
+actually sits: the two largest files cover the scoring rules and the typed schema with its
+repair pass, and the value normalisers and reference extraction follow closely, because those
+are the components whose defects corrupt results silently rather than loudly. Several
+tests exist specifically to pin down invariants that were violated once --- that the field
+registry has the size the reported figures assume, that normalisation is applied to both sides
+of a comparison, and that no concrete value from the corpus appears inside a prompt.
+
+Tests that require the corpus, or that require Apple-Silicon inference, skip themselves by
+predicate rather than being excluded by a marker or deleted. The same suite therefore runs
+locally with the corpus present, locally without it, and in continuous integration, with the
+skips visible in the output rather than hidden in configuration.
+
+Continuous integration runs on every push and every pull request: linting, formatting,
+type-checking with a cleared cache, and the full suite. The cleared type-check cache is a
+response to a specific incident --- a warm cache silently masked an import error after a
+configuration change --- and is documented as such rather than being a general caution.
+
+\subsection{The operational interface}
+
+Every operation in the project is a named build target: install, test, lint, type-check,
+generate the synthetic corpus and validate it against an independent implementation, run a
+smoke test for one model, run a full sweep, browse the tracking store, run the dashboard,
+regenerate every table and figure in this manuscript, and build this manuscript.
+
+That is a deliberate choice about where operational knowledge lives. A command a researcher
+remembers is a command that stops working when they forget it; a target in the build file is
+discoverable, reviewable in a diff, and identical for every invocation. The tables and figures
+in Chapters~\ref{ch:results} and~\ref{ch:measurement-validity} are generated by one such
+target from committed evaluation output, which is what makes the prohibition on transcribing
+numbers into the manuscript enforceable rather than aspirational.
 
 \section{Observability and Demo Application}
 \label{sec:sys-app}
-% TODO: the read-only research dashboard + the bounded live-extraction demo page.
+
+A per-field evaluation produces a great deal of structure that a table cannot show: which
+document, which field, which value, against which page region, in which model's output. The
+prototype application exists to make that structure inspectable. It runs locally, reads from
+the same tracking store the sweeps write to, and has five surfaces.
+
+\textbf{Three read-only research surfaces.} An overview reports headline accuracy per
+approach; an invoice explorer shows one document for one approach --- the page image the model
+saw, the raw text it emitted, the parsed record, and a colour-coded verdict for every field
+against the reference; an approach comparison places the methods side by side on the documents
+they share, with a per-field breakdown of where each one fails.
+
+One design rule governs all three: they recompute their figures from the stored per-field
+outcomes at display time rather than reading a summary number that was written earlier. The
+reason is the failure mode of Chapter~\ref{ch:measurement-validity} --- a stored summary
+computed under a superseded scoring rule looks exactly like a current one. A surface that
+recomputes cannot show a stale number, and during the corrections it repeatedly served as the
+first place a discrepancy became visible.
+
+\textbf{A live extraction surface.} One page departs from read-only: upload a document, choose
+a method, and the pipeline runs on this machine. Two properties make it honest rather than a
+demonstration trick. It rasterises at the same resolution the evaluation uses, so what it shows
+is what was measured rather than a favourable rendering. And it never scores, because an
+uploaded document has no reference --- it presents the extraction for human inspection and
+says so. Model identifiers, prompts and token budgets are read from the same configuration
+files the experiments use, so the demonstration cannot drift from the measured system.
+
+\textbf{An adjudication surface.} The fifth page is the annotation interface behind the
+held-out answer key of \S\ref{sec:method-heldout-gt}, and it is the clearest case in this
+project of an interface decision determining whether a methodological step was feasible at all.
+
+The naive form of that interface is a form with every field for every document: 34 fields
+across 39 documents is 1{,}326 decisions. That review does not get finished, and an unfinished
+review produces an answer key whose warrant is unclear --- which is precisely how an earlier
+reported figure came to rest on an unverified key and had to be withdrawn. The implemented
+surface instead shows only the cells the automatic combiner could not settle, ranked so that
+the cells where an undetected error would do the most damage come first, and presents for each
+one every channel's reading together with the page text that supports it. That is 248
+decisions, and 248 decisions can be finished.
+
+Two safeguards are built into it. Sign-off writes to a separate location carrying a provenance
+record per cell, and never overwrites the files of the channels the combiner reads --- so the
+inputs to adjudication remain independent of its outputs. And the page runs no model: every
+reading it displays was produced earlier and is read from disk, so the act of reviewing cannot
+introduce a new source of evidence.
 
 \section{Deployment}
 \label{sec:sys-deploy}
-% TODO: FastAPI + Streamlit + Docker compose; "docker compose up" -> full product.
+
+This section states what exists, because the honest answer is narrower than an implementation
+chapter usually reports.
+
+\textbf{What exists} is a reproducible local development and evaluation environment: a locked
+dependency manifest resolved by a single command, a pinned interpreter version, the build
+targets described above, and continuous integration that verifies the whole of it on every
+change. On the target hardware --- one laptop, no accelerator, no network dependency on the
+inference path --- a checkout runs every experiment reported in this thesis. One external
+dependency sits outside the Python environment: an independent validator used to cross-check
+the reference extraction is fetched on demand and verified against a pinned cryptographic
+hash, so the cross-check cannot silently become a different tool.
+
+\textbf{What does not exist} is packaging for anyone other than a developer. There is no
+container image, no service interface, no installer, and no operational documentation for a
+firm's information-technology department. The system is operated from a source checkout by
+someone who can read a build file.
+
+That is a scope decision rather than an omission, and the reasoning is the same as in
+\S\ref{sec:design-scope}. Packaging serves adoption; nothing in the research questions of
+\S\ref{sec:research-questions} depends on it, and the effort it would have consumed went into
+the measurement apparatus instead --- which, given what Chapter~\ref{ch:measurement-validity}
+found, was the correct allocation. What a deployable version would additionally require is
+listed in \S\ref{sec:fw-production}, and the prototype's review surface is the part of it that
+already exists, because the evaluation needed it first.

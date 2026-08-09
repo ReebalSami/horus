@@ -1,78 +1,386 @@
 \chapter{System Design}
 \label{ch:system-design}
 
-% PURPOSE OF THIS CHAPTER (per ADR-055 amendment 2026-07-31):
-% The thesis was designed as a three-layer system. ADR-054 froze scope to Layer 1,
-% so Layers 2-3 are presented here as DESIGN ONLY, with an explicit statement that
-% they were not implemented or evaluated. This keeps the architecture motivated and
-% the reporting honest -- it does NOT claim unbuilt work as a contribution.
-% Everything evaluated in this thesis lives in Layer 1 (Sec.~\ref{sec:design-layer1}).
+This chapter describes the system that was designed, and states precisely which part of it
+was built and measured. The distinction is load-bearing and is made in three places --- in
+the architecture figure, in the section headings, and in a closing section that states the
+scope in plain words --- because a design chapter is the easiest place in a thesis to let an
+intention read as an achievement.
+
+The system was conceived as three layers. One of them was implemented and evaluated; the
+other two remain design. \S\ref{sec:design-scope} explains why the scope was narrowed, and
+Chapter~\ref{ch:limitations-future-work} lists the hypotheses that consequently went
+untested rather than dropping them from the record.
 
 \section{Design Overview}
 \label{sec:design-overview}
 
-% TODO: the three-layer decomposition and why the document-reading layer is the
-% load-bearing one: every downstream layer consumes its output, so its error rate
-% upper-bounds the whole system.
-% Figure: three-layer architecture diagram -> thesis/figures/architecture.pdf
+The practitioner-facing problem stated in Chapter~\ref{ch:introduction} is not
+\emph{transcribe this invoice}. It is closer to \emph{which of my clients' suppliers billed
+reverse-charge in the last quarter, and can I prove each of those bookings from the
+document}. Answering that requires three capabilities that are naturally separable, and the
+design separates them (Figure~\ref{fig:architecture}).
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/architecture.tex}
+  \caption[The three-layer design]{The three-layer design. Layer~1 was built and measured;
+  Layers~2 and~3 are design only and are marked as such wherever they appear.}
+  \label{fig:architecture}
+\end{figure}
+
+\textbf{Layer~1 --- reading and structuring.} A page image becomes a validated record: the
+values a human would read off the page, placed into named fields with their types
+canonicalised. This layer is the subject of the rest of the thesis.
+
+\textbf{Layer~2 --- entity resolution and linking.} Validated records become nodes and edges
+in a graph of parties, documents and obligations: the same supplier recognised across
+invoices and periods, each document linked to its issuer, its recipient and its tax
+treatment.
+
+\textbf{Layer~3 --- querying and reporting.} Practitioner questions answered over that
+graph, with every answer traceable back to the document and field it came from.
+
+\subsection{The honest-null contract}
+\label{sec:design-honest-null}
+
+One commitment binds every layer and is stated here because the rest of the design follows
+from it. \textbf{A field the document does not carry must come back absent, and a field the
+system could not read must come back absent --- never guessed.}
+
+The justification is specific to the domain rather than a general preference for caution. The
+output of this system is not consumed by a person reading a summary; it is consumed by a
+professional who signs off a booking and carries liability for it. An empty field is visible to
+that person: it prompts a look at the document. A plausible fabrication --- a well-formed tax
+identifier that belongs to no one, a due date that was never printed --- is not visible,
+because it looks exactly like a correct answer. The failure mode that matters here is
+therefore not a low score; it is a confident wrong answer that survives review.
+
+Three design consequences follow, and each is visible later in this chapter: the repair stage
+may never invent a value (\S\ref{sec:design-validation}); the evaluation treats a correct
+absence as a first-class outcome and measures the rate of values emitted for fields that do
+not exist (\S\ref{sec:method-metrics}); and, in the adaptation study of
+\S\ref{sec:results-adaptation}, a change that raises raw extraction while raising that rate is
+read as a regression rather than an improvement.
+
+\subsection{Why the reading layer is the load-bearing one}
+
+The layers are not equal partners, and the asymmetry is worth stating before anything else,
+because it is the reason the thesis ended up where it did.
+
+Every layer above the first consumes the first layer's output. A supplier node is only as
+correct as the seller name and tax identifier that produced it; a reverse-charge query is
+only as correct as the tax category extracted from each document. Errors in the reading
+layer do not stay in the reading layer --- they propagate upward and, in the graph, compound:
+a misread tax identifier does not merely corrupt one field, it can split one supplier into
+two entities and thereby corrupt every aggregate that supplier appears in.
+
+The practical consequence is an ordering constraint on the work. The quality of the extraction
+layer upper-bounds the quality of everything built on it, so a graph layer built on an
+extraction layer of unknown reliability would produce results whose errors could not be
+attributed: a wrong answer to a practitioner question would be indistinguishable from a
+correctly answered question over wrong data. Establishing what the first layer actually
+achieves is therefore a precondition for the other two being meaningful, not merely the first
+item on a list.
+
+That precondition turned out to be more demanding than anticipated, which is what
+\S\ref{sec:design-scope} is about.
 
 \section{Layer 1: Reading and Structuring}
 \label{sec:design-layer1}
 
-This is the layer implemented and evaluated in this thesis.
+This is the layer implemented and evaluated in this thesis. Its input is a page image; its
+output is a record whose fields are named by an externally defined schema and whose values
+are canonicalised strings. Everything between those two points is shown in
+Figure~\ref{fig:pipeline}.
 
-\subsection{Two-Stage Architecture: Reader and Structurer}
+\begin{figure}[htbp]
+  \centering
+  \input{figures/pipeline.tex}
+  \caption[The Layer~1 pipeline]{The Layer~1 pipeline: three stages, the artefact that
+  passes between them, and the point at which the two transcript-level measurement
+  instruments attach. The transcript boundary is what makes the reading and structuring
+  stages separately accountable; \S\ref{sec:method-attribution} defines the instruments
+  and \S\ref{sec:results-attribution} reports what they found.}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{Two stages, not one}
 \label{sec:design-two-stage}
-% TODO: separation of concerns -- a document \ac{VLM} transcribes the page image
-% (the "reader"), a language model maps that transcript onto the target schema
-% (the "structurer"). Contrast with the single-shot alternative (one model, image
-% straight to \ac{JSON}). Both were built and compared; see Ch.~\ref{ch:results}.
 
-\subsection{Target Schema}
+The obvious arrangement is one model: hand a vision-language model the page image and a
+schema, and ask it for the filled record directly. The design here does not do that. It uses
+two models in sequence --- a \textbf{reader} that transcribes the page to plain text with no
+knowledge of the schema, and a \textbf{structurer} that receives that text plus the field
+specification and emits the record.
+
+Three arguments motivate the split; the first is architectural, the second empirical, and the
+third is the one that made this thesis possible at all.
+
+\textbf{Separation of concerns, and therefore of failure.} Reading a page and populating a
+schema are different tasks with different failure modes. Reading fails on rendering: faint
+print, an unusual layout, a photograph taken at an angle. Structuring fails on semantics: the
+net total placed in the gross field, a label misinterpreted, a value that belongs to no field
+emitted anyway. A single model that does both can fail either way and the output looks
+identical --- a wrong value in a field. Two stages give each failure mode its own address.
+
+\textbf{The two-stage arrangement measured better on this corpus.} This is not a purely
+a-priori design choice. A probe compared instructing a reading model to emit structured data
+directly against the two-stage arrangement, and a further study compared a rule-based
+extraction baseline, a single-shot arrangement and the two-stage arrangement on a development
+subset. The two-stage arrangement won in both; \S\ref{sec:results-preliminary} reports those
+studies with the caveats they require. The finding also has support in the literature:
+imposing a rigid output format on a generative model has been shown to degrade its
+performance on the reasoning-adjacent part of the task rather than being a free convenience
+\cite{tam2024format}, and asking a reading model to simultaneously read and conform to a
+schema is exactly that imposition.
+
+\textbf{The transcript is a measurement surface.} This is the decisive argument, and it is
+easy to overlook because it is about the researcher rather than the user. A boundary between
+the stages is a place where an intermediate artefact exists, can be stored, and can be
+manipulated. Because the transcript exists, the reading stage can be removed from the
+measurement --- by substituting text rendered from the reference data --- and the structuring
+stage can be measured against a ceiling that is independent of reading quality. Because the
+transcript exists, each individual miss can be classified by whether the value was present in
+it. A single-shot model offers no such surface: its intermediate representation is a tensor,
+not an artefact, and the only observable is the final record. The central empirical result of
+this thesis --- that reading rather than structuring is the binding constraint --- is a result
+the single-shot architecture could not have produced.
+
+\textbf{What the split costs, stated rather than omitted.} The transcript is plain text, so
+everything the page expressed through position survives the boundary only insofar as the
+reader preserved it in reading order. A two-column layout, a table whose columns carry
+meaning, a value printed in a box beside its label rather than after it --- all of these
+survive only as well as the reader serialises them. The structuring stage cannot recover what
+the transcript does not carry, and this is not a hypothetical cost: it is the mechanism behind
+the attribution result of \S\ref{sec:results-attribution}. A single-shot model, whatever else
+it gives up, never loses layout information at an internal boundary, because it has no such
+boundary. The design accepts this cost in exchange for accountability, and the thesis reports
+the size of the cost rather than assuming it away.
+
+Two further consequences of the split are worth naming. The two stages run sequentially, so
+latency is additive and two sets of model weights must fit within the same memory envelope ---
+a real constraint on the hardware this system targets (\S\ref{sec:method-repro}). And each
+stage can be replaced independently: changing the reading model is a configuration change that
+requires nothing of the structuring stage, which is what made the reader comparison of
+\S\ref{sec:results-reader} affordable.
+
+\subsection{The target schema}
 \label{sec:design-schema}
-% TODO: the extraction target is an \ac{EN}~16931-aligned field set (\ac{BT} codes),
-% covering document header fields, party fields, the VAT breakdown group, the line-item
-% group, and the payment-terms group. Rationale: the norm is the legal interoperability
-% reference for German B2B invoicing, so the schema is externally defined rather than
-% invented for the experiment.
 
-\subsection{Validation and Repair}
+The extraction target is not invented for the experiment. It is an alignment to
+\ac{EN}~16931 \cite{en16931}, the European standard that defines the semantic model of an
+electronic invoice and gives each element a business-term identifier. In Germany that standard
+is the interoperability reference for business-to-business invoicing, so a system that extracts
+to it produces records that mean the same thing to another system, and results that can be
+compared with other work on the same terms.
+
+The schema covers 34 flat header fields and three repeating groups. The flat fields fall into
+recognisable blocks: document identity (number, issue date, document type, currency, delivery
+date, order reference, billing period, document-level tax rate), the seller block (name,
+address, \ac{VAT} identifier, tax number, location identifier), the buyer block (name, address,
+\ac{VAT} identifier, reference), the payment block (due date, means, bank details, payment
+reference) and the totals
+block (line total, taxable base, tax total, grand total, amount due, prepaid amount,
+allowances, charges, rounding). The repeating groups are the line-item table, the tax breakdown
+per rate, and early-payment discount terms.
+
+Three properties of the schema are design decisions rather than incidental.
+
+\textbf{One registry drives three consumers.} The field set is declared once, in a single
+registry, which generates the specification given to the structuring model, drives the scorer,
+and drives the reporting. Had the specification and the scorer carried separate field lists,
+they could have drifted --- a field asked for and never scored, or scored and never asked for
+--- and the drift would have been invisible in the results.
+\S\ref{sec:method-schema} treats the methodological consequences; the point here is that the
+single-registry arrangement is an architectural property of the system rather than a convention
+upheld by discipline.
+
+\textbf{Keys are canonical, values are as printed.} Field names are canonical English
+identifiers derived from the standard; values are whatever the document prints, in whatever
+language it prints them. No German label matching happens on the extraction path. This is what
+makes the same pipeline applicable to the German and English documents of the held-out corpus
+without a per-language variant, and therefore what makes a multilingual evaluation of one
+system meaningful rather than an evaluation of two.
+
+\textbf{The record is typed.} Each field declares a type --- money, date, rate, code, free text
+--- and the type determines how a raw model value is canonicalised and how a predicted value is
+compared with a reference one. A money field is not compared as a string; a date is not
+compared as a string. Declaring the type once, at the registry, is what allows the comparison
+rule to be applied identically to both sides of every comparison, a property
+Chapter~\ref{ch:measurement-validity} shows to be easy to violate and expensive when violated.
+
+\subsection{Validation and repair}
 \label{sec:design-validation}
-% TODO: deterministic post-processing -- schema validation, conservative \ac{JSON}
-% repair, and normalisation of representation differences (as-printed vs as-stored).
-% Design principle: repair may never invent a value; an unparseable field stays absent.
+
+The third stage runs no model. It takes whatever text the structuring stage produced and turns
+it into a record of the declared shape, or reports that it could not.
+
+A stage of this kind is necessary because the local inference runtime used here offers no
+constrained decoding: the structuring model cannot be forced to emit well-formed output at
+generation time, so conformance has to be established afterwards. In practice models emit
+records wrapped in explanatory prose, enclosed in code fences, followed by a chat-template
+token, with trailing commas, with keys capitalised differently from the specification, or
+truncated mid-structure at the generation limit. Discarding all of these as unparseable would
+measure the model's formatting conventions rather than its extraction.
+
+The stage therefore applies a recovery sequence, in order, stopping at the first success:
+parse the text directly; scan for the first balanced object, which handles both prose around
+the record and a model that emitted the same object repeatedly; take the span between the
+outermost braces; tolerate trailing commas; and finally supply structural delimiters the model
+omitted. Every recovered object then has its keys matched case-insensitively against the
+registry, and each value canonicalised by its declared type --- German and Anglo-Saxon decimal
+conventions to one canonical form, the several date conventions a European invoice prints to
+one canonical form, a rate with or without its percent sign to one canonical form.
+
+One design principle governs the whole stage, and it is a hard constraint rather than a
+preference: \textbf{repair may never invent a value}. The structural repair supplies delimiters
+only, never a key and never a value, and it refuses to guess when the output was truncated in
+the middle of a value --- in that case the field is reported absent. A value that cannot be
+parsed becomes an absence rather than a best guess. An unrecognised key is dropped rather than
+mapped to the field it most resembles. The reason is the honest-null contract of
+\S\ref{sec:design-honest-null}: in this domain a plausible fabrication is worse than a gap,
+because the gap is visible to the reviewer who has to sign the booking and the fabrication is
+not. A repair stage that guesses is a fabrication engine with a reassuring name.
+
+Two small behaviours follow the same principle. Where a document is multi-page, the record is
+assembled page by page and the first non-absent value for a field wins, so a later page cannot
+overwrite an earlier honest reading with a spurious one. And exactly one cross-field repair is
+performed: where a document has a single tax rate in its breakdown and the flat tax-rate field
+is absent, the value is copied across. That is a derivation from data the model did emit, not
+an invention.
+
+\textbf{What this stage deliberately does not do.} It does not check the arithmetic identities
+that the invoice standard guarantees --- that line amounts sum to the line total, that base plus
+tax equals the grand total, that the amount due follows from the grand total and any prepayment.
+Those checks would catch a class of reading error that is otherwise silent, and they are a
+natural extension of the stage; they are not implemented here, and \S\ref{sec:fw-production}
+records that as future work rather than describing them as if they existed. Nothing in this
+thesis's results depends on a consistency check that was not performed.
+
+\subsection{Designed to be auditable}
+\label{sec:design-audit}
+
+One further property is a design decision rather than an implementation detail, because it
+shaped what could later be claimed.
+
+Every intermediate artefact is persisted: the rasterised page, the transcript, the raw text the
+structuring model emitted, the parsed record, and the per-field comparison outcome. Nothing in
+the pipeline is transient. Combined with greedy decoding --- no sampling anywhere, so a run is
+reproducible from its configuration --- this means a stored result can be re-examined and
+re-scored without re-running any model.
+
+That capability is the reason Chapter~\ref{ch:measurement-validity} exists in the form it does.
+When a defect was found in the scoring rules, the affected results could be recomputed on the
+identical stored model outputs, which isolates the effect of the correction from any change in
+model behaviour. Had the artefacts not been kept, every correction would have required a fresh
+inference run, and the difference between \emph{the ruler changed} and \emph{the model changed}
+would have been unrecoverable.
 
 \section{Layer 2 (Design Only): Compliance-Aware Knowledge Graph}
 \label{sec:design-layer2}
 
-\emph{Not implemented or evaluated within the scope of this thesis; see
-Chapter~\ref{ch:limitations-future-work}.}
+\emph{Not implemented or evaluated within the scope of this thesis. Everything in this section
+describes an intended design; no claim in this thesis rests on it. See
+\S\ref{sec:design-scope} and Chapter~\ref{ch:limitations-future-work}.}
 
-% TODO: the intended design -- extracted invoices become nodes/edges (supplier,
-% customer, invoice, line item, tax rate), entity resolution links repeat suppliers,
-% and compliance properties (mandatory-field completeness, input-tax deductibility)
-% are derived per document. Why a graph: the analytically interesting questions are
-% relational (per-supplier aggregation over time, duplicate detection, cross-document
-% consistency), which flat retrieval expresses poorly.
+\subsection{Why a graph rather than a document store}
+
+The questions a tax practitioner actually asks are relational. \emph{Which suppliers billed us
+under reverse charge last quarter, and is each of those treatments consistent with that
+supplier's other invoices?} \emph{Has this invoice already been booked under a different
+number?} \emph{Which documents in this period are missing a particular the law requires?}
+
+Each of these is a question about relationships between documents, not about the content of one
+document. A store that treats each invoice as an independent record answers them only by
+scanning and re-deriving the relationships at query time; a representation that makes the
+relationships explicit answers them directly. That is the argument for a graph, and it is an
+argument about the shape of the question rather than about technology fashion.
+
+\subsection{The intended model}
+
+Validated records from Layer~1 would become nodes: legal parties, documents, line items, tax
+rates and periods, with edges for issuance, receipt, reference and tax treatment. Entity
+resolution would link the same supplier across documents, which is the step that makes
+per-supplier aggregation possible and is also the step most exposed to extraction error --- two
+spellings of one company name, or one misread tax identifier, split a supplier into two
+entities and silently corrupt every aggregate it appears in.
+
+On top of that structure, compliance properties would be derived per document rather than
+stored: whether the invoice carries every particular that \S14 \ac{UStG} requires, whether the
+stated tax treatment is coherent with the parties' registered identifiers, and whether the
+input tax is therefore deductible. Deriving them rather than storing them keeps a single
+authority for each judgement --- the rule, applied to the current record --- so that a
+correction to an extracted field propagates to every conclusion drawn from it.
+
+\subsection{The measurement question this layer raises}
+
+The interesting question about this layer is not whether it can be built. It is how error
+propagates into it, and that question needs its own apparatus: extraction quality is measured
+per field, whereas graph quality has to be assessed at two distinct levels --- whether
+individual edges are correct, and whether the resulting structure has the right global
+properties \cite{cai2025}. A graph can score well edge-by-edge and still be wrong in the way
+that matters, if a single entity-resolution failure fragments a supplier. Building the layer
+without that apparatus would repeat, one level up, exactly the mistake that
+Chapter~\ref{ch:measurement-validity} documents at this level.
 
 \section{Layer 3 (Design Only): Analytical Query}
 \label{sec:design-layer3}
 
-\emph{Not implemented or evaluated within the scope of this thesis; see
-Chapter~\ref{ch:limitations-future-work}.}
+\emph{Not implemented or evaluated within the scope of this thesis. See
+\S\ref{sec:design-scope} and Chapter~\ref{ch:limitations-future-work}.}
 
-% TODO: the intended design -- natural-language questions answered over the graph,
-% with a comparison of flat vector retrieval against graph-based retrieval
-% (\ac{RAG} vs graph \ac{RAG}) and a per-question routing strategy.
+The third layer would answer practitioner questions posed in natural language over the graph,
+locally, with the same confidentiality constraint as the layers below it.
+
+Two design commitments would govern it. First, \textbf{every answer carries its provenance}:
+the documents and the specific fields it was derived from, so that a practitioner can verify a
+figure rather than trust it. An unsourced answer is not merely less useful in this domain; it
+is unusable, because the professional obligation attaches to the booking and not to the tool.
+Second, \textbf{retrieval strategy is a question to be measured, not assumed}. Flat vector
+retrieval over document text and graph-structured retrieval have different strengths, and the
+comparison between them is an active research question rather than a settled one
+\cite{han2025,edge2024graphrag}. The plausible outcome is that the answer differs by question
+class --- single-document lookups favouring flat retrieval, multi-document aggregation
+favouring the graph --- which is why the design anticipates routing per question rather than
+committing to one mechanism.
+
+Both commitments describe an intended design. Neither was implemented, and neither is claimed.
 
 \section{Scope of This Thesis}
 \label{sec:design-scope}
 
-% TODO (important -- the honesty anchor of the chapter):
-% State plainly which layers were built and measured (Layer 1) and which remain
-% design (Layers 2-3). Explain WHY: the measurement described in
-% Ch.~\ref{ch:results} showed the document-reading step, not the structuring step,
-% to be the binding constraint; fixing that constraint properly was judged more
-% valuable than sketching two further layers on top of an unreliable foundation.
-% Note that the hypotheses covering Layers 2-3 were pre-registered before this
-% decision and are reported as not evaluated -- never silently dropped.
+\textbf{Layer~1 was built and measured. Layers~2 and~3 were designed and were neither
+implemented nor evaluated.} Everything reported in Chapters~\ref{ch:results}
+and~\ref{ch:discussion} concerns Layer~1.
+
+The narrowing was a decision taken during the work, and the reason is a finding rather than a
+shortage of effort.
+
+The measurement of Layer~1 established two things. The first is that the reading stage, not the
+structuring stage, is what limits this pipeline (\S\ref{sec:results-attribution}) --- so the
+most valuable available work was on the foundation, not on new floors above it. The second is
+more uncomfortable and more decisive: the apparatus measuring Layer~1 was itself defective in
+several distinct ways, and most of what initially looked like model error was measurement error.
+Chapter~\ref{ch:measurement-validity} is the record of finding and correcting those defects.
+
+Given that, building a graph layer on top would have meant constructing a second measurement
+problem --- how graph error relates to field error --- on top of a first one that had just been
+shown to be unreliable. A wrong answer at the query layer would have been unattributable: it
+could have come from the query, the graph, the extraction, or the ruler. The judgement was that
+a narrower claim that can be trusted is worth more than a three-layer demonstration that cannot
+be interrogated. Chapter~\ref{ch:discussion} returns to this trade-off and to what is lost by it.
+
+Two consequences are recorded rather than glossed.
+
+\textbf{The hypotheses covering the upper layers were registered before the narrowing, and are
+reported as not evaluated.} They are listed with their registration dates in
+\S\ref{sec:unevaluated}. A hypothesis that vanishes between registration and reporting is
+indistinguishable, to a reader, from one that was tested and found inconvenient, so none of them
+is dropped from the record.
+
+\textbf{The unbuilt layers are not counted as contributions.} The contribution claimed in
+\S\ref{sec:contributions} is Layer~1 together with the measurement methodology that made its
+results trustworthy. This chapter describes the full design because the design motivates the
+architecture of Layer~1 and because the upper layers are where the work continues --- not
+because a diagram is evidence.
