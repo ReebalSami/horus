@@ -1,115 +1,300 @@
 \chapter{Limitations and Future Work}
 \label{ch:limitations-future-work}
 
-% PURPOSE (per ADR-055 amendment 2026-07-31): this chapter absorbs the two layers
-% that ADR-054's scope freeze removed from thesis scope, plus the honest limitation
-% set. It replaces the June skeleton's empty "Knowledge Graph" and "Analytical
-% Query" chapters. Pre-registered but unevaluated hypotheses are reported here --
-% explicitly, never silently dropped (no-HARKing convention).
+This chapter states what this thesis does not establish. It is written on the principle that a
+limitation named by the author is worth more than one found by the reader, and it includes the
+hypotheses that were registered before data collection and then never tested --- reported as
+such rather than dropped, because a hypothesis that vanishes between registration and reporting
+is indistinguishable, to a reader, from one that was tested and inconvenient.
 
 \section{Limitations}
 \label{sec:limitations}
 
-\subsection{Corpus: Synthetic and Born-Digital}
+\subsection{The Larger Corpus Is Synthetic and Born-Digital}
 \label{sec:lim-corpus}
-% TODO: the evaluation corpus is generated from the reference e-invoicing corpus and
-% rendered as born-digital PDFs. Real firm documents arrive as scans and phone
-% photographs, with skew, stamps, staples and handwriting. Published multilingual
-% parsing benchmarks report a substantial accuracy drop for open-source parsers on
-% *photographed* documents, so the numbers reported here are an upper bound for the
-% camera-scanned case. State this before any result is interpreted.
 
-\subsection{In-Sample versus Held-Out Measurement}
-\label{sec:lim-insample}
-% TODO: distinguish the diagnostic (in-sample) runs used to build the measurement
-% apparatus from the sealed split used for the reported baseline. Name explicitly
-% which numbers in Ch.~\ref{ch:results} are which, and why an in-sample number may
-% never be quoted as real-world accuracy.
+The 146-document corpus is generated: its pages are rendered from the same data that supplies
+the reference, so they are clean by construction --- no skew, no shadow, no stamp, no staple, no
+handwriting, no compression artefact. Real documents in a tax firm arrive with all of those.
+
+The held-out corpus exists precisely to bound this, and it does so with a number:
+photographed documents score more than eleven points of mean per-invoice F$_1$ below
+email-native ones (Table~\ref{tab:heldout-by-channel}). \textbf{Any figure from the synthetic
+corpus should therefore be read as an upper bound for the camera-captured case}, and the size of
+the correction is roughly that gap. The direction and magnitude are corroborated independently by
+a multilingual parsing benchmark reporting an average 17.8\,\% drop for open-source parsers on
+photographed documents \cite{mdpbench2026}.
+
+\subsection{The Held-Out Corpus Is Small and Single-Annotator}
+\label{sec:lim-heldout}
+
+Thirty-nine documents, adjudicated by one person. Two consequences follow.
+
+\textbf{No precise figure is supported.} The headline held-out number should be read as
+establishing a level and a direction, not a value to two decimal places. The per-channel cells
+are smaller still, some containing around ten documents, so the channel comparison carries the
+weight of a clear effect on a small sample rather than of a precise estimate.
+
+\textbf{No inter-annotator agreement can be reported.} The three-channel design substantially
+limits the exposure --- 463 accepted cells rest on printed-text proof or on two independent
+channels agreeing, not on judgement (\S\ref{sec:method-heldout-gt}) --- but 248 cells were
+decided by the author, and for those there is no second opinion. This is irreducible for a
+single-author corpus and is the reason the datasheet in Appendix~\ref{app:heldout} records the
+provenance class of every cell rather than merely asserting that the key was reviewed.
+
+\subsection{Header Fields Only, on Real Documents}
+\label{sec:lim-groups}
+
+The real-invoice result covers flat header fields. Repeating groups --- line items, the tax
+breakdown per rate, discount terms --- are excluded structurally, not by a reporting convention.
+
+The reason is stated in \S\ref{sec:method-heldout-gt}: rows do not align across reading channels,
+because one reader splits a line another merges, so positional comparison manufactures
+disagreement out of segmentation rather than out of error. The group rows in the held-out key were
+seeded from a single channel and never author-reviewed, and scoring against an unreviewed key is
+what produced the retracted figure this project already had to withdraw once.
+
+Line-item extraction is therefore measured on the synthetic corpus, where the reference is exact
+and free (Table~\ref{tab:attribution-clusters}). The gap that remains is a measurement of
+\emph{real} line items, and \S\ref{sec:fw-groups} states the route to it.
+
+\subsection{The Structuring Model Was Held Constant, Not Selected}
+\label{sec:lim-structurer-selection}
+
+This is the sharpest asymmetry in the thesis and it deserves to be stated plainly.
+
+The reading model was chosen competitively: a cohort survey, then a shortlist, then a direct
+comparison on two instruments, then a hand-judged audit of all 52 residual misses, then a
+pre-registered conjunctive test of the larger sibling that the challenger failed
+(\S\ref{sec:results-reader}). \textbf{The structuring model was not chosen at all.} It was fixed
+as the controlled variable so that the reader comparison and the specification-repair work could
+be interpreted against a stable back end, and no structuring bake-off was ever run.
+
+Holding it constant is what makes the rest interpretable --- swapping it would have invalidated
+every committed baseline, and the attribution result depends on the structuring stage being the
+same in both arms. But the limitation is real and it bounds two claims. No claim can be made that
+this is the best available structuring model, and the adaptation results of
+\S\ref{sec:results-adaptation} are conditional on it: a different structuring model might close
+the reader-noise gap with no adaptation at all.
+
+There is a related asymmetry worth reporting, because it is the reason the adaptation experiment
+was designed as a grid rather than a before-and-after. On text rendered from the reference, this
+structuring model already scores in the high nineties (Table~\ref{tab:sealed-val-arms}) --- above
+the threshold the project had set. The measured shortfall is therefore \emph{robustness to
+reading noise}, not capability, and an intervention aimed at capability was always unlikely to
+help.
+
+\subsection{One Adaptation Recipe, No Sweep}
+\label{sec:lim-finetune}
+
+The adaptation study tested one recipe: one rank, one learning rate, one schedule, one epoch
+budget, 100 fitting examples (Table~\ref{tab:hyperparameters}). No hyperparameter search was
+performed, and the training set contained no examples teaching appropriate abstention.
+
+The negative result is therefore about \emph{this} recipe and not about adaptation as a
+technique. \S\ref{sec:disc-finetune} sets out why the observed failure mode --- rising spurious
+emission rather than degraded placement --- is consistent with published findings, and
+\S\ref{sec:fw-abstention} states the specific untested variant that the mechanism points to.
 
 \subsection{Hardware Envelope}
 \label{sec:lim-hardware}
-% TODO: local-first inference was developed inside a 16\,GB unified-memory laptop;
-% one candidate exceeded that envelope and had to be measured on rented hardware.
-% The privacy premise is on-premises processing, which permits a workstation GPU --
-% but the laptop-only claim is narrower than "runs locally".
 
-\subsection{Language and Document Class}
+All inference was developed and measured inside a single laptop with 16\,\ac{GB} of unified
+memory. That is a narrower claim than \emph{runs locally}: the privacy premise is on-premises
+processing, which would also permit a workstation with a discrete accelerator, and such a machine
+would likely support a larger reading model than the one selected here.
+
+The envelope bound training rather than inference. The adaptation runs exceeded it and were moved
+to a rented accelerator (\S\ref{sec:method-repro}), which means the local-only property holds for
+the delivered pipeline but not for the process that produced its adapters. Since those adapters
+are not delivered, the delivered system remains fully local --- but a firm wishing to adapt the
+pipeline to its own documents on its own hardware could not do so within this envelope.
+
+\subsection{Language, Document Class and Jurisdiction}
 \label{sec:lim-scope}
-% TODO: German B2B invoices only. No claim of transfer to other languages, other
-% document classes (contracts, bank statements, receipts) or other jurisdictions.
 
-\subsection{The Structurer Was Held Constant, Not Selected}
-\label{sec:lim-structurer-selection}
-% TODO (ADR-067): state the asymmetry plainly. The READER was chosen competitively --
-% five candidates, a deterministic findability ruler, an invoice-by-invoice manual audit
-% of every residual miss, and a rejection decided on failure MECHANISM rather than
-% headline score (ADR-056/057). The STRUCTURER was not: gemma-4-E4B-it was fixed as the
-% controlled variable so the reader and the prompt surface could be studied against a
-% stable back end, and no structurer bake-off was ever run.
-%
-% Why this is defensible: holding it constant is what makes the reader comparison and the
-% prompt-repair work interpretable at all, and swapping it would have invalidated every
-% committed baseline. Why it is still a limitation: no claim can be made that this
-% structurer is the best available choice, and the fine-tune results in
-% Sec.~\ref{sec:results-finetune} are conditional on it. A different structurer could
-% plausibly close the reader-noise gap without any fine-tuning.
-%
-% Note the related asymmetry worth reporting: on perfect (oracle) input this structurer
-% already scores 0.9719 overall micro-F1, above the 0.90 target, so the measured shortfall
-% is robustness to reader noise rather than capability. That is why the fine-tune is
-% evaluated as a 2x2 (train on reader/oracle text x evaluate on reader/oracle text)
-% instead of as a single before/after -- see Sec.~\ref{sec:method-finetune}.
+German and English business-to-business invoices, under German and European invoicing
+conventions. Nothing is claimed about receipts, contracts, bank statements, dunning letters or
+correspondence; nothing about jurisdictions with different mandatory particulars; nothing about
+languages outside the two measured. The single French-language document in the synthetic corpus is
+an instance, not evidence of transfer.
 
 \subsection{Measurement Constructs}
 \label{sec:lim-measurement}
-% TODO: the reading-quality proxy (whether a ground-truth value is findable in the
-% transcript) correlates strongly with the end metric but is a proxy: a value can be
-% present as a string yet unusable because the surrounding table structure is
-% mangled. State the correlation honestly and mark the proxy as a proxy.
+
+Two constructs carry more inferential weight than their definitions strictly support.
+
+\textbf{The reading-quality proxy is a proxy.} It asks whether a reference value appears in the
+transcript at all. A transcript containing every value on the page in scrambled order would score
+perfectly and be useless to the structuring stage (\S\ref{sec:method-answerability}). The proxy
+was consequently never used as the sole basis for a decision, and the one decision where it
+mattered was settled by adjudicating individual misses.
+
+\textbf{F$_1$ over header fields is not a measure of legal usability.} It measures extraction
+correctness. It does not measure whether a booking would survive audit, whether the mandatory
+particulars of \S14~\ac{UStG} are satisfied, or whether an input-tax deduction is defensible. The
+weighted compliance metric that would have gestured toward this was abandoned deliberately
+(\S\ref{sec:method-metrics}), and no legal assessment is offered anywhere in this thesis.
+
+\subsection{Two Known Defects Remain Open}
+\label{sec:lim-open-defects}
+
+Reported here so that the apparatus is not represented as cleaner than it is.
+
+\textbf{One field regressed under a correct repair and stays regressed.} Making the
+perfect-text renderer faithful to the reference exposed a comparison problem in the supplier
+article number field that was not resolved (\S\ref{sec:validity-open}).
+
+\textbf{A stale configuration default remains a hazard.} A diagnostic that constructs the
+experiment configuration from its defaults, rather than loading the project's configuration file,
+silently selects a superseded reading model. The two audit tools were fixed to load the
+configuration explicitly; the default itself was not changed, so any future script that builds
+the configuration bare will measure the wrong pipeline (\S\ref{sec:validity-specification}).
+
+\subsection{The Evaluation Methodology Is Not Itself Deployable}
+\label{sec:lim-cloud-gt}
+
+Building the held-out answer key required two cloud services, so the content of those 39 invoices
+left local hardware (\S\ref{sec:method-heldout-gt}). The distinction relied upon --- a measuring
+instrument is not part of the delivered system --- holds for the pipeline, which makes no network
+call on any inference path. It does not hold for the methodology: a practitioner bound by
+professional secrecy could not construct this answer key from their own client documents.
+\S\ref{sec:fw-local-gt} states what closing that would require.
 
 \section{Pre-Registered but Unevaluated Hypotheses}
 \label{sec:unevaluated}
-% TODO (no-HARKing): list the hypotheses that were registered before data collection
-% but not tested within thesis scope -- the knowledge-graph fidelity claim, the
-% graph-versus-vector retrieval claim, the query-routing claim, the conditional
-% validator-retry claim, the full cloud-versus-local comparison, and the
-% template-shift claim. Report them as "not evaluated within thesis scope" with the
-% reason (scope freeze in favour of a complete, honest Layer-1 result), NOT as
-% negative or inconclusive findings.
+
+The scope of this thesis was narrowed during the work, in favour of one complete and honestly
+measured layer over three partially measured ones. Six registered hypotheses were consequently
+never tested. They are listed here as \emph{not evaluated}, which is distinct from refuted and
+distinct from inconclusive: no data was collected against them, so they remain open.
+
+\begin{enumerate}
+  \item \textbf{Knowledge-graph fidelity.} That extracted records could be assembled into a
+        graph whose entity resolution is accurate enough for cross-document reasoning. The layer
+        was designed (\S\ref{sec:design-layer2}) and not built.
+  \item \textbf{Graph versus flat retrieval.} That graph-structured retrieval would outperform
+        flat vector retrieval on multi-document analytical questions. Untested: it presupposes
+        the graph.
+  \item \textbf{Query routing.} That a router could reliably dispatch a natural-language question
+        to the appropriate retrieval strategy. Untested for the same reason.
+  \item \textbf{Conditional validator retry.} That re-prompting the structuring stage with the
+        specific validation failure it produced would recover a measurable share of failures. The
+        validate-and-repair stage was built deterministic and single-pass; the retry variant was
+        never implemented, and no figure in this thesis reflects one.
+  \item \textbf{Cloud versus local comparison.} That the accuracy cost of the local-only
+        constraint could be quantified against a frontier cloud model on the same corpus.
+        Deliberately not run on client documents, for the reason the thesis exists;
+        \S\ref{sec:fw-cloud} describes the form it could safely take.
+  \item \textbf{Template shift.} That performance would degrade measurably on invoice layouts
+        drawn from vendors absent from the fitting set. Partially and accidentally addressed by
+        the held-out corpus, whose layouts were all unseen --- but not in the controlled form
+        registered, since layout novelty and capture channel vary together there and cannot be
+        separated.
+\end{enumerate}
 
 \section{Future Work}
 \label{sec:future-work}
 
+The items below are ordered by what the results of this thesis suggest, not by convenience. The
+first two follow directly from the finding that reading is the binding constraint.
+
+\subsection{Improve the Reading Stage, Not the Structuring Stage}
+\label{sec:fw-reader}
+
+The attribution result (\S\ref{sec:results-attribution}) says the largest available gain is in
+reading. Three specific directions follow.
+
+\textbf{Adapt the reading model rather than the structuring model.} This thesis adapted the stage
+that was not the bottleneck. Low-rank adaptation of the vision tower on invoice pages is the
+untested experiment that the attribution evidence actually recommends, and it is a different
+experiment from the one reported here.
+
+\textbf{Ensemble across readers with complementary failure modes.} The two finalists fail
+differently and in a way that looks exploitable: one drops letterhead and footer regions while
+reading characters near-flawlessly, the other reads every region with occasional character slips
+(\S\ref{sec:results-reader}). A combination that takes regions from the first and characters from
+the second is a concrete proposal, and the per-miss classification data needed to evaluate it
+already exists.
+
+\textbf{Pre-process before reading.} Deskewing, contrast normalisation and resolution
+enhancement address the channel gap directly. Given that the channel gap is the dominant
+real-world cost measured here, an intervention on the image may be worth more than any
+intervention on the models.
+
+\subsection{Measure Real Line Items}
+\label{sec:fw-groups}
+
+The route to closing \S\ref{sec:lim-groups} is known and is not research: adjudicate the held-out
+group rows under a \emph{set-based} matching rule rather than a positional one, so that a reader
+which merges two lines is not penalised as though it had misread them. That requires a matching
+criterion defined before adjudication begins, and it requires the same ranked-escalation and
+provenance-class discipline the header key used. It is expensive but it is bounded work.
+
+\subsection{Teach Abstention Rather Than Always Answering}
+\label{sec:fw-abstention}
+
+The adaptation failed by raising spurious emission (\S\ref{sec:disc-finetune}), which is what
+supervised fine-tuning on exclusively-filled targets would be expected to do
+\cite{uluoglakci2026humility}. The corresponding untested variant is a training set that includes
+appropriate absence as a taught behaviour: documents where a field is genuinely missing, with the
+correct answer being the null. This thesis's training data contained no such examples, and the
+mechanism points directly at that gap.
+
 \subsection{Knowledge-Graph Construction}
 \label{sec:fw-kg}
-% TODO: build Layer 2 per Sec.~\ref{sec:design-layer2}; measure how extraction error
-% propagates into graph fidelity (does a field-level error rate predict a
-% compliance-decision error rate?). This is the most direct continuation.
+
+The most direct continuation of the designed-but-unbuilt architecture
+(\S\ref{sec:design-layer2}). The interesting question is not whether a graph can be built --- it
+can --- but how extraction error propagates into it: does a field-level error rate predict a
+compliance-decision error rate, or does the graph's redundancy absorb some errors while amplifying
+others? That is a measurement question, and the per-field outcome data this thesis produces is the
+right input to it.
 
 \subsection{Analytical Query and Retrieval Comparison}
 \label{sec:fw-query}
-% TODO: build Layer 3 per Sec.~\ref{sec:design-layer3}; the open question is which
-% question classes genuinely benefit from graph structure over flat retrieval.
 
-\subsection{Cloud Comparison Arm}
+Building the query layer (\S\ref{sec:design-layer3}) would let the second and third unevaluated
+hypotheses be tested. The open question worth answering is narrower than the design: which
+\emph{classes} of question genuinely benefit from graph structure over flat retrieval, since the
+answer is unlikely to be uniform across question types.
+
+\subsection{A Cloud Comparison That Respects the Premise}
 \label{sec:fw-cloud}
-% TODO: an EU-hosted cloud comparison would quantify the accuracy cost of the
-% privacy-first constraint. Deliberately excluded here because sending client
-% documents to a third party is the exact practice the thesis premise rules out;
-% a comparison would need synthetic documents only.
+
+Quantifying the accuracy cost of the local-only constraint requires running the same corpus
+through a frontier cloud model. That cannot be done with client documents without violating the
+premise. It can be done on the synthetic corpus, where every document is generated and none is
+confidential --- and since the synthetic corpus carries exact reference data, such a comparison
+would be cleanly scored. The result would be a lower bound on the cost of the constraint, because
+the synthetic corpus is the easy case for both sides.
+
+\subsection{Locally Adjudicable Ground Truth}
+\label{sec:fw-local-gt}
+
+Closing \S\ref{sec:lim-cloud-gt} requires the three-channel adjudication to run without a cloud
+service: a local vision model as one channel, a local \ac{OCR}-plus-layout stack as a second, the
+embedded text layer as a third, and the same printed-text gate and ranked escalation. Whether
+three \emph{local} channels are independent enough for the two-channel-agreement rule to carry
+its current warrant is itself an open question, and it is the one that would have to be answered
+first.
 
 \subsection{Robustness on Degraded Documents}
 \label{sec:fw-robustness}
-% TODO: scanned/photographed robustness, following the multilingual-parsing
-% benchmark's photographed-document protocol.
 
-\subsection{Adaptation to Further Layouts and Languages}
-\label{sec:fw-transfer}
-% TODO: template-shift and cross-language transfer; low-rank adaptation
-% (\ac{LoRA}) of the structurer as a cheap adaptation path once a reliable reader
-% is fixed.
+The channel gap measured here is the most actionable finding in the thesis, and it was measured on
+ten photographed documents. A controlled degradation study --- the same documents captured at
+several resolutions, angles and lighting conditions --- would turn a two-level comparison into a
+response curve, and would say where on that curve a firm's document-handling practice needs to
+sit. The protocol from the multilingual parsing benchmark \cite{mdpbench2026} is a reasonable
+template.
 
 \subsection{Production Hardening}
 \label{sec:fw-production}
-% TODO: throughput, batching, audit logging, and the human-in-the-loop review
-% workflow a firm would actually need.
+
+What a firm would additionally need: throughput and batching, audit logging of every extraction
+with its provenance, and the review interface that the precision-over-recall error profile
+(\S\ref{sec:results-heldout}) makes viable. The prototype of
+Chapter~\ref{ch:implementation} includes a review surface for exactly this reason, but it was
+built to support the evaluation rather than a firm's daily workflow, and the difference between
+those two is substantial.

@@ -92,27 +92,40 @@ Chapter~\ref{ch:limitations-future-work} rather than quietly dropped.
 \section{Contributions}
 \label{sec:contributions}
 
-% TODO(contributions): finalise once results land. Draft claims:
 This thesis contributes:
 
 \begin{itemize}
   \item an evaluation of recent open-weights local document \acp{VLM} on German
-        e-invoice extraction, closing the cloud-only gap in \cite{berghaus2025};
-  \item a compliance-aware evaluation suite that weights fields by their legal
-        importance under \S14~\ac{UStG}/\S33~\ac{UStDV} rather than treating all
-        fields alike under a single token \ac{F1};
-  \item a \emph{measurement-validity} methodology: a documented chain of
-        ground-truth and scoring corrections that separates genuine model error
-        from scoring artefact --- for instance, cases where the model correctly
-        reproduces what the page shows while the reference stores a different
-        but equivalent representation;
-  \item an \emph{attribution} method that decomposes end-to-end error into a
-        reading share, a structuring share and a measurement share, using
-        reference-quality transcripts as an upper bound on what the structuring
-        stage can achieve; and
+        e-invoice extraction, closing the cloud-only gap in \cite{berghaus2025},
+        together with a measurement on 39 \emph{real} invoices whose answer key
+        was adjudicated across three independent reading channels;
+  \item a \emph{measurement-validity} methodology, and the empirical finding that
+        motivates it: a documented chain of reference-data and scoring defects,
+        several of which moved reported scores further than any modelling change
+        in this project, and one of which would have inverted a conclusion had it
+        gone unnoticed (Chapter~\ref{ch:measurement-validity});
+  \item an \emph{attribution} method that separates reading error from structuring
+        error by replacing the transcript with text rendered from the reference,
+        and by asking of every individual miss whether the value was present in
+        the transcript at all --- yielding the thesis's central claim, that
+        reading rather than structuring is the binding constraint at this scale;
+  \item a reproducible negative result: parameter-efficient adaptation of the
+        structuring stage fails in all four cells of a two-by-two design, and
+        fails by a specific mechanism --- it raises the rate at which the model
+        emits values for fields the document does not carry; and
   \item a locally deployable prototype and a reproducible evaluation harness as
         engineering artefacts.
 \end{itemize}
+
+\noindent One contribution claimed in an earlier plan for this work is
+\emph{not} delivered, and is named here rather than quietly dropped. A
+compliance-aware metric weighting fields by their legal importance under
+\S14~\ac{UStG} and \S33~\ac{UStDV} was designed and then abandoned, because the
+weights would have been chosen by the author and a headline number resting on an
+author-chosen weight vector is comparable to nothing.
+Section~\ref{sec:method-metrics} gives the reasoning; unweighted figures are
+reported instead, with per-field results given in full so that a reader who wants
+to weight them can.
 
 \section{Scope and Delimitations}
 \label{sec:scope}
@@ -144,8 +157,17 @@ usages are independent, and the naming is not a contradiction.
 Chapter~\ref{ch:background} introduces the technical and legal background, and
 Chapter~\ref{ch:related-work} positions the thesis against prior work.
 Chapter~\ref{ch:system-design} presents the system design and states which parts
-of it are evaluated here. Chapter~\ref{ch:methodology} specifies the corpus, the
+of it are evaluated here. Chapter~\ref{ch:methodology} specifies the corpora, the
 ground truth, the metric suite and the pre-registration discipline.
+
+Chapter~\ref{ch:measurement-validity} then does something a thesis does not
+usually need a chapter for: it establishes that the measuring apparatus is sound
+before any model claim is made with it. It is placed between the method and the
+results because that is the order in which it has to be read --- the corrections
+it describes are the reason the numbers in Chapter~\ref{ch:results} can be
+trusted, and several of them are larger than anything a modelling decision
+achieved.
+
 Chapter~\ref{ch:results} reports the results, and
 Chapter~\ref{ch:implementation} describes the prototype.
 Chapter~\ref{ch:discussion} interprets the findings,

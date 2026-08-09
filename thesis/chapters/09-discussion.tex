@@ -3,36 +3,310 @@
 
 \section{Answers to the Research Questions}
 \label{sec:disc-rqs}
-% TODO: answer the guiding question and its four sub-questions from
-% Sec.~\ref{sec:research-questions} one at a time, each with the evidence from
-% Ch.~\ref{ch:results}. For every evaluated hypothesis state supported / refuted /
-% inconclusive -- a refuted hypothesis is a valid finding, not a failure.
-% Hypotheses that were registered but not evaluated belong in
-% Ch.~\ref{ch:limitations-future-work}, not here.
+
+The guiding question of \S\ref{sec:research-questions} had two halves: how reliably local
+open-weights document models convert German business-to-business invoices into a structured
+representation on commodity hardware, and which stage of the pipeline limits that reliability.
+
+\textbf{On the first half: reliably enough to be useful under review, and not reliably enough to
+be unsupervised.} On real invoices, zero-shot and entirely local, header-field extraction
+reaches the high eighties on the headline aggregation
+(Table~\ref{tab:heldout-headline}). More important than the level is the shape: precision
+substantially exceeds recall, so the dominant failure is an empty field rather than an invented
+one. That is the profile a reviewed workflow can absorb. A practitioner checking a booking sees
+a gap and fills it; a practitioner cannot see a plausible fabrication. The system is therefore
+a credible assistant to a reviewer and not a replacement for one, and nothing in these results
+supports a stronger claim.
+
+\textbf{On the second half, which is the thesis's central finding: reading limits the pipeline,
+not structuring.} The same structuring model scores far higher on text rendered from the
+reference than on the reading model's transcript, in every field cluster
+(Table~\ref{tab:attribution-clusters}), and roughly half of all individual errors are values the
+transcript never contained (Table~\ref{tab:attribution-shares}). \S\ref{sec:disc-reading-constraint}
+develops what follows.
+
+The four sub-questions are answered as follows.
+
+\textbf{(1) How do recent open-weights document models compare on German e-invoice extraction?}
+They differ less than expected on aggregate score and more than expected in \emph{failure mode}
+--- and the aggregate comparison turned out not to be decidable. Two finalists finished within a
+point of each other, and their ordering inverted when the scoring corrections of
+Chapter~\ref{ch:measurement-validity} were applied to identical transcripts
+(Table~\ref{tab:reader-lineage}). The honest answer is therefore that end-to-end score does not
+separate them, and that selecting on it would have been arbitrary. What does separate them is
+qualitative: one model transcribes characters near-flawlessly but silently drops letterhead and
+footer regions, which is exactly where a German invoice prints tax identifiers and bank details;
+the other reads every region but occasionally slips a character inside a value
+(\S\ref{sec:results-reader}). For this application the second is preferable, because a corrupted
+value fails a downstream format or arithmetic check while a dropped block produces a confident
+absence.
+
+\textbf{(2) Does splitting reading from structuring beat a single model going straight from page
+to structured output?} On the evidence gathered here, yes --- but the evidence is weaker than the
+question deserves and is labelled accordingly. The comparison was made on a small
+development subset before the scoring corrections, and it is reported as a preliminary study
+(\S\ref{sec:results-preliminary}). Its qualitative outcome was clear enough to determine the
+architecture, and it is consistent with the published finding that constraining a model's output
+format degrades its performance rather than being a free convenience \cite{tam2024format}. The
+attribution result then supplies an independent reason to prefer the split arrangement that has
+nothing to do with accuracy: a two-stage pipeline lets the two failure sources be
+\emph{measured separately}, and a single-shot model does not. Given that the measurement turned
+out to be where most of this project's value lay, that is not a minor advantage.
+
+\textbf{(3) What accuracy is attainable inside a commodity local envelope?} The figures in
+Tables~\ref{tab:sealed-val-arms} and~\ref{tab:heldout-headline} were obtained on a single laptop
+with 16\,\ac{GB} of unified memory using 4-bit quantised weights. Full numeric precision is
+worth a small but measurable amount (Table~\ref{tab:sealed-val-arms}), so the quantisation used
+for deployment costs something real and modest. The binding local constraint turned out not to
+be inference at all --- inference fits comfortably --- but \emph{training}: the adaptation
+experiments exceeded the envelope and had to be moved to rented hardware
+(\S\ref{sec:method-repro}). A firm that wants to run this pipeline can; a firm that wants to
+fine-tune it on its own documents cannot, on this hardware.
+
+\textbf{(4) Where does the residual error originate?} In three places, in this order of
+magnitude: in reading, in the measurement, and only then in structuring. The measurement share
+is the finding that was not anticipated. Several individual scoring corrections moved reported
+figures further than any modelling decision in this project
+(Chapter~\ref{ch:measurement-validity}), and the structuring stage --- once measured fairly and
+given clean text --- is close to its ceiling
+(Table~\ref{tab:sealed-val-arms}). The ordering matters because it inverts the intuitive
+engineering priority, which is the subject of the next section.
 
 \section{Reading as the Binding Constraint}
 \label{sec:disc-reading-constraint}
-% TODO: the interpretive core of the thesis. The attribution result says the
-% document-reading stage, not the structuring stage, governs end-to-end quality on
-% this task. Discuss what follows for practitioners: effort spent on prompt and
-% schema engineering has a low ceiling while the transcript is poor; the cheapest
-% large gain is a better reader. Relate to the reported robustness gap of
-% open-source parsers on degraded documents.
+
+The attribution result has a direct consequence for how effort should be spent, and it runs
+against the grain of how such systems are usually improved.
+
+\textbf{Prompt and schema engineering have a low ceiling while the transcript is poor.} If half
+of all errors are values that never reached the structuring model, then no amount of work on the
+field specification, the output schema or the instruction wording can recover them. The
+structuring model cannot place a value it was never shown. This is not a claim that
+specification work is worthless --- the audit of
+Chapter~\ref{ch:measurement-validity} found real specification defects, and repairing them
+mattered --- but it bounds what that work can achieve. The formal classification of every
+underperforming field before the adaptation experiment
+(\S\ref{sec:results-adaptation}) found zero warranted specification repairs remaining, which is
+that ceiling being reached in practice.
+
+\textbf{The cheapest large gain is a better reader.} Between the survey reader and the selected
+reader, end-to-end score improved substantially on identical everything else
+(Table~\ref{tab:reader-lineage}), for the cost of changing one model identifier in a
+configuration file. No structuring-side intervention attempted in this project produced a
+comparable gain, and the one that was attempted seriously produced a regression.
+
+\textbf{The finding generalises beyond this corpus, and one number outside this thesis says so
+more convincingly than anything inside it.} A multilingual document-parsing benchmark published
+during this work reports that open-source parsers lose an average of 17.8\,\% on photographed
+versus digital documents, and that the collapse is concentrated in exactly the conditions this
+thesis found hardest \cite{mdpbench2026}. Their measurement is of reading quality, on 3{,}400
+documents in 17 languages, with no structuring stage involved at all. The agreement between
+their result and the eleven-point channel gap measured here
+(Table~\ref{tab:heldout-by-channel}) is the strongest external support this thesis has for its
+central claim.
+
+\textbf{What this implies for a practitioner is unglamorous.} The highest-leverage intervention
+is not a better language model, a cleverer prompt or a fine-tune. It is improving the input:
+scanning at higher resolution, capturing pages flat and evenly lit, preferring an
+email-native \ac{PDF} over a photograph of a printout whenever the choice exists. Those are
+document-handling decisions, not machine-learning ones, and the measurements here suggest they
+dominate.
+
+\section{Why the Adaptation Failed}
+\label{sec:disc-finetune}
+
+The adaptation result is negative in all four cells, and a negative result is only useful if it
+comes with a mechanism. It does, and the mechanism is one the literature predicts.
+
+\textbf{The mechanism observed here.} The adapter did not lose the ability to place values. It
+gained a propensity to emit them where the document carries none: the spurious-emission rate
+rises markedly above its own baseline (Table~\ref{tab:finetune-grid}). The failure is a shift in
+\emph{when the model answers}, not in \emph{how well it answers}.
+
+That is precisely what supervised fine-tuning has been reported to do. Uluoglakci and Taskaya
+Temizel state the premise directly: models hallucinate partly because supervised fine-tuning
+``implicitly rewards always responding'' \cite{uluoglakci2026humility}. Their study runs 800
+controlled adaptation runs across two model families --- one of which is the immediate
+predecessor generation of the structuring model used here --- and their remedy is to train
+\emph{for} the admission of uncertainty rather than against it. This thesis's training data
+contained no examples of appropriate abstention as a taught behaviour; every training target was
+a filled record. On that reading, the adapter learned exactly what it was shown.
+
+Three further results in that literature line up with what was measured.
+
+\textbf{Adaptation of this kind learns style, not knowledge.} Ghosh et al.\ report that
+low-rank adaptation ``is limited to learning response initiation and style tokens''
+\cite{ghosh2024limitations}. If the intervention cannot add capability and can adjust output
+disposition, then a task already near its ceiling on clean input
+(Table~\ref{tab:sealed-val-arms}) has nothing to gain and a disposition to lose. The perfect-text
+adapter evaluated on perfect text --- the cell with the cleanest input and the least excuse ---
+regresses too, which is consistent with this and not with a simple overfitting story.
+
+\textbf{Unfamiliar training examples govern how a model hallucinates.} Kang et al.\ find that
+the character of a fine-tuned model's hallucinations is controlled by the unfamiliar examples in
+its training set \cite{kang2024unfamiliar}. The transcript-trained adapter was fed exactly
+that: noisy transcripts containing artefacts, dropped regions and character slips. Its
+spurious-emission rate is the highest of any arm measured in this thesis.
+
+\textbf{Freezing parameters preserves task performance while reducing hallucination.} Kaplan et
+al.\ frame the effect as a stability--plasticity trade-off and report that suppressing factual
+plasticity by freezing parameter groups can preserve task performance while reducing
+hallucination \cite{kaplan2026why}. The intervention here did the opposite: it added plasticity
+to the text tower of a model that was already competent at the task.
+
+\textbf{What the negative result does and does not license.} It licenses the claim that
+\emph{this} recipe --- one rank, one learning rate, one schedule, 100 examples, no sweep --- does
+not improve this pipeline, and that the failure mode is over-emission rather than degradation.
+It does not license the claim that adaptation cannot help this task. A larger and more diverse
+training set, examples that teach abstention, a lower rank, or adaptation of the \emph{reading}
+stage rather than the structuring stage are all untested and all plausible. The honest summary is
+that the intervention was aimed at the stage that was not the bottleneck, and it is worth
+noting that the attribution result had already said so before the experiment ran. The experiment
+proceeded because the scope decision had made it conditional on a threshold that was met, not
+because the attribution evidence recommended it.
 
 \section{Measuring Before Optimising}
 \label{sec:disc-measurement}
-% TODO: the methodological argument. A meaningful share of the initially observed
-% error was an artefact of the measurement rather than of the model. Discuss the
-% general lesson: on a task where the reference is machine-readable and the input is
-% a rendered page, "as printed" and "as stored" diverge systematically, and a naive
-% comparison mistakes representation differences for model error. Argue why
-% validating the ruler belongs in the method, not in a footnote.
+
+The methodological argument of this thesis is stated in Chapter~\ref{ch:measurement-validity};
+this section says why it generalises.
+
+\textbf{The bias is structural, not incidental.} Any evaluation that compares a
+page-reading system against machine-readable reference data inherits a systematic gap between
+\emph{as printed} and \emph{as stored}. The reference records a date as an ordered numeric
+string; the page prints it day-first. The reference stores a controlled-vocabulary code; the page
+prints a phrase. The reference omits an optional zero; the page implies one. Every one of these
+punishes a correct reading, and the sum is not small. This is not a property of this corpus or
+this schema --- it follows from the shape of the evaluation, so any study built the same way has
+it.
+
+\textbf{The bias is invisible in aggregates.} This is the part that makes it dangerous. Every
+defect described in Chapter~\ref{ch:measurement-validity} was found by opening individual
+documents; none was visible in a corpus-level number. The scores were plausible before
+correction and plausible after. A reported figure carries no signal about whether the instrument
+that produced it was sound, and the same is true of the retracted answer key and of the
+precision confound: all three produced correctly computed, reproducible, plausible numbers that
+meant something other than what they appeared to mean.
+
+\textbf{Validating the instrument therefore belongs in the method, not in a footnote.} A study
+that reports extraction scores without describing how the comparison handles representation
+differences has not given the reader enough to judge the numbers, because the size of the
+correction is comparable to the size of the effects being reported. The practices that carried
+the weight here are collected in \S\ref{sec:validity-generalises}; the cheapest and most
+valuable is simply to archive generations, which makes a scoring change measurable in isolation.
+
+\textbf{One consequence is uncomfortable and should be said plainly.} If a naive comparison
+understates performance by an amount comparable to the differences between models, then
+published comparisons that do not document their comparison rules are difficult to interpret,
+and rankings drawn from them may not be robust. This thesis observed exactly that within its own
+data: the ordering of two candidate readers inverted when the ruler was corrected
+(Table~\ref{tab:reader-lineage}).
+
+\section{Local-Only Viability, Honestly Costed}
+\label{sec:disc-local}
+
+The premise of this work is that the document never leaves the firm
+(\S\ref{sec:motivation}). It is worth stating what that premise costs and where it held.
+
+\textbf{Inference is comfortable; training is not.} The full pipeline runs on a laptop with
+16\,\ac{GB} of unified memory. The adaptation experiments did not, and were moved to rented
+hardware. A firm can therefore \emph{run} this system on hardware it already owns, but cannot
+adapt it to its own document mix on that hardware --- and adapting on rented hardware means the
+training documents leave the premises, which reintroduces the problem the design exists to
+avoid. Since the adaptation produced no benefit here, that trade did not have to be made; had it
+produced one, the confidentiality argument would have had to be re-examined.
+
+\textbf{Quantisation costs a small, measurable amount.} Table~\ref{tab:sealed-val-arms} gives
+the difference between 4-bit and full precision on the same corpus. The deployable configuration
+is the weaker one, and that gap is part of the price of the local constraint.
+
+\textbf{The measurement itself broke the premise, once, deliberately.} Two of the three channels
+used to build the held-out answer key are cloud services, so the content of those 39 invoices
+left local hardware (\S\ref{sec:method-heldout-gt}). The distinction relied on --- that a
+measuring instrument is not part of the delivered system --- is sound as far as it goes: nothing
+on the inference path makes a network call. But it is worth being clear that a practitioner
+bound by professional secrecy could not have built this answer key on their own client
+documents. The evaluation methodology is therefore not itself deployable inside the constraint it
+evaluates, and closing that gap --- an adjudication process that runs entirely locally --- is
+listed as future work.
 
 \section{Threats to Validity}
 \label{sec:disc-threats}
-% TODO: internal validity (leakage guards, deterministic decoding, sealed split);
-% construct validity (does the metric measure legal usability? is the reading proxy
-% faithful?); external validity (synthetic born-digital corpus vs real scanned
-% documents; one language; one document class).
-% Limitations proper are collected in Ch.~\ref{ch:limitations-future-work}; keep
-% this section about validity threats and cross-reference rather than duplicate.
+
+Limitations proper are collected in Chapter~\ref{ch:limitations-future-work}. This section
+concerns threats to the validity of the inferences drawn above.
+
+\subsection{Internal validity}
+
+\textbf{Leakage.} The validation split was sealed with a recorded hash before any adaptation
+work; prompt design used only the fitting set; checkpoint selection used a slice carved from the
+fitting set, not the validation set (\S\ref{sec:method-splits}). The residual risk is the one
+that leaves no trace: the author read validation documents during the defect investigations of
+Chapter~\ref{ch:measurement-validity}. Those investigations changed \emph{scoring rules}, never
+prompts, and every rule change is symmetric and test-guarded --- but a scoring rule authored
+after seeing which cells failed is not a fully blind instrument, and no claim here should be read
+as if it were.
+
+\textbf{Determinism.} All generations use greedy decoding, so no reported figure depends on a
+sampling seed. The cost is that no variance estimate is available: single-run figures cannot be
+accompanied by confidence intervals over decoding randomness, and differences of a few
+thousandths should not be read as meaningful.
+
+\textbf{Precision matching.} Every adaptation comparison is made against a baseline measured in
+the same numeric precision (Table~\ref{tab:precision-confound}). This threat was identified in
+advance rather than discovered afterwards, which is the only reason it was controlled.
+
+\subsection{Construct validity}
+
+\textbf{Does the metric measure legal usability?} No, and this should not be overstated. F$_1$
+over registered header fields measures extraction correctness. It does not measure whether a
+booking would be accepted by a tax authority, whether the invoice satisfies the mandatory
+particulars of \S14~\ac{UStG}, or whether an input-tax deduction would survive audit. The
+weighted, compliance-aware metric that would have gestured at this was abandoned for the reason
+given in \S\ref{sec:method-metrics}. What is reported is a technical measurement with a legal
+motivation, not a legal assessment.
+
+\textbf{Is the reading proxy faithful?} Partially, with a known blind spot. It asks whether a
+reference value appears in the transcript at all, which a transcript containing every value in
+scrambled order would satisfy while being useless downstream
+(\S\ref{sec:method-answerability}). The proxy was therefore never used alone, and the one
+decision where it mattered was settled by hand-judging every individual miss rather than by
+trusting the aggregate.
+
+\textbf{Is the perfect-text ceiling a fair upper bound?} Only after its own defects were
+repaired. Five were found (\S\ref{sec:validity-apparatus}), two of which made fields score
+nothing because the renderer never emitted them. A renderer defect makes the ceiling wrong in an
+unpredictable direction, not merely optimistic, so a ceiling reported without validating the
+renderer would not have been interpretable.
+
+\subsection{External validity}
+
+\textbf{Corpus scale.} The real-document result rests on 39 invoices. That supports a claim about
+direction and rough magnitude; it does not support a precise figure, and the per-channel cells
+contain as few as ten documents each. The independent corroboration of the channel effect
+\cite{mdpbench2026} is what makes that particular finding safer than its sample size alone would
+justify.
+
+\textbf{Single annotator.} The held-out answer key was adjudicated by one person --- the author
+--- so no inter-annotator agreement can be reported. The three-channel design and the
+automatic-acceptance rule reduce the exposure, in that 463 of the decided cells rest on either
+printed-text proof or two independent channels agreeing rather than on judgement
+(\S\ref{sec:method-heldout-gt}). The remaining 248 do rest on judgement, and that is an
+irreducible limitation of a single-author corpus.
+
+\textbf{One document class, two languages, one country.} Everything here concerns
+business-to-business invoices under German and European conventions. Nothing is claimed about
+receipts, contracts, bank statements or correspondence, and nothing about jurisdictions with
+different invoicing rules.
+
+\textbf{Synthetic pages dominate the corpus.} The larger corpus is born-digital, so its pages
+are clean by construction (\S\ref{sec:method-data}). That is exactly why the held-out corpus
+exists, and the eleven-point gap between clean and photographed documents
+(Table~\ref{tab:heldout-by-channel}) is the size of the error a reader would make by
+generalising from the synthetic corpus alone.
+
+\textbf{A moving target.} The models evaluated here were released within roughly a year of this
+work. The field moves quickly enough that specific model rankings will not survive long. The
+findings that should survive are the ones about method: that reading is the binding constraint at
+this scale, that the measuring apparatus must be validated before it is trusted, and that
+degraded capture costs more than language does.
