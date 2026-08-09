@@ -1,7 +1,7 @@
 ---
 source_url: "https://arxiv.org/abs/2604.15574"
 source_title: "Why Fine-Tuning Encourages Hallucinations and How to Fix It"
-source_author: "(TBD — first-author + co-authors to confirm at deep-read prior to thesis-citation)"
+source_author: "Guy Kaplan, Zorik Gekhman, Zhen Zhu, Lotem Rozner, Yuval Reif, Swabha Swayamdipta, Derek Hoiem, Roy Schwartz"
 source_date: "2026-04"
 retrieved_date: "2026-08-09"
 extracted_concepts: ["SFT-induced hallucination", "stability-plasticity tradeoff", "self-distillation", "parameter freezing", "representation interference"]

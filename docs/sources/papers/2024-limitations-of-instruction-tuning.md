@@ -1,7 +1,7 @@
 ---
 source_url: "https://arxiv.org/abs/2402.05119"
 source_title: "A Closer Look at the Limitations of Instruction Tuning"
-source_author: "(TBD — first-author + co-authors to confirm at deep-read prior to thesis-citation)"
+source_author: "Sreyan Ghosh, Chandra Kiran Reddy Evuru, Sonal Kumar, Ramaneswaran S, Deepali Aneja, Zeyu Jin, Ramani Duraiswami, Dinesh Manocha"
 source_date: "2024-02"
 retrieved_date: "2026-08-09"
 extracted_concepts: ["LoRA learns style not knowledge", "instruction tuning limitations", "knowledge degradation", "pattern copying"]

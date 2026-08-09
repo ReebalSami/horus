@@ -1,7 +1,7 @@
 ---
 source_url: "https://arxiv.org/abs/2603.17504"
 source_title: "Inducing Epistemological Humility in Large Language Models: A Targeted SFT Approach to Reducing Hallucination"
-source_author: "(TBD — first-author + co-authors to confirm at deep-read prior to thesis-citation)"
+source_author: "Cem Uluoglakci, Tugba Taskaya Temizel (Middle East Technical University, Ankara)"
 source_date: "2026-03"
 retrieved_date: "2026-08-09"
 extracted_concepts: ["SFT implicitly rewards always responding", "epistemological humility", "uncertainty vector", "controlled LoRA SFT sweep"]

@@ -10,12 +10,22 @@
 %% See docs/decisions/ADR-055-thesis-authoring-setup.md.
 
 %%%%%%%%%%%%%%%%%%%  Document info  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Title, 2026-08-09. Two changes from the registered working title:
+%%   1. "Berufsgeheimnis-Compliant" -> "Confidentiality-Preserving". The original
+%%      was a German/English hybrid adjective in the most prominent line of the
+%%      document. It also asserted legal COMPLIANCE, a verdict Chapter 1
+%%      deliberately stops short of giving.
+%%   2. "and Receipts" dropped: no receipt was ever evaluated (ADR-063 fixes the
+%%      held-out claim to header fields on invoices).
+%% The final title is fixed at submission and may differ from the working title
+%% given at registration (Masterarbeit-Leitfaden Sec. 2).
 \newcommand{\projname}{Master Thesis}
-\newcommand{\titel}{Berufsgeheimnis-Compliant Document Intelligence: Local Vision-Language Models for Processing German B2B Invoices and Receipts}
+\newcommand{\titel}{Confidentiality-Preserving Document Intelligence: Local Vision-Language Models for Processing German Business-to-Business Invoices}
 \newcommand{\untertitel}{}
 \newcommand{\thesisname}{Master Thesis}
-% TODO(title page): replace \today with the official Abgabedatum before submission.
-\newcommand{\Datum}{\today}
+%% Planned Abgabedatum: hand-in of the three bound copies at the Pruefungsamt.
+%% Hard deadline is 25.08.2026 14:00; this leaves a five-day buffer.
+\newcommand{\Datum}{20.\ August 2026}
 \newcommand{\authorname}{Reebal Sami}
 %%%%%%%%%%%%%%%%%%%  Document info  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

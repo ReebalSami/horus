@@ -1,6 +1,9 @@
 # ADR-063: Held-out grading — which answer key, and which fields it may claim
 
-**Status**: Proposed
+**Status**: Accepted. Both questions are settled in code and enforced: `_promoted/` is the
+default answer key with no silent fallback, and the held-out headline covers the 34 flat header
+fields with repeating groups structurally excluded (`score_groups=False`). The scope this
+authorises is the only held-out claim the thesis makes.
 
 **Correction 2026-08-06 (pre-acceptance, in place):** this record was first written saying the
 held-out headline covers "the 19 flat fields". **That count was stale by two schema
@@ -115,6 +118,31 @@ far as they drag an invoice-weighted average.
 
 The email-vs-scan gap (mean 0.9118 vs 0.7748) is the degraded-input penalty on real documents,
 cleanly isolated — which is the measurement the held-out set exists to produce.
+
+#### Addendum 2026-08-09 — the same breakdown under the current (ADR-065) ruler
+
+The table above is retained as the record of the answer-key change it attributes. The figures
+below are the current ones, re-derived from the same frozen generations after ADR-065
+neutralised the 8 cells no adjudication channel could locate in the page text. **This is the
+table the thesis cites**, because the headline and the breakdown must share one ruler and one
+aggregation — mixing the 0.8767-era per-invoice means with post-ADR-065 pooled figures produced
+an internally inconsistent table in an earlier draft handoff.
+
+| Group | n | Mean per-invoice F1 | Cell-pooled F1 | Precision | Recall | TP | FP | FN |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| english / email | 11 | 0.9345 | 0.9408 | 0.9805 | 0.9042 | 151 | 3 | 16 |
+| german / email | 18 | 0.9027 | 0.9079 | 0.9533 | 0.8667 | 286 | 14 | 44 |
+| german / iphone-pdf-scan | 10 | **0.7889** | **0.8371** | 0.9225 | 0.7661 | 131 | 11 | 40 |
+| **all** | 39 | **0.8825** | **0.8987** | 0.9530 | 0.8503 | 568 | 28 | 100 |
+
+Reproduce with `uv run python scripts/heldout_breakdown.py
+data/self-collected/_eval/eval-zeroshot-heldout-adr065.json --outputs
+data/self-collected/_eval/outputs-zeroshot` (re-scores from saved generations; no inference).
+
+The degraded-input penalty survives the ruler change and is the finding of record: **11.6
+points of mean per-invoice F1 between email-native PDFs and phone photographs** (0.9148 vs
+0.7889), or 8.7 points cell-pooled. Precision holds on scans (0.9225) while recall falls to
+0.7661 — poor input makes the system abstain rather than invent.
 
 **The error profile is asymmetric and favourable**: 568 TP, **28 FP, 108 FN**. Precision
 0.9530 against recall 0.8402 — roughly four in five errors are a field left empty, not a field

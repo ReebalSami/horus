@@ -1,7 +1,7 @@
 ---
 source_url: "https://arxiv.org/abs/2403.05612"
 source_title: "Unfamiliar Finetuning Examples Control How Language Models Hallucinate"
-source_author: "(TBD — first-author + co-authors to confirm at deep-read prior to thesis-citation)"
+source_author: "Katie Kang, Eric Wallace, Claire Tomlin, Aviral Kumar, Sergey Levine"
 source_date: "2024-03"
 retrieved_date: "2026-08-09"
 extracted_concepts: ["hedged prediction", "unfamiliar finetuning examples", "SFT-induced hallucination", "abstention relabeling"]
