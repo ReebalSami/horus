@@ -451,6 +451,18 @@ heldout-index:
 heldout-datasheet:
 	uv run python scripts/heldout_manifest.py datasheet $(if $(OUT),--out "$(OUT)")
 
+# Regenerate every table and figure the manuscript reports, from committed evidence.
+# ADR-055 forbids hand-copying measured numbers into the thesis; this is the generator
+# that makes that possible. Outputs land in thesis/tables/*.tex and thesis/figures/*.pdf
+# and ARE committed, so `make thesis` works on a clean checkout without re-running this.
+#
+# Held-out figures come from the git-ignored corpus when it is present and are cached,
+# sanitised (aggregates only), to eval/heldout-breakdown.json. Add HELDOUT=cache to read
+# that cache instead of re-scoring.
+thesis-assets:
+	uv run python scripts/thesis_assets.py $(if $(filter cache,$(HELDOUT)),--no-refresh-heldout,)
+	@echo "Regenerated thesis/tables/ + thesis/figures/. Now run: make thesis"
+
 # Thesis manuscript (ADR-054). LaTeX (FH Wedel template, adapted to English),
 # built with latexmk (pdflatex + biber). Self-contained: needs TeX Live/MacTeX,
 # NOT uv. Sources in thesis/; output thesis/_build/main.pdf. See thesis/README.md.

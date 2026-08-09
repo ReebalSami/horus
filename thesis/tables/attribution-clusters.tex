@@ -1,0 +1,28 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/attribution-val.json; data/finetune/attribution-oracle-val.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{Error attribution by field cluster. The gap column is the part of the shortfall that disappears when the reading stage is removed.}
+  \label{tab:attribution-clusters}
+  \begin{tabular}{lrrrrrr}
+    \toprule
+    Cluster & $n$ & Reader & Perfect text & Gap & FN\textsubscript{readable} & FN\textsubscript{unreadable} \\
+    \midrule
+    Core header fields & 29 & 0.8370 & 0.9750 & +0.1380 & 21 & 77 \\
+    Extended header fields & 29 & 0.6873 & 0.9003 & +0.2130 & 43 & 39 \\
+    Line items & 27 & 0.5549 & 0.9706 & +0.4157 & 82 & 157 \\
+    Tax breakdown & 27 & 0.5903 & 0.9864 & +0.3961 & 47 & 31 \\
+    Early-payment discount & 5 & 0.3333 & 0.7500 & +0.4167 & 8 & 0 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Measured with a superseded reader (\texttt{granite-docling-258M}), which was replaced afterwards. These figures therefore establish \emph{where} the loss sits and \emph{which stage} causes it; they are not a system score and must not be read as one. Both score columns are cell-pooled within the cluster and come from the same structurer on the same documents --- only the text it was given differs, so the gap is attributable to reading. A miss is \emph{unreadable} when the expected value is absent from the transcript the structurer received: no structurer could have recovered it. It is \emph{readable} when the value was present and the structurer still failed to place it. That split is what makes the two stages separately accountable, and it is measured per miss rather than inferred from the totals.
+  \end{minipage}
+\end{table}

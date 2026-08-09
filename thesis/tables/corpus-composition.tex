@@ -1,0 +1,37 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/split.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{The synthetic corpus and its stratified split into a fitting set and a sealed validation set.}
+  \label{tab:corpus-composition}
+  \begin{tabular}{lrrr}
+    \toprule
+    Profile & Fitting & Sealed & Total \\
+    \midrule
+    XML-Rechnung/EN16931 & 18 & 4 & 22 \\
+    XML-Rechnung/XRECHNUNG & 3 & 1 & 4 \\
+    ZUGFeRDv1/BASIC & 2 & 0 & 2 \\
+    ZUGFeRDv1/COMFORT & 6 & 1 & 7 \\
+    ZUGFeRDv1/EXTENDED & 2 & 1 & 3 \\
+    ZUGFeRDv1/OTHER & 8 & 2 & 10 \\
+    ZUGFeRDv2/BASIC & 10 & 3 & 13 \\
+    ZUGFeRDv2/BASICWL & 3 & 1 & 4 \\
+    ZUGFeRDv2/EN16931 & 41 & 10 & 51 \\
+    ZUGFeRDv2/EXTENDED & 8 & 2 & 10 \\
+    ZUGFeRDv2/MINIMUM & 6 & 2 & 8 \\
+    ZUGFeRDv2/OTHER & 10 & 2 & 12 \\
+    \midrule
+    \textbf{Total} & \textbf{117} & \textbf{29} & \textbf{146} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Stratified by electronic-invoice profile so that no profile appears only on one side of the split. The split is recorded with a seed and a content hash for each side, so a later run can prove it scored the same documents rather than asserting it: seed 42, validation-set hash \texttt{9596cc2f1eb689d4\dots}. Ground truth for every document is extracted from its own embedded XML, so it is exact rather than annotated. The dev slice used for checkpoint selection is carved from the fitting column only.
+  \end{minipage}
+\end{table}

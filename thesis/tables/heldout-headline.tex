@@ -1,0 +1,32 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): eval/heldout-breakdown.json; data/self-collected/_eval/eval-zeroshot-heldout-adr065.json (private)
+
+\begin{table}[htbp]
+  \centering
+  \caption{Header-field extraction on the held-out corpus of real invoices, zero-shot and fully local.}
+  \label{tab:heldout-headline}
+  \begin{tabular}{lr}
+    \toprule
+    Quantity & Value \\
+    \midrule
+    Documents scored & 39 / 39 \\
+    Mean per-invoice F$_1$ & 0.8825 \\
+    Cell-pooled F$_1$ & 0.8987 \\
+    Precision & 0.9530 \\
+    Recall & 0.8503 \\
+    \midrule
+    True positives & 568 \\
+    False positives & 28 \\
+    False negatives & 100 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Corpus: real invoices collected from the author's own correspondence, never used for fitting, prompt design or selection. Answer key: the signed-off key, adjudicated across three independent reading channels and confirmed document by document by the author. Scope: the 34 registered header fields; repeating groups are excluded structurally, because their rows were never author-reviewed. Precision above recall means roughly four errors in five are a field left empty rather than a field invented --- for an accounting tool, the safer direction to fail in, because a gap is visible to a reviewer and a fabrication is not. An earlier ruler scored the same stored generations at 0.8767; the difference is the instrument, not the system, and is accounted for in Chapter~\ref{ch:measurement-validity}.
+  \end{minipage}
+\end{table}

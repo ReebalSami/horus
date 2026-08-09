@@ -1,0 +1,25 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/eval-ft-reader-on-reader-val.json; data/finetune/eval-zeroshot-bf16-val.json; data/finetune/eval-zeroshot-qwen-adr059-val.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{Why the baseline had to be re-measured in the adapter's own numeric precision. The unmatched comparison understates the regression by a factor of 21.}
+  \label{tab:precision-confound}
+  \begin{tabular}{lrrrl}
+    \toprule
+    Comparison & Adapter & Baseline & $\Delta$ & Reads as \\
+    \midrule
+    unmatched (adapter bf16 vs baseline 4-bit) & 0.8246 & 0.8257 & -0.0011 & ``no measurable harm'' \\
+    matched (both bf16) & 0.8246 & 0.8480 & -0.0234 & \textbf{a real regression} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Both rows use the same adapter and the same sealed corpus; only the baseline changes. The deployed baseline runs 4-bit on Apple silicon, the adapter runs bf16 on CUDA, and full precision is worth +0.0223 on this corpus. Because the adapter costs roughly what the precision gain is worth, the two nearly cancel: the unmatched difference is small enough to read as neutral. The regression is only visible once the baseline is re-measured in the adapter's own precision, which is why that re-measurement was made a precondition of the study rather than an afterthought.
+  \end{minipage}
+\end{table}

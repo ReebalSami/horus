@@ -67,6 +67,17 @@
 \usepackage{array}
 \newcolumntype{x}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
 
+% --- Diagrams (architecture + pipeline, authored inline; no external toolchain) ---
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shapes.geometric}
+%% One palette for every diagram and every generated chart, so the figures in this
+%% thesis read as one set. Kept in sync with scripts/thesis_assets.py.
+\definecolor{horusink}{HTML}{1F2933}
+\definecolor{horusaccent}{HTML}{3C6997}
+\definecolor{horuswarn}{HTML}{B7472A}
+\definecolor{horusmuted}{HTML}{9AA5B1}
+\definecolor{horuswash}{HTML}{EEF2F5}
+
 % --- Figures & captions ---
 \usepackage[font=footnotesize]{caption}
 \setlength{\abovecaptionskip}{5pt}

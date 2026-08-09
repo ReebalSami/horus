@@ -86,6 +86,22 @@ hyperparameter. A test asserts this (`test_shipped_configs_declare_distinct_arms
 The **invoice set is also identical** — readiness still gates membership, so the oracle arm
 trains on the same invoices with different input text, not on a different corpus.
 
+**Clarification 2026-08-09 (thesis-authoring pass).** "Every hyperparameter" needs one
+qualification, because the two committed provenance files do not literally agree: the reader
+arm records `max_length: 6144` and the oracle arm `max_length: 3840`. This is **not** a second
+independent variable. `max_seq_length: 0` means *auto* (`configs/finetune-structurer*.yaml`),
+and `train_cuda.py` implements auto as `min(ceil(longest_example / 256) * 256, cap)` with
+`cap = 8192`. The budget is therefore a **function of the arm's own input length distribution** —
+which is precisely the variable under study, since reader transcripts are longer and noisier
+than rendered text. Because the rule rounds *up* and neither arm reaches the 8192 cap,
+`n_truncated == 0` in both arms by construction: no training example lost its tail, so the
+effective training data is complete on both sides and the comparison stands. Everything a
+practitioner would call a knob — rank, alpha, dropout, learning rate, schedule, warm-up, epoch
+budget, batch size, gradient accumulation, seed, target modules, dev slice — is identical, and
+both arms selected the same checkpoint. Recorded here rather than silently reconciled because a
+reader diffing the two provenance files will find the difference, and the thesis states it in
+the protocol note under its hyperparameter table.
+
 The oracle arm reuses `render_oracle_transcript` — the *same* renderer as the oracle eval arm
 (ADR-059) — via a new `reader_text_fn` seam on `build_example`/`build_dataset` that mirrors the
 one `evaluate_structurer` already exposed. A parallel implementation would be free to drift, and

@@ -1,0 +1,31 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/eval-zeroshot-bf16-val.json; data/finetune/eval-oracle-bf16-val.json; data/finetune/eval-ft-reader-on-reader-val.json; data/finetune/eval-ft-reader-on-oracle-val.json; data/finetune/eval-ft-oracle-on-reader-val.json; data/finetune/eval-ft-oracle-on-oracle-val.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{The 2$\times$2 adaptation grid: two adapters, each evaluated on both input conditions. All four cells regress against the matched-stack baseline.}
+  \label{tab:finetune-grid}
+  \begin{tabular}{llrrr}
+    \toprule
+    Model & Evaluated on & Overall F$_1$ & $\Delta$ vs baseline & Spurious rate \\
+    \midrule
+    \emph{no adapter} (baseline) & reader transcript & 0.8480 & --- & 0.1575 \\
+    \emph{no adapter} (baseline) & perfect text & 0.9778 & --- & 0.0204 \\
+    \midrule
+    adapter trained on reader transcripts & reader transcript & 0.8246 & -0.0234 & 0.2012 \\
+    adapter trained on reader transcripts & perfect text & 0.9583 & -0.0196 & 0.0456 \\
+    \midrule
+    adapter trained on perfect text & reader transcript & 0.8354 & -0.0126 & 0.1692 \\
+    adapter trained on perfect text & perfect text & 0.9303 & -0.0476 & 0.0287 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Corpus and structurer as in Table~\ref{tab:sealed-val-arms}. Every arm here is bf16 on CUDA, including the baseline: comparing a bf16 adapter against the 4-bit deployment baseline would measure the adapter \emph{and} a precision change at once. The two adapters differ only in the input distribution they were trained on; rank, scaling, dropout, schedule, seed and target modules are identical, and both selected the same checkpoint. Deltas are against the baseline in the same evaluation condition, never across conditions. The adapter trained on perfect text is an instrument for attributing the shortfall, not a candidate for deployment.
+  \end{minipage}
+\end{table}

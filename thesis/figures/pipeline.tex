@@ -1,0 +1,79 @@
+%% Layer 1 in detail: three stages, the artefact that flows between them, and where the
+%% two measurement instruments attach.
+%%
+%% Hand-authored TikZ (not generated): it depicts a design, so there is no data source to
+%% derive it from. The instrument annotations carry as much weight as the stages -- they are
+%% what makes reading and structuring separately accountable, and therefore what makes the
+%% attribution result in this thesis possible at all.
+%%
+%% Artefacts ride on the arrows rather than occupying their own boxes: the stages are what
+%% the reader must remember, and five boxes in a row read faster than nine.
+%%
+%% Input from a chapter with:  \input{figures/pipeline.tex}
+
+\begin{tikzpicture}[
+    font=\small,
+    node distance=9mm,
+    stage/.style={
+      draw=horusaccent, line width=0.8pt, rounded corners=2pt,
+      fill=horuswash, text width=2.6cm, align=center,
+      minimum height=1.6cm, inner sep=4pt,
+    },
+    endpoint/.style={
+      draw=horusmuted, line width=0.6pt, rounded corners=1pt,
+      fill=white, text width=2.0cm, align=center,
+      font=\scriptsize, minimum height=1.0cm, inner sep=4pt,
+    },
+    instrument/.style={
+      draw=horuswarn, line width=0.7pt, dashed, rounded corners=2pt,
+      fill=white, text=horuswarn, text width=3.4cm, align=center,
+      font=\scriptsize, inner sep=4pt,
+    },
+    flow/.style={-{Stealth[length=2.4mm]}, line width=0.8pt, draw=horusaccent},
+    probe/.style={-{Stealth[length=2.0mm]}, line width=0.6pt, draw=horuswarn, dashed},
+    onflow/.style={font=\scriptsize, text=horusink, align=center, inner sep=2pt},
+  ]
+
+  \node[endpoint] (page) {page image\\\itshape 300\,dpi};
+  \node[stage, right=of page] (reader) {\textbf{Reader}\\[2pt]\scriptsize a vision model
+    transcribes the page};
+  \node[stage, right=22mm of reader] (structurer) {\textbf{Structurer}\\[2pt]\scriptsize a
+    language model fills the schema};
+  \node[stage, right=18mm of structurer] (repair) {\textbf{Validate\\and repair}\\[2pt]
+    \scriptsize deterministic rules, no model};
+  \node[endpoint, right=of repair] (final) {validated\\record};
+
+  \draw[flow] (page) -- (reader);
+  \draw[flow] (reader) -- node[onflow, above=1pt] {transcript\\\itshape plain text}
+    (structurer);
+  \draw[flow] (structurer) -- node[onflow, above=1pt] {draft record\\\itshape JSON} (repair);
+  \draw[flow] (repair) -- (final);
+
+  \begin{scope}[on background layer]
+    \node[
+      draw=horusmuted, line width=0.5pt, rounded corners=3pt, dotted,
+      fit=(page)(reader)(structurer)(repair)(final),
+      inner xsep=7pt, inner ysep=9pt,
+    ] (box) {};
+  \end{scope}
+
+  %% Both measurement instruments act on the transcript, which is why they share one box and
+  %% one attachment point. Instrument 1 removes the reading stage from the measurement without
+  %% changing anything else, making the structurer's own ceiling observable. Instrument 2 asks,
+  %% for each individual miss, whether the value was in the transcript at all -- the question
+  %% that assigns an error to a stage.
+  \coordinate (tap) at ($(reader.east)!0.5!(structurer.west)$);
+  \node[
+    draw=horuswarn, line width=0.7pt, dashed, rounded corners=2pt,
+    fill=white, text=horuswarn, text width=7.4cm, align=left,
+    font=\scriptsize, inner sep=5pt,
+    below=13mm of box.south, anchor=north,
+  ] (instruments) {%
+    \textbf{The transcript is where both measurement instruments attach:}\\[2pt]
+    \textbf{1.} replace it with text rendered from the ground truth --- this removes the
+    reading stage from the measurement and changes nothing else\\[1pt]
+    \textbf{2.} for each individual miss, ask whether the value was present in it at all%
+  };
+  \draw[probe] (instruments.north) -- (tap);
+
+\end{tikzpicture}

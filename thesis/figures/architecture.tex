@@ -1,0 +1,77 @@
+%% The three-layer design, with the two unbuilt layers visibly marked as such.
+%%
+%% Hand-authored TikZ (not generated): it depicts a design, not a measurement, so there
+%% is no data source to derive it from. The one thing it must never do is imply that all
+%% three layers were built -- hence the dashed borders, the grey wash and the explicit
+%% "design only, not evaluated" band on layers 2 and 3.
+%%
+%% Input from a chapter with:  \input{figures/architecture.tex}
+
+\begin{tikzpicture}[
+    font=\small,
+    layer/.style={
+      draw=horusaccent, line width=0.7pt, rounded corners=2pt,
+      fill=horuswash, text width=10.6cm, align=left,
+      inner sep=7pt,
+    },
+    unbuilt/.style={
+      draw=horusmuted, line width=0.7pt, dashed, rounded corners=2pt,
+      fill=white, text width=10.6cm, align=left,
+      inner sep=7pt, text=horusink,
+    },
+    flow/.style={-{Stealth[length=2.4mm]}, line width=0.7pt, draw=horusaccent},
+    dimflow/.style={-{Stealth[length=2.4mm]}, line width=0.7pt, draw=horusmuted, dashed},
+    tag/.style={font=\scriptsize\bfseries, text=horuswarn},
+  ]
+
+  \node[layer] (l1) {%
+    \textbf{Layer 1 --- Reading and structuring}\\[2pt]
+    \footnotesize A page image becomes a validated record: a vision model transcribes
+    the page, a language model places the transcribed values into the invoice schema,
+    and a deterministic stage validates and repairs the result. Runs entirely on local
+    hardware.%
+  };
+
+  \node[unbuilt, above=9mm of l1] (l2) {%
+    \textbf{Layer 2 --- Entity resolution and linking}\\[2pt]
+    \footnotesize Validated records would be linked into a graph of parties, documents
+    and obligations, resolving the same supplier across invoices and periods.%
+  };
+
+  \node[unbuilt, above=9mm of l2] (l3) {%
+    \textbf{Layer 3 --- Querying and reporting}\\[2pt]
+    \footnotesize The graph would answer practitioner questions directly, with every
+    answer traceable to the document and field it came from.%
+  };
+
+  \node[tag, right=2mm of l3.north east, anchor=north west, rotate=90] {};
+
+  \node[layer, below=9mm of l1, fill=white, draw=horusmuted] (source) {%
+    \textbf{Input} --- an invoice as received: an email-native PDF, or a photograph of a
+    paper document.%
+  };
+
+  \draw[flow] (source) -- (l1);
+  \draw[dimflow] (l1) -- (l2);
+  \draw[dimflow] (l2) -- (l3);
+
+  \node[
+    draw=horuswarn, line width=0.7pt, rounded corners=2pt,
+    fill=white, text=horuswarn, font=\scriptsize\bfseries,
+    text width=2.5cm, align=center, inner sep=4pt,
+    right=4mm of $(l2.east)!0.5!(l3.east)$,
+  ] (notice) {DESIGN ONLY\\not evaluated in this thesis};
+
+  \draw[draw=horuswarn, line width=0.6pt, dashed]
+    (notice.west) -- ($(l2.east)!0.5!(l3.east)$);
+
+  \node[
+    draw=horusaccent, line width=0.7pt, rounded corners=2pt,
+    fill=white, text=horusaccent, font=\scriptsize\bfseries,
+    text width=2.5cm, align=center, inner sep=4pt,
+    right=4mm of l1.east,
+  ] (scope) {BUILT AND MEASURED};
+
+  \draw[draw=horusaccent, line width=0.6pt] (scope.west) -- (l1.east);
+
+\end{tikzpicture}

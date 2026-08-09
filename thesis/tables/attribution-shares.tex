@@ -1,0 +1,30 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/attribution-val.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{Every signal-bearing error on the sealed split, attributed to the stage that caused it.}
+  \label{tab:attribution-shares}
+  \begin{tabular}{lrr}
+    \toprule
+    Cause & Errors & Share \\
+    \midrule
+    Reading: value absent from the transcript & 304 & 50.9\,\% \\
+    Structuring: value present, not placed & 201 & 33.7\,\% \\
+    Structuring: value emitted for an absent field & 92 & 15.4\,\% \\
+    \midrule
+    \textbf{Structuring, combined} & \textbf{293} & \textbf{49.1\,\%} \\
+    \midrule
+    \textbf{All signal-bearing errors} & \textbf{597} & \textbf{100.0\,\%} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Same superseded-reader caveat as Table~\ref{tab:attribution-clusters}: this attributes a shortfall, it does not score a system. Signal-bearing means the cell contributes to F$_1$; correct absences are excluded, because counting them would make the split a function of how often fields are empty. On this corpus the pipeline scored 0.6771 against 0.9608 for the same structurer on perfect text, so of the 0.2837 gap the reading stage accounts for roughly 0.14 and the structurer for the remainder.
+  \end{minipage}
+\end{table}

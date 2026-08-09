@@ -1,0 +1,28 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/eval-zeroshot-val.json; data/finetune/eval-zeroshot-qwen-val.json; data/finetune/eval-zeroshot-olmocr-val.json; data/finetune/eval-zeroshot-qwen-adr059-val.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{End-to-end score by reading model, with the structurer and the corpus held fixed.}
+  \label{tab:reader-lineage}
+  \begin{tabular}{lr}
+    \toprule
+    Reader & Overall F$_1$ \\
+    \midrule
+    granite-docling-258M & 0.6771 \\
+    Qwen3-VL-4B-Instruct & 0.7829 \\
+    olmOCR-2-7B & 0.8335 \\
+    \midrule
+    Qwen3-VL-4B-Instruct \emph{(after ruler repairs)} & 0.8257 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} One structurer, one corpus, one prompt: the reader is the only thing that changes across the first three rows. The fourth row is the same reader as the second, re-scored after the scoring defects of Chapter~\ref{ch:measurement-validity} were repaired --- so the gap between rows two and four is instrument, not model. This is why reader selection could not be settled on end-to-end score alone: the ranking moved when the ruler was fixed, which is evidence about the ruler and not about the readers.
+  \end{minipage}
+\end{table}
