@@ -5,6 +5,7 @@
 | `schema-step1-coding-handoff.md` | schema-extension thinking session | coding session (Step 1) | active |
 | `schema-step1-fields-empty-investigation.md` | full-coverage build session | fresh investigation session | active |
 | `structurer-regeneration-tier2.md` | ADR-058 prompt-surface audit session | fresh coding session (run + measure) | active |
+| `writeup-phase-thesis-authoring.md` | LoRA-study / writeup-readiness closeout (2026-08-09) | fresh thinking session (manuscript authoring) | active |
 
 ## Conventions
 
