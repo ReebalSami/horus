@@ -1,122 +1,494 @@
 \chapter{Methodology}
 \label{ch:methodology}
 
-% The scientific-correctness backbone. Everything in Sec. "a-priori locks" must
-% be fixed BEFORE results are read (no HARKing, no p-hacking; \cite{kerr1998}).
+This chapter states how the system was measured. It is deliberately longer than a
+methodology chapter usually is, for a reason the next chapter then demonstrates: on this
+task, the measuring apparatus is not a solved problem that can be assumed, and most of
+what looked at first like model error turned out to be measurement error. Everything
+described here was fixed before the results in
+Chapter~\ref{ch:results} were read. Where a decision was made after seeing data, this
+chapter says so.
 
-\section{Pipeline Under Evaluation}
+\section{What Is Measured}
 \label{sec:method-architecture}
 
-% TODO: brief -- the design is in Ch.~\ref{ch:system-design}. State precisely what
-% is measured: the reading stage, the structuring stage, and the deterministic
-% post-processing between them; plus the single-shot variant used as the
-% architectural comparison arm.
+The object of measurement is the Layer~1 pipeline of Chapter~\ref{ch:system-design}: a page
+image enters, a validated record leaves. Three stages sit between those points, and the
+distinction between them is what most of this chapter exists to preserve.
 
-\section{Corpus}
+The \textbf{reading} stage is a \ac{VLM} that receives a rasterised page and emits plain
+text. It is given no schema, no field list and no instruction about invoices; it is asked to
+transcribe. The \textbf{structuring} stage is a second, text-only model that receives that
+transcript together with a field specification and emits a \ac{JSON} object. The
+\textbf{validate-and-repair} stage is deterministic code: it normalises representations,
+checks arithmetic identities that the invoice standard guarantees, and repairs what can be
+repaired by rule. No model runs in the third stage, which matters when attributing an error
+--- a defect there is a program defect, reproducible and fixable, not a sampling artefact.
+
+Two properties of the pipeline are contractual rather than incidental, and both affect how it
+must be scored.
+
+\textbf{The honest null.} A field the document does not carry must come back absent, not
+guessed. An accounting tool that invents a tax identifier is worse than one that leaves it
+empty, because an empty field is visible to the reviewer who has to sign the booking and a
+plausible fabrication is not. The evaluation therefore scores absence as a first-class
+outcome rather than ignoring it, and reports the rate at which the system emits values for
+fields that do not exist as a metric in its own right.
+
+\textbf{Determinism.} Every generation reported in this thesis uses greedy decoding. No
+temperature, no sampling, no self-consistency voting over multiple samples. This costs some
+accuracy that sampling might have recovered, and it buys the property that a reported number
+is a property of the model and the input rather than of a random seed. It also means the
+stored generations can be re-scored later --- a capability that Chapter~\ref{ch:measurement-validity}
+depends on entirely.
+
+\section{Two Corpora, and Why Both Are Necessary}
 \label{sec:method-data}
 
-% TODO: the German e-invoicing reference corpus \cite{zugferdcorpus} plus
-% programmatically generated invoices; page rendering settings; how document variety
-% (single/multi rate, credit notes, reverse charge, discounts, multi-page) is covered.
-% Document the corpus per the datasheet convention \cite{gebru2018datasheets}.
-% Be explicit that these are born-digital renders, not scans -- the limitation is
-% discussed in Ch.~\ref{ch:limitations-future-work}.
+Two corpora are used, and neither would suffice alone.
 
-\section{Ground Truth from Embedded Structured Data}
+\subsection{A synthetic corpus with exact ground truth}
+
+The first is built from the public reference corpus for German hybrid electronic invoices
+\cite{zugferdcorpus}, supplemented with programmatically generated documents. Its composition
+and its split are given in Table~\ref{tab:corpus-composition}.
+
+The reason this corpus exists is not scale. It is that a hybrid electronic invoice carries the
+same content twice: once as a page a human reads, and once as an embedded machine-readable
+representation of the same facts, conforming to the European standard \ac{EN}~16931
+\cite{en16931}. That redundancy is the methodological device this thesis is built on, and
+\S\ref{sec:method-gt} describes how it is used.
+
+The documents span the profile range of the standard, from the minimal profile through the
+core \ac{EN}~16931 profile to extended profiles, and include the awkward cases that a corpus
+assembled for convenience would omit: credit notes, reverse-charge and intra-community
+supplies, invoices carrying two different tax rates, early-payment discount terms, foreign
+currency, multi-page documents, and a French-language credit note. Several documents are
+deliberately defective --- the reference corpus includes a directory of invoices that fail
+validation --- and those turned out to matter, because they are where the answer key itself
+proved unreliable.
+
+\textbf{Stated plainly as a limitation.} These are born-digital renders. The page is
+generated from the same data that produces the reference, so it is clean: no skew, no
+shadow, no compression artefact, no camera. A system evaluated only here would be evaluated
+only on the easy half of the problem. That is precisely why the second corpus exists.
+
+\subsection{A held-out corpus of real documents}
+
+The second corpus is 39 real invoices collected from the author's own business
+correspondence, recorded as a datasheet in the manner Gebru et al.\ propose
+\cite{gebru2018datasheets} and reproduced in Appendix~\ref{app:heldout}. It spans two
+languages and, more importantly, two acquisition channels: documents that arrived as
+email-native \ac{PDF} attachments, and paper documents photographed with a phone. Its
+per-channel composition is part of Table~\ref{tab:heldout-by-channel}.
+
+This corpus is small, and no claim in this thesis pretends otherwise. What it provides is not
+statistical power but \emph{external validity on the dimension that matters}: whether
+performance measured on generated pages survives contact with documents produced by other
+people's systems and captured under conditions the developer did not control. It was sealed
+before use, never consulted during prompt design, and never used for any fitting or selection
+decision.
+
+Its ground truth could not come from embedded data, because real invoices largely do not carry
+any. Obtaining a defensible answer key for it was the single most expensive methodological
+step in the project, and \S\ref{sec:method-heldout-gt} describes it.
+
+\section{Ground Truth Without Manual Labelling}
 \label{sec:method-gt}
 
-% TODO: the central methodological device. Hybrid e-invoices carry both a rendered
-% page and an embedded machine-readable representation of the same content, so the
-% reference data is obtained without manual labelling: render the page, hide the
-% embedded data from the model, extract it independently as the reference.
-% Cover: the extraction path, cross-validation of the reference with a second
-% independent tool, and the \ac{EN}~16931 business-term mapping.
+For the synthetic corpus, the reference data is extracted, not annotated.
 
-\section{Target Schema and Field Registry}
+The procedure is: take a hybrid invoice; render its visual page to a raster image at
+300\,\ac{DPI}; independently extract its embedded structured representation; discard the
+embedded representation from everything the models will see; and use it as the reference
+against which the models' output is scored. The models receive pixels. The reference comes
+from a channel they have no access to.
+
+This buys three properties that manual annotation cannot.
+
+\textbf{It is exact.} The reference is not a human's reading of the page; it is the data the
+page was generated from. There is no annotator disagreement to quantify because there is no
+annotator.
+
+\textbf{It scales without cost.} Every document in the corpus is fully labelled across every
+field the standard defines, including line-item tables that would be prohibitively expensive
+to annotate by hand. This is why line-item extraction can be measured at all in this thesis.
+
+\textbf{It is independently checkable.} The extraction is performed with one library and
+cross-checked with a second, structurally unrelated implementation --- a Python reference
+implementation of the standard \cite{facturxpython} and an independent Java validator and
+extractor \cite{mustangproject}. Two tools that disagree about what a document says indicate a
+defect in one of them, and that disagreement is observable rather than silent.
+
+The extracted values are mapped onto the standard's business-term identifiers, so that a field
+in this thesis's schema corresponds to a named term in \ac{EN}~16931 rather than to an
+ad-hoc label \cite{zugferdanhang}. That mapping is what makes the evaluated field set
+defensible to a practitioner: the fields are the ones the standard says an invoice has.
+
+\textbf{The critical caveat, stated here and revisited in
+Chapter~\ref{ch:measurement-validity}.} An exact reference is not the same as a fair
+comparison. The reference stores canonical values; the page prints human-readable ones. The
+reference may record a date as an ordered numeric string while the page prints it in German
+day-first notation, or store a controlled-vocabulary code where the page prints a phrase.
+Comparing a model's reading of the page against the canonical form by string equality
+punishes correct answers. That gap between exactness and fairness is the subject of the next
+chapter, and it consumed more effort than any modelling decision in this project.
+
+\section{Ground Truth for Real Documents}
+\label{sec:method-heldout-gt}
+
+Real invoices carry no embedded reference, so the held-out corpus needed an answer key built
+from scratch. The first attempt at one produced a number that had to be retracted, and the
+recovery from that failure is itself a methodological result.
+
+\subsection{Why the first attempt failed}
+
+The initial key was drafted automatically from each document's embedded text layer. For
+email-native \ac{PDF} files that is a reasonable starting point. For photographs it is not:
+a photographed page has no text layer, so the drafter had almost nothing to read and produced
+values that are not on the page at all. Adjudicating one photographed till receipt against
+its own image found a wrong month, a total that was neither the net nor the gross amount but
+a blend of the two, two values recorded as absent that are clearly printed, and an address
+with a digit missing.
+
+Scoring against that key produced a figure that measured the key rather than the system. It
+was retracted in the same working session in which it was produced. The relevant lesson is
+not that an automated draft is unreliable --- that is unsurprising --- but that
+\textbf{the failure was invisible in the aggregate}. The number looked like a plausible
+result for a hard task. It was only caught by opening individual documents and reading them.
+
+\subsection{Three independent channels and an adjudication rule}
+
+The replacement key is built from three channels that fail differently:
+
+\begin{enumerate}
+  \item the original text-layer draft, retained as one voice rather than discarded;
+  \item a frontier cloud vision model reading the page images, schema-constrained to the
+        field registry;
+  \item a commercial document-understanding service with a purpose-trained invoice model
+        \cite{azuredocintelligence}, reading the same page images.
+\end{enumerate}
+
+Independence is the property being bought, not accuracy. Agreement between two systems that
+share a failure mode is worth very little; agreement between a generalist vision model and a
+purpose-built \ac{OCR}-plus-field-model stack is worth considerably more, because the
+architectures have little reason to be wrong in the same way.
+
+Alongside the three channels, a deterministic gate asks a narrower question of every asserted
+value: \emph{is this string printed in the document's own embedded characters?} That gate
+proves presence. It cannot prove assignment --- a seller's and a buyer's tax identifier are
+both printed, so filing one as the other passes --- and it can prove nothing at all for the
+photographed documents, which have no embedded characters. Both limits are structural and were
+recorded rather than worked around.
+
+Every cell then falls into one of five provenance classes, and only some of them are accepted
+without the author looking:
+
+\begin{itemize}
+  \item \textbf{proven by printed text} --- the value is in the document's own characters
+        \emph{and} at least two channels assign it to this field; accepted;
+  \item \textbf{agreed by two channels} --- two independent channels produced the same value
+        with no deterministic backing; accepted, and reported as a visibly weaker class,
+        because two cloud systems can be wrong together;
+  \item \textbf{claimed absent} --- every channel that could express the field reported
+        absence; accepted;
+  \item \textbf{exempt by policy} --- a controlled-vocabulary value the page never prints in
+        the form the schema stores; escalated;
+  \item \textbf{decided by the author} --- nothing settles it; escalated.
+\end{itemize}
+
+Escalated cells are ranked by how much damage an unnoticed error would do, so that attention
+goes to the dangerous ones first, and each is then adjudicated by the author against the page
+image.
+
+The outcome: of 1{,}326 cells, 463 were accepted on a recorded warrant and 248 were decided
+by hand; the remainder are absences. All 39 documents were signed off individually. The
+verification flag is set only by author review --- a frontier model is a better drafter, not a
+substitute for a human, and this thesis does not claim otherwise.
+
+\textbf{Circularity check.} None of the three drafting channels is the system under test. The
+system is a local vision model feeding a local language model; the key was drafted by a cloud
+vision model, a commercial service and a text-layer parser, then adjudicated by the author. No
+output of the evaluated pipeline ever entered the key. Automatic acceptance additionally
+required either printed-text proof or two independent channels agreeing, so no single channel
+determined a cell alone.
+
+\textbf{Privacy cost, stated rather than buried.} Two of the three channels are cloud
+services, so the content of the held-out invoices left local hardware. This cuts directly
+against the confidentiality argument that motivates the whole system, and it is acceptable
+only under a distinction the thesis must be explicit about: the cloud models are a
+\emph{measuring instrument}, never part of the delivered pipeline. Nothing on the inference
+path makes a network call. The threat model in Chapter~\ref{ch:discussion} treats this
+honestly, including what it would mean for a practitioner who cannot make that trade even
+once.
+
+\textbf{Scope restriction that follows from all this.} The signed-off key covers the flat
+header fields. The repeating-group rows were seeded from one channel and never
+author-reviewed, because rows do not align across channels --- one reader splits a line
+another merges --- so positional comparison manufactures disagreements out of segmentation
+rather than out of error. Reviewing them properly would have meant several times the header
+workload with no ranking and no warrant. Consequently the held-out claim in this thesis is
+about \textbf{header-field extraction}, groups are excluded structurally rather than by a
+reporting convention, and line-item extraction is measured on the synthetic corpus where the
+reference is exact and free. Neither question is dropped; each is answered on the corpus that
+can support it. The limitation is recorded in
+Chapter~\ref{ch:limitations-future-work} together with the known route to closing it.
+
+\section{The Field Registry}
 \label{sec:method-schema}
 
-% TODO: the evaluated field set and how it is declared once, in one registry, that
-% simultaneously drives generation prompts, scoring, and reporting -- so the schema
-% cannot drift between the three. Cover flat fields and the repeating groups
-% (line items, tax breakdown, payment discounts).
+The evaluated fields are declared once, in a single registry, which simultaneously drives
+three things: the specification given to the structuring model, the scoring, and the
+reporting. This is an architectural choice with a methodological purpose --- if the prompt and
+the scorer carried separate field lists, they could drift apart, and a field could be scored
+that the model was never asked for, or asked for and never scored.
 
-\section{Compliance-Aware Evaluation Suite}
+The registry defines 34 flat header fields and three repeating groups: line items, the tax
+breakdown per rate, and early-payment discount terms. Each flat field carries its
+standard business-term identifier, its type, the normalisation rule that applies when
+comparing a predicted value to a reference one, and --- where relevant --- the printed labels
+under which the value tends to appear on a German invoice. The full registry is reproduced in
+Appendix~\ref{app:registry}.
+
+Two properties of the registry are load-bearing.
+
+\textbf{Normalisation is declared per field, not applied globally.} A tax rate, a date, an
+account number and a free-text payment reference require different comparison rules, and a
+single global rule would necessarily be wrong for most of them.
+
+\textbf{Normalisation is applied symmetrically.} Any rule that transforms a predicted value
+transforms the reference value identically. This sounds obvious and was violated once, with
+instructive consequences that Chapter~\ref{ch:measurement-validity} reports: a one-sided
+fix intended to make scoring fairer instead scored a correct answer as wrong.
+
+The registry's size is pinned by a test. A change to the field set fails the suite loudly
+rather than silently altering what a reported number covers.
+
+\section{The Metric Suite}
 \label{sec:method-metrics}
 
-% TODO (fixed before results were read): per-field precision / recall / \ac{F1},
-% micro and macro; field weighting by legal importance under \S14~\ac{UStG} and
-% \S33~\ac{UStDV}; document-level compliance pass rate; input-tax-deductibility
-% decision accuracy; per-field error analysis.
-% State plainly which metric is the headline and why.
+Extraction quality on this task is not one number, and the reason is worth stating before the
+definitions.
 
-\section{Measurement Validity: Validating the Ruler}
-\label{sec:method-measurement-validity}
+The obvious metric --- what fraction of fields is exactly right --- fails in two directions at
+once. It punishes a model that reads a date correctly but writes it in the page's format
+rather than the reference's, and it rewards a model that emits nothing on a document where
+most fields are absent. Both failures are well documented in the document-understanding
+literature, which is why edit-distance-based measures were introduced for this class of task
+\cite{biten2019anls} and later generalised to handle the structured, partially-absent outputs
+that generative models produce \cite{peer2024anlsstar}. The suite below follows that
+tradition, and additionally separates entity-level from group-level correctness in the manner
+that Khang et al.\ argue industrial extraction requires \cite{kieval2025}.
 
-% TODO: a distinctive part of this thesis's method, and worth several pages.
-% The problem: the model sees the page while the reference stores canonical values,
-% so a naive string comparison punishes correct answers. Examples of the classes
-% found and corrected:
-%   - controlled-vocabulary codes that never appear in print (the page says
-%     "Umsatzsteuer", the reference stores a category letter);
-%   - values printed together with their label ("Invoice no. 471102" vs "471102");
-%   - optional totals that the reference omits but a model may emit as zero;
-%   - document-level scalars that are ill-defined for some documents (a single
-%     "tax rate" on an invoice carrying two different rates);
-%   - content the page renders as free text while the reference stores it
-%     structurally, or the reverse.
-% Method: each correction is a separate, reviewed change with a recorded rationale
-% and a regression test; corrections may only change REPRESENTATION handling and may
-% never let a genuinely wrong value score as correct. State that discipline
-% explicitly -- it is what separates fixing the ruler from inflating the score.
-% Reference the decision records for the full chain; summarise the taxonomy here.
+Every comparison of one predicted field against its reference yields exactly one of five
+outcomes:
 
-\section{Sealed Train and Validation Splits}
+\begin{description}
+  \item[True positive] the reference carries a value and the prediction matches it after
+        the field's normalisation rule;
+  \item[False positive] the prediction carries a value that is wrong, or carries one where
+        the reference has none;
+  \item[False negative] the reference carries a value and the prediction is absent or wrong;
+  \item[True negative] the reference has no value and the prediction is correctly absent;
+  \item[Excluded] the cell is ill-posed and is scored neither way.
+\end{description}
+
+The fifth outcome deserves justification, because a category that removes cells from scoring
+is exactly the kind of mechanism that can be abused to inflate a result. It exists because
+some cells are not answerable from the page at all: a document-level single tax rate is
+undefined on an invoice that carries two different rates, and a value that no reading channel
+could locate anywhere in the page text cannot be recovered by any vision system.
+Chapter~\ref{ch:measurement-validity} states exactly which cells were excluded, on what
+recorded warrant, and what the exclusion was worth --- including the discipline that a cell
+may only be excluded on a criterion declared in advance and applied by a rule, never
+case-by-case after seeing whether the model got it right.
+
+From those outcomes the suite computes:
+
+\begin{itemize}
+  \item \textbf{Per-field precision, recall and F$_1$}, pooled over documents. This is the
+        diagnostic view: it is what identifies \emph{which} field is failing, and it is how
+        every defect in the next chapter was found.
+  \item \textbf{Flat micro-F$_1$}, over the header fields of one document, then averaged
+        across documents. Each document counts once regardless of how many fields it carries.
+        This is the headline figure, because the document is the unit a practitioner cares
+        about: the question is how the system behaves on an invoice handed to it.
+  \item \textbf{Overall micro-F$_1$}, which additionally pools repeating-group cells. Where
+        groups are out of scope this equals the flat figure by construction, so the two cannot
+        be confused --- a confusion that did occur once, when a single run reported two very
+        different numbers under similar names.
+  \item \textbf{Cell-pooled F$_1$}, summing all outcomes across the corpus before computing
+        one score, so field-dense documents pull harder. It answers a different question ---
+        what share of all extracted cells is correct --- and both are reported wherever the
+        distinction could mislead.
+  \item \textbf{Presence-conditional F$_1$}, restricted to fields the document actually
+        carries, which makes a score insensitive to how often fields are absent.
+  \item \textbf{Spurious emission rate}, the share of emitted values for fields the document
+        does not carry. This is the honest-null contract made measurable, and it is the metric
+        on which the fine-tuning result in Chapter~\ref{ch:results} turns.
+\end{itemize}
+
+Correct absences are excluded from the F$_1$ family throughout. Including them would make
+every score partly a function of how often fields happen to be empty, which is a property of
+the corpus rather than of the system.
+
+\textbf{On weighting fields by legal importance.} An earlier design weighted fields by their
+significance under \S14 \ac{UStG} and \S33 \ac{UStDV}, so that omitting a mandatory invoice
+particular would cost more than omitting an optional one. This was not carried through, and
+the reason is methodological rather than practical: the weights would have been chosen by the
+author, and a headline number that depends on an author-chosen weight vector is not
+comparable to anything. The unweighted figures are reported instead, and per-field results are
+given in full so that a reader who wants to weight them can.
+
+\section{Sealed Splits and Leak Control}
 \label{sec:method-splits}
 
-% TODO (fixed before results were read): a stratified split sealed before any
-% adaptation work, with fingerprints committed so the partition is auditable after
-% the fact; what stratification variables were used; the guards that keep validation
-% documents out of prompt design and adaptation.
+The synthetic corpus is split into a fitting set and a validation set, stratified by invoice
+profile so that no profile appears on only one side. The split was fixed before any adaptation
+work and recorded with its seed and a content hash for each side, so that a later run can
+\emph{prove} it scored the same documents rather than asserting it. Table~\ref{tab:corpus-composition}
+gives the composition and the hash.
 
-\section{Reading-Quality Proxy}
+\input{tables/corpus-composition.tex}
+
+Three guards keep the validation set clean:
+
+\textbf{Prompt design never saw it.} The field specification, including the printed labels
+each field tends to appear under, was developed against the fitting set. This matters more
+than it sounds: a prompt tuned by watching validation documents is a form of fitting, and it
+is a form that leaves no trace in any model weight.
+
+\textbf{Checkpoint selection never saw it.} The adaptation experiments needed a set to select
+a checkpoint on. Rather than selecting on the validation set --- which would have made the
+reported figure a best-of --- a further slice was carved out of the \emph{fitting} set for
+that purpose, disjoint from both the fitting documents and the validation set, and recorded
+with its own hash. Selecting on it leaks nothing into the reported score.
+
+\textbf{Prompt-fixable gaps were never handed to the fine-tune.} Before any adaptation, every
+field that scored poorly was classified by cause: absent from the input, present but never
+named in the specification, or present and named but rejected by a comparison rule. A gap of
+the second kind is a prompt defect, and repairing it by fine-tuning would credit the adapter
+with a gain that a one-line specification change would have produced. That classification is
+reported in Chapter~\ref{ch:results}.
+
+\section{Reading Quality, Measured Directly}
 \label{sec:method-answerability}
 
-% TODO: to compare candidate readers without running the whole pipeline for each,
-% reading quality is measured directly: for each document, what share of the
-% reference values is recoverable from the transcript (allowing for the usual
-% German formatting variants of dates, decimal separators and account numbers).
-% Report the measured correlation with the end-to-end metric, and be explicit that
-% this is a proxy with a known blind spot -- a value can be present as a string yet
-% unusable if the surrounding structure is destroyed.
+Comparing candidate reading models by end-to-end score is expensive and, worse, confounded:
+the structuring stage sits between the reader and the number, so a reader can lose on
+end-to-end score for reasons that have nothing to do with reading.
 
-\section{Error Attribution Design}
+Reading quality is therefore also measured directly, by asking a question of the transcript
+alone: \textbf{for each reference value, does the transcript contain it at all?} Matching
+allows the formatting variants a German invoice actually uses --- day-first and
+month-first dates, comma and point decimal separators, spaced and unspaced account numbers,
+and identifiers printed with or without their label.
+
+This proxy has a known blind spot, and it is not a small one: a value can be present as a
+string yet unusable because the surrounding structure was destroyed. A transcript that
+contains every number on the page in scrambled order scores perfectly on this proxy and is
+useless to the structuring stage. The proxy is therefore used as one instrument among several
+and never as the sole basis for a decision --- and in the one case where it disagreed with
+end-to-end score, Chapter~\ref{ch:results} reports how the disagreement was resolved rather
+than picking the more convenient instrument.
+
+\section{Error Attribution: Three Instruments}
 \label{sec:method-attribution}
 
-% TODO: the three instruments, and why three are needed:
-%   1. re-scoring the SAME stored predictions per field group, to see where the loss
-%      is concentrated without re-running any model;
-%   2. classifying every miss by whether the reference value was findable in the
-%      transcript at all, which separates a reading failure from a structuring one;
-%   3. re-running the identical structuring pass on reference-quality transcripts,
-%      which yields an upper bound on the structuring stage independent of reading.
-% State that all three arms use matched decoding settings, and that instrument 3 is
-% the decisive one because it removes reading from the equation entirely.
+The central empirical question of this thesis is not \emph{how well does the pipeline score}
+but \emph{which stage limits it}. Answering that requires separating two stages that share a
+token stream and an architecture, so no architectural boundary does the separating for us.
+Three instruments do it instead, illustrated in Figure~\ref{fig:pipeline}.
+
+\textbf{Instrument one: re-score stored predictions by field group.} Predictions are archived,
+so they can be re-scored by cluster --- core header fields, extended header fields, line
+items, tax breakdown, discount terms --- without running any model. This localises the loss.
+It cannot attribute it.
+
+\textbf{Instrument two: classify every miss by whether the value was findable.} For each
+individual miss, ask whether the reference value was present in the transcript the structuring
+stage received. If it was not, no structuring model could have recovered it, and the error
+belongs to reading. If it was, the value was available and the structuring stage failed to
+place it. This is applied per miss rather than inferred from totals, which is what makes it an
+attribution rather than a correlation.
+
+\textbf{Instrument three: replace the transcript with reference-quality text.} The decisive
+one. The same structuring model, the same prompt, the same decoding settings, the same
+documents --- but the transcript is replaced by text rendered from the reference data. This
+removes the reading stage from the measurement entirely and yields an upper bound on the
+structuring stage that is independent of reading quality.
+
+All three instruments use matched decoding settings, and instrument three matters enough that
+its own correctness had to be established before its output could be trusted: a renderer that
+produces text the reference data does not support would make the ceiling wrong in an
+unpredictable direction rather than merely optimistic. Chapter~\ref{ch:measurement-validity}
+reports the defects found in that renderer and what correcting them cost.
+
+\textbf{The instrument is not a product.} Reference-quality text does not exist for a real
+document. An adapter trained on it, or a score measured with it, may never be reported as a
+deliverable capability. This thesis uses instrument three exclusively to attribute a
+shortfall, and says so at every point where its numbers appear.
 
 \section{Pre-Registration and Honest Reporting}
 \label{sec:method-hypotheses}
 
-% TODO: the hypotheses, their registration dates, and the discipline: predictions
-% recorded before the corresponding data was collected \cite{kerr1998}; each
-% experiment cites the hypothesis it tests or is labelled exploratory; a refuted
-% hypothesis is reported as such. Also state, here rather than late in the thesis,
-% that some registered hypotheses were not evaluated after the scope was narrowed,
-% and point to Ch.~\ref{ch:limitations-future-work}. The full register is in the
-% appendix.
+Analysing data and then choosing which hypothesis to claim is a well-described way of
+producing results that do not replicate \cite{kerr1998}. Two disciplines guard against it
+here.
+
+\textbf{Predictions were recorded before the corresponding data existed.} Each experiment
+either cites the hypothesis it tests or is labelled exploratory. The register, with
+registration dates, is in Appendix~\ref{app:hypotheses}.
+
+\textbf{Decision rules were fixed in advance and, where possible, delegated to code.} The
+adaptation study is the clearest case. Before either training run started, the following were
+fixed: the recipe, the selection rule (lowest loss on the held-back slice), that the
+validation set would be scored exactly once per arm, that comparisons would be made only
+against a baseline measured in the same numeric precision, and --- the clause that matters
+most --- that \textbf{a null or negative result would be reported as one}. The selection rule
+is native trainer configuration rather than a hand-applied convention, so the executed rule
+cannot drift from the registered rule.
+
+A pre-registered conjunctive rule was also used for the one candidate-model comparison where
+a favourable reading was available: all three criteria had to pass for the challenger to
+replace the incumbent, with the criteria written down before the comparison ran. It failed on
+one criterion, and Chapter~\ref{ch:results} reports the failure and the resulting decision.
+
+\textbf{Registered but not evaluated.} The scope of this thesis was narrowed during the work,
+and several registered hypotheses --- concerning the two upper layers of the architecture and
+a comparison against cloud services --- were consequently never tested. They are listed as
+such in Chapter~\ref{ch:limitations-future-work} rather than quietly dropped from the
+register. A hypothesis that disappears between registration and reporting is
+indistinguishable, to a reader, from one that was tested and inconvenient.
 
 \section{Reproducibility and Hardware}
 \label{sec:method-repro}
 
-% TODO: configuration-as-data (every experiment knob in a versioned configuration
-% file, validated before any model loads), deterministic decoding, seeding,
-% experiment tracking, and the exact local hardware envelope; note where a rented
-% GPU was used and why (one candidate exceeded the local memory envelope).
+\textbf{Configuration as data.} Every experiment knob --- model identifiers, dataset paths,
+seeds, decoding settings, prompt strings, thresholds --- lives in a versioned configuration
+file, not in code. Each experiment takes exactly one argument: the path to its configuration.
+The configuration is validated against a typed schema \cite{pydantic} before any model loads,
+so a missing or malformed value fails immediately rather than after a model has been read into
+memory.
+
+\textbf{Tracking.} Runs are recorded with their configuration, metrics and artefacts
+\cite{mlflow}, which is what makes a later re-score attributable to a specific earlier run
+rather than to a remembered one.
+
+\textbf{Hardware.} All inference reported in this thesis runs on a single Apple M1~Pro laptop
+with 16\,\ac{GB} of unified memory, using the platform's own machine-learning framework
+\cite{mlxvlm} with 4-bit quantised weights. That envelope is not incidental --- it is the
+deployment claim. A system that requires a data-centre accelerator does not solve the problem
+this thesis addresses, because the firm that cannot send documents to a cloud service usually
+also cannot buy a rack.
+
+One exception is recorded explicitly. The adaptation experiments exceeded the local memory
+envelope: a path-validation run on four examples ran long enough to be abandoned, against a
+real training budget several hundred times larger, and the local training code already carried
+three separate workarounds for platform ceilings. Training was therefore moved to a rented
+\ac{CUDA} accelerator in full precision. This creates a precision mismatch between the trained
+adapter and the locally-measured baseline, and that mismatch turned out to be large enough to
+invert a conclusion --- which is why re-measuring the baseline in the adapter's own precision
+was made a precondition of the study rather than an afterthought.
+Table~\ref{tab:precision-confound} reports what would have been concluded without it.
+Delivered inference remains entirely local; only training moved.

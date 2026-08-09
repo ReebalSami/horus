@@ -681,6 +681,83 @@ def build_reader_lineage() -> str:
     )
 
 
+_READER_LABELS = {
+    "<PDF text layer — ceiling>": r"Embedded text layer \emph{(ceiling)}",
+    "Qwen/Qwen3-VL-4B-Instruct": "Qwen3-VL-4B-Instruct",
+    "Qwen/Qwen3-VL-8B-Instruct": "Qwen3-VL-8B-Instruct",
+    "allenai/olmOCR-2-7B-1025": "olmOCR-2-7B",
+    "opendatalab/MinerU2.5-Pro-2604-1.2B": "MinerU2.5-Pro (2604)",
+    "opendatalab/MinerU2.5-Pro-2605-1.2B": "MinerU2.5-Pro (2605)",
+}
+
+
+def build_reader_findability() -> str | None:
+    """Corrected reading quality per candidate, from the canonical script's own output.
+
+    The computation is NOT reimplemented here. `scripts/findability_corrected.py` is the one
+    implementation, and a parallel copy in this file would be free to drift from it -- the
+    exact failure this project already recorded once for the perfect-text renderer. This
+    function therefore invokes it and parses its two-column report.
+    """
+    import subprocess
+
+    try:
+        completed = subprocess.run(
+            ["uv", "run", "python", "scripts/findability_corrected.py"],
+            capture_output=True,
+            text=True,
+            timeout=900,
+            check=True,
+        )
+    except (subprocess.SubprocessError, OSError, FileNotFoundError) as error:
+        print(f"  skipping reader-findability table: {error}", file=sys.stderr)
+        return None
+
+    rows: list[list[str]] = []
+    for line in completed.stdout.splitlines():
+        parts = line.rsplit(None, 2)
+        if len(parts) != 3:
+            continue
+        name, score, misses = parts
+        name = name.strip()
+        if name in {"reader", ""} or name.startswith("<canonical"):
+            # The canonical-lineage row duplicates the selected model under an alias.
+            continue
+        if name not in _READER_LABELS:
+            continue
+        try:
+            rows.append([_READER_LABELS[name], _num(float(score), 3), str(int(misses))])
+        except ValueError:
+            continue
+    if not rows:
+        print("  skipping reader-findability table: no parsable rows", file=sys.stderr)
+        return None
+    rows.sort(key=lambda row: float(row[1]), reverse=True)
+    return _table(
+        caption=(
+            "Reading quality per candidate after every miss was judged by hand against the "
+            "page image."
+        ),
+        label="tab:reader-findability",
+        colspec="lrr",
+        header=["Reader", "Corrected findability", "Real misses"],
+        rows=rows,
+        note=(
+            "Measured on the sealed validation split. Findability asks a question of the "
+            "transcript alone --- for each reference value, is it present at all, allowing the "
+            "formatting variants a German invoice actually uses --- so it isolates reading from "
+            "structuring. \\emph{Corrected} means that 23 reference values which no channel "
+            "could locate anywhere on the page, including the embedded text layer, are excluded "
+            "as unanswerable rather than charged to every candidate equally. The embedded text "
+            "layer is the ceiling: it is what the document itself contains, so no vision system "
+            "can exceed it. This metric has a known blind spot --- a value can be present as a "
+            "string while the surrounding structure is destroyed --- which is why it decided "
+            "nothing on its own."
+        ),
+        sources=["scripts/findability_corrected.py (over data/finetune/bakeoff/)"],
+    )
+
+
 def build_corpus_composition() -> str:
     """The sealed split, its strata and its hashes."""
     split = _read_json(FINETUNE_DIR / "split.json")
@@ -1292,6 +1369,9 @@ def main(argv: list[str]) -> int:
     )
     _write(TABLES_DIR / "reader-lineage.tex", build_reader_lineage())
     _write(TABLES_DIR / "corpus-composition.tex", build_corpus_composition())
+    findability = build_reader_findability()
+    if findability is not None:
+        _write(TABLES_DIR / "reader-findability.tex", findability)
 
     heldout = load_heldout_breakdown(refresh=not args.no_refresh_heldout)
     if heldout is None:
