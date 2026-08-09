@@ -126,10 +126,14 @@ def build_lr_schedule(
     short enough (~10^2 steps) that a bad first step is a meaningful fraction of it. The
     cosine tail keeps the final epoch from walking away from a good middle.
     """
-    import mlx.optimizers as optim
-
     if schedule == "constant":
         return learning_rate
+
+    # Imported here, not above the early return: `constant` yields a bare float and has no
+    # mlx dependency, so importing first would make this function unusable on Linux even for
+    # the path that never needs Metal — breaking the "all mlx imports are lazy" invariant
+    # that pyproject.toml relies on to stay installable on the rented CUDA box (ADR-068).
+    import mlx.optimizers as optim
 
     warmup_steps = max(1, int(round(iters * warmup_ratio)))
     decay_steps = max(1, iters - warmup_steps)

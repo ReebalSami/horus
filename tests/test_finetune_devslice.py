@@ -16,6 +16,7 @@ and `.subdir`, never the ground-truth contents.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 from pathlib import Path
 
@@ -25,6 +26,15 @@ from horus.eval.ground_truth import GroundTruth
 from horus.finetune.dataset import InvoiceRecord
 from horus.finetune.split import carve_dev
 from horus.finetune.train import build_lr_schedule, checkpoint_path, materialize_checkpoint
+
+# `mlx` is Apple-Silicon-only and platform-gated in pyproject.toml so `uv sync` works on the
+# rented CUDA box (ADR-068), which means it is absent on CI's ubuntu-latest. Only the cosine
+# branch of `build_lr_schedule` reaches `mlx.optimizers`; `constant` returns a bare float and
+# is asserted unguarded below, which is what keeps that path honest on Linux.
+requires_mlx = pytest.mark.skipif(
+    importlib.util.find_spec("mlx") is None,
+    reason="Requires `mlx` (Apple-Silicon only, platform-gated per ADR-007/ADR-068).",
+)
 
 
 def _rec(stem: str, subdir: str) -> InvoiceRecord:
@@ -111,6 +121,7 @@ def test_constant_schedule_returns_the_bare_rate() -> None:
     ) == pytest.approx(1e-4)
 
 
+@requires_mlx
 def test_cosine_schedule_warms_up_then_decays() -> None:
     lr, iters = 1e-4, 600
     sched = build_lr_schedule(
@@ -129,6 +140,7 @@ def test_cosine_schedule_warms_up_then_decays() -> None:
     assert end == pytest.approx(lr * 0.1, rel=0.25), "should land near the configured floor"
 
 
+@requires_mlx
 def test_cosine_schedule_survives_a_tiny_run() -> None:
     """A smoke run has single-digit iters; warmup/decay windows must not collapse to zero."""
     sched = build_lr_schedule(
