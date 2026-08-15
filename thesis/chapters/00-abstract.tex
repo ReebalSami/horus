@@ -1,37 +1,43 @@
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-% TODO(abstract): write LAST, ~250 words. Cover, in this order: the
-% confidentiality problem that forces local processing; the two-stage local
-% reader/structurer approach; the measurement apparatus; the headline finding
-% (which stage is the binding constraint); the honest scope statement.
-%
-% Since the acronym list now precedes the body (FH Wedel part order), \ac{...}
-% macros ARE legal in this file. First use expands automatically.
-%
 % SCOPE GUARD: do not claim the knowledge-graph or query layers, and do not claim
-% a cloud comparison -- both are future work per ADR-054's scope freeze. The
-% earlier draft of this abstract claimed evaluation "against EU-hosted cloud
-% baselines"; that claim was removed as untrue.
+% a cloud comparison -- both are future work per ADR-054's scope freeze.
+% Kurzfassung deliberately omitted (author decision, 2026-08-15): thesis is
+% English-only.
+% Every number below traces to a committed artifact: heldout-breakdown.json
+% (0.88 mean, 0.95/0.85 P/R, channel gap), eval-oracle-*-val.json (>0.97
+% ceiling), eval-ft-*-val.json (adaptation grid), attribution-val.json.
 
-This thesis asks how reliably current open-weights, locally hosted document
-\acp{VLM} can read German business-to-business invoices into a legally meaningful
-structured form, under the professional-confidentiality constraints that make
-sending client documents to external cloud services problematic for German tax
-advisors. A two-stage local pipeline is built and measured: a document \ac{VLM}
-transcribes the page, and a language model maps the transcript onto the
-\ac{EN}~16931 field set. Evaluation uses sealed training and validation splits, a
-field-weighted metric suite derived from German invoicing law, and an attribution
-study that separates reading errors from structuring errors.
+German tax advisors, auditors and lawyers process client invoices under a
+professional-secrecy regime backed by criminal law, which makes sending those
+documents to external cloud services legally fraught and motivates processing
+that never leaves the firm. This thesis asks how reliably current open-weights,
+locally hosted document \acp{VLM} can convert German business-to-business
+invoices into the legally grounded \ac{EN}~16931 semantic form on commodity
+hardware --- and which stage of the pipeline limits that reliability. A
+two-stage pipeline is built and measured: a vision-language model transcribes
+the page, and a second model structures the transcript against the field
+registry, both running locally. Measurement rests on a synthetic \ac{ZUGFeRD}
+corpus whose embedded \ac{XML} supplies machine-exact references, and on 39 real
+invoices with an answer key adjudicated across three independent channels.
 
-\medskip
-\noindent\textit{[Placeholder --- final wording and headline numbers to be written
-once the reader-selection results are in. Current evidence base: the structuring
-stage reaches an \ac{F1} of 0.96 on perfect transcripts but only 0.68 on real
-ones, identifying document reading as the binding constraint.]}
+Zero-shot header-field extraction on the real invoices reaches a mean
+per-invoice \ac{F1} of 0.88, with precision (0.95) well above recall (0.85):
+four errors in five are omissions, not fabrications. Capture quality, not
+language, is the dominant cost --- phone-scanned documents score more than
+eleven points below email-native ones. Because the structuring stage exceeds
+0.97 on perfect transcripts, the binding constraint is reading, a conclusion
+supported by a per-miss attribution of every individual error. A pre-registered
+low-rank adaptation of the structuring stage regresses in all four cells of its
+two-by-two design and specifically raises the rate of values invented for absent
+fields.
 
-% Optional German Kurzfassung (confirm requirement with supervisor):
-% \bigskip
-% \selectlanguage{ngerman}
-% \textbf{Kurzfassung.} ...
-% \selectlanguage{english}
+A recurring finding is methodological: the measuring apparatus itself required
+validation. Documented defects in scoring rules and reference data moved
+reported figures by amounts comparable to the differences between models and
+once inverted a model ordering; the thesis contributes the defect taxonomy, the
+frozen-generation re-scoring discipline that makes instrument repairs measurable
+in isolation, and the resulting corrected results. A knowledge-graph layer and a
+query layer were designed but deliberately not built or evaluated; their
+hypotheses are reported as registered but unevaluated.

@@ -1,39 +1,216 @@
 \chapter{Related Work}
 \label{ch:related-work}
 
-% Position the thesis precisely. Each subsection ends with "what we add".
+This chapter positions the thesis against four bodies of work: vision-based document
+information extraction, the evaluation of extraction quality, parameter-efficient
+adaptation of compact models, and knowledge-graph construction. The first three each end
+with a statement of what this thesis adds. The fourth deliberately does not, because the
+layers it informed were designed but not built (\S\ref{sec:design-scope}), and honesty
+about that is worth more than a claimed contribution.
 
 \section{Vision-Based Invoice and Document Information Extraction}
 \label{sec:rw-extraction}
 
-% TODO: Berghaus et al. 2025 \cite{berghaus2025} -- cloud models on invoices,
-% NO recent open-source document VLMs (the gap). Historical: Donut
-% \cite{kim2022donut}, LayoutLMv3 \cite{huang2022layoutlmv3}. IDP benchmarks.
+\subsection{From templates to document vision-language models}
+
+Invoice extraction is an old industrial problem, and its method history explains the model
+class this thesis evaluates. The first generation paired \ac{OCR} with templates and rules:
+reliable on layouts it had seen, expensive on layouts it had not, and maintained by hand as
+suppliers changed their stationery. The second generation replaced the rules with learned
+models over the \ac{OCR} output, most prominently the LayoutLM line, whose third iteration
+pre-trains a single transformer over text, layout and image patches with unified masking
+objectives \cite{huang2022layoutlmv3}. These models still consume an external \ac{OCR}
+engine's output, so their extraction quality is bounded by a reading stage they do not
+control --- an architectural echo of the attribution question this thesis asks. The third
+generation removed the \ac{OCR} dependency altogether: Donut demonstrated that an
+encoder--decoder trained end-to-end can map a page image directly to a structured output
+sequence with no intermediate text at all \cite{kim2022donut}.
+
+The fourth generation --- the subject of this thesis --- inverts Donut's bet. Rather than
+one end-to-end model per task, it offers general document \emph{transcription} as a
+foundation capability, packaged in small open-weights models explicitly built for local
+deployment. Within roughly a year of this writing there appeared, among others,
+granite-docling-258M, a compact end-to-end conversion model \cite{granitedocling}
+underpinning the Docling toolchain \cite{docling2025}; olmOCR-2, a seven-billion-parameter
+high-throughput transcription model \cite{olmocr2}; the MinerU~2.5 parsing family
+\cite{wang2026mineru}; the DeepSeek-OCR line, which frames page reading as optical context
+compression \cite{deepseekocr2025,deepseekocr2026}; and general-purpose compact \acp{VLM}
+with strong document ability, such as Qwen3-VL \cite{qwen3vl}. This wave is recent enough
+that the survey and selection in Chapters~\ref{ch:measurement-validity}
+and~\ref{ch:results} constitute, to the author's knowledge, the first systematic comparison
+of its members on German business-to-business invoices.
+
+\subsection{Benchmarks and corpora}
+
+The standard public corpora for invoice-adjacent extraction do not cover this thesis's
+setting. FUNSD targets form understanding in noisy scans \cite{jaume2019funsd};
+CORD-v2 covers Indonesian till receipts \cite{cordv2}; FATURA2 provides synthetic invoices
+from fifty templates without a legally grounded schema \cite{fatura2}. A corpus of 977 real
+annotated German invoices exists but is access-restricted and could not be used here
+\cite{krieger2021german}. On the benchmark side, OmniDocBench measures document parsing
+broadly \cite{omnidocbench}, Real5-OmniDocBench extends it with five physical capture
+conditions \cite{real5omnidocbench}, and MDPBench measures multilingual parsing across
+3{,}400 documents in 17 languages with a private evaluation split, reporting that
+open-source parsers lose an average of 17.8\,\% on photographed relative to digital
+documents \cite{mdpbench2026}. None of these pairs German \ac{B2B} invoices with a
+machine-exact semantic reference. The \ac{ZUGFeRD} corpus this thesis builds on
+(\S\ref{sec:method-data}) does exactly that: each document embeds its own reference as
+structured data under the \ac{EN}~16931 semantic model \cite{en16931}, which is what makes
+scoring exact and ground truth free --- at the price of visual cleanliness, a price
+Chapter~\ref{ch:results} measures.
+
+\subsection{The closest prior work, and where its finding points the other way}
+\label{sec:rw-berghaus}
+
+The nearest neighbour to this thesis is the invoice-processing benchmark of Berghaus et
+al.\ \cite{berghaus2025}. They evaluate eight multi-modal models from three families ---
+cloud-frontier models and open-weights general-purpose Gemma~3 --- on three public invoice
+and receipt datasets, under two processing strategies: native image input, and a
+parse-first arrangement that converts the document to markdown with Docling
+\cite{docling2025} before a text-only model extracts the fields. Their headline finding is
+that \textbf{native image processing generally outperforms the parse-first arrangement}.
+
+Taken at face value, that finding points in the opposite direction from this thesis's
+two-stage design, and the tension deserves to be stated rather than avoided. Three
+differences keep the results compatible. First, the model classes barely overlap: their
+strongest results come from cloud-frontier models far above this thesis's local envelope,
+and their open-weights models are general-purpose --- the specialised document
+\acp{VLM} that constitute this thesis's reading candidates are absent. Second, the
+parse-first arrangements differ in kind: their text arm is a layout-analysis converter
+producing markdown, whereas this thesis's reading stage is itself a \ac{VLM} transcriber,
+selected competitively (\S\ref{sec:results-reader}) --- ``parse-first loses with one
+converter'' does not establish that every two-stage arrangement loses. Third, and most
+importantly, this thesis's decisive argument for the split is not accuracy but
+\emph{measurability}: a stored transcript is what makes per-stage attribution and
+instrument validation possible at all (\S\ref{sec:design-two-stage}), and those
+measurements, not the end-to-end score, produced this thesis's central findings. The
+accuracy evidence gathered here --- a small preliminary comparison in which the two-stage
+arrangement won (\S\ref{sec:results-preliminary}), consistent with published evidence that
+imposed output formats degrade generation quality \cite{tam2024format} --- is weaker than
+their benchmark and is labelled as such. Whether a single-shot arrangement overtakes the
+split \emph{within} the specialised local model class is an open question this thesis
+leaves explicitly to future work (\S\ref{sec:future-work}).
+
+\textbf{What this thesis adds} to this line of work: the missing model class (specialised
+open-weights document \acp{VLM} under an enforced local-hardware envelope), the missing
+corpus class (German \ac{B2B} invoices with a legally grounded, machine-exact reference,
+plus 39 real invoices with an adjudicated answer key), and a per-stage attribution that
+benchmark-style end-to-end scores cannot provide.
 
 \section{Evaluation of Extraction Quality and Measurement Validity}
 \label{sec:rw-evaluation}
 
-% TODO: this is where the thesis's methodological contribution is positioned.
-% Prior work on scoring extraction against structured references, on
-% representation-tolerant matching, and on pre-registration discipline
-% \cite{kerr1998}. What this thesis adds: an explicit, documented separation of
-% model error from scoring artefact on a task where the reference is machine
-% readable while the input is a rendered page, plus an attribution design that
-% bounds the structuring stage's contribution using reference-quality transcripts.
+\subsection{Matching rules for extraction scoring}
+
+How a predicted value is compared against a reference is a design decision with measurable
+consequences, and the field has revised it repeatedly. Exact string match penalises
+harmless representation differences, which motivated \ac{ANLS}, a normalised edit-distance
+tolerance originally introduced for scene-text question answering \cite{biten2019anls}.
+ANLS$^{\star}$ generalised that tolerance to the structured outputs of document extraction
+--- lists, nested objects, absent fields \cite{peer2024anlsstar}. KIEval moved the
+evaluation closer to industrial use by scoring grouped entities (a line item's fields
+belonging together) separately from individual ones, arguing that extraction quality in
+application settings is experienced as correction cost, not as isolated cell accuracy
+\cite{kieval2025}. This thesis's metric suite (\S\ref{sec:method-metrics}) sits in that
+lineage: field-level scoring under symmetric, type-aware canonicalisation, group-level
+cells reported alongside flat ones, and abstention scored as a first-class outcome ---
+the last being a property none of the cited rules make explicit, and which the honest-null
+contract of this thesis requires.
+
+\subsection{Measurement validity as a first-class concern}
+
+A separate line of work holds that aggregate scores conceal more than they reveal.
+CheckList transferred behavioural testing from software engineering to \ac{NLP} models,
+showing that models with identical accuracy fail in categorically different ways
+\cite{ribeiro2020checklist}. \ac{HELM} argued for multi-metric, transparently scoped
+evaluation of language models \cite{liang2022helm}. Community instruments such as the
+NeurIPS reproducibility checklist \cite{neuripschecklist} and engineering guidance such as
+Zinkevich's rules \cite{zinkevich2018rules} institutionalise the same concern at the
+process level, and the pre-registration discipline this thesis follows descends from the
+methodological literature on \ac{HARKing} \cite{kerr1998}. Datasheets for datasets extend
+the concern to the data itself \cite{gebru2018datasheets}, and this thesis records its
+held-out corpus in that form (Appendix~\ref{app:heldout}).
+
+What is largely missing from the extraction literature is the step this thesis takes in
+Chapter~\ref{ch:measurement-validity}: treating the \emph{scoring apparatus itself} as an
+instrument under test. The benchmark papers above report scores; they do not report the
+defect history of their own comparison rules, and published extraction results rarely
+state how sensitive their rankings are to representation handling. This thesis documents
+that sensitivity on its own data --- scoring corrections moved reported figures by amounts
+comparable to the differences between models, and the ordering of two candidate readers
+inverted under a ruler repair (\S\ref{sec:results-reader}) --- which suggests the
+sensitivity is not a peculiarity of this project.
+
+\textbf{What this thesis adds}: a documented defect taxonomy for extraction scoring on a
+task where the reference is machine-readable while the input is a rendered page; the
+discipline of re-scoring frozen generations so that instrument repairs are measurable in
+isolation from model changes; and an attribution design that bounds the structuring
+stage's contribution using reference-quality transcripts
+(\S\ref{sec:method-attribution}).
+
+\section{Parameter-Efficient Adaptation of Compact Models}
+\label{sec:rw-adaptation}
+
+Low-rank adaptation trains small additive matrices while freezing the base weights, and is
+the standard method for adapting a model of this size on rented hardware \cite{hu2021lora}.
+A growing body of evidence, however, bounds what such adaptation can add and warns what it
+can break. Ghosh et al.\ find that \ac{LoRA}-based instruction tuning ``is limited to
+learning response initiation and style tokens'', with most of the answer content drawn
+from pre-trained knowledge \cite{ghosh2024limitations}. Kang et al.\ show that how a
+fine-tuned model behaves under uncertainty is controlled by the unfamiliar examples in its
+training set \cite{kang2024unfamiliar}. Uluoglakci and Taskaya Temizel diagnose that
+standard supervised fine-tuning ``implicitly rewards always responding'' --- across 800
+controlled \ac{LoRA} runs, including on the predecessor generation of this thesis's
+structuring model --- and treat abstention as a skill that must be explicitly taught
+\cite{uluoglakci2026humility}. Kaplan et al.\ locate fine-tuning-induced hallucination in
+interference with pre-trained knowledge and show that freezing parameter groups can
+preserve task performance while reducing it \cite{kaplan2026why}.
+
+This literature predicts the shape, though not the certainty, of the negative result in
+\S\ref{sec:results-adaptation}: an adapter trained on a corpus whose supervision mostly
+rewards emitting values learns, among other things, to emit --- and this thesis's task
+contractually requires the opposite on absent fields. Chapter~\ref{ch:discussion} develops
+the mechanism.
+
+\textbf{What this thesis adds}: a pre-registered, four-cell negative result under a
+matched-precision baseline, on a task with a contractual abstention requirement --- a
+setting in which the always-respond gradient of standard fine-tuning is directly measurable
+as a first-class metric (the spurious-emission rate) rather than as an impression.
 
 \section{Knowledge-Graph Construction and Graph-Augmented Retrieval}
 \label{sec:rw-kg}
 
-% KEEP SHORT and be honest about positioning: these works motivated the DESIGN of
-% the unbuilt layers; this thesis does not contribute to them. Do not write "what
-% we add" here -- there is nothing to add yet. Point forward to
-% Ch.~\ref{ch:limitations-future-work} instead.
-% TODO: \cite{cai2025} on text-to-graph extraction fidelity at micro and macro
-% level, and \cite{han2025} on graph-augmented versus flat retrieval, which
-% together shaped the intended Layer-2/3 design and the metrics that would have
-% been used.
+Three works shaped the design of the layers this thesis specified but did not build
+(\S\ref{sec:design-layer2}, \S\ref{sec:design-layer3}). Edge et al.\ introduced GraphRAG, retrieval over an
+extracted graph rather than flat chunks, for query-focused summarisation over corpora
+\cite{edge2024graphrag}; Han et al.\ survey the graph-versus-flat retrieval question
+systematically \cite{han2025}. Most relevantly to the evaluation this thesis would have
+needed, Cai and O'Connor evaluate knowledge-graph extraction at two levels simultaneously
+--- edge-level accuracy in the standard \ac{NLP} sense, and the bias that extraction error
+induces in downstream graph-level analyses --- and find that below a quality threshold,
+graph metrics drift in consistent, metric-specific directions \cite{cai2025}. That
+two-level framing is the direct precedent for the fidelity metrics the unbuilt Layer~2
+registered in its hypothesis set.
+
+No contribution to this literature is claimed. The registered-but-unevaluated hypotheses
+that would have engaged it are reported in Chapter~\ref{ch:limitations-future-work}.
 
 \section{Positioning of This Thesis}
 \label{sec:rw-positioning}
 
-% TODO: one paragraph synthesising the gap this thesis fills.
+The gap this thesis fills sits at the intersection of the sections above. The specialised
+open-weights document \acp{VLM} of 2025--26 exist precisely to make local document
+understanding practical, yet the closest invoice benchmark predates them and evaluates
+cloud-frontier and general-purpose models instead \cite{berghaus2025}; the public corpora
+do not pair German \ac{B2B} invoices with a machine-exact legal schema; and the evaluation
+literature supplies matching rules but not the discipline of validating the scoring
+apparatus that applies them. This thesis occupies that intersection: it evaluates the new
+model class on the corpus class it will actually meet in a German firm, under a
+privacy-motivated hardware envelope stated in advance, with an attribution method that
+locates the binding constraint (reading, not structuring), and with the measuring
+instrument itself validated, repaired and reported alongside the system it measures.
+Where the closest prior work and this thesis point in different architectural directions
+--- native image input against a two-stage split --- \S\ref{sec:rw-berghaus} argues the
+results are compatible once model class, converter class and the measurability argument
+are separated, and the residual disagreement is stated as an open question rather than
+resolved by assertion.
