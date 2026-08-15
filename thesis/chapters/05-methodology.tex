@@ -18,8 +18,13 @@ distinction between them is what most of this chapter exists to preserve.
 
 The \textbf{reading} stage is a \ac{VLM} that receives a rasterised page and emits plain
 text. It is given no schema, no field list and no instruction about invoices; it is asked to
-transcribe. The \textbf{structuring} stage is a second, text-only model that receives that
-transcript together with a field specification and emits a \ac{JSON} object. The
+transcribe. In the delivered system this is Qwen3-VL-4B-Instruct \cite{qwen3vl}, selected by
+the comparison of \S\ref{sec:results-reader}; earlier measurements used granite-docling-258M
+\cite{granitedocling}, and every table drawn from that superseded reader says so. The
+\textbf{structuring} stage is a second model, gemma-4-E4B-it \cite{gemma4e4b}, that receives
+that transcript together with a field specification and emits a \ac{JSON} object. The model
+is natively multimodal; it is used here on text alone and is never shown the page, which is
+what makes the transcript the only channel between the stages. The
 \textbf{validate-and-repair} stage is deterministic code: it recovers the record from
 imperfectly formed model output, matches emitted keys to the field registry, canonicalises
 each value by its declared type, and leaves a field absent when it cannot be parsed
@@ -81,7 +86,10 @@ The second corpus is 39 real invoices collected from the author's own business
 correspondence, recorded as a datasheet in the manner Gebru et al.\ propose
 \cite{gebru2018datasheets} and reproduced in Appendix~\ref{app:heldout}. It spans two
 languages and, more importantly, two acquisition channels: documents that arrived as
-email-native \ac{PDF} attachments, and paper documents photographed with a phone. Its
+email-native \ac{PDF} attachments, and paper documents captured with a phone scanning
+application --- camera captures that the application deskews and contrast-enhances into a
+\ac{PDF} without a text layer. That is a \emph{milder} degradation than a raw photograph,
+which matters when the per-channel gap of \S\ref{sec:results-heldout} is interpreted. Its
 per-channel composition is part of Table~\ref{tab:heldout-by-channel}.
 
 This corpus is small, and no claim in this thesis pretends otherwise. What it provides is not
@@ -146,9 +154,9 @@ recovery from that failure is itself a methodological result.
 \subsection{Why the first attempt failed}
 
 The initial key was drafted automatically from each document's embedded text layer. For
-email-native \ac{PDF} files that is a reasonable starting point. For photographs it is not:
-a photographed page has no text layer, so the drafter had almost nothing to read and produced
-values that are not on the page at all. Adjudicating one photographed till receipt against
+email-native \ac{PDF} files that is a reasonable starting point. For phone scans it is not:
+a scanned capture has no text layer, so the drafter had almost nothing to read and produced
+values that are not on the page at all. Adjudicating one phone-scanned till receipt against
 its own image found a wrong month, a total that was neither the net nor the gross amount but
 a blend of the two, two values recorded as absent that are clearly printed, and an address
 with a digit missing.
@@ -180,7 +188,7 @@ Alongside the three channels, a deterministic gate asks a narrower question of e
 value: \emph{is this string printed in the document's own embedded characters?} That gate
 proves presence. It cannot prove assignment --- a seller's and a buyer's tax identifier are
 both printed, so filing one as the other passes --- and it can prove nothing at all for the
-photographed documents, which have no embedded characters. Both limits are structural and were
+phone-scanned documents, which have no embedded characters. Both limits are structural and were
 recorded rather than worked around.
 
 Every cell then falls into one of five provenance classes, and only some of them are accepted

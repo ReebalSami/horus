@@ -51,26 +51,39 @@
 % docs/sources/papers/berghaus-2025-multimodal-invoice-parsing.md is the canonical
 % record; docs/sources/papers/2025-multimodal-vision-text-invoice-benchmark.md is a
 % consolidated duplicate of the same arXiv identifier and is NOT a second entry.
-@online{berghaus2025,
-  author  = {Berghaus, Marco and Berger, Armin and Hillebrand, Lars and
+% Corrected 2026-08-15 (supervisor review): first author is DAVID Berghaus (the
+% entry previously said "Marco"), the title was truncated (it omitted
+% "Benchmarking LLM Strategies"), and the paper has since appeared at IEEE
+% BigData 2025. Verified against arXiv 2509.04469 and the Lamarr Institute
+% publication page. The earlier "verified" comments on this entry were wrong.
+@inproceedings{berghaus2025,
+  author  = {Berghaus, David and Berger, Armin and Hillebrand, Lars and
              Cvejoski, Kostadin and Sifa, Rafet},
-  title   = {Multi-Modal Vision vs.\ Text-Based Parsing for Invoice Processing},
+  title   = {Multi-Modal Vision vs.\ Text-Based Parsing: Benchmarking {LLM}
+             Strategies for Invoice Processing},
+  booktitle = {2025 IEEE International Conference on Big Data (BigData)},
   year    = {2025},
   eprinttype = {arXiv},
   eprint  = {2509.04469},
   url     = {https://arxiv.org/abs/2509.04469},
-  urldate = {2026-05-06}
+  urldate = {2026-08-15}
 }
 
-@online{cai2025,
-  author  = {Cai, Junyi and O'Connor, Brendan},
-  title   = {Evaluating Knowledge Graph Construction at Two Levels: Edge-Level
-             Accuracy and Graph-Level Structural Properties},
+% Corrected 2026-08-15 (supervisor review): the previous entry carried an
+% invented title (a paraphrase of the abstract) and the wrong first-author
+% given name ("Junyi"). Real title and authors verified against arXiv
+% 2506.12367 and the Applied Network Science version (10.1007/s41109-025-00749-0).
+@article{cai2025,
+  author  = {Cai, Erica and O'Connor, Brendan},
+  title   = {Understanding the Effect of Knowledge Graph Extraction Error on
+             Downstream Graph Analyses: A Case Study on Affiliation Graphs},
+  journaltitle = {Applied Network Science},
   year    = {2025},
+  doi     = {10.1007/s41109-025-00749-0},
   eprinttype = {arXiv},
   eprint  = {2506.12367},
   url     = {https://arxiv.org/abs/2506.12367},
-  urldate = {2026-05-06}
+  urldate = {2026-08-15}
 }
 
 % The previous version of this entry carried url = {https://arxiv.org/} -- a
@@ -294,15 +307,23 @@
 % Provides the published vocabulary for the distinction this thesis's metric suite
 % is built on: scoring individual entities separately from grouped (repeating)
 % structures, because industrial extraction depends on the grouping being right.
-@online{kieval2025,
+% Upgraded 2026-08-15 from the bare arXiv record to the published ICDAR 2025
+% version (Springer LNCS 16025, pp. 270-286).
+@inproceedings{kieval2025,
   author  = {Khang, Minsoo and Jung, Sang Chul and Park, Sungrae and
              Hong, Teakgyu},
   title   = {{KIEval}: Evaluation Metric for Document Key Information Extraction},
+  booktitle = {Document Analysis and Recognition --- ICDAR 2025},
+  series  = {Lecture Notes in Computer Science},
+  volume  = {16025},
+  pages   = {270--286},
+  publisher = {Springer},
   year    = {2025},
+  doi     = {10.1007/978-3-032-04624-6_16},
   eprinttype = {arXiv},
   eprint  = {2503.05488},
   url     = {https://arxiv.org/abs/2503.05488},
-  urldate = {2026-05-31}
+  urldate = {2026-08-15}
 }
 
 @inproceedings{ribeiro2020checklist,
@@ -515,15 +536,20 @@
 %  Standards and law (Chapter 2)
 % =====================================================================
 
-@online{en16931,
-  author  = {{FeRD (Forum elektronische Rechnung Deutschland)} and
-             {European Committee for Standardization}},
-  title   = {{ZUGFeRD} / {XRechnung} specification ({EN} 16931)},
-  year    = {2026},
-  url     = {https://www.mustangproject.org/zugferd/},
-  urldate = {2026-08-09},
-  note    = {The underlying European standard is EN 16931-1:2017; the year given
-             is the access year of the cited specification portal}
+% Corrected 2026-08-15 (supervisor review): the entry previously cited a
+% third-party tool vendor's portal (mustangproject.org) for a CEN standard.
+% It now cites the standard itself; the ZUGFeRD profile documents are cited
+% separately via `zugferdanhang`.
+@report{en16931,
+  author  = {{European Committee for Standardization (CEN)}},
+  title   = {{EN} 16931-1:2017 --- Electronic invoicing --- Part 1: Semantic
+             data model of the core elements of an electronic invoice},
+  type    = {European Standard},
+  institution = {CEN},
+  location = {Brussels},
+  year    = {2017},
+  url     = {https://ec.europa.eu/digital-building-blocks/sites/display/DIGITAL/EN+16931+compliance},
+  urldate = {2026-08-15}
 }
 
 @online{zugferdanhang,
@@ -726,12 +752,16 @@
 %  Institutional requirements (title page, declaration, appendix)
 % =====================================================================
 
-@online{fhwedelrichtlinie,
+% Corrected 2026-08-15 (supervisor review): the URL previously pointed at the
+% university homepage, which does not host the document. The Richtlinie is
+% distributed institution-internally; cited as an institutional document.
+@report{fhwedelrichtlinie,
   author  = {{Fachhochschule Wedel}},
   title   = {Richtlinie f\"ur die Anfertigung schriftlicher Arbeiten,
              Version 3.0},
+  type    = {Institutional guideline},
+  institution = {Fachhochschule Wedel},
   year    = {2024},
-  url     = {https://www.fh-wedel.de/},
-  urldate = {2026-08-09},
+  note    = {Distributed institution-internally to thesis candidates},
   langid  = {german}
 }

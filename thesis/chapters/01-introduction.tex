@@ -19,9 +19,10 @@ secrecy, which is protected by criminal law.
 % guidance and German legal/IT commentary, but a legal claim in a thesis needs
 % human sign-off. Confirm the wording with the supervisor before submission.
 The \ac{DSGVO} can be satisfied for cloud processing through a data-processing
-agreement and EU data residency. Professional secrecy adds a second, separate
-requirement: under \S203~\ac{StGB} together with \S62a~\ac{StBerG}, any external
-service provider who gains access to client data must be bound to
+agreement and \ac{EU} data residency (Art.~28, 32 \ac{DSGVO} \cite{dsgvo32}).
+Professional secrecy adds a second, separate requirement: under
+\S203~\ac{StGB} \cite{stgb203} together with \S62a~\ac{StBerG} \cite{stberg62a},
+any external service provider who gains access to client data must be bound to
 confidentiality in text form, and foreign providers must additionally satisfy a
 comparable-secrecy test \cite{bstbk2026}. This requirement is not categorically
 unmeetable: at least one major cloud provider offers a contractual amendment
@@ -42,10 +43,12 @@ Working locally confines the system to models that fit on commodity, on-premises
 hardware. This raises a concrete empirical question: how reliably do small,
 locally hosted, open-weights document \acp{VLM} --- the wave of specialised models
 released from late~2025 onward --- convert German B2B invoices into a structured,
-legally meaningful form? Prior work on invoice processing with vision models
-\cite{berghaus2025} benchmarked large cloud models but did not include the recent
-specialised open-weights document \acp{VLM}; that omission is the gap this thesis
-addresses.
+legally meaningful form? The closest prior work benchmarked cloud-frontier models
+and general-purpose open-weights models on invoice extraction, but included none
+of the recent \emph{specialised} open-weights document \acp{VLM} and no German
+B2B corpus \cite{berghaus2025}; that omission is the gap this thesis addresses,
+and \S\ref{sec:rw-positioning} returns to where its findings and this thesis's
+diverge.
 
 A second problem emerges only once such a system is measured seriously. An
 end-to-end extraction score conflates three very different failure sources: the
@@ -95,8 +98,9 @@ Chapter~\ref{ch:limitations-future-work} rather than quietly dropped.
 This thesis contributes:
 
 \begin{itemize}
-  \item an evaluation of recent open-weights local document \acp{VLM} on German
-        e-invoice extraction, closing the cloud-only gap in \cite{berghaus2025},
+  \item an evaluation of recent \emph{specialised} open-weights local document
+        \acp{VLM} on German e-invoice extraction --- the model class and corpus
+        class absent from the closest prior benchmark \cite{berghaus2025} ---
         together with a measurement on 39 \emph{real} invoices whose answer key
         was adjudicated across three independent reading channels;
   \item a \emph{measurement-validity} methodology, and the empirical finding that

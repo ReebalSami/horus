@@ -18,12 +18,13 @@ the reference, so they are clean by construction --- no skew, no shadow, no stam
 handwriting, no compression artefact. Real documents in a tax firm arrive with all of those.
 
 The held-out corpus exists precisely to bound this, and it does so with a number:
-photographed documents score more than eleven points of mean per-invoice F$_1$ below
+phone-scanned documents score more than eleven points of mean per-invoice F$_1$ below
 email-native ones (Table~\ref{tab:heldout-by-channel}). \textbf{Any figure from the synthetic
 corpus should therefore be read as an upper bound for the camera-captured case}, and the size of
-the correction is roughly that gap. The direction and magnitude are corroborated independently by
-a multilingual parsing benchmark reporting an average 17.8\,\% drop for open-source parsers on
-photographed documents \cite{mdpbench2026}.
+the correction is \emph{at least} that gap --- the scans here are deskewed scan-app output, the
+mildest form of camera capture (\S\ref{sec:method-data}). The direction is corroborated
+independently by a multilingual parsing benchmark reporting an average 17.8\,\% drop for
+open-source parsers on photographed documents \cite{mdpbench2026}.
 
 \subsection{The Held-Out Corpus Is Small and Single-Annotator}
 \label{sec:lim-heldout}

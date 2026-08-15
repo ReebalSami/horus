@@ -1,7 +1,7 @@
 ---
 source_url: "https://arxiv.org/abs/2509.04469"
-source_title: "Multi-Modal Vision vs. Text-Based Parsing for Invoice Processing"
-source_author: "Berghaus, Berger, Hillebrand, Cvejoski, Sifa (Fraunhofer IAIS + Lamarr Institute)"
+source_title: "Multi-Modal Vision vs. Text-Based Parsing: Benchmarking LLM Strategies for Invoice Processing"
+source_author: "David Berghaus, Armin Berger, Lars Hillebrand, Kostadin Cvejoski, Rafet Sifa (Fraunhofer IAIS + Lamarr Institute)"
 source_date: "2025-09"
 retrieved_date: "2026-05-08"
 extracted_concepts: []

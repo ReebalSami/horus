@@ -574,12 +574,19 @@ def build_attribution_shares() -> str:
             "Same superseded-reader caveat as Table~\\ref{tab:attribution-clusters}: this "
             "attributes a shortfall, it does not score a system. Signal-bearing means the "
             "cell contributes to F$_1$; correct absences are excluded, because counting them "
-            "would make the split a function of how often fields are empty. On this corpus "
-            "the pipeline scored "
-            f"{baseline:.4f} against {oracle:.4f} for the same structurer on perfect text, so "
-            f"of the {oracle - baseline:.4f} gap the reading stage accounts for roughly "
-            f"{(oracle - baseline) * reader_share / total:.2f} and the structurer for the "
-            "remainder."
+            "would make the split a function of how often fields are empty. Two "
+            "decompositions follow from these counts, and they answer different questions. "
+            "By the per-miss test above, the errors split roughly evenly "
+            f"({100 * reader_share / total:.1f}\\,\\% reading against "
+            f"{100 * structurer_share / total:.1f}\\,\\% structuring) --- but that test "
+            "credits the structurer with every value that was readable yet mangled in "
+            "transit, so it is a lower bound on the reading share. At the pipeline level the "
+            f"split is starker: the pipeline scored {baseline:.4f} against {oracle:.4f} for "
+            "the same structurer on perfect text, so of the "
+            f"{1 - baseline:.4f} shortfall from a perfect score, the "
+            f"{oracle - baseline:.4f} between the two arms is attributable to reading (only "
+            f"the input text differs) and the {1 - oracle:.4f} the structurer leaves even "
+            "on perfect text bounds its own capability gap."
         ),
         sources=["data/finetune/attribution-val.json"],
     )
@@ -668,9 +675,11 @@ def build_reader_lineage() -> str:
             "changes across the first three rows. The fourth row is the same reader as the "
             "second, re-scored after the scoring defects of "
             "Chapter~\\ref{ch:measurement-validity} were repaired --- so the gap between rows "
-            "two and four is instrument, not model. This is why reader selection could not be "
-            "settled on end-to-end score alone: the ranking moved when the ruler was fixed, "
-            "which is evidence about the ruler and not about the readers."
+            "two and four is instrument, not model. The lineage is asymmetric by design: "
+            "after the repairs, only the selected reader was re-measured end-to-end. "
+            "olmOCR-2-7B's transcripts are retained, but its post-repair end-to-end score "
+            "was never taken, because by then selection had moved to instruments this score "
+            "cannot provide (\\S\\ref{sec:results-reader})."
         ),
         sources=[
             "data/finetune/eval-zeroshot-val.json",
@@ -932,7 +941,7 @@ def load_heldout_breakdown(*, refresh: bool) -> dict[str, Any] | None:
 _CHANNEL_LABELS = {
     "english/email": "English, email-native PDF",
     "german/email": "German, email-native PDF",
-    "german/iphone-pdf-scan": "German, phone photograph",
+    "german/iphone-pdf-scan": "German, phone scan",
 }
 
 

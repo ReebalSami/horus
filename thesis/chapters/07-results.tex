@@ -71,36 +71,54 @@ The pipeline's reading stage was selected by competitive comparison. This is wor
 plainly because the structuring stage was not, and \S\ref{sec:results-adaptation} returns to
 that asymmetry as a limitation.
 
-\subsection{Why end-to-end score could not decide it}
+\subsection{Why aggregate scores could not decide it}
 
-Two candidates --- a general-purpose vision-language model at four billion parameters and a
-purpose-built document transcription model at seven billion --- finished within a point of each
-other on end-to-end score. Then the scoring corrections of
-Chapter~\ref{ch:measurement-validity} were applied to the identical stored transcripts, and the
-ordering inverted while staying inside the same margin. Table~\ref{tab:reader-lineage} shows
-the relevant rows.
+Two candidates emerged from the survey as finalists: Qwen3-VL-4B-Instruct, a general-purpose
+vision-language model at four billion parameters \cite{qwen3vl}, and olmOCR-2-7B, a
+purpose-built document-transcription model at seven billion \cite{olmocr2}. The two available
+instruments told conflicting stories about them. On end-to-end score under the pre-correction
+ruler, the transcription model led by two to five points (Table~\ref{tab:reader-lineage}). On
+reading quality measured directly on the transcript (\S\ref{sec:method-answerability}), the
+general-purpose model led narrowly under that same defective ruler (0.777 against 0.774) ---
+and when the corrections of Chapter~\ref{ch:measurement-validity} were applied to the
+identical stored transcripts, that ordering \emph{inverted} (0.906 against 0.913), both
+readings within a point of each other.
 
 An ordering that flips when the ruler is corrected is not evidence that the second model is
 better. It is evidence that \textbf{the instrument does not separate these two candidates}, and
 that a selection made on it would have been arbitrary. That is the finding, and it forced the
-decision onto other instruments.
+decision onto the individual misses.
+
+One asymmetry in the record must be stated. After the ruler repairs, only the selected reader
+was re-measured end-to-end (the fourth row of Table~\ref{tab:reader-lineage}); the
+transcription model's post-correction end-to-end score was never taken. Its transcripts are
+retained, so the measurement remains possible --- but by that point the selection no longer
+rested on end-to-end score at all, because an instrument that had already flipped its verdict
+once under a ruler repair had disqualified itself as the deciding instrument.
 
 \input{tables/reader-lineage.tex}
 
-\subsection{The second instrument, and its verdict}
+\subsection{The per-miss audit, and its verdict}
 
-Reading quality was therefore measured directly, on the transcript alone
-(\S\ref{sec:method-answerability}). This still left the finalists close, so every remaining
-miss was judged by hand against the page image: 52 individual misses, each classified as a
-genuine reading failure, a comparison-rule artefact, or a value not findable on the page by
-anything. That audit produced 23 exclusions --- values absent from the page and from its own
-embedded text layer, which no vision system could recover --- and
+The decision therefore moved to the individual misses. Every remaining miss of the
+then-leading transcription model --- 52 individual ``missing'' values across the 29 sealed
+validation invoices --- was judged by hand against the page image and against both finalists'
+transcripts, and classified as a genuine reading failure, a comparison-rule artefact, or a
+value not findable on the page by anything. That audit produced 23 exclusions --- values
+absent from the page and from its own embedded text layer, which no vision system could
+recover --- plus six ruler repairs. A symmetric pass over the general-purpose model's own
+residual misses followed, exposing two further ruler gaps, so that neither finalist was
+audited under a rule the other was spared.
 Table~\ref{tab:reader-findability} reports the corrected result.
 
 \input{tables/reader-findability.tex}
 
-The two finalists are statistically tied on corrected reading quality and \textbf{fail in
-different ways}, which is the substantive finding:
+The two finalists are statistically indistinguishable on corrected reading quality. An exact
+McNemar test over the 963 paired per-cell findability outcomes --- 931 cells both readers
+find, 16 only the general-purpose model finds, 13 only the transcription model finds ---
+gives $p = 0.71$, so the observed ordering is well within what chance produces on discordant
+counts this small. What does separate them is that they \textbf{fail in different ways},
+which is the substantive finding:
 
 \begin{itemize}
   \item The document-transcription model produces near-flawless characters but silently drops
@@ -167,9 +185,18 @@ structures.
 
 Table~\ref{tab:attribution-shares} attributes every individual signal-bearing error to a stage
 by the per-miss test: was the value in the transcript at all? Roughly half of all errors are
-values the transcript never contained, which no structuring model could have recovered. Of the
-total gap between the achieved score and the perfect-text ceiling, the substantial majority is
-reading-induced and the remainder is structuring capability.
+values the transcript never contained, which no structuring model could have recovered. That
+per-miss split is a \emph{lower bound} on the reading share, because it credits the structurer
+with every value that was readable yet mangled in transit --- a transcript can contain a value
+in a form so degraded that failing to place it is still, causally, a reading problem. The
+pipeline-level decomposition is starker and uses explicit denominators: of the roughly 0.32
+shortfall from a perfect score, the 0.28 between the two arms of
+Table~\ref{tab:attribution-clusters} is attributable to reading, because only the input text
+differs between them; the 0.04 the structurer leaves even on perfect text bounds its own
+capability gap. By the per-miss count the stages split evenly; by the pipeline-level bound,
+reading accounts for the substantial majority. Both statements are true, they answer different
+questions, and the protocol note to Table~\ref{tab:attribution-shares} carries the exact
+figures for each.
 
 \input{tables/attribution-shares.tex}
 
@@ -237,8 +264,11 @@ experiment was not being handed a gap that belonged to the prompt.
 
 Rather than train one adapter and measure it, two were trained, differing only in the input
 distribution they saw: one on the reader's actual transcripts, one on text rendered from the
-reference. Each was then evaluated on both conditions, giving the grid in
-Table~\ref{tab:finetune-grid} and Figure~\ref{fig:finetune-grid}.
+reference. Both are low-rank adapters \cite{hu2021lora} on the structuring model's language
+tower only --- its vision and audio components stay frozen and receive no input, consistent
+with how the pipeline uses the model (\S\ref{sec:method-architecture}). Each was then
+evaluated on both conditions, giving the grid in Table~\ref{tab:finetune-grid} and
+Figure~\ref{fig:finetune-grid}.
 
 The reason for two is that a single measurement would have been uninterpretable. An adapter
 trained and evaluated on transcripts conflates two distinct claims --- learning the output
@@ -342,7 +372,7 @@ document by document. All 39 documents parsed and scored; none was dropped.
 The result is that performance largely survives the transition from generated pages to real
 ones. That is not a trivial finding: the documents were produced by other people's billing
 systems, in two languages, with layouts the pipeline was never shown, and roughly a quarter of
-them were photographed rather than exported.
+them were phone-scanned paper rather than exported files.
 
 \subsection{The error profile matters more than the score}
 
@@ -363,9 +393,12 @@ language and acquisition channel, and this is the most useful measurement in the
 anyone who might deploy the system.
 
 \textbf{Language costs little. Capture channel costs a great deal.} English and German
-email-native documents score close together. Photographed German documents fall away sharply
+email-native documents score close together. Phone-scanned German documents fall away sharply
 --- a gap of more than eleven points of mean per-invoice F$_1$ against the email-native
-documents.
+documents. And the scans in this corpus are the \emph{favourable} kind of degraded input:
+scanning-app output that has already been deskewed and contrast-enhanced
+(\S\ref{sec:method-data}), not raw camera photographs. The gap for uncorrected captures
+should be expected to be larger, not smaller.
 
 Two properties of that gap deserve emphasis.
 
@@ -374,8 +407,8 @@ current scoring rules, at similar magnitude. It is not an artefact of the answer
 described in Chapter~\ref{ch:measurement-validity}.
 
 \textbf{It is a recall gap, not a precision gap.} Figure~\ref{fig:heldout-pr} separates the two:
-precision holds up on photographs while recall falls. \textbf{Degraded input makes the system
-abstain, not hallucinate.} That is the behaviour one would want if forced to choose, and it is
+precision holds up on the scanned documents while recall falls. \textbf{Degraded input makes the
+system abstain, not hallucinate.} That is the behaviour one would want if forced to choose, and it is
 worth noting that nothing in the design explicitly asked for it.
 
 \input{tables/heldout-by-channel.tex}
@@ -385,7 +418,7 @@ worth noting that nothing in the design explicitly asked for it.
   \includegraphics[width=\textwidth]{heldout-by-channel}
   \caption[Held-out performance by capture channel]{Header-field extraction on real invoices,
   by language and acquisition channel, under both aggregations. The dashed line is the
-  whole-corpus mean. Language costs little; photographed capture costs a great deal.}
+  whole-corpus mean. Language costs little; phone-scanned capture costs a great deal.}
   \label{fig:heldout-channel}
 \end{figure}
 
@@ -393,15 +426,17 @@ worth noting that nothing in the design explicitly asked for it.
   \centering
   \includegraphics[width=\textwidth]{heldout-precision-recall}
   \caption[Precision and recall by capture channel]{The same corpus split into precision and
-  recall. Precision holds up on photographed documents while recall falls, which means degraded
+  recall. Precision holds up on phone-scanned documents while recall falls, which means degraded
   input makes the system abstain rather than invent.}
   \label{fig:heldout-pr}
 \end{figure}
 
 \textbf{This result is independently corroborated.} A benchmark published during this project,
 covering 3{,}400 documents in 17 languages, reports an average drop of 17.8\,\% on photographed
-versus digital documents for open-source parsing models \cite{mdpbench2026}. Different corpus,
-different metric, different models, same direction and comparable magnitude. That agreement
+versus digital documents for open-source parsing models \cite{mdpbench2026}. Its degraded
+condition is harsher than this corpus's --- printed pages photographed under controlled
+adverse conditions, against scan-app output here --- so the two numbers are not directly
+comparable; what they share is the direction and the order of magnitude. That agreement
 matters because a single-annotator corpus of 39 documents cannot carry a general claim on its
 own, and here it does not have to.
 
@@ -432,7 +467,7 @@ Chapter~\ref{ch:limitations-future-work}.
         of four configurations, and it specifically increases the rate at which the model emits
         values for fields the document does not carry.
   \item \textbf{Two selection decisions could not be made on aggregate score.} Reader selection
-        required per-miss adjudication because the aggregate ordering inverted when the ruler
-        was corrected; the adaptation conclusion required a precision-matched baseline, without
-        which it would have been the opposite.
+        required per-miss adjudication because the reading-quality ordering inverted when the
+        ruler was corrected; the adaptation conclusion required a precision-matched baseline,
+        without which it would have been the opposite.
 \end{enumerate}
