@@ -80,16 +80,20 @@ acquired less of the over-emission habit.
 
 ## Selection behaved exactly as designed
 
-Dev-slice loss by epoch (reader arm; dev = 17 invoices carved from TRAIN, seed 4242,
-`sha256_dev f5b9bb80…`, zero overlap with the sealed 29):
+Dev-slice loss by epoch (both arms; dev = 17 invoices carved from TRAIN, seed 4242,
+`sha256_dev f5b9bb80…`, zero overlap with the sealed 29). *Correction 2026-08-15
+(supervisor review): an earlier revision of this table printed the oracle arm's curve
+labelled "reader arm"; both curves below are re-read from the two
+`horus_training_provenance.json` files, which are authoritative.*
 
 | epoch | 1 | 2 | 3 | 4 | 5 | 6 |
 |---|---|---|---|---|---|---|
-| dev loss | **0.0965** | 0.3095 | 0.3799 | 0.3644 | 0.3150 | 0.3078 |
+| dev loss (reader arm) | **0.1956** | 0.3918 | 0.4438 | 0.4183 | 0.3857 | 0.3801 |
+| dev loss (oracle arm) | **0.0965** | 0.3095 | 0.3799 | 0.3644 | 0.3150 | 0.3078 |
 
-Dev loss **triples between epoch 1 and epoch 2** and never recovers. The pre-registered
-rule (minimum dev loss selects) picked `checkpoint-13` — the end of epoch 1, the
-least-adapted checkpoint available.
+Dev loss **at least doubles between epoch 1 and epoch 2 in both arms** and never
+recovers. The pre-registered rule (minimum dev loss selects) picked the end-of-epoch-1
+checkpoint in both arms — the least-adapted checkpoint available.
 
 Two things follow. First, the 6-epoch budget was correctly framed as a *budget*: epochs
 2–6 existed to make the overfitting turn visible, and they did. Second, and more

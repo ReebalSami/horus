@@ -43,13 +43,14 @@ thesis/
 │   ├── 03-related-work.tex
 │   ├── 04-system-design.tex         # three-layer design; Layers 2-3 = design only
 │   ├── 05-methodology.tex
-│   ├── 06-results.tex               # carries explicit [PENDING] markers
-│   ├── 07-implementation.tex
-│   ├── 08-discussion.tex
-│   ├── 09-limitations-future-work.tex
-│   └── 10-conclusion.tex
+│   ├── 06-measurement-validity.tex  # the instrument-validation chapter (own chapter by design)
+│   ├── 07-results.tex
+│   ├── 08-implementation.tex
+│   ├── 09-discussion.tex
+│   ├── 10-limitations-future-work.tex
+│   └── 11-conclusion.tex
 ├── appendix/
-│   └── appendix.tex      # metric spec, hypotheses, datasheet, AI-usage, reproducibility
+│   └── appendix.tex      # field registry, hypotheses, datasheet, abandoned metric, AI-usage, reproducibility
 ├── images/               # static assets (FH logo)
 ├── figures/              # GENERATED figures (PDF) — see "Results integration"
 └── tables/               # GENERATED tables (.tex, \input) — see "Results integration"
@@ -70,7 +71,7 @@ thesis/
   `preamble/declaration.tex`. Never paraphrase it; document AI use in the appendix
   instead.
 - **Scope guard**: do not claim the knowledge-graph layer, the query layer, or a
-  cloud comparison as results. They are design (ch.4) and future work (ch.9).
+  cloud comparison as results. They are design (ch.4) and future work (ch.10).
 - **Cross-references**: `\label{ch:...}` / `\ref{...}`.
 - **Results integration**: numbers are **never hand-copied**. Figures are exported
   to `figures/` (`\includegraphics`) and tables to `tables/` (`\input`), generated
@@ -80,19 +81,21 @@ thesis/
 
 ## Status
 
-Chapter map reshaped 2026-07-31 for the scope freeze; introduction rewritten;
-green build verified (32 pp, no undefined references or citations). Per-chapter
-status: `../docs/prompts/stages/05-writeup.md` §2.
+All twelve chapters, the abstract and all six appendices are drafted; the
+2026-08-15 supervisor-review fix plan (evidential repairs M1--M7, bibliography
+corrections, missing prose, appendices, formatting) is applied. Green build
+verified: 125 pp, zero unresolved references and citations, worst overfull box
+3.2 pt. Review record: `../docs/reviews/2026-08-15-first-supervisor-review.md`.
+Per-chapter status: `../docs/prompts/stages/05-writeup.md` §2.
 
 ## TODO before submission
 
-- Fill the remaining title-page values marked `<...>` (`preamble/titlepage.tex`):
-  Matrikelnummer, university e-mail, second examiner, first examiner's e-mail.
-  No postal address is used by decision.
-- Get supervisor sign-off on the softened legal framing in ch.1 (the paragraph
-  carries a `SUPERVISOR GATE` comment).
+- Author read-through of the full PDF: the author signs off every sentence
+  (declaration requirement; AI-drafted prose is documented in the AI-usage
+  appendix).
 - Confirm citation style with the supervisor (the regulation prescribes the
-  short-reference method and lets the supervisor's preference override).
-- Confirm whether a German `Kurzfassung` is required (stub in `00-abstract.tex`).
-- Reconcile `references.bib` metadata against the `../docs/sources/` stubs.
-- Replace every `[PENDING]` marker in ch.6 once the reader-selection run lands.
+  short-reference method and lets the supervisor's preference override;
+  biblatex `alphabetic` is the current choice).
+- Kurzfassung: deliberately omitted (author decision 2026-08-15, English-only);
+  re-confirm with the Prüfungsamt only if its requirement is in doubt.
+- Print, sign and date the statutory declaration in the submitted copies.
