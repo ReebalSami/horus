@@ -10,7 +10,7 @@ intention read as an achievement.
 The system was conceived as three layers. One of them was implemented and evaluated; the
 other two remain design. \S\ref{sec:design-scope} explains why the scope was narrowed, and
 Chapter~\ref{ch:limitations-future-work} lists the hypotheses that consequently went
-untested rather than dropping them from the record.
+untested instead of dropping them from the record.
 
 \section{Design Overview}
 \label{sec:design-overview}
@@ -48,7 +48,7 @@ One commitment binds every layer and is stated here because the rest of the desi
 from it. \textbf{A field the document does not carry must come back absent, and a field the
 system could not read must come back absent --- never guessed.}
 
-The justification is specific to the domain rather than a general preference for caution. The
+The justification is specific to the domain, not a general preference for caution. The
 output of this system is not consumed by a person reading a summary; it is consumed by a
 professional who signs off a booking and carries liability for it. An empty field is visible to
 that person: it prompts a look at the document. A plausible fabrication --- a well-formed tax
@@ -147,7 +147,7 @@ not an artefact, and the only observable is the final record. The central empiri
 this thesis --- that reading rather than structuring is the binding constraint --- is a result
 the single-shot architecture could not have produced.
 
-\textbf{What the split costs, stated rather than omitted.} The transcript is plain text, so
+\textbf{What the split costs.} The transcript is plain text, so
 everything the page expressed through position survives the boundary only insofar as the
 reader preserved it in reading order. A two-column layout, a table whose columns carry
 meaning, a value printed in a box beside its label rather than after it --- all of these
@@ -156,7 +156,7 @@ the transcript does not carry, and this is not a hypothetical cost: it is the me
 the attribution result of \S\ref{sec:results-attribution}. A single-shot model, whatever else
 it gives up, never loses layout information at an internal boundary, because it has no such
 boundary. The design accepts this cost in exchange for accountability, and the thesis reports
-the size of the cost rather than assuming it away.
+the size of the cost instead of assuming it away.
 
 Two further consequences of the split are worth naming. The two stages run sequentially, so
 latency is additive and two sets of model weights must fit within the same memory envelope ---
@@ -185,7 +185,7 @@ block (line total, taxable base, tax total, grand total, amount due, prepaid amo
 allowances, charges, rounding). The repeating groups are the line-item table, the tax breakdown
 per rate, and early-payment discount terms.
 
-Three properties of the schema are design decisions rather than incidental.
+Three properties of the schema are deliberate design decisions.
 
 \textbf{One registry drives three consumers.} The field set is declared once, in a single
 registry, which generates the specification given to the structuring model, drives the scorer,
@@ -255,7 +255,7 @@ that the invoice standard guarantees --- that line amounts sum to the line total
 tax equals the grand total, that the amount due follows from the grand total and any prepayment.
 Those checks would catch a class of reading error that is otherwise silent, and they are a
 natural extension of the stage; they are not implemented here, and \S\ref{sec:fw-production}
-records that as future work rather than describing them as if they existed. Nothing in this
+records that as future work instead of describing them as if they existed. Nothing in this
 thesis's results depends on a consistency check that was not performed.
 
 \subsection{Designed to be auditable}
@@ -339,7 +339,7 @@ figure rather than trust it. An unsourced answer is not merely less useful in th
 is unusable, because the professional obligation attaches to the booking and not to the tool.
 Second, \textbf{retrieval strategy is a question to be measured, not assumed}. Flat vector
 retrieval over document text and graph-structured retrieval have different strengths, and the
-comparison between them is an active research question rather than a settled one
+comparison between them is an active, unsettled research question
 \cite{han2025,edge2024graphrag}. The plausible outcome is that the answer differs by question
 class --- single-document lookups favouring flat retrieval, multi-document aggregation
 favouring the graph --- which is why the design anticipates routing per question rather than
@@ -371,11 +371,11 @@ could have come from the query, the graph, the extraction, or the ruler. The jud
 a narrower claim that can be trusted is worth more than a three-layer demonstration that cannot
 be interrogated. Chapter~\ref{ch:discussion} returns to this trade-off and to what is lost by it.
 
-Two consequences are recorded rather than glossed.
+Two consequences are recorded, not glossed.
 
 \textbf{The hypotheses covering the upper layers were registered before the narrowing, and are
-reported as not evaluated.} They are listed with their registration dates in
-\S\ref{sec:unevaluated}. A hypothesis that vanishes between registration and reporting is
+reported as not evaluated.} They are listed in \S\ref{sec:unevaluated}, and the verbatim
+register with registration dates is Appendix~\ref{app:hypotheses}. A hypothesis that vanishes between registration and reporting is
 indistinguishable, to a reader, from one that was tested and found inconvenient, so none of them
 is dropped from the record.
 

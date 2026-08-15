@@ -7,7 +7,7 @@
 Every number in this chapter is generated from a committed evaluation report rather than
 transcribed, and every table states the corpus, model stack, numeric precision, scoring ruler
 and aggregation it was produced under. Two tables that differ in any of those are not
-comparable, and the protocol notes are what make that checkable rather than assumed.
+comparable, and the protocol notes are what make that checkable instead of assumed.
 
 Three conventions govern what may be claimed.
 
@@ -25,7 +25,7 @@ a claim about the system.
 
 \textbf{Superseded figures are not quoted for precision.} Several measurements in this project
 were re-scored after the corrections of Chapter~\ref{ch:measurement-validity}. Where an earlier
-figure matters to an argument, this chapter refers to what changed and why rather than treating
+figure matters to an argument, this chapter refers to what changed and why, not treating
 a superseded number as if it still stood.
 
 \section{Preliminary Studies}
@@ -59,10 +59,10 @@ a single-shot arrangement and against the orchestrated two-stage arrangement on 
 development subset. The orchestrated arrangement won clearly, and that ordering is the reason
 the architecture of Chapter~\ref{ch:system-design} has the shape it does. Two details from that
 study are worth carrying forward. First, all three arms emitted \emph{no} values for absent
-fields, which is early evidence that the honest-null contract is satisfiable rather than
+fields, which is early evidence that the honest-null contract is satisfiable, not merely
 aspirational. Second, a token-budget defect was depressing the orchestrated arm until it was
 found --- the model was being cut off before it finished emitting, and the resulting score was a
-measurement of the budget rather than of the approach.
+measurement of the budget, not of the approach.
 
 \section{Reader Selection}
 \label{sec:results-reader}
@@ -256,7 +256,7 @@ The classification escalated three candidate fields for per-document inspection.
 labels that were both already grounded, and it landed mostly on the \emph{perfect-text} arm ---
 which means there was no headroom to recover. One emitted a character-identical value on almost
 every document that carried it, with most of its remaining misses caused by a
-normalisation asymmetry rather than by the model. One was corrupted reference data on two of its
+normalisation asymmetry, not by the model. One was corrupted reference data on two of its
 three misses. The verdict was zero warranted specification repairs, so the fine-tuning
 experiment was not being handed a gap that belonged to the prompt.
 
@@ -302,13 +302,13 @@ one in Chapter~\ref{ch:limitations-future-work}.
 against the matched baseline in each evaluation condition. No arrangement of the two adapters
 and the two conditions produces an improvement over doing nothing.
 
-Two further observations make the result interpretable rather than merely negative.
+Two further observations make the result interpretable instead of merely negative.
 
 \textbf{The spurious-emission rate rises where the score falls.} The adapter trained on
 transcripts has the highest spurious-emission rate of any arm measured in this thesis
 (Table~\ref{tab:finetune-grid}) --- markedly above its own baseline. The adapter did not lose
 the ability to place values; it gained a propensity to emit them where the document carries
-none. That is a specific, mechanistic finding rather than a general degradation, and
+none. That is a specific, mechanistic finding, not a general degradation, and
 Chapter~\ref{ch:discussion} reads it against the published literature on the same effect.
 
 \textbf{Both arms overfit after one epoch.} Table~\ref{tab:devloss} and
@@ -377,14 +377,14 @@ them were phone-scanned paper rather than exported files.
 \subsection{The error profile matters more than the score}
 
 Precision is substantially higher than recall (Table~\ref{tab:heldout-headline}). Roughly four
-errors in five are a field left empty rather than a field invented.
+errors in five are a field left empty, not a field invented.
 
 For an accounting application this is the safer direction to fail in, and the asymmetry is not
 incidental --- it is the honest-null contract of \S\ref{sec:method-architecture} showing up in
 the numbers. A missing value is visible to the reviewer who has to sign the booking. A
 fabricated one is not: it looks like an answer. A system with the opposite profile at the same
 F$_1$ would be considerably less useful, and this is why the spurious-emission rate is tracked
-as a first-class metric throughout rather than folded into an aggregate.
+as a first-class metric throughout instead of folded into an aggregate.
 
 \subsection{Degraded capture is the real cost}
 

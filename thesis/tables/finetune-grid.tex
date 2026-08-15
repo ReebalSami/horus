@@ -7,20 +7,21 @@
 
 \begin{table}[htbp]
   \centering
-  \caption{The 2$\times$2 adaptation grid: two adapters, each evaluated on both input conditions. All four cells regress against the matched-stack baseline.}
+  \caption{The 2$\times$2 adaptation grid: two adapters (named by the input distribution they were trained on), each evaluated on both input conditions. All four cells regress against the matched-stack baseline.}
   \label{tab:finetune-grid}
+  \small
   \begin{tabular}{llrrr}
     \toprule
-    Model & Evaluated on & Overall F$_1$ & $\Delta$ vs baseline & Spurious rate \\
+    Model & Evaluated on & Overall F$_1$ & $\Delta$ & Spurious \\
     \midrule
     \emph{no adapter} (baseline) & reader transcript & 0.8480 & --- & 0.1575 \\
     \emph{no adapter} (baseline) & perfect text & 0.9778 & --- & 0.0204 \\
     \midrule
-    adapter trained on reader transcripts & reader transcript & 0.8246 & -0.0234 & 0.2012 \\
-    adapter trained on reader transcripts & perfect text & 0.9583 & -0.0196 & 0.0456 \\
+    adapter: reader transcripts & reader transcript & 0.8246 & -0.0234 & 0.2012 \\
+    adapter: reader transcripts & perfect text & 0.9583 & -0.0196 & 0.0456 \\
     \midrule
-    adapter trained on perfect text & reader transcript & 0.8354 & -0.0126 & 0.1692 \\
-    adapter trained on perfect text & perfect text & 0.9303 & -0.0476 & 0.0287 \\
+    adapter: perfect text & reader transcript & 0.8354 & -0.0126 & 0.1692 \\
+    adapter: perfect text & perfect text & 0.9303 & -0.0476 & 0.0287 \\
     \bottomrule
   \end{tabular}
 

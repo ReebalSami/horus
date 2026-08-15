@@ -26,6 +26,9 @@ L) with the stated intention of fixing them at test design time; for the hypothe
 that were never tested, they were consequently never fixed, and are reproduced here as
 registered.
 
+% The register is verbatim quotation, so the wording cannot be adjusted for line
+% breaking; give TeX extra stretch instead of letting hypothesis text protrude.
+\begingroup\emergencystretch=2em
 \begin{description}
   \item[H1 (Layer 1) --- registered 2026-05-08.] Local document \acp{VLM}
         (3B--7B) reach compliance-aware \ac{F1} within X~pp of \ac{EU}-hosted cloud
@@ -75,6 +78,7 @@ registered.
         consistent with every local run reported, but no dedicated sweep is
         claimed.}
 \end{description}
+\endgroup
 
 The reporting rule attached to the register --- every experiment cites the hypothesis
 it tests by its verbatim definition or is explicitly labelled exploratory --- is

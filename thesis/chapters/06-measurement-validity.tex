@@ -12,7 +12,7 @@ larger source of error.
 The claim is specific and it is not a generality about careful work. Over the course of this
 project, a sequence of defects was found in the evaluation apparatus --- in the reference data,
 in the comparison rules, in the diagnostic aggregation, and in the field specification given to
-the model. Each was found by opening individual documents rather than by looking at aggregates.
+the model. Each was found by opening individual documents, not by looking at aggregates.
 Each had been invisible in every number reported up to the point it was found. Several of them
 moved reported scores by more than any modelling change made in this project. One of them, had
 it gone unnoticed, would have caused this thesis to report the opposite of its actual
@@ -27,7 +27,7 @@ The chapter proceeds by stating the discipline that separates repairing an instr
 inflating a score (\S\ref{sec:validity-discipline}), then the four classes of defect found
 (\S\ref{sec:validity-reference}--\S\ref{sec:validity-specification}), then what correcting them
 was worth (\S\ref{sec:validity-effect}), then the near-miss
-(\S\ref{sec:validity-confound}), and finally what remains broken and recorded rather than
+(\S\ref{sec:validity-confound}), and finally what remains broken and is recorded instead of
 repaired (\S\ref{sec:validity-open}).
 
 \section{The Discipline: Repair Versus Inflation}
@@ -97,12 +97,12 @@ because it is the most easily abused. Eight cells in the signed-off answer key c
 that \emph{no} reading channel could locate anywhere in the page text --- not the vision model,
 not the commercial service, not the text-layer parser, not the author reading the image. A
 value that is not on the page cannot be extracted from the page by any vision system, so
-scoring it as a miss measures the answer key rather than the system.
+scoring it as a miss measures the answer key, not the system.
 
 The temptation is to generalise that criterion. It was deliberately not generalised, for a
 reason worth stating: the criterion is confounded across fields. One amount is unlocatable on a
 dozen documents and yet correctly recovered on eleven of them, because it is fixed
-arithmetically by other fields rather than read. Keying the exclusion on provenance class alone
+arithmetically by other fields without being read. Keying the exclusion on provenance class alone
 would therefore have discarded correct answers. The exclusion was applied to exactly one field,
 on evidence specific to it: every present cell of that field rests on an author decision with
 no printed proof and no cross-channel agreement, the standard derives it from no other field,
@@ -201,7 +201,7 @@ The fourth class was not anticipated and is, in retrospect, the most instructive
 The specification given to the structuring stage tells it which fields exist and what they tend
 to be called on a German invoice. Those printed-label lists are not documentation. \textbf{They
 are empirical claims about what invoices print}, and they had been written from domain
-knowledge rather than measured against the corpus.
+knowledge, not measured against the corpus.
 
 Auditing them against all 146 documents found that \textbf{34 of 63 label variants never
 occurred in the corpus at all}. Each was a false claim, and each cost specification budget that
@@ -230,15 +230,15 @@ passed the check. Comparing against \emph{printed} variants rather than canonica
 surfaced it.
 
 The conclusion drawn was that vigilance is the wrong instrument for this class of defect. It is
-now gated by two mechanisms rather than watched: a self-contained test that rejects
+now gated by two mechanisms instead of watched: a self-contained test that rejects
 value-shaped content in any field description, and a corpus-backed audit that reports the
 occurrence count of every label variant. After repair, no ungrounded variant and no leaked
 value remains.
 
-\textbf{One further footgun was found and is recorded rather than resolved.} A diagnostic that
+\textbf{One further footgun was found and is recorded, not resolved.} A diagnostic that
 constructs the experiment configuration with its defaults, instead of loading the project's
 configuration file, silently selects a superseded reading model, because the canonical choice
-lives in the configuration rather than in the default. The first audit run did exactly that and
+lives in the configuration, not in the default. The first audit run did exactly that and
 therefore measured the wrong pipeline --- a weak reader makes genuinely printed labels look
 ungrounded. Both audit tools now load the configuration explicitly. The stale default remains a
 live hazard for any future script that constructs the configuration bare, and it is listed in
@@ -248,7 +248,7 @@ Chapter~\ref{ch:limitations-future-work}.
 \label{sec:validity-selfinflicted}
 
 One correction in this project broke the symmetry rule of \S\ref{sec:validity-discipline}, and
-it is reported here rather than omitted because it is the clearest illustration of why that rule
+it is reported here because it is the clearest illustration of why that rule
 exists.
 
 The sign-convention fix of \S\ref{sec:validity-comparison} was first implemented on the
@@ -329,7 +329,7 @@ very nearly cancel.
 
 Had the baseline not been re-measured, this thesis would have reported that the adaptation was
 harmless. It is not. The requirement to re-measure was written down before the runs, as a
-precondition rather than a check, which is the only reason the cancellation was caught.
+precondition, not a check, which is the only reason the cancellation was caught.
 
 Two things follow. The first is narrow: precision must be matched. The second is general and is
 the reason this section exists. \textbf{The confound was not visible in either number.} Both
@@ -340,7 +340,7 @@ fixed in advance caught it.
 \section{What Remains Broken}
 \label{sec:validity-open}
 
-Two items are recorded as open rather than repaired, because reporting only the defects that
+Two items are recorded as open and unrepaired, because reporting only the defects that
 were fixed would misrepresent the state of the apparatus.
 
 \textbf{One field regressed under the renderer repair and stays regressed.} The supplier

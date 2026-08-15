@@ -32,15 +32,15 @@ each value by its declared type, and leaves a field absent when it cannot be par
 attributing an error --- a defect there is a program defect, reproducible and fixable, not a
 sampling artefact.
 
-Two properties of the pipeline are contractual rather than incidental, and both affect how it
+Two properties of the pipeline are contractual, not incidental, and both affect how it
 must be scored.
 
 \textbf{The honest null.} A field the document does not carry must come back absent, not
-guessed. An accounting tool that invents a tax identifier is worse than one that leaves it
-empty, because an empty field is visible to the reviewer who has to sign the booking and a
-plausible fabrication is not. The evaluation therefore scores absence as a first-class
-outcome rather than ignoring it, and reports the rate at which the system emits values for
-fields that do not exist as a metric in its own right.
+guessed --- the contract of \S\ref{sec:design-honest-null}, with the professional
+justification given there. What matters for this chapter is its scoring consequence: the
+evaluation treats absence as a first-class outcome instead of ignoring it, and reports the
+rate at which the system emits values for fields that do not exist as a metric in its own
+right.
 
 \textbf{Determinism.} Every generation reported in this thesis uses greedy decoding. No
 temperature, no sampling, no self-consistency voting over multiple samples. This costs some
@@ -128,7 +128,7 @@ to annotate by hand. This is why line-item extraction can be measured at all in 
 cross-checked with a second, structurally unrelated implementation --- a Python reference
 implementation of the standard \cite{facturxpython} and an independent Java validator and
 extractor \cite{mustangproject}. Two tools that disagree about what a document says indicate a
-defect in one of them, and that disagreement is observable rather than silent.
+defect in one of them, and that disagreement is observable, not silent.
 
 The extracted values are mapped onto the standard's business-term identifiers, so that a field
 in this thesis's schema corresponds to a named term in \ac{EN}~16931 rather than to an
@@ -172,7 +172,7 @@ result for a hard task. It was only caught by opening individual documents and r
 The replacement key is built from three channels that fail differently:
 
 \begin{enumerate}
-  \item the original text-layer draft, retained as one voice rather than discarded;
+  \item the original text-layer draft, retained as one voice;
   \item a frontier cloud vision model reading the page images, schema-constrained to the
         field registry;
   \item a commercial document-understanding service with a purpose-trained invoice model
@@ -189,7 +189,7 @@ value: \emph{is this string printed in the document's own embedded characters?} 
 proves presence. It cannot prove assignment --- a seller's and a buyer's tax identifier are
 both printed, so filing one as the other passes --- and it can prove nothing at all for the
 phone-scanned documents, which have no embedded characters. Both limits are structural and were
-recorded rather than worked around.
+recorded, not worked around.
 
 Every cell then falls into one of five provenance classes, and only some of them are accepted
 without the author looking:
@@ -223,7 +223,7 @@ output of the evaluated pipeline ever entered the key. Automatic acceptance addi
 required either printed-text proof or two independent channels agreeing, so no single channel
 determined a cell alone.
 
-\textbf{Privacy cost, stated rather than buried.} Two of the three channels are cloud
+\textbf{The privacy cost.} Two of the three channels are cloud
 services, so the content of the held-out invoices left local hardware. This cuts directly
 against the confidentiality argument that motivates the whole system, and it is acceptable
 only under a distinction the thesis must be explicit about: the cloud models are a
@@ -238,7 +238,7 @@ author-reviewed, because rows do not align across channels --- one reader splits
 another merges --- so positional comparison manufactures disagreements out of segmentation
 rather than out of error. Reviewing them properly would have meant several times the header
 workload with no ranking and no warrant. Consequently the held-out claim in this thesis is
-about \textbf{header-field extraction}, groups are excluded structurally rather than by a
+about \textbf{header-field extraction}, groups are excluded structurally, not by a
 reporting convention, and line-item extraction is measured on the synthetic corpus where the
 reference is exact and free. Neither question is dropped; each is answered on the corpus that
 can support it. The limitation is recorded in
@@ -345,7 +345,7 @@ the corpus rather than of the system.
 \textbf{On weighting fields by legal importance.} An earlier design weighted fields by their
 significance under \S14 \ac{UStG} and \S33 \ac{UStDV}, so that omitting a mandatory invoice
 particular would cost more than omitting an optional one. This was not carried through, and
-the reason is methodological rather than practical: the weights would have been chosen by the
+the reason is methodological, not practical: the weights would have been chosen by the
 author, and a headline number that depends on an author-chosen weight vector is not
 comparable to anything. The unweighted figures are reported instead, and per-field results are
 given in full so that a reader who wants to weight them can.
@@ -356,7 +356,7 @@ given in full so that a reader who wants to weight them can.
 The synthetic corpus is split into a fitting set and a validation set, stratified by invoice
 profile so that no profile appears on only one side. The split was fixed before any adaptation
 work and recorded with its seed and a content hash for each side, so that a later run can
-\emph{prove} it scored the same documents rather than asserting it. Table~\ref{tab:corpus-composition}
+\emph{prove} it scored the same documents instead of asserting it. Table~\ref{tab:corpus-composition}
 gives the composition and the hash.
 
 \input{tables/corpus-composition.tex}
@@ -468,7 +468,7 @@ one criterion, and Chapter~\ref{ch:results} reports the failure and the resultin
 \textbf{Registered but not evaluated.} The scope of this thesis was narrowed during the work,
 and several registered hypotheses --- concerning the two upper layers of the architecture and
 a comparison against cloud services --- were consequently never tested. They are listed as
-such in Chapter~\ref{ch:limitations-future-work} rather than quietly dropped from the
+such in Chapter~\ref{ch:limitations-future-work}, never quietly dropped from the
 register. A hypothesis that disappears between registration and reporting is
 indistinguishable, to a reader, from one that was tested and inconvenient.
 
@@ -479,7 +479,7 @@ indistinguishable, to a reader, from one that was tested and inconvenient.
 seeds, decoding settings, prompt strings, thresholds --- lives in a versioned configuration
 file, not in code. Each experiment takes exactly one argument: the path to its configuration.
 The configuration is validated against a typed schema \cite{pydantic} before any model loads,
-so a missing or malformed value fails immediately rather than after a model has been read into
+so a missing or malformed value fails immediately, before a model has been read into
 memory.
 
 \textbf{Tracking.} Runs are recorded with their configuration, metrics and artefacts

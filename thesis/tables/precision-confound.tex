@@ -7,14 +7,15 @@
 
 \begin{table}[htbp]
   \centering
-  \caption{Why the baseline had to be re-measured in the adapter's own numeric precision. The unmatched comparison understates the regression by a factor of 21.}
+  \caption{Why the baseline had to be re-measured in the adapter's own numeric precision (adapter always bf16; the unmatched row compares it against the 4-bit deployment baseline). The unmatched comparison understates the regression by a factor of 21.}
   \label{tab:precision-confound}
+  \small
   \begin{tabular}{lrrrl}
     \toprule
     Comparison & Adapter & Baseline & $\Delta$ & Reads as \\
     \midrule
-    unmatched (adapter bf16 vs baseline 4-bit) & 0.8246 & 0.8257 & -0.0011 & ``no measurable harm'' \\
-    matched (both bf16) & 0.8246 & 0.8480 & -0.0234 & \textbf{a real regression} \\
+    unmatched: bf16 vs 4-bit & 0.8246 & 0.8257 & -0.0011 & ``no measurable harm'' \\
+    matched: both bf16 & 0.8246 & 0.8480 & -0.0234 & \textbf{a real regression} \\
     \bottomrule
   \end{tabular}
 

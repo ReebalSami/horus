@@ -207,6 +207,11 @@
     sorting=nty
 ]{biblatex}
 \addbibresource{references.bib}
+% Long archive/dataset URLs must be breakable anywhere, or they protrude into
+% the margin (observed with a huggingface dataset URL, 31pt overfull).
+\setcounter{biburlnumpenalty}{9000}
+\setcounter{biburlucpenalty}{9000}
+\setcounter{biburllcpenalty}{9000}
 
 % --- Hyperlinks (load late) ---
 \usepackage{hyperref}

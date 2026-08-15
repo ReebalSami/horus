@@ -95,6 +95,7 @@ def _table(
     note: str,
     sources: list[str],
     midrules_before: tuple[int, ...] = (),
+    font_size: str = "",
 ) -> str:
     """Assemble one booktabs table with a mandatory protocol note.
 
@@ -108,6 +109,8 @@ def _table(
     lines.append(r"  \centering")
     lines.append(rf"  \caption{{{caption}}}")
     lines.append(rf"  \label{{{label}}}")
+    if font_size:
+        lines.append("  " + font_size)
     lines.append(rf"  \begin{{tabular}}{{{colspec}}}")
     lines.append(r"    \toprule")
     lines.append("    " + " & ".join(header) + r" \\")
@@ -240,7 +243,7 @@ def build_finetune_grid() -> str:
         baseline = baseline_reader if condition == "reader transcript" else baseline_oracle
         rows.append(
             [
-                f"adapter trained on {trained_on}",
+                f"adapter: {trained_on}",
                 condition,
                 _num(_overall(report)),
                 _signed(_overall(report) - baseline),
@@ -249,8 +252,9 @@ def build_finetune_grid() -> str:
         )
     return _table(
         caption=(
-            "The 2$\\times$2 adaptation grid: two adapters, each evaluated on both input "
-            "conditions. All four cells regress against the matched-stack baseline."
+            "The 2$\\times$2 adaptation grid: two adapters (named by the input distribution "
+            "they were trained on), each evaluated on both input conditions. All four cells "
+            "regress against the matched-stack baseline."
         ),
         label="tab:finetune-grid",
         colspec="llrrr",
@@ -258,11 +262,12 @@ def build_finetune_grid() -> str:
             "Model",
             "Evaluated on",
             "Overall F$_1$",
-            r"$\Delta$ vs baseline",
-            "Spurious rate",
+            r"$\Delta$",
+            "Spurious",
         ],
         rows=rows,
         midrules_before=(2, 4),
+        font_size=r"\small",
         note=(
             "Corpus and structurer as in Table~\\ref{tab:sealed-val-arms}. Every arm here is "
             "bf16 on CUDA, including the baseline: comparing a bf16 adapter against the "
@@ -295,14 +300,14 @@ def build_precision_confound() -> str:
     ratio = correct / naive if naive else 0.0
     rows = [
         [
-            "unmatched (adapter bf16 vs baseline 4-bit)",
+            "unmatched: bf16 vs 4-bit",
             _num(adapter),
             _num(deployed),
             _signed(naive),
             r"``no measurable harm''",
         ],
         [
-            "matched (both bf16)",
+            "matched: both bf16",
             _num(adapter),
             _num(matched),
             _signed(correct),
@@ -311,9 +316,10 @@ def build_precision_confound() -> str:
     ]
     return _table(
         caption=(
-            "Why the baseline had to be re-measured in the adapter's own numeric precision. "
-            "The unmatched comparison understates the regression by a factor of "
-            f"{abs(ratio):.0f}."
+            "Why the baseline had to be re-measured in the adapter's own numeric precision "
+            "(adapter always bf16; the unmatched row compares it against the 4-bit "
+            "deployment baseline). The unmatched comparison understates the regression by "
+            f"a factor of {abs(ratio):.0f}."
         ),
         label="tab:precision-confound",
         colspec="lrrrl",
@@ -325,6 +331,7 @@ def build_precision_confound() -> str:
             "Reads as",
         ],
         rows=rows,
+        font_size=r"\small",
         note=(
             "Both rows use the same adapter and the same sealed corpus; only the baseline "
             "changes. The deployed baseline runs 4-bit on Apple silicon, the adapter runs bf16 "
@@ -1168,6 +1175,7 @@ def build_field_registry() -> str:
         colspec="llll",
         header=["Field", "BT", "German label (EN~16931 term)", "Type"],
         rows=rows,
+        font_size=r"\footnotesize\setlength{\tabcolsep}{4pt}",
         note=(
             "Generated directly from the registry in "
             r"\texttt{src/horus/eval/ground\_truth.py}, the single structure that drives "
@@ -1264,14 +1272,16 @@ def build_heldout_datasheet_tables() -> tuple[str, str, str]:
     )
 
     freeze_section = next(k for k in sections if k.startswith("Freeze table"))
+    freeze_body = sections[freeze_section][1:]
+    n_unverified = sum(1 for row in freeze_body if row[3] != "yes")
+    assert n_unverified == 0, f"{n_unverified} freeze rows unverified; note text is wrong"
     freeze_rows = [
         [
             r"\texttt{" + _tex_escape(_dequote(doc_id)) + "}",
             pages,
-            r"\texttt{\scriptsize " + _tex_escape(_dequote(sha)) + "}",
-            verified,
+            r"{\ttfamily\tiny " + _tex_escape(_dequote(sha)) + "}",
         ]
-        for doc_id, pages, sha, verified in sections[freeze_section][1:]
+        for doc_id, pages, sha, _verified in freeze_body
     ]
     freeze = _longtable(
         caption=(
@@ -1279,17 +1289,19 @@ def build_heldout_datasheet_tables() -> tuple[str, str, str]:
             "change to a document changes its hash; filenames are withheld as private."
         ),
         label="tab:heldout-freeze",
-        colspec="lrll",
-        header=["Corpus id", "Pages", "SHA-256 (source PDF)", "Verified"],
+        colspec="lrl",
+        header=["Corpus id", "Pages", "SHA-256 (source PDF)"],
         rows=freeze_rows,
         note=(
             "The hash commits the evaluation to a fixed set of documents without "
             "disclosing them: a reader with access to the private corpus can verify "
             "integrity, and nobody else learns anything an aggregate does not already "
-            "say. Converted verbatim from the committed sanitised datasheet."
+            "say. Every row is marked verified in the source datasheet (asserted at "
+            "generation time). Converted verbatim from the committed sanitised "
+            "datasheet."
         ),
         sources=[str(DATASHEET_MD)],
-        font_size=r"\scriptsize",
+        font_size=r"\scriptsize\setlength{\tabcolsep}{4pt}",
     )
     return composition, presence, freeze
 

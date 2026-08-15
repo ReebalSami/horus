@@ -5,60 +5,60 @@
 
 % Source(s): docs/architecture/belege-heldout-datasheet.md
 
-\begingroup\scriptsize
-\begin{longtable}{lrll}
+\begingroup\scriptsize\setlength{\tabcolsep}{4pt}
+\begin{longtable}{lrl}
   \caption{Freeze table: SHA-256 of every held-out source PDF at seal time. Any change to a document changes its hash; filenames are withheld as private.}\label{tab:heldout-freeze}\\
     \toprule
-    Corpus id & Pages & SHA-256 (source PDF) & Verified \\
+    Corpus id & Pages & SHA-256 (source PDF) \\
     \midrule
   \endfirsthead
     \toprule
-    Corpus id & Pages & SHA-256 (source PDF) & Verified \\
+    Corpus id & Pages & SHA-256 (source PDF) \\
     \midrule
   \endhead
     \bottomrule
   \endfoot
-    \texttt{belege-de-email-001} & 2 & \texttt{\scriptsize b9df60190f6a49d42775399d1bf2342f659878e11c5e82e9722db4495089ca8a} & yes \\
-    \texttt{belege-de-email-002} & 1 & \texttt{\scriptsize 5774f7a9c54fca70ec5867b92cd124981cfbc5814114741f721d4fc1b511f8c4} & yes \\
-    \texttt{belege-de-email-003} & 1 & \texttt{\scriptsize e8e56b66e94c0989add7e1babf7742f49f49ea0426312f8ef9cdea75868a1f8f} & yes \\
-    \texttt{belege-de-email-004} & 1 & \texttt{\scriptsize 6628fd93e2b9cf9a3b5d1c4a5853e3f923493edb6f83f91fbc8ae33163a67a3a} & yes \\
-    \texttt{belege-de-email-005} & 1 & \texttt{\scriptsize b85e6a66e1e35c77e89d73dc3bc3be65d7ad174f26d3f558678606df6c60a046} & yes \\
-    \texttt{belege-de-email-006} & 1 & \texttt{\scriptsize 0e9ff18bb12f50a33cc5b5febbd7171b1d75b485a60b38d98d19a3de28cf8662} & yes \\
-    \texttt{belege-de-email-007} & 1 & \texttt{\scriptsize 17f6c6d0e4a8ab1f644753e8b9eef70c995daba7e889811ba62ced27350fb47e} & yes \\
-    \texttt{belege-de-email-008} & 1 & \texttt{\scriptsize 6900c606fd18991e2d753b80177d15698db7885a3dbc2fd089498e9cb5737706} & yes \\
-    \texttt{belege-de-email-009} & 1 & \texttt{\scriptsize 0d0765419cf93327d8c225c4d75902f993db834d243a97a3914e22fb53929242} & yes \\
-    \texttt{belege-de-email-010} & 1 & \texttt{\scriptsize cbcc4ce74a616c5b6de27174ef3dbd3338ddec91efdb5143d0fcab6367eb9c21} & yes \\
-    \texttt{belege-de-email-011} & 1 & \texttt{\scriptsize f55ac2d5ca66025efb0312c2f82047e84c7676b3095adcce9752736e692072c5} & yes \\
-    \texttt{belege-de-email-012} & 1 & \texttt{\scriptsize 4694a4164c02451c2503ad4b12f07b123cc6ddfc51ea249a4a1be14f97e30a1f} & yes \\
-    \texttt{belege-de-email-013} & 1 & \texttt{\scriptsize 6f480a8c39ff3190cb0df450424b01fc8f338b78447f9c4c2f424b29b18f3774} & yes \\
-    \texttt{belege-de-email-014} & 1 & \texttt{\scriptsize 84868fa556b4fda1ebac6c30a73eb3ed53fb9790790d20b7fefc3baa26adbd2a} & yes \\
-    \texttt{belege-de-email-015} & 2 & \texttt{\scriptsize a938ba124d9f10db3f0ed1772d4d6e301145363d27a1b36d2f70fe5252dc73eb} & yes \\
-    \texttt{belege-de-email-016} & 1 & \texttt{\scriptsize b7141d32943b6dcbf2aa891399ab228b360db40e1224dd2f495ccdedac5a55ce} & yes \\
-    \texttt{belege-de-email-017} & 1 & \texttt{\scriptsize b8e75d87120ce5cfea3a044a415944facc5000bb4477b1df533975f0c23c4c48} & yes \\
-    \texttt{belege-de-email-018} & 10 & \texttt{\scriptsize 11d91efdd7f9cd24fa5d1aeca3d1e01f06cc12e78c71e8ef65a249e6addc8b49} & yes \\
-    \texttt{belege-de-scan-001} & 2 & \texttt{\scriptsize 5b61dd96c95bd368cc9ba43f21fc6a913fdbe23a73a66e6e3dd873def711af65} & yes \\
-    \texttt{belege-de-scan-002} & 4 & \texttt{\scriptsize eb1c36d1db332ba41f42d05e56a18b296499016ffdbcc8181f0bd4a4e0cacd98} & yes \\
-    \texttt{belege-de-scan-003} & 2 & \texttt{\scriptsize 1375e0a547e1653959a13f61d8242764716e7693f63108cc80e60ea5469a6a31} & yes \\
-    \texttt{belege-de-scan-004} & 1 & \texttt{\scriptsize 85ad67a95aab86067f8027cbce6883d42067b3c5b524840e735e8b7a926ce495} & yes \\
-    \texttt{belege-de-scan-005} & 2 & \texttt{\scriptsize 84b36b267ab69ccdbf590fb3cdafca4388ffc2ec2b4a93ee6e2f406c27c6b077} & yes \\
-    \texttt{belege-de-scan-006} & 1 & \texttt{\scriptsize 12175728178b6e3773c6d05fa07cd3da18f0bc451765945d06adbe9a36487333} & yes \\
-    \texttt{belege-de-scan-007} & 1 & \texttt{\scriptsize 5c9065366c0f789e93ac26d65c9a7e1832f1b1a8aea015dae43647a053769a66} & yes \\
-    \texttt{belege-de-scan-008} & 1 & \texttt{\scriptsize 7de25444dd251f86c606bf1faa72d632be0483600b9b43ef637a15383695cf60} & yes \\
-    \texttt{belege-de-scan-009} & 1 & \texttt{\scriptsize 9aa0ec6f20dffe2e8e061cca81f1cb16ace7782afd81b87cd0a13dd79c9c8a37} & yes \\
-    \texttt{belege-de-scan-010} & 1 & \texttt{\scriptsize 8e3b0954782a478920ca05033579675df163e4719fb4e3d614d302a05a1a78c2} & yes \\
-    \texttt{belege-en-email-001} & 1 & \texttt{\scriptsize e0578a404ec9e1186907c33c848e363424b26e58f5f3b6e005a920b56535a5c9} & yes \\
-    \texttt{belege-en-email-002} & 1 & \texttt{\scriptsize 5ed2ae7e1fc15f3d7f6fe85b657013e615b77faa855f3ffeeedc53b1738cf6f9} & yes \\
-    \texttt{belege-en-email-003} & 1 & \texttt{\scriptsize e7b37634b2a3445e6b704a63d2951f4b1646914ae04be15e57d56bbd5761885b} & yes \\
-    \texttt{belege-en-email-004} & 1 & \texttt{\scriptsize a83e21de815bcd04feac35a61e3391b5d0c191ad7591a80d0f4715748fdf1dd9} & yes \\
-    \texttt{belege-en-email-005} & 1 & \texttt{\scriptsize 5595ec0183d9047f677b6cd4ccde27d94cdf3d5c30c74480d43587f3b29fd7fa} & yes \\
-    \texttt{belege-en-email-006} & 1 & \texttt{\scriptsize 12924d5e048cb39dce9c3823008729e20755fdffe571dffc02c50e83f92454ef} & yes \\
-    \texttt{belege-en-email-007} & 1 & \texttt{\scriptsize 0a831b3717c9228e5f1d3b2de2f92ba70fea86c9012225760eeca032d6d72c59} & yes \\
-    \texttt{belege-en-email-008} & 1 & \texttt{\scriptsize ac3bc89d30b0e465de12f5000efb939dab65c2136528e37a987f5643cf09d50a} & yes \\
-    \texttt{belege-en-email-009} & 1 & \texttt{\scriptsize f7cacba15b4d53189a84e0c5761c9a6fb43735b2cbf1e94538087f3857878a31} & yes \\
-    \texttt{belege-en-email-010} & 2 & \texttt{\scriptsize 0ae74cc3d866c428cefe05685a9efcf4d48cf2e0ab65da70d6e1d13ec4e1003e} & yes \\
-    \texttt{belege-en-email-011} & 2 & \texttt{\scriptsize 7527907c442cdafdb40ce1a3a844bace38f31598d01acdeaa03989ec52eeff76} & yes \\
+    \texttt{belege-de-email-001} & 2 & {\ttfamily\tiny b9df60190f6a49d42775399d1bf2342f659878e11c5e82e9722db4495089ca8a} \\
+    \texttt{belege-de-email-002} & 1 & {\ttfamily\tiny 5774f7a9c54fca70ec5867b92cd124981cfbc5814114741f721d4fc1b511f8c4} \\
+    \texttt{belege-de-email-003} & 1 & {\ttfamily\tiny e8e56b66e94c0989add7e1babf7742f49f49ea0426312f8ef9cdea75868a1f8f} \\
+    \texttt{belege-de-email-004} & 1 & {\ttfamily\tiny 6628fd93e2b9cf9a3b5d1c4a5853e3f923493edb6f83f91fbc8ae33163a67a3a} \\
+    \texttt{belege-de-email-005} & 1 & {\ttfamily\tiny b85e6a66e1e35c77e89d73dc3bc3be65d7ad174f26d3f558678606df6c60a046} \\
+    \texttt{belege-de-email-006} & 1 & {\ttfamily\tiny 0e9ff18bb12f50a33cc5b5febbd7171b1d75b485a60b38d98d19a3de28cf8662} \\
+    \texttt{belege-de-email-007} & 1 & {\ttfamily\tiny 17f6c6d0e4a8ab1f644753e8b9eef70c995daba7e889811ba62ced27350fb47e} \\
+    \texttt{belege-de-email-008} & 1 & {\ttfamily\tiny 6900c606fd18991e2d753b80177d15698db7885a3dbc2fd089498e9cb5737706} \\
+    \texttt{belege-de-email-009} & 1 & {\ttfamily\tiny 0d0765419cf93327d8c225c4d75902f993db834d243a97a3914e22fb53929242} \\
+    \texttt{belege-de-email-010} & 1 & {\ttfamily\tiny cbcc4ce74a616c5b6de27174ef3dbd3338ddec91efdb5143d0fcab6367eb9c21} \\
+    \texttt{belege-de-email-011} & 1 & {\ttfamily\tiny f55ac2d5ca66025efb0312c2f82047e84c7676b3095adcce9752736e692072c5} \\
+    \texttt{belege-de-email-012} & 1 & {\ttfamily\tiny 4694a4164c02451c2503ad4b12f07b123cc6ddfc51ea249a4a1be14f97e30a1f} \\
+    \texttt{belege-de-email-013} & 1 & {\ttfamily\tiny 6f480a8c39ff3190cb0df450424b01fc8f338b78447f9c4c2f424b29b18f3774} \\
+    \texttt{belege-de-email-014} & 1 & {\ttfamily\tiny 84868fa556b4fda1ebac6c30a73eb3ed53fb9790790d20b7fefc3baa26adbd2a} \\
+    \texttt{belege-de-email-015} & 2 & {\ttfamily\tiny a938ba124d9f10db3f0ed1772d4d6e301145363d27a1b36d2f70fe5252dc73eb} \\
+    \texttt{belege-de-email-016} & 1 & {\ttfamily\tiny b7141d32943b6dcbf2aa891399ab228b360db40e1224dd2f495ccdedac5a55ce} \\
+    \texttt{belege-de-email-017} & 1 & {\ttfamily\tiny b8e75d87120ce5cfea3a044a415944facc5000bb4477b1df533975f0c23c4c48} \\
+    \texttt{belege-de-email-018} & 10 & {\ttfamily\tiny 11d91efdd7f9cd24fa5d1aeca3d1e01f06cc12e78c71e8ef65a249e6addc8b49} \\
+    \texttt{belege-de-scan-001} & 2 & {\ttfamily\tiny 5b61dd96c95bd368cc9ba43f21fc6a913fdbe23a73a66e6e3dd873def711af65} \\
+    \texttt{belege-de-scan-002} & 4 & {\ttfamily\tiny eb1c36d1db332ba41f42d05e56a18b296499016ffdbcc8181f0bd4a4e0cacd98} \\
+    \texttt{belege-de-scan-003} & 2 & {\ttfamily\tiny 1375e0a547e1653959a13f61d8242764716e7693f63108cc80e60ea5469a6a31} \\
+    \texttt{belege-de-scan-004} & 1 & {\ttfamily\tiny 85ad67a95aab86067f8027cbce6883d42067b3c5b524840e735e8b7a926ce495} \\
+    \texttt{belege-de-scan-005} & 2 & {\ttfamily\tiny 84b36b267ab69ccdbf590fb3cdafca4388ffc2ec2b4a93ee6e2f406c27c6b077} \\
+    \texttt{belege-de-scan-006} & 1 & {\ttfamily\tiny 12175728178b6e3773c6d05fa07cd3da18f0bc451765945d06adbe9a36487333} \\
+    \texttt{belege-de-scan-007} & 1 & {\ttfamily\tiny 5c9065366c0f789e93ac26d65c9a7e1832f1b1a8aea015dae43647a053769a66} \\
+    \texttt{belege-de-scan-008} & 1 & {\ttfamily\tiny 7de25444dd251f86c606bf1faa72d632be0483600b9b43ef637a15383695cf60} \\
+    \texttt{belege-de-scan-009} & 1 & {\ttfamily\tiny 9aa0ec6f20dffe2e8e061cca81f1cb16ace7782afd81b87cd0a13dd79c9c8a37} \\
+    \texttt{belege-de-scan-010} & 1 & {\ttfamily\tiny 8e3b0954782a478920ca05033579675df163e4719fb4e3d614d302a05a1a78c2} \\
+    \texttt{belege-en-email-001} & 1 & {\ttfamily\tiny e0578a404ec9e1186907c33c848e363424b26e58f5f3b6e005a920b56535a5c9} \\
+    \texttt{belege-en-email-002} & 1 & {\ttfamily\tiny 5ed2ae7e1fc15f3d7f6fe85b657013e615b77faa855f3ffeeedc53b1738cf6f9} \\
+    \texttt{belege-en-email-003} & 1 & {\ttfamily\tiny e7b37634b2a3445e6b704a63d2951f4b1646914ae04be15e57d56bbd5761885b} \\
+    \texttt{belege-en-email-004} & 1 & {\ttfamily\tiny a83e21de815bcd04feac35a61e3391b5d0c191ad7591a80d0f4715748fdf1dd9} \\
+    \texttt{belege-en-email-005} & 1 & {\ttfamily\tiny 5595ec0183d9047f677b6cd4ccde27d94cdf3d5c30c74480d43587f3b29fd7fa} \\
+    \texttt{belege-en-email-006} & 1 & {\ttfamily\tiny 12924d5e048cb39dce9c3823008729e20755fdffe571dffc02c50e83f92454ef} \\
+    \texttt{belege-en-email-007} & 1 & {\ttfamily\tiny 0a831b3717c9228e5f1d3b2de2f92ba70fea86c9012225760eeca032d6d72c59} \\
+    \texttt{belege-en-email-008} & 1 & {\ttfamily\tiny ac3bc89d30b0e465de12f5000efb939dab65c2136528e37a987f5643cf09d50a} \\
+    \texttt{belege-en-email-009} & 1 & {\ttfamily\tiny f7cacba15b4d53189a84e0c5761c9a6fb43735b2cbf1e94538087f3857878a31} \\
+    \texttt{belege-en-email-010} & 2 & {\ttfamily\tiny 0ae74cc3d866c428cefe05685a9efcf4d48cf2e0ab65da70d6e1d13ec4e1003e} \\
+    \texttt{belege-en-email-011} & 2 & {\ttfamily\tiny 7527907c442cdafdb40ce1a3a844bace38f31598d01acdeaa03989ec52eeff76} \\
 \end{longtable}
 \endgroup
 \begin{minipage}{0.95\linewidth}\footnotesize
-\textbf{Protocol note.} The hash commits the evaluation to a fixed set of documents without disclosing them: a reader with access to the private corpus can verify integrity, and nobody else learns anything an aggregate does not already say. Converted verbatim from the committed sanitised datasheet.
+\textbf{Protocol note.} The hash commits the evaluation to a fixed set of documents without disclosing them: a reader with access to the private corpus can verify integrity, and nobody else learns anything an aggregate does not already say. Every row is marked verified in the source datasheet (asserted at generation time). Converted verbatim from the committed sanitised datasheet.
 \end{minipage}
