@@ -1,0 +1,76 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): src/horus/eval/ground_truth.py (FIELDS, REPEATING_GROUPS)
+
+\begingroup\small
+\begin{longtable}{llll}
+  \caption{The field registry: 34 flat header fields and 3 repeating groups, aligned to EN~16931 business terms.}\label{tab:field-registry}\\
+    \toprule
+    Field & BT & German label (EN~16931 term) & Type \\
+    \midrule
+  \endfirsthead
+    \toprule
+    Field & BT & German label (EN~16931 term) & Type \\
+    \midrule
+  \endhead
+    \bottomrule
+  \endfoot
+    \texttt{invoice\_number} & BT-1 & Rechnungsnummer & code \\
+    \texttt{issue\_date} & BT-2 & Rechnungsdatum & date \\
+    \texttt{invoice\_currency\_code} & BT-5 & Währung & code \\
+    \texttt{delivery\_date} & BT-72 & Liefer-/Leistungsdatum & date \\
+    \texttt{seller\_name} & BT-27 & Verkäufer & string \\
+    \texttt{seller\_vat\_id} & BT-31 & USt-IdNr. (Verkäufer) & code \\
+    \texttt{seller\_tax\_id} & BT-32 & Steuernummer & code \\
+    \texttt{seller\_gln} & BT-29 (scheme 0088) & GLN (Verkäufer) & code \\
+    \texttt{buyer\_name} & BT-44 & Käufer & string \\
+    \texttt{buyer\_reference} & BT-46 & Kundennummer & code \\
+    \texttt{buyer\_vat\_id} & BT-48 & USt-IdNr. (Käufer) & code \\
+    \texttt{line\_total\_amount} & BT-106 & Summe Nettobeträge & money \\
+    \texttt{tax\_basis\_total\_amount} & BT-109 & Steuerlicher Bemessungsbetrag & money \\
+    \texttt{tax\_total\_amount} & BT-110 & Umsatzsteuer gesamt & money \\
+    \texttt{grand\_total\_amount} & BT-112 & Bruttobetrag & money \\
+    \texttt{due\_payable\_amount} & BT-115 & Zahlbetrag & money \\
+    \texttt{tax\_rate} & BT-119 & Umsatzsteuersatz & rate \\
+    \texttt{seller\_address} & BG-5 & Anschrift (Verkäufer) & string \\
+    \texttt{buyer\_address} & BG-8 & Anschrift (Käufer) & string \\
+    \texttt{document\_type} & BT-3 & Belegart & code \\
+    \texttt{buyer\_order\_reference} & BT-13 & Bestellnummer & code \\
+    \texttt{billing\_period\_start} & BT-73 & Abrechnungszeitraum Beginn & date \\
+    \texttt{billing\_period\_end} & BT-74 & Abrechnungszeitraum Ende & date \\
+    \texttt{payment\_due\_date} & BT-9 & Fälligkeitsdatum (Zahlungsziel) & date \\
+    \texttt{payment\_means\_code} & BT-81 & Zahlungsart (Code) & code \\
+    \texttt{payment\_means\_text} & BT-82 & Zahlungsart & string \\
+    \texttt{seller\_iban} & BT-84 & IBAN (Zahlungsempfänger) & code \\
+    \texttt{seller\_bic} & BT-86 & BIC & code \\
+    \texttt{seller\_account\_name} & BT-85 & Kontoinhaber & string \\
+    \texttt{payment\_reference} & BT-83 & Verwendungszweck & string \\
+    \texttt{prepaid\_amount} & BT-113 & Bereits gezahlt & money \\
+    \texttt{allowance\_total\_amount} & BT-107 & Summe Nachlässe & money \\
+    \texttt{charge\_total\_amount} & BT-108 & Summe Zuschläge & money \\
+    \texttt{rounding\_amount} & BT-114 & Rundungsbetrag & money \\
+    \multicolumn{4}{l}{\emph{repeating group: \texttt{vat\_breakdown}}} \\
+    \quad\texttt{category\_code} & BT-118 & Steuerkategorie & code \\
+    \quad\texttt{rate\_percent} & BT-119 & Steuersatz & rate \\
+    \quad\texttt{taxable\_amount} & BT-116 & Bemessungsgrundlage & money \\
+    \quad\texttt{tax\_amount} & BT-117 & Steuerbetrag & money \\
+    \multicolumn{4}{l}{\emph{repeating group: \texttt{skonto}}} \\
+    \quad\texttt{percent} & BT-DE-skonto-percent & Skonto-Prozentsatz & rate \\
+    \quad\texttt{days} & BT-DE-skonto-days & Skonto-Tage & code \\
+    \quad\texttt{basis\_amount} & BT-DE-skonto-basis & Skonto-Basisbetrag & money \\
+    \multicolumn{4}{l}{\emph{repeating group: \texttt{line\_items}}} \\
+    \quad\texttt{line\_id} & BT-126 & Positionsnummer & code \\
+    \quad\texttt{name} & BT-153 & Artikelbezeichnung & string \\
+    \quad\texttt{seller\_assigned\_id} & BT-155 & Artikelnummer (Verkäufer) & code \\
+    \quad\texttt{net\_price} & BT-146 & Einzelpreis (netto) & money \\
+    \quad\texttt{quantity} & BT-129 & Menge & money \\
+    \quad\texttt{vat\_rate} & BT-152 & USt-Satz (Position) & rate \\
+    \quad\texttt{line\_amount} & BT-131 & Positionsbetrag (netto) & money \\
+\end{longtable}
+\endgroup
+\begin{minipage}{0.95\linewidth}\footnotesize
+\textbf{Protocol note.} Generated directly from the registry in \texttt{src/horus/eval/ground\_truth.py}, the single structure that drives the structurer's field specification, the scorer and the reference extractor, so this listing cannot drift from the code. The German label is the canonical EN~16931 term, which is not always the wording a real page prints; corpus-measured printed labels are tracked separately (\S\ref{sec:validity-specification}). Types: \emph{money} and \emph{rate} are decimal-normalised, \emph{date} is ISO-normalised, \emph{code} is vocabulary-mapped and \emph{string} is whitespace-normalised, symmetrically on both reference and prediction.
+\end{minipage}

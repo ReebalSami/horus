@@ -1058,7 +1058,7 @@ def build_heldout_by_channel(data: dict[str, Any]) -> str:
             "how the system behaves on a document handed to it. Cell-pooled sums all outcomes "
             "before computing one score, so field-dense documents pull harder, and answers "
             "what share of extracted cells is correct. Neither is a maximum over documents. "
-            "Precision holds up on photographs while recall falls, meaning degraded input "
+            "Precision holds up on phone scans while recall falls, meaning degraded input "
             "makes the system abstain rather than invent." + gap_note
         ),
         sources=[
@@ -1066,6 +1066,232 @@ def build_heldout_by_channel(data: dict[str, Any]) -> str:
             "data/self-collected/_eval/eval-zeroshot-heldout-adr065.json (private)",
         ],
     )
+
+
+# ------------------------------------------------------------------ appendix assets
+
+DATASHEET_MD = Path("docs/architecture/belege-heldout-datasheet.md")
+
+
+def _tex_escape(value: str) -> str:
+    return (
+        value.replace("\\", r"\textbackslash{}")
+        .replace("&", r"\&")
+        .replace("%", r"\%")
+        .replace("#", r"\#")
+        .replace("_", r"\_")
+    )
+
+
+def _longtable(
+    *,
+    caption: str,
+    label: str,
+    colspec: str,
+    header: list[str],
+    rows: list[list[str]],
+    note: str,
+    sources: list[str],
+    font_size: str = r"\small",
+) -> str:
+    """A multi-page booktabs longtable with the same mandatory protocol note as `_table`."""
+    head = "    " + " & ".join(header) + r" \\"
+    lines = [BANNER, "% Source(s): " + "; ".join(sources), ""]
+    lines.append(r"\begingroup" + font_size)
+    lines.append(rf"\begin{{longtable}}{{{colspec}}}")
+    lines.append(rf"  \caption{{{caption}}}\label{{{label}}}\\")
+    lines.append(r"    \toprule")
+    lines.append(head)
+    lines.append(r"    \midrule")
+    lines.append(r"  \endfirsthead")
+    lines.append(r"    \toprule")
+    lines.append(head)
+    lines.append(r"    \midrule")
+    lines.append(r"  \endhead")
+    lines.append(r"    \bottomrule")
+    lines.append(r"  \endfoot")
+    for row in rows:
+        lines.append("    " + " & ".join(row) + r" \\")
+    lines.append(r"\end{longtable}")
+    lines.append(r"\endgroup")
+    lines.append(r"\begin{minipage}{0.95\linewidth}\footnotesize")
+    lines.append(rf"\textbf{{Protocol note.}} {note}")
+    lines.append(r"\end{minipage}")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def build_field_registry() -> str:
+    """The full 34-field flat registry plus the three repeating groups, from the code.
+
+    Generated from `horus.eval.ground_truth.FIELDS` so the appendix cannot drift from
+    the registry that actually drives the prompt, the scorer and the ground-truth
+    extractor.
+    """
+    from horus.eval.ground_truth import FIELDS, REPEATING_GROUPS
+
+    rows: list[list[str]] = []
+    for spec in FIELDS.values():
+        rows.append(
+            [
+                r"\texttt{" + _tex_escape(spec.english_key) + "}",
+                _tex_escape(spec.bt_code),
+                _tex_escape(spec.german_label),
+                spec.field_type.lower(),
+            ]
+        )
+    for group_name, (_, leaves) in REPEATING_GROUPS.items():
+        rows.append(
+            [
+                r"\multicolumn{4}{l}{\emph{repeating group: \texttt{"
+                + _tex_escape(group_name)
+                + r"}}}"
+            ]
+        )
+        for spec in leaves.values():
+            rows.append(
+                [
+                    r"\quad\texttt{" + _tex_escape(spec.english_key) + "}",
+                    _tex_escape(spec.bt_code),
+                    _tex_escape(spec.german_label),
+                    spec.field_type.lower(),
+                ]
+            )
+    n_flat = len(FIELDS)
+    n_groups = len(REPEATING_GROUPS)
+    return _longtable(
+        caption=(
+            f"The field registry: {n_flat} flat header fields and {n_groups} repeating "
+            "groups, aligned to EN~16931 business terms."
+        ),
+        label="tab:field-registry",
+        colspec="llll",
+        header=["Field", "BT", "German label (EN~16931 term)", "Type"],
+        rows=rows,
+        note=(
+            "Generated directly from the registry in "
+            r"\texttt{src/horus/eval/ground\_truth.py}, the single structure that drives "
+            "the structurer's field specification, the scorer and the reference "
+            "extractor, so this listing cannot drift from the code. The German label is "
+            "the canonical EN~16931 term, which is not always the wording a real page "
+            "prints; corpus-measured printed labels are tracked separately "
+            r"(\S\ref{sec:validity-specification}). Types: \emph{money} and "
+            r"\emph{rate} are decimal-normalised, \emph{date} is ISO-normalised, "
+            r"\emph{code} is vocabulary-mapped and \emph{string} is "
+            "whitespace-normalised, symmetrically on both reference and prediction."
+        ),
+        sources=["src/horus/eval/ground_truth.py (FIELDS, REPEATING_GROUPS)"],
+    )
+
+
+def _datasheet_tables(text: str) -> dict[str, list[list[str]]]:
+    """Parse the pipe tables out of the committed datasheet markdown, keyed by section."""
+    sections: dict[str, list[list[str]]] = {}
+    current: str | None = None
+    for line in text.splitlines():
+        if line.startswith("## "):
+            current = line[3:].strip()
+            continue
+        if current is None or not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if all(set(c) <= {"-", " ", ":"} for c in cells):
+            continue
+        sections.setdefault(current, []).append(cells)
+    return sections
+
+
+def _dequote(cell: str) -> str:
+    return cell.strip("`")
+
+
+def build_heldout_datasheet_tables() -> tuple[str, str, str]:
+    """Composition, field-presence and freeze tables from the committed datasheet.
+
+    The datasheet (`docs/architecture/belege-heldout-datasheet.md`) is itself generated
+    by `scripts/heldout_manifest.py datasheet` from the private corpus and is the
+    sanitised public record: counts, presence rates and hashes only. This function is a
+    format conversion, not a re-derivation, so the appendix and the datasheet cannot
+    disagree.
+    """
+    text = DATASHEET_MD.read_text(encoding="utf-8")
+    sections = _datasheet_tables(text)
+
+    composition_rows = [
+        [_tex_escape(axis), _tex_escape(_dequote(value)), _tex_escape(count)]
+        for axis, value, count in sections["Composition"][1:]
+    ]
+    composition = _table(
+        caption="Held-out corpus composition (sanitised datasheet extract).",
+        label="tab:heldout-composition",
+        colspec="lll",
+        header=["Axis", "Value", "Count"],
+        rows=composition_rows,
+        note=(
+            "Converted verbatim from the committed sanitised datasheet, which is "
+            "generated from the private corpus and publishes counts only --- no "
+            "filenames, no field values, no invoice content. The channel named "
+            r"\texttt{iphone-pdf-scan} is scanning-app output: camera captures deskewed "
+            "and contrast-enhanced into a PDF without a text layer "
+            r"(\S\ref{sec:method-data})."
+        ),
+        sources=[str(DATASHEET_MD)],
+    )
+
+    presence_header = sections["Field-presence rate (signed-off GT)"][0]
+    assert presence_header[0].lower() == "field", presence_header
+    presence_rows = [
+        [r"\texttt{" + _tex_escape(_dequote(field)) + "}", present, rate.replace("%", r"\,\%")]
+        for field, present, rate in sections["Field-presence rate (signed-off GT)"][1:]
+    ]
+    presence = _longtable(
+        caption=(
+            "Per-field presence in the signed-off held-out answer key: on how many of "
+            "the 39 invoices each registry field is present at all."
+        ),
+        label="tab:heldout-presence",
+        colspec="lrr",
+        header=["Field", "Present", "Rate"],
+        rows=presence_rows,
+        note=(
+            "Presence, not accuracy: a field absent from an invoice is an honest null in "
+            "the answer key (\\S\\ref{sec:method-heldout-gt}), and per-field "
+            "\\emph{scores} on so small a corpus would carry denominators this thesis "
+            "does not consider reportable. Converted verbatim from the committed "
+            "sanitised datasheet."
+        ),
+        sources=[str(DATASHEET_MD)],
+    )
+
+    freeze_section = next(k for k in sections if k.startswith("Freeze table"))
+    freeze_rows = [
+        [
+            r"\texttt{" + _tex_escape(_dequote(doc_id)) + "}",
+            pages,
+            r"\texttt{\scriptsize " + _tex_escape(_dequote(sha)) + "}",
+            verified,
+        ]
+        for doc_id, pages, sha, verified in sections[freeze_section][1:]
+    ]
+    freeze = _longtable(
+        caption=(
+            "Freeze table: SHA-256 of every held-out source PDF at seal time. Any "
+            "change to a document changes its hash; filenames are withheld as private."
+        ),
+        label="tab:heldout-freeze",
+        colspec="lrll",
+        header=["Corpus id", "Pages", "SHA-256 (source PDF)", "Verified"],
+        rows=freeze_rows,
+        note=(
+            "The hash commits the evaluation to a fixed set of documents without "
+            "disclosing them: a reader with access to the private corpus can verify "
+            "integrity, and nobody else learns anything an aggregate does not already "
+            "say. Converted verbatim from the committed sanitised datasheet."
+        ),
+        sources=[str(DATASHEET_MD)],
+        font_size=r"\scriptsize",
+    )
+    return composition, presence, freeze
 
 
 # --------------------------------------------------------------------------- figures
@@ -1391,6 +1617,12 @@ def main(argv: list[str]) -> int:
     else:
         _write(TABLES_DIR / "heldout-headline.tex", build_heldout_headline(heldout))
         _write(TABLES_DIR / "heldout-by-channel.tex", build_heldout_by_channel(heldout))
+
+    _write(TABLES_DIR / "field-registry.tex", build_field_registry())
+    composition, presence, freeze = build_heldout_datasheet_tables()
+    _write(TABLES_DIR / "heldout-composition.tex", composition)
+    _write(TABLES_DIR / "heldout-presence.tex", presence)
+    _write(TABLES_DIR / "heldout-freeze.tex", freeze)
 
     if args.tables_only:
         return 0

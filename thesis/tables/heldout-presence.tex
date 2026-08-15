@@ -1,0 +1,59 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): docs/architecture/belege-heldout-datasheet.md
+
+\begingroup\small
+\begin{longtable}{lrr}
+  \caption{Per-field presence in the signed-off held-out answer key: on how many of the 39 invoices each registry field is present at all.}\label{tab:heldout-presence}\\
+    \toprule
+    Field & Present & Rate \\
+    \midrule
+  \endfirsthead
+    \toprule
+    Field & Present & Rate \\
+    \midrule
+  \endhead
+    \bottomrule
+  \endfoot
+    \texttt{invoice\_number} & 37/39 & 95\,\% \\
+    \texttt{issue\_date} & 38/39 & 97\,\% \\
+    \texttt{invoice\_currency\_code} & 39/39 & 100\,\% \\
+    \texttt{delivery\_date} & 21/39 & 54\,\% \\
+    \texttt{seller\_name} & 39/39 & 100\,\% \\
+    \texttt{seller\_vat\_id} & 32/39 & 82\,\% \\
+    \texttt{seller\_tax\_id} & 11/39 & 28\,\% \\
+    \texttt{seller\_gln} & 1/39 & 3\,\% \\
+    \texttt{buyer\_name} & 32/39 & 82\,\% \\
+    \texttt{buyer\_reference} & 15/39 & 38\,\% \\
+    \texttt{buyer\_vat\_id} & 0/39 & 0\,\% \\
+    \texttt{line\_total\_amount} & 36/39 & 92\,\% \\
+    \texttt{tax\_basis\_total\_amount} & 36/39 & 92\,\% \\
+    \texttt{tax\_total\_amount} & 37/39 & 95\,\% \\
+    \texttt{grand\_total\_amount} & 39/39 & 100\,\% \\
+    \texttt{due\_payable\_amount} & 39/39 & 100\,\% \\
+    \texttt{tax\_rate} & 36/39 & 92\,\% \\
+    \texttt{seller\_address} & 38/39 & 97\,\% \\
+    \texttt{buyer\_address} & 33/39 & 85\,\% \\
+    \texttt{document\_type} & 39/39 & 100\,\% \\
+    \texttt{buyer\_order\_reference} & 19/39 & 49\,\% \\
+    \texttt{billing\_period\_start} & 6/39 & 15\,\% \\
+    \texttt{billing\_period\_end} & 7/39 & 18\,\% \\
+    \texttt{payment\_due\_date} & 9/39 & 23\,\% \\
+    \texttt{payment\_means\_code} & 1/39 & 3\,\% \\
+    \texttt{payment\_means\_text} & 18/39 & 46\,\% \\
+    \texttt{seller\_iban} & 13/39 & 33\,\% \\
+    \texttt{seller\_bic} & 12/39 & 31\,\% \\
+    \texttt{seller\_account\_name} & 2/39 & 5\,\% \\
+    \texttt{payment\_reference} & 4/39 & 10\,\% \\
+    \texttt{prepaid\_amount} & 4/39 & 10\,\% \\
+    \texttt{allowance\_total\_amount} & 3/39 & 8\,\% \\
+    \texttt{charge\_total\_amount} & 2/39 & 5\,\% \\
+    \texttt{rounding\_amount} & 0/39 & 0\,\% \\
+\end{longtable}
+\endgroup
+\begin{minipage}{0.95\linewidth}\footnotesize
+\textbf{Protocol note.} Presence, not accuracy: a field absent from an invoice is an honest null in the answer key (\S\ref{sec:method-heldout-gt}), and per-field \emph{scores} on so small a corpus would carry denominators this thesis does not consider reportable. Converted verbatim from the committed sanitised datasheet.
+\end{minipage}

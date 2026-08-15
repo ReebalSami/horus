@@ -98,6 +98,7 @@ once per epoch --- rather than implemented by hand, so the executed rule cannot 
 registered one, and the sealed validation set is never passed to the trainer at all.
 
 \subsection{Verification}
+\label{sec:impl-verification}
 
 The project carries a test suite of 1{,}265 tests. Its composition reflects where the risk
 actually sits: the two largest files cover the scoring rules and the typed schema with its
@@ -118,6 +119,7 @@ response to a specific incident --- a warm cache silently masked an import error
 configuration change --- and is documented as such rather than being a general caution.
 
 \subsection{The operational interface}
+\label{sec:impl-assets}
 
 Every operation in the project is a named build target: install, test, lint, type-check,
 generate the synthetic corpus and validate it against an independent implementation, run a

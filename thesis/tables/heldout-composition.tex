@@ -1,0 +1,28 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): docs/architecture/belege-heldout-datasheet.md
+
+\begin{table}[htbp]
+  \centering
+  \caption{Held-out corpus composition (sanitised datasheet extract).}
+  \label{tab:heldout-composition}
+  \begin{tabular}{lll}
+    \toprule
+    Axis & Value & Count \\
+    \midrule
+    Language & german & 28 \\
+    Language & english & 11 \\
+    Channel & email & 29 \\
+    Channel & iphone-pdf-scan & 10 \\
+    Pages & per-invoice & min 1 / max 10 / total 58 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Converted verbatim from the committed sanitised datasheet, which is generated from the private corpus and publishes counts only --- no filenames, no field values, no invoice content. The channel named \texttt{iphone-pdf-scan} is scanning-app output: camera captures deskewed and contrast-enhanced into a PDF without a text layer (\S\ref{sec:method-data}).
+  \end{minipage}
+\end{table}
