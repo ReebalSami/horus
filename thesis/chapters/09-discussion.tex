@@ -213,7 +213,8 @@ The premise of this work is that the document never leaves the firm
 
 \textbf{Inference is comfortable; training is not.} The full pipeline runs on a laptop with
 16\,\ac{GB} of unified memory. The adaptation experiments did not, and were moved to rented
-hardware. A firm can therefore \emph{run} this system on hardware it already owns, but cannot
+hardware together with the precision-matched evaluations and native-resolution reading
+passes recorded in \S\ref{sec:method-repro}. A firm can therefore \emph{run} this system on hardware it already owns, but cannot
 adapt it to its own document mix on that hardware --- and adapting on rented hardware means the
 training documents leave the premises, which reintroduces the problem the design exists to
 avoid. Since the adaptation produced no benefit here, that trade did not have to be made; had it
@@ -223,13 +224,18 @@ produced one, the confidentiality argument would have had to be re-examined.
 the difference between 4-bit and full precision on the same corpus. The deployable configuration
 is the weaker one, and that gap is part of the price of the local constraint.
 
-\textbf{The measurement itself broke the premise, once, deliberately.} Two of the three channels
-used to build the held-out answer key are cloud services, so the content of those 39 invoices
-left local hardware (\S\ref{sec:method-heldout-gt}). The distinction relied on --- that a
+\textbf{The measurement itself broke the premise, deliberately and on record.} Two of the
+three channels used to build the held-out answer key are cloud services, so the content of
+those 39 invoices left local hardware (\S\ref{sec:method-heldout-gt}); and the
+native-resolution pass that transcribed them ran on a rented accelerator
+(\S\ref{sec:method-repro}) --- a machine under the author's control rather than a third-party
+service, which is a different privacy class, but off-premises nonetheless. The distinction
+relied on --- that a
 measuring instrument is not part of the delivered system --- is sound as far as it goes: nothing
 on the inference path makes a network call. But it is worth being clear that a practitioner
-bound by professional secrecy could not have built this answer key on their own client
-documents. The evaluation methodology is therefore not itself deployable inside the constraint it
+bound by professional secrecy could not have built this answer key, or reproduced this
+measurement, on their own client documents within the constraint. The evaluation methodology
+is therefore not itself deployable inside the constraint it
 evaluates, and closing that gap --- an adjudication process that runs entirely locally --- is
 listed as future work.
 

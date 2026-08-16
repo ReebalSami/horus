@@ -48,11 +48,19 @@ lives BETWEEN chapters.
    (Qwen3-VL-4B-Instruct, gemma-4-E4B-it, granite-docling-258M,
    olmOCR-2-7B-1025). Build a term table with per-chapter occurrences; flag
    every drift.
-4. **Number consistency.** Every number quoted in ≥2 places is identical
-   everywhere: 0.88 / 0.95 / 0.85, the eleven-point channel gap, >0.97 oracle
-   ceiling, 39 invoices, 963 paired cells, b=16/c=13/p=0.7111, four-in-five
-   omissions, 1265 tests, corpus sizes, parameter counts. Grep the .tex sources
-   for each; any mismatch is grade-blocking.
+4. **Number consistency — including venue and precision metadata.** Every
+   number quoted in ≥2 places is identical everywhere: 0.88 / 0.95 / 0.85, the
+   eleven-point channel gap, >0.97 oracle ceiling, 39 invoices, 963 paired
+   cells, b=16/c=13/p=0.7111, four-in-five omissions, 1265 tests, corpus sizes,
+   parameter counts. Grep the .tex sources for each; any mismatch is
+   grade-blocking. Then trace each headline number's *provenance metadata* —
+   hardware venue (local M1 vs rented CUDA), numeric precision (4-bit vs bf16),
+   input resolution — from the eval artifact/runbook to every prose claim about
+   where and how things ran. Precedent: "all inference runs locally" survived
+   two review passes while `scripts/gpu/README.md` §5B and
+   `tab:sealed-val-arms`'s own "bf16 / CUDA" labels said otherwise (2026-08-16
+   Addendum 3). Prose absolutisms ("all", "entirely", "only X moved") about
+   venue are checked against the runbooks, not against other prose.
 5. **Cross-reference intent.** Every \ref/\S\ref/Chapter~\ref resolves AND
    points at the section that actually carries the referenced argument (the
    2026-08-16 pass caught sec:lim-scope→sec:unevaluated; assume more exist).

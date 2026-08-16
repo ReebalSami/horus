@@ -513,20 +513,29 @@ memory.
 \parencite{mlflow}, which is what makes a later re-score attributable to a specific earlier run
 rather than to a remembered one.
 
-\textbf{Hardware.} All inference reported in this thesis runs on a single Apple M1~Pro laptop
-with 16\,\ac{GB} of unified memory, using the platform's own machine-learning framework
-\parencite{mlxvlm} with 4-bit quantised weights. That envelope is not incidental --- it is the
-deployment claim. A system that requires a data-centre accelerator does not solve the problem
-this thesis addresses, because the firm that cannot send documents to a cloud service usually
-also cannot buy a rack.
+\textbf{Hardware.} The deployment envelope is a single Apple M1~Pro laptop with 16\,\ac{GB}
+of unified memory, running the platform's own machine-learning framework \parencite{mlxvlm}
+with 4-bit quantised weights. That envelope is not incidental --- it is the deployment claim.
+A system that requires a data-centre accelerator does not solve the problem this thesis
+addresses, because the firm that cannot send documents to a cloud service usually also cannot
+buy a rack. The delivered pipeline and the comparative studies that shaped its architecture
+run inside that envelope.
 
-One exception is recorded explicitly. The adaptation experiments exceeded the local memory
-envelope: a path-validation run on four examples ran long enough to be abandoned, against a
-real training budget several hundred times larger, and the local training code already carried
-three separate workarounds for platform ceilings. Training was therefore moved to a rented
-\ac{CUDA} accelerator in full precision. This creates a precision mismatch between the trained
-adapter and the locally-measured baseline, and that mismatch turned out to be large enough to
-invert a conclusion --- which is why re-measuring the baseline in the adapter's own precision
-was made a precondition of the study, not an afterthought.
-Table~\ref{tab:precision-confound} reports what would have been concluded without it.
-Delivered inference remains entirely local; only training moved.
+Where a measurement would have been confounded by the envelope, the measurement moved off it,
+and each move is recorded. Three classes of pass ran on a rented \ac{CUDA} accelerator in
+full precision. First, adapter training, which exceeded local memory outright: a
+path-validation run on four examples ran long enough to be abandoned, against a real training
+budget several hundred times larger, and the local training code already carried three
+separate workarounds for platform ceilings. Second, the adaptation evaluations and their
+baselines, because a full-precision adapter compared against a 4-bit baseline measures the
+adapter and a precision change simultaneously --- a mismatch that turned out to be large
+enough to invert a conclusion, which is why re-measuring the baseline in the adapter's own
+precision was made a precondition of the study, not an afterthought
+(Table~\ref{tab:precision-confound} reports what would have been concluded without it).
+Third, the final reading passes --- the full-precision reader comparison and the
+transcription of the held-out corpus --- ran there at native resolution, because on the
+laptop the memory ceiling forces a pixel cap that reads an A4 page at roughly half
+resolution, and a reduced-resolution reading of the real invoices would have confounded
+\emph{real invoices are harder} with \emph{real invoices were read at half resolution}.
+Delivered inference remains entirely local; the cost of 4-bit quantisation on the structuring
+stage is measured rather than assumed (Table~\ref{tab:sealed-val-arms}).

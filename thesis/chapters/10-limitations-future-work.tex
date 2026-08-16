@@ -100,16 +100,20 @@ emission, not degraded placement --- is consistent with published findings, and
 \subsection{Hardware Envelope}
 \label{sec:lim-hardware}
 
-All inference was developed and measured inside a single laptop with 16\,\ac{GB} of unified
-memory. That is a narrower claim than \emph{runs locally}: the privacy premise is on-premises
-processing, which would also permit a workstation with a discrete accelerator, and such a machine
-would likely support a larger reading model than the one selected here.
+The system was developed inside, and is delivered for, a single laptop with 16\,\ac{GB} of
+unified memory. That is a narrower claim than \emph{runs locally}: the privacy premise is
+on-premises processing, which would also permit a workstation with a discrete accelerator, and
+such a machine would likely support a larger reading model than the one selected here.
 
-The envelope bound training, not inference. The adaptation runs exceeded it and were moved
-to a rented accelerator (\S\ref{sec:method-repro}), which means the local-only property holds for
-the delivered pipeline but not for the process that produced its adapters. Since those adapters
-are not delivered, the delivered system remains fully local --- but a firm wishing to adapt the
-pipeline to its own documents on its own hardware could not do so within this envelope.
+The envelope bound training and the heavier measurement passes, not delivered inference. The
+adaptation runs exceeded it and were moved to a rented accelerator, together with the
+precision-matched adaptation evaluations and the native-resolution reading passes
+(\S\ref{sec:method-repro}); the local-only property therefore holds for the delivered
+pipeline, but not for the process that produced its adapters or its final measurement record.
+Since neither the adapters nor the measurement harness is part of the delivered system, the
+delivered system remains fully local --- but a firm wishing to adapt the pipeline to its own
+documents, or to reproduce the full measurement, on its own hardware could not do so within
+this envelope.
 
 \subsection{Language, Document Class and Jurisdiction}
 \label{sec:lim-scope}
