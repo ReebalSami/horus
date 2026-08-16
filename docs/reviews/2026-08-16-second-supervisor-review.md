@@ -126,3 +126,23 @@ Current: `style=alphabetic` (`header.tex:205`), 102 `\cite` calls, rendering `[B
 ## Addendum — fixes applied (same pass, 2026-08-16)
 
 All eight prioritized actions of §5 were applied immediately after this review was written: citation style switched to `authoryear` with all 102 citations converted contextually (`\parencite`/`\textcite`); seven figures authored and wired (`figures/vlm-anatomy.tex`, `cohort-comparison.tex`, `lora-update.tex`, `corpus-map.tex`, `gt-adjudication.tex`, `defect-chronology.tex`, `app-surfaces.tex`) — every chapter 2–8 now carries at least one visual element; ch.11 cross-reference corrected to `sec:unevaluated`; deduplication trim ("rather than" 89→42, "load-bearing" 4→1, vanishing-hypotheses sentence 3→1, honest-null re-derivation in ch.7 replaced by a reference); ch.1 German parentheticals consolidated at the §203 StGB sentence; AI-usage appendix sharpened to the FH disclosure template with the author-responsibility closing statement; ch.4 grammar fix. Verified: clean rebuild at 128 pp (body pp. 1–103 = 103 Textseiten, within the 80–120 window), zero unresolved references and citations, worst overfull box 3.2 pt (pre-existing), figure pages and bibliography visually inspected in the rendered PDF, `(Author et al., Year)` rendering confirmed on body pages.
+
+---
+
+## Addendum 2 — external abstract review adjudicated + applied (2026-08-16, same day)
+
+The author obtained an independent review of the rendered abstract (Claude Opus, web). Adjudication against the manuscript, then application:
+
+| # | External claim | Verdict | Action taken |
+|---|---|---|---|
+| 1 | System never named | **Confirmed** — "HORUS" appeared nowhere in the rendered thesis (only a `.tex` comment in `main.tex:2`) | Author decision: named in the abstract, ch.1 contribution bullet (with backronym "Hybrid OCR-free Reading and Understanding System"), ch.8 opening; subtitle `\untertitel{The HORUS System}` added. **Formality flag**: confirm subtitle against the registered title with the exam office — the header's own note (Leitfaden §2: final title may differ from the working title) suggests this is permitted, but verify. |
+| 2 | Acronym expansions choke the abstract | **Confirmed, and exposed a deeper defect**: no `\acresetall` existed, so the abstract consumed every first-use expansion and the body never expanded anything | Abstract now self-contained (`\acs` short forms; only ZUGFeRD expanded via `\acf`); `\acresetall` added after the abstract in `main.tex`; body first-use expansions verified in the rebuilt PDF (e.g., UStG/UStDV expand in ch.1) |
+| 3 | No models, no hardware named | **Confirmed** | Abstract now names Qwen3-VL-4B-Instruct (reader), gemma-4-E4B-it (structurer), "16 GB Apple-silicon laptop" — matching ch.5 §hardware exactly |
+| 4 | 2×2 unreadable without factors | **Confirmed** | Factors named inline: "(training input distribution crossed with evaluation condition)" |
+| 5 | Ends on a non-result; significance sentence missing | **Confirmed structurally; proposed wording rejected** — "rather than silent wrong values" overclaims (P=0.95 still means 5% wrong values), and "Kanzlei" would reintroduce decorative German | Scope disclosure moved before the methodological paragraph; new hedged closing sentence: omissions predominate → failures surface predominantly as blank fields → compatible with human-in-the-loop verification |
+| 6 | ~370 words, target ~300 | **Overstated** (was ~330 rendered) and the target conflicts with adding #1/#3/#4 facts | Trimmed filler; landed at ~360 rendered words on one page — the added facts cost words the cuts don't fully recover; accepted deliberately |
+| — | "Verify the ZUGFeRD expansion against FeRD naming" | **Non-finding** — `acronyms.tex:57` matches the official FeRD expansion exactly | None needed |
+
+Lesson recorded: external LLM review diagnosed accurately (it clearly read the rendered PDF — it quoted the F1 expansion verbatim) but two of its prescriptions would have introduced new defects if pasted unexamined. Trust the diagnoses; re-derive the prescriptions.
+
+Also authored this pass: reusable per-chapter and whole-thesis review prompts at `docs/prompts/reviews/` (`chapter-review-prompt.md` with 13 chapter blocks, `integration-review-prompt.md` with 13 integration dimensions), for fresh-session reviews of each chapter; `docs/structure.md` updated accordingly. Verified after all changes: clean rebuild at 128 pp, zero unresolved references/citations, worst overfull 3.22 pt (pre-existing), title page + abstract page visually inspected.
