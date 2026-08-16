@@ -199,12 +199,22 @@
     belowskip=0pt
 }
 
-% --- Bibliography (biblatex + biber; alphabetic per FH template default) ---
+% --- Bibliography (biblatex + biber) ---
+%% authoryear per the first examiner's established preference: both prior graded
+%% works under the same supervisor (WS25 seminar, SS25 deep-learning project) use
+%% this exact option set, rendering (Author et al. Year) via \parencite/\textcite.
+%% The Richtlinie prescribes the short-reference method and defers the concrete
+%% form to the supervisor (Richtlinie 3.0, "Zitierweise: Kurzbelegmethode").
+%% Switched from the template default `alphabetic` in the 2026-08-16 review pass.
 \usepackage[
     backend=biber,
-    style=alphabetic,
+    style=authoryear,
     natbib=true,
-    sorting=nty
+    sorting=nty,
+    maxbibnames=99,
+    maxcitenames=2,
+    uniquename=false,
+    uniquelist=false
 ]{biblatex}
 \addbibresource{references.bib}
 % Long archive/dataset URLs must be breakable anywhere, or they protrude into

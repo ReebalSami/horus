@@ -1,0 +1,90 @@
+%% The four defect classes of Chapter 6 (plus the self-inflicted fix and the
+%% near-miss), arranged as the audit sequence they were found in, each pointing at
+%% the evidence that carries its effect. Deliberately qualitative: every magnitude
+%% lives in a generated table, and this figure only routes the reader to them.
+%%
+%% Hand-authored TikZ (not generated): it depicts the structure of the chapter's
+%% argument -- found by opening documents, fixed under the four-rule discipline,
+%% measured on frozen generations -- not a measurement itself.
+%%
+%% Input from a chapter with:  \input{figures/defect-chronology.tex}
+
+\begin{tikzpicture}[
+    font=\small,
+    class/.style={
+      draw=horusaccent, line width=0.8pt, rounded corners=2pt,
+      fill=horuswash, text width=5.15cm, align=left, inner sep=5pt,
+    },
+    selfclass/.style={
+      draw=horuswarn, line width=0.8pt, rounded corners=2pt,
+      fill=white, text width=5.15cm, align=left, inner sep=5pt,
+    },
+    spine/.style={line width=1.1pt, draw=horusmuted},
+    tick/.style={fill=horusaccent, circle, inner sep=1.6pt},
+    lbl/.style={font=\scriptsize, text=horusink},
+  ]
+
+  %% Vertical spine: the audit sequence. Two columns of class boxes alternate sides
+  %% so six boxes fit one column width.
+  \draw[spine] (0,0.6) -- (0,-10.9);
+  \node[lbl, anchor=south] at (0,0.7) {\textbf{found by opening individual documents
+    --- never visible in an aggregate}};
+
+  \node[tick] at (0,-0.6) {};
+  \node[class, anchor=east] (c1) at (-0.45,-0.9) {%
+    \textbf{Class 1 --- reference data wrong or ill-posed}\\[1pt]
+    \scriptsize omitted optional totals, undefined document-level scalars, incomplete
+    code maps, unlocatable answer-key values\\[2pt]
+    \color{horuswarn}\itshape effect: Table~\ref{tab:heldout-headline} protocol note%
+  };
+
+  \node[tick] at (0,-2.4) {};
+  \node[class, anchor=west] (c2) at (0.45,-2.7) {%
+    \textbf{Class 2 --- comparison rule punished correct answers}\\[1pt]
+    \scriptsize labels on values, controlled vocabularies the page never prints,
+    structural prefixes, sign conventions\\[2pt]
+    \color{horuswarn}\itshape effect: Table~\ref{tab:reader-lineage}, rows 2 vs.\ 4%
+  };
+
+  \node[tick] at (0,-4.2) {};
+  \node[class, anchor=east] (c3) at (-0.45,-4.5) {%
+    \textbf{Class 3 --- the apparatus itself was broken}\\[1pt]
+    \scriptsize contaminated per-field diagnostic, unfaithful perfect-text renderer,
+    blank-page-blind reading proxy\\[2pt]
+    \color{horuswarn}\itshape effect: Table~\ref{tab:oracle-renderer-correction},
+    Figure~\ref{fig:ruler-correction}%
+  };
+
+  \node[tick] at (0,-6.0) {};
+  \node[class, anchor=west] (c4) at (0.45,-6.3) {%
+    \textbf{Class 4 --- specification not grounded in the data}\\[1pt]
+    \scriptsize 34 of 63 label variants never occur in the corpus; four reference
+    values leaked as ``examples''\\[2pt]
+    \color{horuswarn}\itshape now gated by a test and a corpus-backed audit%
+  };
+
+  \node[tick, fill=horuswarn] at (0,-7.8) {};
+  \node[selfclass, anchor=east] (c5) at (-0.45,-8.1) {%
+    \textbf{A correction that was itself a defect}\\[1pt]
+    \scriptsize the sign-convention fix was applied one-sidedly and scored a correct
+    negative answer as a miss --- the symmetry rule exists because this happened\\[2pt]
+    \color{horuswarn}\itshape \S\ref{sec:validity-selfinflicted}%
+  };
+
+  \node[tick, fill=horuswarn] at (0,-9.6) {};
+  \node[selfclass, anchor=west] (c6) at (0.45,-9.9) {%
+    \textbf{The near-miss --- precision confound}\\[1pt]
+    \scriptsize full-precision adapter against a 4-bit baseline: two correct numbers,
+    one invalid comparison, caught only by a pre-registered rule\\[2pt]
+    \color{horuswarn}\itshape effect: Table~\ref{tab:precision-confound}%
+  };
+
+  \node[
+    draw=horusmuted, line width=0.5pt, rounded corners=2pt, dotted,
+    fill=white, text=horusink, font=\scriptsize, align=center,
+    text width=9.6cm, inner sep=4pt, anchor=north,
+  ] at (0,-11.3) {Every correction was measured on \textbf{frozen generations} ---
+    no model ran, so each movement is attributable to the instrument alone --- under
+    the four-rule discipline of \S\ref{sec:validity-discipline}.};
+
+\end{tikzpicture}

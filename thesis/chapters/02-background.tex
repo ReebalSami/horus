@@ -13,36 +13,61 @@ Chapter~\ref{ch:related-work}.
 
 \subsection{How a vision-language model reads a page}
 
-Every model in this thesis is a transformer \cite{vaswani2017attention}: a sequence
+Every model in this thesis is a transformer \parencite{vaswani2017attention}: a sequence
 model whose attention layers let each token condition on every other. Vision
 transformers extend the same machinery to images by slicing them into fixed-size
 patches, embedding each patch as a token, and processing the resulting sequence exactly
-like text \cite{dosovitskiy2021vit}. A \ac{VLM} combines the two: a vision encoder
+like text \parencite{dosovitskiy2021vit}. A \ac{VLM} combines the two: a vision encoder
 turns the page image into a sequence of visual embeddings, a small projection maps them
 into the language model's embedding space, and an autoregressive decoder then generates
-text conditioned on both the visual tokens and a textual prompt. Nothing in that
+text conditioned on both the visual tokens and a textual prompt. Figure~\ref{fig:vlm-anatomy}
+shows the anatomy. Nothing in that
 architecture knows what an invoice is. Everything this thesis measures --- reading
 quality, structuring quality, abstention behaviour --- is behaviour learned from
 training data, elicited through prompts, and constrained after the fact by deterministic
 validation (\S\ref{sec:design-validation}).
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/vlm-anatomy.tex}
+  \caption[How a vision-language model reads a page]{How a vision-language model reads a
+  page: the image becomes a sequence of patch tokens, a vision encoder contextualises
+  them, a projection maps them into the language model's embedding space, and an
+  autoregressive decoder generates text conditioned on the visual tokens and the prompt.
+  No component is invoice-specific.}
+  \label{fig:vlm-anatomy}
+\end{figure}
 
 The classical alternative is an \ac{OCR} pipeline: detect text regions, recognise the
 characters in each, then reassemble. Its known weakness is that recognition and layout
 reconstruction are separate problems, and errors in the second silently corrupt the
 first's output ordering. Document understanding research therefore moved first to models
 that consume \ac{OCR} output together with layout coordinates
-\cite{huang2022layoutlmv3}, and then to \emph{\ac{OCR}-free} models that map pixels to
-output directly, with Donut as the canonical demonstration \cite{kim2022donut}. The
+\parencite{huang2022layoutlmv3}, and then to \emph{\ac{OCR}-free} models that map pixels to
+output directly, with Donut as the canonical demonstration \parencite{kim2022donut}. The
 models this thesis surveys are \ac{OCR}-free in that sense: no external text detector or
 recogniser runs anywhere in the pipeline.
 
-Document-specialised \acp{VLM} differ in what they emit. granite-docling emits DocTags,
-a compact structural markup designed for downstream conversion \cite{granitedocling,
-docling2025}; olmOCR-2 emits naturally ordered plain text optimised for faithful
-transcription \cite{olmocr2}; general-purpose models such as Qwen3-VL emit whatever the
-prompt asks, including \ac{JSON} \cite{qwen3vl}. This thesis's pipeline deliberately
+Document-specialised \acp{VLM} share that anatomy and differ in scale, in specialisation
+and in what they emit --- Figure~\ref{fig:cohort-comparison} contrasts the three families
+this thesis draws on. granite-docling, a 258-million-parameter model built on the Idefics3
+architecture, emits DocTags,
+a compact structural markup designed for downstream conversion \parencite{granitedocling,
+docling2025}; olmOCR-2, a transcription-specialised fine-tune of the general-purpose
+Qwen2.5-VL-7B, emits naturally ordered plain text optimised for faithful
+transcription \parencite{olmocr2}; general-purpose models such as Qwen3-VL emit whatever the
+prompt asks, including \ac{JSON} \parencite{qwen3vl}. This thesis's pipeline deliberately
 asks its reading model for plain text and its structuring model for \ac{JSON}, keeping
 the two output disciplines apart; \S\ref{sec:design-two-stage} gives the reasons.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/cohort-comparison.tex}
+  \caption[Three model families, one anatomy]{Three model families relevant to this
+  thesis, contrasted by base lineage, scale, specialisation and output discipline.
+  Architectural facts follow the published model cards \parencite{granitedocling,olmocr2,qwen3vl}.}
+  \label{fig:cohort-comparison}
+\end{figure}
 
 \subsection{Running such models locally}
 \label{sec:bg-local}
@@ -58,15 +83,27 @@ of the 16-bit (\ac{bf16}) representation they were trained in. Quantisation is n
 free: Chapter~\ref{ch:results} measures the cost directly, and
 Chapter~\ref{ch:measurement-validity} shows how comparing numbers across precision
 regimes without re-measuring the baseline very nearly inverted a conclusion. Local
-execution on Apple hardware uses the \ac{MLX} framework and its \ac{VLM} runtime
-\cite{mlxvlm}.
+execution on Apple hardware uses \ac{MLX} and its \ac{VLM} runtime
+\parencite{mlxvlm}.
 
 \textbf{Parameter-efficient adaptation} changes a model without retraining it. \ac{LoRA}
 freezes the base weights $W$ and trains a low-rank additive update $\Delta W = BA$,
 where $B$ and $A$ have inner rank far smaller than the weight matrix's dimensions
-\cite{hu2021lora}. Only $A$ and $B$ are trained and stored, which is what makes
-adaptation affordable on rented hardware and distributable as a small artefact. What
-such an update can and cannot teach a model is an empirical question with a growing
+\parencite{hu2021lora}, as Figure~\ref{fig:lora-update} sketches. Only $A$ and $B$ are
+trained and stored, which is what makes
+adaptation affordable on rented hardware and distributable as a small artefact.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/lora-update.tex}
+  \caption[Low-rank adaptation]{Low-rank adaptation \parencite{hu2021lora}: the pretrained
+  weights $W$ stay frozen while a low-rank additive update $BA$ is trained beside them;
+  the two paths sum at the output. The thinness of $A$ and $B$ is the method --- the
+  update has rank at most $r$.}
+  \label{fig:lora-update}
+\end{figure}
+
+What such an update can and cannot teach a model is an empirical question with a growing
 literature (\S\ref{sec:rw-adaptation}), and this thesis's adaptation experiment
 (\S\ref{sec:results-adaptation}) is a data point in it.
 
@@ -84,22 +121,22 @@ every time. The measurement consequences of that choice are discussed in
 electronic invoice: an enumerated set of business terms --- \ac{BT}-numbered fields such
 as BT-1 (invoice number), BT-31 (seller \ac{VAT} identifier) and BT-112 (grand total
 including \ac{VAT}) --- with defined meanings, cardinalities and datatypes
-\cite{en16931}. The
+\parencite{en16931}. The
 standard deliberately separates \emph{what} an invoice says from \emph{how} it is
 serialised. Germany carries the model in two forms. \textbf{XRechnung} is the national
 pure-\ac{XML} profile for invoices to public-sector buyers, maintained by KoSIT
-\cite{xrechnung}: machine-first, with no visual page at all. \textbf{\ac{ZUGFeRD}}
+\parencite{xrechnung}: machine-first, with no visual page at all. \textbf{\ac{ZUGFeRD}}
 (technically aligned with the Franco-German Factur-X specification) is a \emph{hybrid}:
 a \ac{PDF}/A-3 file whose visible pages are an ordinary human-readable invoice and which
 embeds, inside the same file, a machine-readable \ac{XML} instance of the invoice in
-\ac{CII} syntax \cite{zugferdanhang}. \ac{ZUGFeRD} defines conformance profiles ---
+\ac{CII} syntax \parencite{zugferdanhang}. \ac{ZUGFeRD} defines conformance profiles ---
 MINIMUM, BASIC~WL, BASIC, EN~16931, EXTENDED --- that fix how much of the semantic model
 the embedded \ac{XML} must carry.
 
 Electronic invoicing is no longer optional in Germany: a phased statutory obligation for
 domestic \ac{B2B} invoices began in January~2025 with the duty to be able to receive
 structured electronic invoices, with issuance obligations following in stages
-\cite{ustg14}. The professions this thesis targets therefore sit in a transition period
+\parencite{ustg14}. The professions this thesis targets therefore sit in a transition period
 in which structured invoices, hybrid invoices and entirely unstructured paper or
 \ac{PDF} documents arrive side by side --- which is exactly the situation the
 held-out corpus of \S\ref{sec:method-data} samples.
@@ -109,10 +146,10 @@ held-out corpus of \S\ref{sec:method-data} samples.
 German law prescribes invoice content independently of any serialisation standard.
 \S~14 \ac{UStG} lists the mandatory particulars an invoice must carry --- the parties'
 identities, the supplier's tax or \ac{VAT} identifier, issue date, a sequential invoice
-number, the supply, the net amount per rate, the tax rate and amount \cite{ustg14} ---
+number, the supply, the net amount per rate, the tax rate and amount \parencite{ustg14} ---
 and \S~33 \ac{UStDV} relaxes those requirements for small-amount invoices up to
 250~Euro, which may lawfully omit the recipient's identity and the separate tax amount
-\cite{ustdv33}. Two consequences matter for this thesis. First, the field registry
+\parencite{ustdv33}. Two consequences matter for this thesis. First, the field registry
 (\S\ref{sec:method-schema}) is an alignment to \ac{EN}~16931 business terms rather than
 an invented schema, so every extracted field has a defined legal meaning. Second, field
 \emph{absence} is frequently lawful rather than defective --- a Kleinbetragsrechnung
@@ -144,14 +181,14 @@ accounts and periods. Building one from documents requires \emph{entity resoluti
 deciding that ``M\"uller GmbH'' on one invoice and ``Mueller GmbH \& Co.\ KG'' on
 another are, or are not, the same supplier. Resolution errors change the graph's
 structure, not just its labels, which is why graph construction has to be evaluated at
-both the edge level and the structure level \cite{cai2025}.
+both the edge level and the structure level \parencite{cai2025}.
 
 The retrieval side motivates why one would want such a graph at all.
 \ac{RAG} answers questions by retrieving text chunks and generating over them;
 graph-augmented retrieval (GraphRAG) retrieves over the extracted graph instead, which
 helps exactly the query shapes flat retrieval handles poorly --- aggregations
 (``total spend with this supplier this quarter'') and multi-hop connections ---
-at the cost of building and maintaining the graph \cite{edge2024graphrag,han2025}.
+at the cost of building and maintaining the graph \parencite{edge2024graphrag,han2025}.
 The intended Layer~2/3 design (\S\ref{sec:design-layer2},
 \S\ref{sec:design-layer3}) and the hypotheses registered for it
 (Chapter~\ref{ch:limitations-future-work}) rest on this vocabulary and on nothing more
@@ -187,9 +224,9 @@ positions it and Chapter~\ref{ch:measurement-validity} audits it.
 \subsection{Pre-registration and HARKing}
 
 A hypothesis stated after the data has been seen is not a test, it is a description.
-Kerr named the practice \ac{HARKing} --- hypothesising after the results are known ---
-and catalogued why it corrupts the evidentiary value of research even when every
-individual number is correct \cite{kerr1998}. The standard defence is to register
+\textcite{kerr1998} named the practice \ac{HARKing} --- hypothesising after the
+results are known --- and catalogued why it corrupts the evidentiary value of
+research even when every individual number is correct. The standard defence is to register
 hypotheses, decision rules and thresholds \emph{before} the corresponding data is
 collected, so that an outcome can be checked against a commitment instead of a memory.
 This thesis registers its hypothesis set and selection rules in advance
@@ -208,6 +245,6 @@ reported figure a function of model, prompt and input (\S\ref{sec:bg-local}).
 in isolation from model changes, the mechanism Chapter~\ref{ch:measurement-validity}
 depends on. \emph{Recorded provenance}: runs are tracked with their configuration,
 split hashes and environment, and the data itself is documented in datasheet form
-\cite{gebru2018datasheets} (Appendix~\ref{app:heldout}). None of this guarantees
+\parencite{gebru2018datasheets} (Appendix~\ref{app:heldout}). None of this guarantees
 correctness; it guarantees that an error, once suspected, can be located --- which
 Chapter~\ref{ch:measurement-validity} demonstrates repeatedly.

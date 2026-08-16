@@ -9,7 +9,7 @@ pipeline, produces the numbers, and lets a human look at what the system did.
 It is deliberately short on inventory and long on the few structural choices that had
 methodological consequences. Three of them recur: configuration is data, not code,
 every experiment is resumable and records its own provenance, and every research surface
-recomputes what it displays from the stored per-field outcomes rather than showing a summary
+recomputes what it displays from the stored per-field outcomes instead of showing a summary
 written earlier. Each of those choices is the reason some claim elsewhere in this thesis can
 be checked instead of taken on trust.
 
@@ -57,7 +57,7 @@ credentials stay out of the repository.
 \subsection{The orchestration harness}
 
 The evaluation sweeps in this thesis are cross-products --- several models against several
-dozen documents --- executed on a laptop. Three properties follow from that setting rather than
+dozen documents --- executed on a laptop. Three properties follow from that setting, not
 from architectural preference.
 
 \textbf{Every cell is an independent unit of work.} Each (model, document) pair is rasterised,
@@ -94,7 +94,7 @@ targets with the same code, including the consistency gate that discards any exa
 constructed target does not itself score perfectly against the reference. Only the code that
 performs the optimisation differs. The checkpoint-selection rule is likewise delegated to
 standard trainer configuration --- select on the lowest loss over the held-back slice, evaluate
-once per epoch --- rather than implemented by hand, so the executed rule cannot drift from the
+once per epoch --- instead of implemented by hand, so the executed rule cannot drift from the
 registered one, and the sealed validation set is never passed to the trainer at all.
 
 \subsection{Verification}
@@ -116,7 +116,7 @@ skips visible in the output, not hidden in configuration.
 Continuous integration runs on every push and every pull request: linting, formatting,
 type-checking with a cleared cache, and the full suite. The cleared type-check cache is a
 response to a specific incident --- a warm cache silently masked an import error after a
-configuration change --- and is documented as such rather than being a general caution.
+configuration change --- and is documented as such, not as a general caution.
 
 \subsection{The operational interface}
 \label{sec:impl-assets}
@@ -139,7 +139,19 @@ numbers into the manuscript enforceable instead of aspirational.
 A per-field evaluation produces a great deal of structure that a table cannot show: which
 document, which field, which value, against which page region, in which model's output. The
 prototype application exists to make that structure inspectable. It runs locally, reads from
-the same tracking store the sweeps write to, and has five surfaces.
+the same tracking store the sweeps write to, and has the five surfaces of
+Figure~\ref{fig:app-surfaces}.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/app-surfaces.tex}
+  \caption[The prototype's five surfaces]{The prototype's five surfaces around the local
+  tracking store. The three research surfaces recompute from stored per-field outcomes at
+  display time; the live-extraction surface runs the measured pipeline; the adjudication
+  surface is the only writer, and it writes to a separate location so the inputs to
+  adjudication stay independent of its outputs.}
+  \label{fig:app-surfaces}
+\end{figure}
 
 \textbf{Three read-only research surfaces.} An overview reports headline accuracy per
 approach; an invoice explorer shows one document for one approach --- the page image the model
@@ -148,7 +160,7 @@ against the reference; an approach comparison places the methods side by side on
 they share, with a per-field breakdown of where each one fails.
 
 One design rule governs all three: they recompute their figures from the stored per-field
-outcomes at display time rather than reading a summary number that was written earlier. The
+outcomes at display time instead of reading a summary number that was written earlier. The
 reason is the failure mode of Chapter~\ref{ch:measurement-validity} --- a stored summary
 computed under a superseded scoring rule looks exactly like a current one. A surface that
 recomputes cannot show a stale number, and during the corrections it repeatedly served as the
@@ -201,7 +213,7 @@ container image, no service interface, no installer, and no operational document
 firm's information-technology department. The system is operated from a source checkout by
 someone who can read a build file.
 
-That is a scope decision rather than an omission, and the reasoning is the same as in
+That is a scope decision, not an omission, and the reasoning is the same as in
 \S\ref{sec:design-scope}. Packaging serves adoption; nothing in the research questions of
 \S\ref{sec:research-questions} depends on it, and the effort it would have consumed went into
 the measurement apparatus instead --- which, given what Chapter~\ref{ch:measurement-validity}

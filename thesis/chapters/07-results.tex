@@ -33,7 +33,7 @@ a superseded number as if it still stood.
 
 Three studies shaped the design before any sealed measurement was taken. All three are
 in-sample, all three predate the scoring corrections, and none of their figures is an accuracy
-claim. They are reported because the decisions they produced are load-bearing, and a reader
+claim. They are reported because the decisions they produced shaped the architecture, and a reader
 entitled to question those decisions is entitled to see what informed them.
 
 \textbf{A survey of local candidate readers} evaluated a cohort of open-weight document and
@@ -48,7 +48,7 @@ What survived the survey is what mattered: a shortlist of readers worth measurin
 emit structured data directly, rather than transcribing to text for a second model to structure,
 was competitive. The literature gave reason for caution: format restrictions have been shown to
 degrade model performance on reasoning-adjacent tasks rather than being a free convenience
-\cite{tam2024format}. The probe's first verdict had to be withdrawn --- the measurement harness
+\parencite{tam2024format}. The probe's first verdict had to be withdrawn --- the measurement harness
 was silently discarding valid model output, one model emitting a well-formed object per page
 that the adapter could not parse once pages were concatenated. After repair, the finding stood
 qualitatively: direct structured emission was not competitive with the two-stage arrangement on
@@ -74,8 +74,8 @@ that asymmetry as a limitation.
 \subsection{Why aggregate scores could not decide it}
 
 Two candidates emerged from the survey as finalists: Qwen3-VL-4B-Instruct, a general-purpose
-vision-language model at four billion parameters \cite{qwen3vl}, and olmOCR-2-7B, a
-purpose-built document-transcription model at seven billion \cite{olmocr2}. The two available
+vision-language model at four billion parameters \parencite{qwen3vl}, and olmOCR-2-7B, a
+purpose-built document-transcription model at seven billion \parencite{olmocr2}. The two available
 instruments told conflicting stories about them. On end-to-end score under the pre-correction
 ruler, the transcription model led by two to five points (Table~\ref{tab:reader-lineage}). On
 reading quality measured directly on the transcript (\S\ref{sec:method-answerability}), the
@@ -264,7 +264,7 @@ experiment was not being handed a gap that belonged to the prompt.
 
 Rather than train one adapter and measure it, two were trained, differing only in the input
 distribution they saw: one on the reader's actual transcripts, one on text rendered from the
-reference. Both are low-rank adapters \cite{hu2021lora} on the structuring model's language
+reference. Both are low-rank adapters \parencite{hu2021lora} on the structuring model's language
 tower only --- its vision and audio components stay frozen and receive no input, consistent
 with how the pipeline uses the model (\S\ref{sec:method-architecture}). Each was then
 evaluated on both conditions, giving the grid in Table~\ref{tab:finetune-grid} and
@@ -380,11 +380,11 @@ Precision is substantially higher than recall (Table~\ref{tab:heldout-headline})
 errors in five are a field left empty, not a field invented.
 
 For an accounting application this is the safer direction to fail in, and the asymmetry is not
-incidental --- it is the honest-null contract of \S\ref{sec:method-architecture} showing up in
-the numbers. A missing value is visible to the reviewer who has to sign the booking. A
-fabricated one is not: it looks like an answer. A system with the opposite profile at the same
-F$_1$ would be considerably less useful, and this is why the spurious-emission rate is tracked
-as a first-class metric throughout instead of folded into an aggregate.
+incidental --- it is the honest-null contract of \S\ref{sec:design-honest-null}, with the
+gap-versus-fabrication argument made there, showing up in the numbers. A system with the
+opposite profile at the same F$_1$ would be considerably less useful, which is why the
+spurious-emission rate is tracked as a first-class metric throughout instead of folded into
+an aggregate.
 
 \subsection{Degraded capture is the real cost}
 
@@ -433,7 +433,7 @@ worth noting that nothing in the design explicitly asked for it.
 
 \textbf{This result is independently corroborated.} A benchmark published during this project,
 covering 3{,}400 documents in 17 languages, reports an average drop of 17.8\,\% on photographed
-versus digital documents for open-source parsing models \cite{mdpbench2026}. Its degraded
+versus digital documents for open-source parsing models \parencite{mdpbench2026}. Its degraded
 condition is harsher than this corpus's --- printed pages photographed under controlled
 adverse conditions, against scan-app output here --- so the two numbers are not directly
 comparable; what they share is the direction and the order of magnitude. That agreement

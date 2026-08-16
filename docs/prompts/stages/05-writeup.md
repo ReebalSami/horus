@@ -32,7 +32,9 @@ Chapter map reshaped 2026-07-31 for ADR-054's scope freeze, then extended
 2026-08-09 with Measurement Validity as its own chapter (ch.6), giving the
 twelve-chapter map below. All chapters and all six appendices are **drafted**
 as of 2026-08-15 (supervisor-review fix plan applied; see
-`docs/reviews/2026-08-15-first-supervisor-review.md`).
+`docs/reviews/2026-08-15-first-supervisor-review.md`), and the 2026-08-16
+second-pass review is applied on top
+(`docs/reviews/2026-08-16-second-supervisor-review.md`).
 
 | Ch | Title | Status |
 |---|---|---|
@@ -56,7 +58,8 @@ as of 2026-08-15 (supervisor-review fix plan applied; see
 - **Wave 2 (done, 2026-07-31)**: rebase onto the landed endgame work; ADR renumber 054→055; formal-compliance fixes (part order, verbatim declaration, title-page data policy, contents-list spacing); chapter map reshaped to the frozen scope; Introduction rewritten. Build green (32 pp).
 - **Wave 3 (done, 2026-08-09–14)**: full prose of Methodology, Measurement Validity, Results, System Design, Implementation, Discussion, Limitations; tables/figures generated from committed evidence.
 - **Wave 4 (done, 2026-08-15)**: supervisor-review fix plan — evidential repairs (M1–M7), bibliography corrections, Background, Related Work, Conclusion, Abstract, all appendices, formatting pass.
-- **Wave 5 (open)**: author read-through of the full PDF + supervisor confirmation of citation style; then submission build.
+- **Wave 4b (done, 2026-08-16)**: second-pass review + fixes — citation style switched to `authoryear` (`\parencite`/`\textcite`, the supervisor's established preference), seven new figures (VLM anatomy, cohort comparison, LoRA, corpus map, GT adjudication, defect chronology, app surfaces), German-parenthetical cleanup, deduplication trim, AI-usage appendix sharpened to the FH disclosure template, ch.11 cross-ref fix. Build green: 128 pp, zero unresolved, worst overfull 3.2 pt.
+- **Wave 5 (open)**: author read-through of the full PDF; then submission build.
 - **Writing model**: Claude Opus 5 at high/xhigh effort (per the ADR-055 amendment).
 
 ## 4. Open items
@@ -66,9 +69,10 @@ as of 2026-08-15 (supervisor-review fix plan applied; see
 - **Read-through of the full PDF** — the author signs off every sentence before
   submission (the AI-usage appendix documents the drafting process; the
   declaration asserts the disclosure).
-- Confirm citation style with the supervisor — the Richtlinie prescribes the
-  short-reference ("Kurzbeleg") method and says the supervisor's own preference
-  overrides; biblatex `alphabetic` is the current (valid) choice.
+- Mention the citation-style switch to the supervisor at the next meeting —
+  the Richtlinie prescribes the short-reference ("Kurzbeleg") method and says the
+  supervisor's own preference overrides; `authoryear` now matches the preference
+  established in the WS25 seminar and the SS25 project (switched 2026-08-16).
 - Print, sign and date the statutory declaration in the submitted copies.
 
 **Resolved this wave (2026-08-15):**

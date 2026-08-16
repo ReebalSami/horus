@@ -2,7 +2,7 @@
 \label{ch:system-design}
 
 This chapter describes the system that was designed, and states precisely which part of it
-was built and measured. The distinction is load-bearing and is made in three places --- in
+was built and measured. The distinction matters enough to be made in three places --- in
 the architecture figure, in the section headings, and in a closing section that states the
 scope in plain words --- because a design chapter is the easiest place in a thesis to let an
 intention read as an achievement.
@@ -131,12 +131,12 @@ extraction baseline, a single-shot arrangement and the two-stage arrangement on 
 subset. The two-stage arrangement won in both; \S\ref{sec:results-preliminary} reports those
 studies with the caveats they require. The finding also has support in the literature:
 imposing a rigid output format on a generative model has been shown to degrade its
-performance on the reasoning-adjacent part of the task rather than being a free convenience
-\cite{tam2024format}, and asking a reading model to simultaneously read and conform to a
+performance on the reasoning-adjacent part of the task instead of being a free convenience
+\parencite{tam2024format}, and asking a reading model to simultaneously read and conform to a
 schema is exactly that imposition.
 
 \textbf{The transcript is a measurement surface.} This is the decisive argument, and it is
-easy to overlook because it is about the researcher rather than the user. A boundary between
+easy to overlook because it is about the researcher, not the user. A boundary between
 the stages is a place where an intermediate artefact exists, can be stored, and can be
 manipulated. Because the transcript exists, the reading stage can be removed from the
 measurement --- by substituting text rendered from the reference data --- and the structuring
@@ -150,7 +150,7 @@ the single-shot architecture could not have produced.
 \textbf{What the split costs.} The transcript is plain text, so
 everything the page expressed through position survives the boundary only insofar as the
 reader preserved it in reading order. A two-column layout, a table whose columns carry
-meaning, a value printed in a box beside its label rather than after it --- all of these
+meaning, a value printed in a box beside its label instead of after it --- all of these
 survive only as well as the reader serialises them. The structuring stage cannot recover what
 the transcript does not carry, and this is not a hypothetical cost: it is the mechanism behind
 the attribution result of \S\ref{sec:results-attribution}. A single-shot model, whatever else
@@ -169,7 +169,7 @@ requires nothing of the structuring stage, which is what made the reader compari
 \label{sec:design-schema}
 
 The extraction target is not invented for the experiment. It is an alignment to
-\ac{EN}~16931 \cite{en16931}, the European standard that defines the semantic model of an
+\ac{EN}~16931 \parencite{en16931}, the European standard that defines the semantic model of an
 electronic invoice and gives each element a business-term identifier. In Germany that standard
 is the interoperability reference for business-to-business invoicing, so a system that extracts
 to it produces records that mean the same thing to another system, and results that can be
@@ -193,7 +193,7 @@ and drives the reporting. Had the specification and the scorer carried separate 
 they could have drifted --- a field asked for and never scored, or scored and never asked for
 --- and the drift would have been invisible in the results.
 \S\ref{sec:method-schema} treats the methodological consequences; the point here is that the
-single-registry arrangement is an architectural property of the system rather than a convention
+single-registry arrangement is an architectural property of the system, not a convention
 upheld by discipline.
 
 \textbf{Keys are canonical, values are as printed.} Field names are canonical English
@@ -201,7 +201,7 @@ identifiers derived from the standard; values are whatever the document prints, 
 language it prints them. No German label matching happens on the extraction path. This is what
 makes the same pipeline applicable to the German and English documents of the held-out corpus
 without a per-language variant, and therefore what makes a multilingual evaluation of one
-system meaningful rather than an evaluation of two.
+system meaningful instead of an evaluation of two.
 
 \textbf{The record is typed.} Each field declares a type --- money, date, rate, code, free text
 --- and the type determines how a raw model value is canonicalised and how a predicted value is
@@ -222,7 +222,7 @@ generation time, so conformance has to be established afterwards. In practice mo
 records wrapped in explanatory prose, enclosed in code fences, followed by a chat-template
 token, with trailing commas, with keys capitalised differently from the specification, or
 truncated mid-structure at the generation limit. Discarding all of these as unparseable would
-measure the model's formatting conventions rather than its extraction.
+measure the model's formatting conventions, not its extraction.
 
 The stage therefore applies a recovery sequence, in order, stopping at the first success:
 parse the text directly; scan for the first balanced object, which handles both prose around
@@ -233,11 +233,11 @@ registry, and each value canonicalised by its declared type --- German and Anglo
 conventions to one canonical form, the several date conventions a European invoice prints to
 one canonical form, a rate with or without its percent sign to one canonical form.
 
-One design principle governs the whole stage, and it is a hard constraint rather than a
+One design principle governs the whole stage, and it is a hard constraint, not a
 preference: \textbf{repair may never invent a value}. The structural repair supplies delimiters
 only, never a key and never a value, and it refuses to guess when the output was truncated in
 the middle of a value --- in that case the field is reported absent. A value that cannot be
-parsed becomes an absence rather than a best guess. An unrecognised key is dropped rather than
+parsed becomes an absence, not a best guess. An unrecognised key is dropped, never
 mapped to the field it most resembles. The reason is the honest-null contract of
 \S\ref{sec:design-honest-null}: in this domain a plausible fabrication is worse than a gap,
 because the gap is visible to the reviewer who has to sign the booking and the fabrication is
@@ -261,7 +261,7 @@ thesis's results depends on a consistency check that was not performed.
 \subsection{Designed to be auditable}
 \label{sec:design-audit}
 
-One further property is a design decision rather than an implementation detail, because it
+One further property is a design decision, not an implementation detail, because it
 shaped what could later be claimed.
 
 Every intermediate artefact is persisted: the rasterised page, the transcript, the raw text the
@@ -289,13 +289,13 @@ describes an intended design; no claim in this thesis rests on it. See
 The questions a tax practitioner actually asks are relational. \emph{Which suppliers billed us
 under reverse charge last quarter, and is each of those treatments consistent with that
 supplier's other invoices?} \emph{Has this invoice already been booked under a different
-number?} \emph{Which documents in this period are missing a particular the law requires?}
+number?} \emph{Which documents in this period are missing a particular that the law requires?}
 
 Each of these is a question about relationships between documents, not about the content of one
 document. A store that treats each invoice as an independent record answers them only by
 scanning and re-deriving the relationships at query time; a representation that makes the
 relationships explicit answers them directly. That is the argument for a graph, and it is an
-argument about the shape of the question rather than about technology fashion.
+argument about the shape of the question, not about technology fashion.
 
 \subsection{The intended model}
 
@@ -306,10 +306,10 @@ per-supplier aggregation possible and is also the step most exposed to extractio
 spellings of one company name, or one misread tax identifier, split a supplier into two
 entities and silently corrupt every aggregate it appears in.
 
-On top of that structure, compliance properties would be derived per document rather than
+On top of that structure, compliance properties would be derived per document instead of
 stored: whether the invoice carries every particular that \S14 \ac{UStG} requires, whether the
 stated tax treatment is coherent with the parties' registered identifiers, and whether the
-input tax is therefore deductible. Deriving them rather than storing them keeps a single
+input tax is therefore deductible. Deriving instead of storing keeps a single
 authority for each judgement --- the rule, applied to the current record --- so that a
 correction to an extracted field propagates to every conclusion drawn from it.
 
@@ -319,7 +319,7 @@ The interesting question about this layer is not whether it can be built. It is 
 propagates into it, and that question needs its own apparatus: extraction quality is measured
 per field, whereas graph quality has to be assessed at two distinct levels --- whether
 individual edges are correct, and whether the resulting structure has the right global
-properties \cite{cai2025}. A graph can score well edge-by-edge and still be wrong in the way
+properties \parencite{cai2025}. A graph can score well edge-by-edge and still be wrong in the way
 that matters, if a single entity-resolution failure fragments a supplier. Building the layer
 without that apparatus would repeat, one level up, exactly the mistake that
 Chapter~\ref{ch:measurement-validity} documents at this level.
@@ -340,9 +340,9 @@ is unusable, because the professional obligation attaches to the booking and not
 Second, \textbf{retrieval strategy is a question to be measured, not assumed}. Flat vector
 retrieval over document text and graph-structured retrieval have different strengths, and the
 comparison between them is an active, unsettled research question
-\cite{han2025,edge2024graphrag}. The plausible outcome is that the answer differs by question
+\parencite{han2025,edge2024graphrag}. The plausible outcome is that the answer differs by question
 class --- single-document lookups favouring flat retrieval, multi-document aggregation
-favouring the graph --- which is why the design anticipates routing per question rather than
+favouring the graph --- which is why the design anticipates routing per question instead of
 committing to one mechanism.
 
 Both commitments describe an intended design. Neither was implemented, and neither is claimed.
@@ -354,7 +354,7 @@ Both commitments describe an intended design. Neither was implemented, and neith
 implemented nor evaluated.} Everything reported in Chapters~\ref{ch:results}
 and~\ref{ch:discussion} concerns Layer~1.
 
-The narrowing was a decision taken during the work, and the reason is a finding rather than a
+The narrowing was a decision taken during the work, and the reason is a finding, not a
 shortage of effort.
 
 The measurement of Layer~1 established two things. The first is that the reading stage, not the
@@ -375,9 +375,8 @@ Two consequences are recorded, not glossed.
 
 \textbf{The hypotheses covering the upper layers were registered before the narrowing, and are
 reported as not evaluated.} They are listed in \S\ref{sec:unevaluated}, and the verbatim
-register with registration dates is Appendix~\ref{app:hypotheses}. A hypothesis that vanishes between registration and reporting is
-indistinguishable, to a reader, from one that was tested and found inconvenient, so none of them
-is dropped from the record.
+register with registration dates is Appendix~\ref{app:hypotheses}. None of them is dropped
+from the record, for the reason Chapter~\ref{ch:limitations-future-work} states.
 
 \textbf{The unbuilt layers are not counted as contributions.} The contribution claimed in
 \S\ref{sec:contributions} is Layer~1 together with the measurement methodology that made its

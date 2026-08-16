@@ -52,15 +52,19 @@ thesis/
 ├── appendix/
 │   └── appendix.tex      # field registry, hypotheses, datasheet, abandoned metric, AI-usage, reproducibility
 ├── images/               # static assets (FH logo)
-├── figures/              # GENERATED figures (PDF) — see "Results integration"
+├── figures/              # GENERATED charts (PDF) + hand-authored TikZ diagrams (.tex)
 └── tables/               # GENERATED tables (.tex, \input) — see "Results integration"
 ```
 
 ## Conventions
 
 - **Language**: English (babel `main=english,ngerman`; German legal terms inline).
-- **Citations**: biblatex `alphabetic` + biber. Use `\cite{key}`; keys live in
-  `references.bib` and are backed by archived stubs under `../docs/sources/`.
+- **Citations**: biblatex `authoryear` + biber, rendering `(Author et al. Year)` —
+  the first examiner's established preference (same option set as the WS25 seminar
+  and SS25 project; Richtlinie defers the short-reference form to the supervisor).
+  Use `\parencite{key}` for parenthetical citations and `\textcite{key}` when the
+  authors are the sentence's subject; keys live in `references.bib` and are backed
+  by archived stubs under `../docs/sources/`.
 - **Acronyms**: define in `preamble/acronyms.tex`; use `\ac{KEY}` (`\acp{}` for
   plural). Legal everywhere in the body, including the abstract, because the
   abbreviations list now precedes it (required part order).
@@ -83,9 +87,18 @@ thesis/
 
 All twelve chapters, the abstract and all six appendices are drafted; the
 2026-08-15 supervisor-review fix plan (evidential repairs M1--M7, bibliography
-corrections, missing prose, appendices, formatting) is applied. Green build
-verified: 125 pp, zero unresolved references and citations, worst overfull box
-3.2 pt. Review record: `../docs/reviews/2026-08-15-first-supervisor-review.md`.
+corrections, missing prose, appendices, formatting) is applied, and the
+2026-08-16 second-pass review is applied on top of it: citation style switched to
+`authoryear` (`\parencite`/`\textcite`), seven new figures authored (VLM anatomy,
+cohort comparison, LoRA, corpus map, GT adjudication, defect chronology, app
+surfaces — every chapter 2--8 now carries at least one visual), German
+parentheticals consolidated at the §203 StGB sentence, duplication trimmed
+("rather than" 89→42, honest-null re-derivations referenced instead of repeated),
+AI-usage appendix sharpened to the FH disclosure template, and the ch.11
+cross-reference defect fixed. Green build verified: 128 pp, zero unresolved
+references and citations, worst overfull box 3.2 pt. Review records:
+`../docs/reviews/2026-08-15-first-supervisor-review.md`,
+`../docs/reviews/2026-08-16-second-supervisor-review.md`.
 Per-chapter status: `../docs/prompts/stages/05-writeup.md` §2.
 
 ## TODO before submission
@@ -93,9 +106,9 @@ Per-chapter status: `../docs/prompts/stages/05-writeup.md` §2.
 - Author read-through of the full PDF: the author signs off every sentence
   (declaration requirement; AI-drafted prose is documented in the AI-usage
   appendix).
-- Confirm citation style with the supervisor (the regulation prescribes the
-  short-reference method and lets the supervisor's preference override;
-  biblatex `alphabetic` is the current choice).
+- Citation style: switched to `authoryear` (2026-08-16) matching the supervisor's
+  established preference from two prior graded works; mention it at the next
+  meeting for the formal nod.
 - Kurzfassung: deliberately omitted (author decision 2026-08-15, English-only);
   re-confirm with the Prüfungsamt only if its requirement is in doubt.
 - Print, sign and date the statutory declaration in the submitted copies.

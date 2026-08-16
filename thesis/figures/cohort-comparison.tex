@@ -1,0 +1,87 @@
+%% How the three document-relevant model families of this thesis differ internally:
+%% base lineage, scale, specialisation and -- decisively for the pipeline design --
+%% what they emit. All architectural facts verified against the published model
+%% cards (granite-docling-258M: Idefics3 architecture; olmOCR-2-7B-1025: fine-tune
+%% of Qwen2.5-VL-7B-Instruct; Qwen3-VL-4B-Instruct: general-purpose instruct model),
+%% cited in the accompanying prose.
+%%
+%% Hand-authored TikZ (not generated): it depicts published architecture facts, not a
+%% project measurement. Parameter counts are the model cards' own, cited in prose.
+%%
+%% Input from a chapter with:  \input{figures/cohort-comparison.tex}
+
+\begin{tikzpicture}[
+    font=\small,
+    col/.style={
+      draw=horusaccent, line width=0.8pt, rounded corners=2pt,
+      fill=horuswash, text width=3.6cm, align=center, inner sep=5pt,
+    },
+    part/.style={
+      draw=horusmuted, line width=0.6pt, rounded corners=1pt,
+      fill=white, text width=3.2cm, align=center,
+      font=\scriptsize, inner sep=3pt, minimum height=7.5mm,
+    },
+    emits/.style={
+      draw=horuswarn, line width=0.7pt, rounded corners=2pt,
+      fill=white, text=horuswarn, text width=3.2cm, align=center,
+      font=\scriptsize, inner sep=4pt,
+    },
+    head/.style={font=\small\bfseries, text=horusink, align=center},
+    sub/.style={font=\scriptsize\itshape, text=horusink, align=center},
+    flow/.style={-{Stealth[length=2.0mm]}, line width=0.6pt, draw=horusaccent},
+  ]
+
+  %% Column 1: granite-docling-258M -- compact conversion specialist, DocTags out.
+  \node[col] (g) at (0,0) {%
+    {\normalsize\textbf{granite-docling}}\\[1pt]
+    {\scriptsize\itshape 258\,M parameters --- Idefics3 architecture}\\[4pt]
+    \begin{tikzpicture}[node distance=2.5mm]
+      \node[part] (gv) {compact vision encoder};
+      \node[part, below=of gv] (gl) {compact language model};
+      \draw[flow] (gv) -- (gl);
+    \end{tikzpicture}\\[3pt]
+    {\scriptsize document-conversion specialist}%
+  };
+  \node[emits, below=4mm of g] (ge) {emits \textbf{DocTags}\\structural markup for
+    downstream conversion};
+
+  %% Column 2: olmOCR-2-7B -- transcription specialist on a general-purpose base.
+  \node[col, right=8mm of g] (o) {%
+    {\normalsize\textbf{olmOCR-2-7B}}\\[1pt]
+    {\scriptsize\itshape 7\,B class --- fine-tune of Qwen2.5-VL-7B}\\[4pt]
+    \begin{tikzpicture}[node distance=2.5mm]
+      \node[part] (ov) {Qwen2.5-VL vision encoder};
+      \node[part, below=of ov] (ol) {Qwen2.5 language model, transcription-tuned};
+      \draw[flow] (ov) -- (ol);
+    \end{tikzpicture}\\[3pt]
+    {\scriptsize document-transcription specialist}%
+  };
+  \node[emits, below=4mm of o] (oe) {emits \textbf{plain text}\\naturally ordered,
+    optimised for faithful transcription};
+
+  %% Column 3: Qwen3-VL-4B -- general-purpose instruct model, output prompt-defined.
+  \node[col, right=8mm of o] (q) {%
+    {\normalsize\textbf{Qwen3-VL-4B}}\\[1pt]
+    {\scriptsize\itshape 4\,B class --- general-purpose instruct model}\\[4pt]
+    \begin{tikzpicture}[node distance=2.5mm]
+      \node[part] (qv) {Qwen3-VL vision encoder};
+      \node[part, below=of qv] (ql) {Qwen3 language model, instruction-tuned};
+      \draw[flow] (qv) -- (ql);
+    \end{tikzpicture}\\[3pt]
+    {\scriptsize no document specialisation}%
+  };
+  \node[emits, below=4mm of q] (qe) {emits \textbf{whatever the prompt asks}\\text,
+    JSON, or markup};
+
+  %% The shared skeleton is the point of \S\ref{sec:bg-vlm}: one architecture,
+  %% three specialisation strategies, three output disciplines.
+  \node[
+    draw=horusmuted, line width=0.5pt, rounded corners=2pt, dotted,
+    fill=white, text=horusink, font=\scriptsize, align=center,
+    text width=10.8cm, inner sep=4pt, below=4mm of oe,
+  ] {One shared anatomy (Figure~\ref{fig:vlm-anatomy}), three specialisation
+    strategies, three output disciplines --- the property the two-stage design of
+    Chapter~\ref{ch:system-design} exploits by asking the reading stage for plain
+    text and the structuring stage for \ac{JSON}.};
+
+\end{tikzpicture}

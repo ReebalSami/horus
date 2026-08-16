@@ -18,10 +18,10 @@ distinction between them is what most of this chapter exists to preserve.
 
 The \textbf{reading} stage is a \ac{VLM} that receives a rasterised page and emits plain
 text. It is given no schema, no field list and no instruction about invoices; it is asked to
-transcribe. In the delivered system this is Qwen3-VL-4B-Instruct \cite{qwen3vl}, selected by
+transcribe. In the delivered system this is Qwen3-VL-4B-Instruct \parencite{qwen3vl}, selected by
 the comparison of \S\ref{sec:results-reader}; earlier measurements used granite-docling-258M
-\cite{granitedocling}, and every table drawn from that superseded reader says so. The
-\textbf{structuring} stage is a second model, gemma-4-E4B-it \cite{gemma4e4b}, that receives
+\parencite{granitedocling}, and every table drawn from that superseded reader says so. The
+\textbf{structuring} stage is a second model, gemma-4-E4B-it \parencite{gemma4e4b}, that receives
 that transcript together with a field specification and emits a \ac{JSON} object. The model
 is natively multimodal; it is used here on text alone and is never shown the page, which is
 what makes the transcript the only channel between the stages. The
@@ -45,25 +45,38 @@ right.
 \textbf{Determinism.} Every generation reported in this thesis uses greedy decoding. No
 temperature, no sampling, no self-consistency voting over multiple samples. This costs some
 accuracy that sampling might have recovered, and it buys the property that a reported number
-is a property of the model and the input rather than of a random seed. It also means the
+is a property of the model and the input, not of a random seed. It also means the
 stored generations can be re-scored later --- a capability that Chapter~\ref{ch:measurement-validity}
 depends on entirely.
 
 \section{Two Corpora, and Why Both Are Necessary}
 \label{sec:method-data}
 
-Two corpora are used, and neither would suffice alone.
+Two corpora are used, and neither would suffice alone. Figure~\ref{fig:corpus-map}
+maps them --- where each comes from, where its reference data comes from, and what
+each is allowed to claim.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/corpus-map.tex}
+  \caption[The two-corpus design]{The two-corpus design. The synthetic corpus supplies
+  scale and an exact, extracted reference (Table~\ref{tab:corpus-composition}); the
+  held-out corpus supplies external validity on real documents and real capture
+  (Table~\ref{tab:heldout-composition}), at the price of an answer key that had to be
+  built and adjudicated (Figure~\ref{fig:gt-adjudication}).}
+  \label{fig:corpus-map}
+\end{figure}
 
 \subsection{A synthetic corpus with exact ground truth}
 
 The first is built from the public reference corpus for German hybrid electronic invoices
-\cite{zugferdcorpus}, supplemented with programmatically generated documents. Its composition
+\parencite{zugferdcorpus}, supplemented with programmatically generated documents. Its composition
 and its split are given in Table~\ref{tab:corpus-composition}.
 
 The reason this corpus exists is not scale. It is that a hybrid electronic invoice carries the
 same content twice: once as a page a human reads, and once as an embedded machine-readable
 representation of the same facts, conforming to the European standard \ac{EN}~16931
-\cite{en16931}. That redundancy is the methodological device this thesis is built on, and
+\parencite{en16931}. That redundancy is the methodological device this thesis is built on, and
 \S\ref{sec:method-gt} describes how it is used.
 
 The documents span the profile range of the standard, from the minimal profile through the
@@ -83,8 +96,8 @@ only on the easy half of the problem. That is precisely why the second corpus ex
 \subsection{A held-out corpus of real documents}
 
 The second corpus is 39 real invoices collected from the author's own business
-correspondence, recorded as a datasheet in the manner Gebru et al.\ propose
-\cite{gebru2018datasheets} and reproduced in Appendix~\ref{app:heldout}. It spans two
+correspondence, recorded as a datasheet in the manner \textcite{gebru2018datasheets}
+propose and reproduced in Appendix~\ref{app:heldout}. It spans two
 languages and, more importantly, two acquisition channels: documents that arrived as
 email-native \ac{PDF} attachments, and paper documents captured with a phone scanning
 application --- camera captures that the application deskews and contrast-enhances into a
@@ -126,13 +139,13 @@ to annotate by hand. This is why line-item extraction can be measured at all in 
 
 \textbf{It is independently checkable.} The extraction is performed with one library and
 cross-checked with a second, structurally unrelated implementation --- a Python reference
-implementation of the standard \cite{facturxpython} and an independent Java validator and
-extractor \cite{mustangproject}. Two tools that disagree about what a document says indicate a
+implementation of the standard \parencite{facturxpython} and an independent Java validator and
+extractor \parencite{mustangproject}. Two tools that disagree about what a document says indicate a
 defect in one of them, and that disagreement is observable, not silent.
 
 The extracted values are mapped onto the standard's business-term identifiers, so that a field
-in this thesis's schema corresponds to a named term in \ac{EN}~16931 rather than to an
-ad-hoc label \cite{zugferdanhang}. That mapping is what makes the evaluated field set
+in this thesis's schema corresponds to a named term in \ac{EN}~16931, not to an
+ad-hoc label \parencite{zugferdanhang}. That mapping is what makes the evaluated field set
 defensible to a practitioner: the fields are the ones the standard says an invoice has.
 
 \textbf{The critical caveat, stated here and revisited in
@@ -161,7 +174,7 @@ its own image found a wrong month, a total that was neither the net nor the gros
 a blend of the two, two values recorded as absent that are clearly printed, and an address
 with a digit missing.
 
-Scoring against that key produced a figure that measured the key rather than the system. It
+Scoring against that key produced a figure that measured the key, not the system. It
 was retracted in the same working session in which it was produced. The relevant lesson is
 not that an automated draft is unreliable --- that is unsurprising --- but that
 \textbf{the failure was invisible in the aggregate}. The number looked like a plausible
@@ -169,14 +182,18 @@ result for a hard task. It was only caught by opening individual documents and r
 
 \subsection{Three independent channels and an adjudication rule}
 
-The replacement key is built from three channels that fail differently:
+Building the replacement key was the single largest data-engineering effort in this
+project: 1{,}326 cells were adjudicated across three reading channels and a
+deterministic gate, under the provenance discipline that Figure~\ref{fig:gt-adjudication}
+summarises and this section specifies. The key is built from three channels that fail
+differently:
 
 \begin{enumerate}
   \item the original text-layer draft, retained as one voice;
   \item a frontier cloud vision model reading the page images, schema-constrained to the
         field registry;
   \item a commercial document-understanding service with a purpose-trained invoice model
-        \cite{azuredocintelligence}, reading the same page images.
+        \parencite{azuredocintelligence}, reading the same page images.
 \end{enumerate}
 
 Independence is the property being bought, not accuracy. Agreement between two systems that
@@ -215,6 +232,17 @@ The outcome: of 1{,}326 cells, 463 were accepted on a recorded warrant and 248 w
 by hand; the remainder are absences. All 39 documents were signed off individually. The
 verification flag is set only by author review --- a frontier model is a better drafter, not a
 substitute for a human, and this thesis does not claim otherwise.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/gt-adjudication.tex}
+  \caption[The three-channel ground-truth adjudication]{The three-channel adjudication
+  that produced the held-out answer key. Independence is the property being bought: the
+  channels have little reason to be wrong in the same way. Only warranted provenance
+  classes are accepted automatically; everything else is ranked by the damage an
+  unnoticed error would do and adjudicated by the author against the page image.}
+  \label{fig:gt-adjudication}
+\end{figure}
 
 \textbf{Circularity check.} None of the three drafting channels is the system under test. The
 system is a local vision model feeding a local language model; the key was drafted by a cloud
@@ -260,7 +288,7 @@ comparing a predicted value to a reference one, and --- where relevant --- the p
 under which the value tends to appear on a German invoice. The full registry is reproduced in
 Appendix~\ref{app:registry}.
 
-Two properties of the registry are load-bearing.
+Two properties of the registry do real methodological work.
 
 \textbf{Normalisation is declared per field, not applied globally.} A tax rate, a date, an
 account number and a free-text payment reference require different comparison rules, and a
@@ -282,13 +310,13 @@ definitions.
 
 The obvious metric --- what fraction of fields is exactly right --- fails in two directions at
 once. It punishes a model that reads a date correctly but writes it in the page's format
-rather than the reference's, and it rewards a model that emits nothing on a document where
+instead of the reference's, and it rewards a model that emits nothing on a document where
 most fields are absent. Both failures are well documented in the document-understanding
 literature, which is why edit-distance-based measures were introduced for this class of task
-\cite{biten2019anls} and later generalised to handle the structured, partially-absent outputs
-that generative models produce \cite{peer2024anlsstar}. The suite below follows that
+\parencite{biten2019anls} and later generalised to handle the structured, partially-absent outputs
+that generative models produce \parencite{peer2024anlsstar}. The suite below follows that
 tradition, and additionally separates entity-level from group-level correctness in the manner
-that Khang et al.\ argue industrial extraction requires \cite{kieval2025}.
+that \textcite{kieval2025} argue industrial extraction requires.
 
 Every comparison of one predicted field against its reference yields exactly one of five
 outcomes:
@@ -340,7 +368,7 @@ From those outcomes the suite computes:
 
 Correct absences are excluded from the F$_1$ family throughout. Including them would make
 every score partly a function of how often fields happen to be empty, which is a property of
-the corpus rather than of the system.
+the corpus, not of the system.
 
 \textbf{On weighting fields by legal importance.} An earlier design weighted fields by their
 significance under \S14 \ac{UStG} and \S33 \ac{UStDV}, so that omitting a mandatory invoice
@@ -420,7 +448,7 @@ It cannot attribute it.
 individual miss, ask whether the reference value was present in the transcript the structuring
 stage received. If it was not, no structuring model could have recovered it, and the error
 belongs to reading. If it was, the value was available and the structuring stage failed to
-place it. This is applied per miss rather than inferred from totals, which is what makes it an
+place it. This is applied per miss, never inferred from totals, which is what makes it an
 attribution rather than a correlation.
 
 \textbf{Instrument three: replace the transcript with reference-quality text.} The decisive
@@ -444,7 +472,7 @@ shortfall, and says so at every point where its numbers appear.
 \label{sec:method-hypotheses}
 
 Analysing data and then choosing which hypothesis to claim is a well-described way of
-producing results that do not replicate \cite{kerr1998}. Two disciplines guard against it
+producing results that do not replicate \parencite{kerr1998}. Two disciplines guard against it
 here.
 
 \textbf{Predictions were recorded before the corresponding data existed.} Each experiment
@@ -457,7 +485,7 @@ fixed: the recipe, the selection rule (lowest loss on the held-back slice), that
 validation set would be scored exactly once per arm, that comparisons would be made only
 against a baseline measured in the same numeric precision, and --- the clause that matters
 most --- that \textbf{a null or negative result would be reported as one}. The selection rule
-is native trainer configuration rather than a hand-applied convention, so the executed rule
+is native trainer configuration, not a hand-applied convention, so the executed rule
 cannot drift from the registered rule.
 
 A pre-registered conjunctive rule was also used for the one candidate-model comparison where
@@ -469,8 +497,7 @@ one criterion, and Chapter~\ref{ch:results} reports the failure and the resultin
 and several registered hypotheses --- concerning the two upper layers of the architecture and
 a comparison against cloud services --- were consequently never tested. They are listed as
 such in Chapter~\ref{ch:limitations-future-work}, never quietly dropped from the
-register. A hypothesis that disappears between registration and reporting is
-indistinguishable, to a reader, from one that was tested and inconvenient.
+register.
 
 \section{Reproducibility and Hardware}
 \label{sec:method-repro}
@@ -478,17 +505,17 @@ indistinguishable, to a reader, from one that was tested and inconvenient.
 \textbf{Configuration as data.} Every experiment knob --- model identifiers, dataset paths,
 seeds, decoding settings, prompt strings, thresholds --- lives in a versioned configuration
 file, not in code. Each experiment takes exactly one argument: the path to its configuration.
-The configuration is validated against a typed schema \cite{pydantic} before any model loads,
+The configuration is validated against a typed schema \parencite{pydantic} before any model loads,
 so a missing or malformed value fails immediately, before a model has been read into
 memory.
 
 \textbf{Tracking.} Runs are recorded with their configuration, metrics and artefacts
-\cite{mlflow}, which is what makes a later re-score attributable to a specific earlier run
+\parencite{mlflow}, which is what makes a later re-score attributable to a specific earlier run
 rather than to a remembered one.
 
 \textbf{Hardware.} All inference reported in this thesis runs on a single Apple M1~Pro laptop
 with 16\,\ac{GB} of unified memory, using the platform's own machine-learning framework
-\cite{mlxvlm} with 4-bit quantised weights. That envelope is not incidental --- it is the
+\parencite{mlxvlm} with 4-bit quantised weights. That envelope is not incidental --- it is the
 deployment claim. A system that requires a data-centre accelerator does not solve the problem
 this thesis addresses, because the firm that cannot send documents to a cloud service usually
 also cannot buy a rack.
@@ -500,6 +527,6 @@ three separate workarounds for platform ceilings. Training was therefore moved t
 \ac{CUDA} accelerator in full precision. This creates a precision mismatch between the trained
 adapter and the locally-measured baseline, and that mismatch turned out to be large enough to
 invert a conclusion --- which is why re-measuring the baseline in the adapter's own precision
-was made a precondition of the study rather than an afterthought.
+was made a precondition of the study, not an afterthought.
 Table~\ref{tab:precision-confound} reports what would have been concluded without it.
 Delivered inference remains entirely local; only training moved.

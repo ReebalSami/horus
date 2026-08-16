@@ -24,7 +24,7 @@ corpus should therefore be read as an upper bound for the camera-captured case},
 the correction is \emph{at least} that gap --- the scans here are deskewed scan-app output, the
 mildest form of camera capture (\S\ref{sec:method-data}). The direction is corroborated
 independently by a multilingual parsing benchmark reporting an average 17.8\,\% drop for
-open-source parsers on photographed documents \cite{mdpbench2026}.
+open-source parsers on photographed documents \parencite{mdpbench2026}.
 
 \subsection{The Held-Out Corpus Is Small and Single-Annotator}
 \label{sec:lim-heldout}
@@ -34,14 +34,14 @@ Thirty-nine documents, adjudicated by one person. Two consequences follow.
 \textbf{No precise figure is supported.} The headline held-out number should be read as
 establishing a level and a direction, not a value to two decimal places. The per-channel cells
 are smaller still, some containing around ten documents, so the channel comparison carries the
-weight of a clear effect on a small sample rather than of a precise estimate.
+weight of a clear effect on a small sample, not of a precise estimate.
 
 \textbf{No inter-annotator agreement can be reported.} The three-channel design substantially
 limits the exposure --- 463 accepted cells rest on printed-text proof or on two independent
 channels agreeing, not on judgement (\S\ref{sec:method-heldout-gt}) --- but 248 cells were
 decided by the author, and for those there is no second opinion. This is irreducible for a
 single-author corpus and is the reason the datasheet in Appendix~\ref{app:heldout} records the
-provenance class of every cell rather than merely asserting that the key was reviewed.
+provenance class of every cell instead of merely asserting that the key was reviewed.
 
 \subsection{Header Fields Only, on Real Documents}
 \label{sec:lim-groups}
@@ -79,7 +79,7 @@ this is the best available structuring model, and the adaptation results of
 the reader-noise gap with no adaptation at all.
 
 There is a related asymmetry worth reporting, because it is the reason the adaptation experiment
-was designed as a grid rather than a before-and-after. On text rendered from the reference, this
+was designed as a grid, not a before-and-after. On text rendered from the reference, this
 structuring model already scores in the high nineties (Table~\ref{tab:sealed-val-arms}) --- above
 the threshold the project had set. The measured shortfall is therefore \emph{robustness to
 reading noise}, not capability, and an intervention aimed at capability was always unlikely to
@@ -94,7 +94,7 @@ performed, and the training set contained no examples teaching appropriate abste
 
 The negative result is therefore about \emph{this} recipe and not about adaptation as a
 technique. \S\ref{sec:disc-finetune} sets out why the observed failure mode --- rising spurious
-emission rather than degraded placement --- is consistent with published findings, and
+emission, not degraded placement --- is consistent with published findings, and
 \S\ref{sec:fw-abstention} states the specific untested variant that the mechanism points to.
 
 \subsection{Hardware Envelope}
@@ -105,7 +105,7 @@ memory. That is a narrower claim than \emph{runs locally}: the privacy premise i
 processing, which would also permit a workstation with a discrete accelerator, and such a machine
 would likely support a larger reading model than the one selected here.
 
-The envelope bound training rather than inference. The adaptation runs exceeded it and were moved
+The envelope bound training, not inference. The adaptation runs exceeded it and were moved
 to a rented accelerator (\S\ref{sec:method-repro}), which means the local-only property holds for
 the delivered pipeline but not for the process that produced its adapters. Since those adapters
 are not delivered, the delivered system remains fully local --- but a firm wishing to adapt the
@@ -147,7 +147,7 @@ perfect-text renderer faithful to the reference exposed a comparison problem in 
 article number field that was not resolved (\S\ref{sec:validity-open}).
 
 \textbf{A stale configuration default remains a hazard.} A diagnostic that constructs the
-experiment configuration from its defaults, rather than loading the project's configuration file,
+experiment configuration from its defaults, instead of loading the project's configuration file,
 silently selects a superseded reading model. The two audit tools were fixed to load the
 configuration explicitly; the default itself was not changed, so any future script that builds
 the configuration bare will measure the wrong pipeline (\S\ref{sec:validity-specification}).
@@ -227,7 +227,7 @@ intervention on the models.
 \label{sec:fw-groups}
 
 The route to closing \S\ref{sec:lim-groups} is known and is not research: adjudicate the held-out
-group rows under a \emph{set-based} matching rule rather than a positional one, so that a reader
+group rows under a \emph{set-based} matching rule instead of a positional one, so that a reader
 which merges two lines is not penalised as though it had misread them. That requires a matching
 criterion defined before adjudication begins, and it requires the same ranked-escalation and
 provenance-class discipline the header key used. It is expensive but it is bounded work.
@@ -237,7 +237,7 @@ provenance-class discipline the header key used. It is expensive but it is bound
 
 The adaptation failed by raising spurious emission (\S\ref{sec:disc-finetune}), which is what
 supervised fine-tuning on exclusively-filled targets would be expected to do
-\cite{uluoglakci2026humility}. The corresponding untested variant is a training set that includes
+\parencite{uluoglakci2026humility}. The corresponding untested variant is a training set that includes
 appropriate absence as a taught behaviour: documents where a field is genuinely missing, with the
 correct answer being the null. This thesis's training data contained no such examples, and the
 mechanism points directly at that gap.
@@ -287,7 +287,7 @@ The channel gap measured here is the most actionable finding in the thesis, and 
 ten photographed documents. A controlled degradation study --- the same documents captured at
 several resolutions, angles and lighting conditions --- would turn a two-level comparison into a
 response curve, and would say where on that curve a firm's document-handling practice needs to
-sit. The protocol from the multilingual parsing benchmark \cite{mdpbench2026} is a reasonable
+sit. The protocol from the multilingual parsing benchmark \parencite{mdpbench2026} is a reasonable
 template.
 
 \subsection{Production Hardening}
@@ -306,5 +306,5 @@ document. They would not improve any score reported in this thesis, which is pre
 were not built; they would improve the reviewability of the output, which is what a firm would
 actually be buying. The prototype of
 Chapter~\ref{ch:implementation} includes a review surface for exactly this reason, but it was
-built to support the evaluation rather than a firm's daily workflow, and the difference between
+built to support the evaluation, not a firm's daily workflow, and the difference between
 those two is substantial.

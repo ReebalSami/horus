@@ -12,7 +12,7 @@ representation on commodity hardware, and which stage of the pipeline limits tha
 be unsupervised.} On real invoices, zero-shot and entirely local, header-field extraction
 reaches the high eighties on the headline aggregation
 (Table~\ref{tab:heldout-headline}). More important than the level is the shape: precision
-substantially exceeds recall, so the dominant failure is an empty field rather than an invented
+substantially exceeds recall, so the dominant failure is an empty field, not an invented
 one. That is the profile a reviewed workflow can absorb. A practitioner checking a booking sees
 a gap and fills it; a practitioner cannot see a plausible fabrication. The system is therefore
 a credible assistant to a reviewer and not a replacement for one, and nothing in these results
@@ -48,7 +48,7 @@ question deserves and is labelled accordingly. The comparison was made on a smal
 development subset before the scoring corrections, and it is reported as a preliminary study
 (\S\ref{sec:results-preliminary}). Its qualitative outcome was clear enough to determine the
 architecture, and it is consistent with the published finding that constraining a model's output
-format degrades its performance rather than being a free convenience \cite{tam2024format}. The
+format degrades its performance instead of being a free convenience \parencite{tam2024format}. The
 attribution result then supplies an independent reason to prefer the split arrangement that has
 nothing to do with accuracy: a two-stage pipeline lets the two failure sources be
 \emph{measured separately}, and a single-shot model does not. Given that the measurement turned
@@ -100,7 +100,7 @@ comparable gain, and the one that was attempted seriously produced a regression.
 more convincingly than anything inside it.} A multilingual document-parsing benchmark published
 during this work reports that open-source parsers lose an average of 17.8\,\% on photographed
 versus digital documents, and that the collapse is concentrated in exactly the conditions this
-thesis found hardest \cite{mdpbench2026}. Their measurement is of reading quality, on 3{,}400
+thesis found hardest \parencite{mdpbench2026}. Their measurement is of reading quality, on 3{,}400
 documents in 17 languages, with no structuring stage involved at all, and their degraded
 condition --- printed pages photographed under controlled adverse conditions --- is harsher
 than the deskewed scan-app captures here (\S\ref{sec:method-data}). The directional agreement
@@ -126,9 +126,9 @@ gained a propensity to emit them where the document carries none: the spurious-e
 rises markedly above its own baseline (Table~\ref{tab:finetune-grid}). The failure is a shift in
 \emph{when the model answers}, not in \emph{how well it answers}.
 
-That is precisely what supervised fine-tuning has been reported to do. Uluoglakci and Taskaya
-Temizel state the premise directly: models hallucinate partly because supervised fine-tuning
-``implicitly rewards always responding'' \cite{uluoglakci2026humility}. Their study runs 800
+That is precisely what supervised fine-tuning has been reported to do.
+\textcite{uluoglakci2026humility} state the premise directly: models hallucinate partly
+because supervised fine-tuning ``implicitly rewards always responding''. Their study runs 800
 controlled adaptation runs across two model families --- one of which is the immediate
 predecessor generation of the structuring model used here --- and their remedy is to train
 \emph{for} the admission of uncertainty rather than against it. This thesis's training data
@@ -137,24 +137,24 @@ a filled record. On that reading, the adapter learned exactly what it was shown.
 
 Three further results in that literature line up with what was measured.
 
-\textbf{Adaptation of this kind learns style, not knowledge.} Ghosh et al.\ report that
-low-rank adaptation ``is limited to learning response initiation and style tokens''
-\cite{ghosh2024limitations}. If the intervention cannot add capability and can adjust output
+\textbf{Adaptation of this kind learns style, not knowledge.} \textcite{ghosh2024limitations}
+report that low-rank adaptation ``is limited to learning response initiation and style
+tokens''. If the intervention cannot add capability and can adjust output
 disposition, then a task already near its ceiling on clean input
 (Table~\ref{tab:sealed-val-arms}) has nothing to gain and a disposition to lose. The perfect-text
 adapter evaluated on perfect text --- the cell with the cleanest input and the least excuse ---
 regresses too, which is consistent with this and not with a simple overfitting story.
 
-\textbf{Unfamiliar training examples govern how a model hallucinates.} Kang et al.\ find that
-the character of a fine-tuned model's hallucinations is controlled by the unfamiliar examples in
-its training set \cite{kang2024unfamiliar}. The transcript-trained adapter was fed exactly
+\textbf{Unfamiliar training examples govern how a model hallucinates.}
+\textcite{kang2024unfamiliar} find that the character of a fine-tuned model's hallucinations
+is controlled by the unfamiliar examples in its training set. The transcript-trained adapter was fed exactly
 that: noisy transcripts containing artefacts, dropped regions and character slips. Its
 spurious-emission rate is the highest of any arm measured in this thesis.
 
-\textbf{Freezing parameters preserves task performance while reducing hallucination.} Kaplan et
-al.\ frame the effect as a stability--plasticity trade-off and report that suppressing factual
-plasticity by freezing parameter groups can preserve task performance while reducing
-hallucination \cite{kaplan2026why}. The intervention here did the opposite: it added plasticity
+\textbf{Freezing parameters preserves task performance while reducing hallucination.}
+\textcite{kaplan2026why} frame the effect as a stability--plasticity trade-off and report
+that suppressing factual plasticity by freezing parameter groups can preserve task
+performance while reducing hallucination. The intervention here did the opposite: it added plasticity
 to the text tower of a model that was already competent at the task.
 
 \textbf{What the negative result does and does not license.} It licenses the claim that
@@ -260,7 +260,7 @@ no repeated sampling.
 
 \textbf{Precision matching.} Every adaptation comparison is made against a baseline measured in
 the same numeric precision (Table~\ref{tab:precision-confound}). This threat was identified in
-advance rather than discovered afterwards, which is the only reason it was controlled.
+advance, not discovered afterwards, which is the only reason it was controlled.
 
 \subsection{Construct validity}
 
@@ -276,7 +276,7 @@ motivation, not a legal assessment.
 reference value appears in the transcript at all, which a transcript containing every value in
 scrambled order would satisfy while being useless downstream
 (\S\ref{sec:method-answerability}). The proxy was therefore never used alone, and the one
-decision where it mattered was settled by hand-judging every individual miss rather than by
+decision where it mattered was settled by hand-judging every individual miss instead of
 trusting the aggregate.
 
 \textbf{Is the perfect-text ceiling a fair upper bound?} Only after its own defects were
@@ -290,13 +290,13 @@ renderer would not have been interpretable.
 \textbf{Corpus scale.} The real-document result rests on 39 invoices. That supports a claim about
 direction and rough magnitude; it does not support a precise figure, and the per-channel cells
 contain as few as ten documents each. The independent corroboration of the channel effect
-\cite{mdpbench2026} is what makes that particular finding safer than its sample size alone would
+\parencite{mdpbench2026} is what makes that particular finding safer than its sample size alone would
 justify.
 
 \textbf{Single annotator.} The held-out answer key was adjudicated by one person --- the author
 --- so no inter-annotator agreement can be reported. The three-channel design and the
 automatic-acceptance rule reduce the exposure, in that 463 of the decided cells rest on either
-printed-text proof or two independent channels agreeing rather than on judgement
+printed-text proof or two independent channels agreeing, not on judgement
 (\S\ref{sec:method-heldout-gt}). The remaining 248 do rest on judgement, and that is an
 irreducible limitation of a single-author corpus.
 

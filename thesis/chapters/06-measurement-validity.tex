@@ -28,7 +28,20 @@ inflating a score (\S\ref{sec:validity-discipline}), then the four classes of de
 (\S\ref{sec:validity-reference}--\S\ref{sec:validity-specification}), then what correcting them
 was worth (\S\ref{sec:validity-effect}), then the near-miss
 (\S\ref{sec:validity-confound}), and finally what remains broken and is recorded instead of
-repaired (\S\ref{sec:validity-open}).
+repaired (\S\ref{sec:validity-open}). Figure~\ref{fig:defect-chronology} gives the whole
+sequence in one view, with each defect class pointing at the evidence that carries its
+effect.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/defect-chronology.tex}
+  \caption[The defect classes and their evidence]{The defect classes of this chapter, in
+  the order the audit surfaced them. Every one was found by opening individual documents,
+  repaired under the four-rule discipline of \S\ref{sec:validity-discipline}, and measured
+  on frozen generations; the two red entries are the project's own errors, reported
+  because they are the strongest argument for the rules.}
+  \label{fig:defect-chronology}
+\end{figure}
 
 \section{The Discipline: Repair Versus Inflation}
 \label{sec:validity-discipline}
@@ -79,7 +92,7 @@ model that emits a non-zero value where the reference omits one still fails.
 \textbf{Document-level scalars that are undefined for some documents.} The schema carries a
 single tax rate, inherited from the era when an invoice had one. A document carrying two
 different rates has no single rate, so no answer is correct and the field is ill-posed for that
-document. It is excluded rather than scored --- and separately, an invoice whose only rate is
+document. It is excluded, not scored --- and separately, an invoice whose only rate is
 zero per cent presents the same problem in a different guise, because a zero rate is
 indistinguishable from an absent one by value alone. Both exclusions are rule-driven on a
 declared criterion.
@@ -168,13 +181,13 @@ false-negative counts, which were always computed correctly. This was a diagnost
 the diagnostic is what aims the work, so a defect there propagates into every decision about
 what to fix next. The repair introduced a single shared predicate for signal-bearing outcomes,
 used at all three aggregation sites, and a field with no signal-bearing outcomes is now omitted
-rather than reported as perfect. Reporting a perfect score there says \emph{always right} when
+instead of reported as perfect. Reporting a perfect score there says \emph{always right} when
 it means \emph{never asked}.
 
 \textbf{The perfect-text instrument was unfaithful.} Instrument three of
 \S\ref{sec:method-attribution} renders text from the reference data and feeds it to the
 structuring stage. If that renderer omits or misstates something the reference contains, the
-resulting ceiling is wrong --- and wrong in an unpredictable direction rather than merely
+resulting ceiling is wrong --- and wrong in an unpredictable direction, not merely
 optimistic, because the structurer may be penalised for a value the renderer never showed it.
 Five defects were found in it. Two fields that had been scoring zero on perfect text turned out
 to be scoring zero because the renderer never rendered them; after repair they score near the
@@ -226,7 +239,7 @@ not sufficient; the defect recurred within minutes, in the act of fixing it.
 \textbf{It was caught only after the detector was strengthened.} The first detector compared
 descriptions against reference values in canonical form. A date written in German day-first
 notation does not match its ordered-numeric reference form as a string, so a date-shaped leak
-passed the check. Comparing against \emph{printed} variants rather than canonical ones is what
+passed the check. Comparing against \emph{printed} variants instead of canonical ones is what
 surfaced it.
 
 The conclusion drawn was that vigilance is the wrong instrument for this class of defect. It is
@@ -298,7 +311,7 @@ Figure~\ref{fig:ruler-correction} plots both arms.
 what the answer-key correction was worth, with the true-positive and false-positive counts held
 constant by construction.
 
-\textbf{And on a decision}, the effect was qualitative rather than numerical. On directly
+\textbf{And on a decision}, the effect was qualitative, not numerical. On directly
 measured reading quality, the two candidate reading models were separated by three thousandths
 under the defective ruler, with the general-purpose model ahead. After the corrections ---
 applied to identical stored transcripts --- the ordering inverted, with the gap still under a
@@ -347,7 +360,7 @@ were fixed would misrepresent the state of the apparatus.
 article number scores worse after the perfect-text renderer was corrected than before. The
 repair was still right --- it made the renderer faithful to the reference --- but it exposed a
 comparison problem in that field that has not been resolved. It is reported as a regression
-rather than smoothed away, and Table~\ref{tab:oracle-renderer-correction} covers the aggregate
+instead of smoothed away, and Table~\ref{tab:oracle-renderer-correction} covers the aggregate
 in which it sits.
 
 \textbf{The stale configuration default remains.} Described in
