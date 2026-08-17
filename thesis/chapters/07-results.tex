@@ -339,8 +339,8 @@ evaluated on perfect text, also regresses, and it saw clean input throughout.
 Table~\ref{tab:precision-confound} is the most important table in this chapter, and it is not
 about the adapter.
 
-The adapters were trained in full precision on rented hardware because they exceeded the local
-memory envelope. The deployed baseline runs in 4-bit precision locally. Comparing the two
+The adapters were trained in full precision on target-class hardware because they exceeded the
+floor's memory. The deployed baseline runs in 4-bit precision at the floor. Comparing the two
 directly measures the adapter and a precision change simultaneously --- and because the
 adapter's damage and full precision's benefit are of similar size, they nearly cancel. The
 unmatched comparison reads as no measurable harm. The matched comparison, against a baseline
@@ -364,8 +364,18 @@ exists to produce.
 \subsection{The headline}
 
 Table~\ref{tab:heldout-headline} gives header-field extraction on 39 real invoices, zero-shot,
-fully local, against an answer key adjudicated across three independent channels and signed off
-document by document. All 39 documents parsed and scored; none was dropped.
+with open-weights models only, against an answer key adjudicated across three independent
+channels and signed off document by document. All 39 documents parsed and scored; none was
+dropped.
+
+\textbf{Venue.} Every model involved is open-weights and nothing on the inference path makes a
+network call. The reading pass ran at full precision and native page resolution on
+target-class hardware --- a single 24\,\ac{GB} graphics processor, which transcribed all
+58 pages in roughly sixteen minutes --- and the structuring pass ran at the floor, on the
+laptop in its deployed 4-bit precision (\S\ref{sec:method-repro}). The figure below is
+therefore the pipeline's accuracy on the hardware class a firm would buy for it. What the
+floor configuration's capped reader would score on the same documents is a separate, smaller
+question, recorded as open in \S\ref{sec:lim-hardware}.
 
 \input{tables/heldout-headline.tex}
 

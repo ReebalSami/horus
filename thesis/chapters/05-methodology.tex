@@ -513,29 +513,67 @@ memory.
 \parencite{mlflow}, which is what makes a later re-score attributable to a specific earlier run
 rather than to a remembered one.
 
-\textbf{Hardware.} The deployment envelope is a single Apple M1~Pro laptop with 16\,\ac{GB}
-of unified memory, running the platform's own machine-learning framework \parencite{mlxvlm}
-with 4-bit quantised weights. That envelope is not incidental --- it is the deployment claim.
-A system that requires a data-centre accelerator does not solve the problem this thesis
-addresses, because the firm that cannot send documents to a cloud service usually also cannot
-buy a rack. The delivered pipeline and the comparative studies that shaped its architecture
-run inside that envelope.
+\textbf{Hardware.} The privacy premise requires on-premises processing, and the hardware claim
+is made at two tiers, both of them machines a firm plausibly owns. The \emph{target class} is
+a workstation carrying a single modern 24\,\ac{GB} graphics processor --- the memory class of
+one consumer graphics card, not a data-centre rack. The \emph{floor} is the development
+machine: an Apple M1~Pro laptop with 16\,\ac{GB} of unified memory, running the platform's own
+machine-learning framework \parencite{mlxvlm} with 4-bit quantised weights. The tiering is not
+incidental --- it is the deployment claim, stated with the evidence each tier actually has. A
+system that requires a data-centre rack does not solve the problem this thesis addresses;
+nothing reported here required one, or indeed anything beyond that single 24\,\ac{GB} card.
 
-Where a measurement would have been confounded by the envelope, the measurement moved off it,
-and each move is recorded. Three classes of pass ran on a rented \ac{CUDA} accelerator in
-full precision. First, adapter training, which exceeded local memory outright: a
+The author's development machine sits at the floor, not at the target, so measurements the
+floor would have confounded were taken on target-class hardware instead, and each move is
+recorded. The venue was a rented single-\ac{GPU} instance --- one NVIDIA A10G with
+24\,\ac{GB}, in an \ac{EU} region, single-tenant, its storage destroyed at termination ---
+running the same open-weights checkpoints under the author's control, less than six
+\ac{GPU}-hours in total. Renting the target class for measurement is what kept the author's
+hardware from confounding the science; it is not a cloud dependency of the system, and no
+model provider processed anything at any point. The documents that instance handled were the
+synthetic corpus and the author's own collected invoices --- no client document and no third
+party's confidential data. Four classes of pass ran there in full precision, enumerated
+exhaustively because a reader is entitled to know which numbers were produced where.
+
+\textbf{One: adapter training}, which exceeded the floor's memory outright. A
 path-validation run on four examples ran long enough to be abandoned, against a real training
 budget several hundred times larger, and the local training code already carried three
-separate workarounds for platform ceilings. Second, the adaptation evaluations and their
-baselines, because a full-precision adapter compared against a 4-bit baseline measures the
+separate workarounds for platform ceilings.
+
+\textbf{Two: the adaptation evaluations and their
+baselines}, because a full-precision adapter compared against a 4-bit baseline measures the
 adapter and a precision change simultaneously --- a mismatch that turned out to be large
 enough to invert a conclusion, which is why re-measuring the baseline in the adapter's own
 precision was made a precondition of the study, not an afterthought
 (Table~\ref{tab:precision-confound} reports what would have been concluded without it).
-Third, the final reading passes --- the full-precision reader comparison and the
-transcription of the held-out corpus --- ran there at native resolution, because on the
-laptop the memory ceiling forces a pixel cap that reads an A4 page at roughly half
-resolution, and a reduced-resolution reading of the real invoices would have confounded
-\emph{real invoices are harder} with \emph{real invoices were read at half resolution}.
-Delivered inference remains entirely local; the cost of 4-bit quantisation on the structuring
-stage is measured rather than assumed (Table~\ref{tab:sealed-val-arms}).
+
+\textbf{Three: the reader comparison} of \S\ref{sec:results-reader}, at full precision, because
+the floor disqualified every candidate on its own terms rather than on reading
+quality --- native-resolution vision towers demanded Metal buffers twice the size of the
+machine, and the 4-bit route corrupted German text.
+
+\textbf{Four: every transcript reported in this thesis.} Both the regeneration of the synthetic
+corpus with the selected reader and the transcription of the held-out corpus ran there at
+native resolution, because on the laptop the memory ceiling forces a pixel cap that reads an A4
+page at roughly half resolution. For the held-out corpus a reduced-resolution reading would
+have confounded \emph{real invoices are harder} with \emph{real invoices were read at half
+resolution}; for the synthetic corpus it would have made the two corpora incomparable. The
+held-out pass doubles as the measure of how modest the target class is: all 39 documents ---
+58 pages --- were transcribed at native resolution in roughly sixteen minutes of total
+instance lifetime, including the fetch of the nine-gigabyte model checkpoint, with zero
+errors.
+
+The consequence is a boundary that must be stated in the method rather than discovered in the
+results: the reading figures in this thesis are \emph{target-class} figures, and the reading
+stage was never run at the floor for any of them. What ran at the floor is the structuring
+stage, in the 4-bit precision it is deployed in, together with all scoring and re-scoring ---
+so where a table labels an arm \emph{4-bit / Apple silicon}, that describes the structurer.
+The floor is not thereby diminished: the delivered pipeline is open-weights end to end, makes
+no network call on any inference path, both of its models load and run within 16\,\ac{GB},
+and the cost of 4-bit quantisation on the structuring stage is measured rather than assumed
+(Table~\ref{tab:sealed-val-arms}). What is \emph{not} measured is the reading quality the
+floor's capped resolution would deliver --- and the cap is a workaround for this one
+laptop's memory ceiling, not a property of on-premises deployment, since the same reader
+handles native resolution within a single 24\,\ac{GB} card.
+\S\ref{sec:lim-hardware} records the gap as a limitation and \S\ref{sec:fw-envelope} states
+the bounded measurement that would close it.

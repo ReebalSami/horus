@@ -979,8 +979,8 @@ def build_heldout_headline(data: dict[str, Any]) -> str:
         )
     return _table(
         caption=(
-            "Header-field extraction on the held-out corpus of real invoices, zero-shot and "
-            "fully local."
+            "Header-field extraction on the held-out corpus of real invoices, zero-shot, "
+            "with open-weights models only."
         ),
         label="tab:heldout-headline",
         colspec="lr",
@@ -995,8 +995,14 @@ def build_heldout_headline(data: dict[str, Any]) -> str:
             "are excluded structurally, because their rows were never author-reviewed. "
             "Precision above recall means roughly four errors in five are a field left empty "
             "rather than a field invented --- for an accounting tool, the safer direction to "
-            "fail in, because a gap is visible to a reviewer and a fabrication is not."
-            + superseded_note
+            "fail in, because a gap is visible to a reviewer and a fabrication is not. "
+            "\\textbf{Venue.} Every model here is open-weights and no inference path makes a "
+            "network call. Reading ran at full precision and native resolution on "
+            "target-class hardware (a single 24\\,GB graphics processor); structuring ran at "
+            "the floor, on a 16\\,GB laptop in its deployed 4-bit precision "
+            "(\\S\\ref{sec:method-repro}). The figure is the pipeline's accuracy on the "
+            "hardware class a firm would buy for it; the floor's capped-resolution reading "
+            "is not measured on this corpus (\\S\\ref{sec:lim-hardware})." + superseded_note
         ),
         sources=[
             str(HELDOUT_CACHE),

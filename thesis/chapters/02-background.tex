@@ -73,13 +73,16 @@ the two output disciplines apart; \S\ref{sec:design-two-stage} gives the reasons
 \label{sec:bg-local}
 
 The privacy premise of Chapter~\ref{ch:introduction} confines every deployed model to
-commodity local hardware --- concretely, a laptop with 16\,\ac{GB} of unified memory
-(\S\ref{sec:method-repro}). Two techniques make that envelope workable, and both appear
-throughout the results.
+hardware a firm plausibly owns on premises --- concretely a workstation with a single modern
+24\,\ac{GB} graphics processor as the target class, and a laptop with 16\,\ac{GB} of unified
+memory as the measured floor (\S\ref{sec:method-repro}). Two techniques make that envelope
+workable, and both appear throughout the results.
 
 \textbf{Quantisation} stores the trained weights at reduced numeric precision. The
-models here run in 4-bit quantised form for deployment, roughly a quarter of the memory
-of the 16-bit (\ac{bf16}) representation they were trained in. Quantisation is not
+models here run in 4-bit quantised form for deployment, roughly a quarter of the weight
+storage of the 16-bit (\ac{bf16}) representation they were trained in --- weight storage
+only, since activations, attention caches and image preprocessing consume memory a
+quantised checkpoint does not reduce. Quantisation is not
 free: Chapter~\ref{ch:results} measures the cost directly, and
 Chapter~\ref{ch:measurement-validity} shows how comparing numbers across precision
 regimes without re-measuring the baseline very nearly inverted a conclusion. Local
@@ -91,7 +94,7 @@ freezes the base weights $W$ and trains a low-rank additive update $\Delta W = B
 where $B$ and $A$ have inner rank far smaller than the weight matrix's dimensions
 \parencite{hu2021lora}, as Figure~\ref{fig:lora-update} sketches. Only $A$ and $B$ are
 trained and stored, which is what makes
-adaptation affordable on rented hardware and distributable as a small artefact.
+adaptation affordable on a single graphics processor and distributable as a small artefact.
 
 \begin{figure}[htbp]
   \centering
@@ -129,19 +132,33 @@ pure-\ac{XML} profile for invoices to public-sector buyers, maintained by KoSIT
 (technically aligned with the Franco-German Factur-X specification) is a \emph{hybrid}:
 a \ac{PDF}/A-3 file whose visible pages are an ordinary human-readable invoice and which
 embeds, inside the same file, a machine-readable \ac{XML} instance of the invoice in
-\ac{CII} syntax \parencite{zugferdanhang}. \ac{ZUGFeRD} defines conformance profiles ---
-MINIMUM, BASIC~WL, BASIC, EN~16931, EXTENDED --- that fix how much of the semantic model
-the embedded \ac{XML} must carry.
+\ac{CII} syntax \parencite{zugferdanhang}. \ac{ZUGFeRD} defines five conformance profiles
+of increasing completeness --- MINIMUM, BASIC~WL, BASIC, EN~16931 (also called COMFORT),
+EXTENDED --- plus a sixth, XRECHNUNG, which is a \emph{reference} profile whose \ac{XML}
+requirements are set by KoSIT rather than by FeRD, so that a hybrid file can satisfy the
+public-sector standard \parencite{ferdprofiles}. The profile fixes how much of the semantic
+model the embedded \ac{XML} must carry, and two of the six carry too little to be invoices
+at all: MINIMUM and BASIC~WL omit line items and are recognised only as booking aids, not
+as complete invoices under German \ac{VAT} law \parencite{ferdprofiles}. That matters for
+this thesis twice over --- the corpus of \S\ref{sec:method-data} deliberately spans the
+range including those two profiles, and \S\ref{sec:bg-legal-target} argues that the
+extraction target is legally grounded, which is a claim about the \emph{field definitions}
+rather than about every document in the corpus being a lawful invoice.
 
-Electronic invoicing is no longer optional in Germany: a phased statutory obligation for
-domestic \ac{B2B} invoices began in January~2025 with the duty to be able to receive
-structured electronic invoices, with issuance obligations following in stages
-\parencite{ustg14}. The professions this thesis targets therefore sit in a transition period
+Electronic invoicing is no longer optional in Germany. Since January~2025 every domestic
+business must be able to \emph{receive} a structured electronic invoice, with no
+transitional relief \parencite{ustg14}; the duty to \emph{issue} one is phased in
+separately, from 2027 for issuers above a turnover threshold and from 2028 for the rest
+\parencite{ustg27,bstbkerechnung}. Two exemptions keep unstructured documents in
+circulation regardless: small-amount invoices and small-business issuers are outside the
+obligation altogether \parencite{bstbkerechnung}. The professions this thesis targets
+therefore sit in a transition period --- and, for the exempt classes, a permanent state ---
 in which structured invoices, hybrid invoices and entirely unstructured paper or
-\ac{PDF} documents arrive side by side --- which is exactly the situation the
+\ac{PDF} documents arrive side by side, which is exactly the situation the
 held-out corpus of \S\ref{sec:method-data} samples.
 
 \subsection{Why the extraction target is legally grounded}
+\label{sec:bg-legal-target}
 
 German law prescribes invoice content independently of any serialisation standard.
 \S~14 \ac{UStG} lists the mandatory particulars an invoice must carry --- the parties'
@@ -162,12 +179,24 @@ lawfully omits is wrong in a way that matters professionally.
 The hybrid carrier has a property this thesis's method depends on: \textbf{the same file
 contains the system's input and the evaluation's reference}. Rendering the visible pages
 of a \ac{ZUGFeRD} document yields the page images a \ac{VLM} pipeline consumes;
-extracting the embedded \ac{CII} \ac{XML} yields a machine-exact statement of what those
-pages assert, produced by the invoice issuer's own software rather than by an annotator.
-Ground truth obtained this way is exact, free and incorruptible by annotation fatigue
---- but only for documents that carry the embedding, which born-digital synthetic
-corpora do and real scanned paper does not. That asymmetry, and the split corpus design
-it forces, is developed in \S\ref{sec:method-data}.
+extracting the embedded \ac{CII} \ac{XML} yields a machine-readable record of the same
+invoice, produced by the issuer's own software rather than by an annotator.
+Ground truth obtained this way is free of annotation cost and of annotator fatigue, and
+it is exact in the narrow sense that matters most: it is not one person's reading of the
+page. It is available only for documents that carry the embedding, which born-digital
+synthetic corpora do and real scanned paper does not --- an asymmetry that forces the split
+corpus design of \S\ref{sec:method-data}.
+
+Two warnings belong here rather than later, because the method reads as stronger than it
+is without them. First, the embedded record states what the issuer's software
+\emph{encoded}, which is not by definition identical to what the rendered page
+\emph{shows}; the two can diverge, and where they do the reference can be an unfair
+standard for a system that is only allowed to look at the page. Second, exactness and
+fairness are different properties: the record stores canonical machine values while the
+page prints human-readable ones, so a comparison can penalise a correct reading purely on
+representation. Chapter~\ref{ch:measurement-validity} reports what both warnings cost in
+practice --- reference data that was wrong or ill-posed, and comparison rules that punished
+correct answers --- and it is the reason that chapter exists at all.
 
 \section{Knowledge Graphs and Graph-Augmented Retrieval}
 \label{sec:bg-kg}
@@ -185,10 +214,11 @@ both the edge level and the structure level \parencite{cai2025}.
 
 The retrieval side motivates why one would want such a graph at all.
 \ac{RAG} answers questions by retrieving text chunks and generating over them;
-graph-augmented retrieval (GraphRAG) retrieves over the extracted graph instead, which
-helps exactly the query shapes flat retrieval handles poorly --- aggregations
-(``total spend with this supplier this quarter'') and multi-hop connections ---
-at the cost of building and maintaining the graph \parencite{edge2024graphrag,han2025}.
+graph-augmented retrieval (GraphRAG) retrieves over the extracted graph instead. It is
+proposed for exactly the query shapes flat retrieval handles poorly --- aggregations
+(``total spend with this supplier this quarter'') and multi-hop connections --- at the cost
+of building and maintaining the graph; whether it delivers that advantage is an active and
+unsettled question rather than a settled result \parencite{edge2024graphrag,han2025}.
 The intended Layer~2/3 design (\S\ref{sec:design-layer2},
 \S\ref{sec:design-layer3}) and the hypotheses registered for it
 (Chapter~\ref{ch:limitations-future-work}) rest on this vocabulary and on nothing more
@@ -199,17 +229,31 @@ advanced than it.
 
 \subsection{Precision, recall and F$_1$ over extracted fields}
 
-Field extraction is scored from three counts. A \ac{TP} is a field whose extracted value
-matches the reference; an \ac{FP} is an emitted value that is wrong or belongs to a
+Comparing one extracted field against its reference yields one of \emph{five} outcomes,
+and all five are needed to follow the later chapters. A \ac{TP} is a field whose extracted
+value matches the reference; an \ac{FP} is an emitted value that is wrong or belongs to a
 field the document does not carry; an \ac{FN} is a reference value the system failed to
-produce. Precision $P = \mathit{TP}/(\mathit{TP}+\mathit{FP})$ measures how trustworthy
+produce; a \ac{TN} is a field the document does not carry and the system correctly left
+empty; and a fifth outcome, \emph{excluded}, marks a cell that is ill-posed and is scored
+neither way --- a document-level tax rate on an invoice carrying two different rates, for
+instance. \S\ref{sec:method-metrics} states the exclusion discipline that keeps that fifth
+category from becoming a way to improve a score, and
+Chapter~\ref{ch:measurement-validity} reports every exclusion actually applied.
+
+The first three counts give the familiar measures. Precision
+$P = \mathit{TP}/(\mathit{TP}+\mathit{FP})$ measures how trustworthy
 an emitted value is; recall $R = \mathit{TP}/(\mathit{TP}+\mathit{FN})$ measures how
 much of the document's content was recovered; \ac{F1} $= 2PR/(P+R)$ is their harmonic
-mean, dominated by whichever is worse. The asymmetry between the two error directions is
+mean, dominated by whichever is worse. Correct absences do not enter that family, because
+including them would make every score partly a function of how often a corpus happens to
+leave fields empty. They are not discarded either: the rate at which the system emits a
+value for a field the document does not carry --- spurious emission, $\mathit{FP}/(\mathit{FP}+\mathit{TN})$ ---
+is exactly what the \ac{TN} count is for, and it is tracked as a metric in its own right.
+That asymmetry between the two error directions is
 not cosmetic in this domain: an \ac{FN} is a visible blank a reviewer will fill, while
 an \ac{FP} is a plausible-looking wrong answer, which is why
-Chapter~\ref{ch:results} reports the error \emph{profile} and a dedicated
-spurious-emission rate alongside \ac{F1}.
+Chapter~\ref{ch:results} reports the error \emph{profile} and the spurious-emission rate
+alongside \ac{F1}.
 
 Aggregation is a second design decision. \emph{Micro-pooled} scores add the counts over
 all documents before computing \ac{F1}, weighting every cell equally; a \emph{mean

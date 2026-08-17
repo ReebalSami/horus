@@ -5,7 +5,7 @@
 % ADR-055 amendment), so this chapter stays short and does not repeat it.
 
 This thesis began with a question forced by law rather than by technology: how reliably
-can current open-weights document \acp{VLM}, running entirely on hardware a German tax
+can current open-weights document \acp{VLM}, deployable on hardware a German tax
 firm already owns, convert business-to-business invoices into the legally grounded
 \ac{EN}~16931 form --- and which stage of such a pipeline limits what is achievable? The
 professional-secrecy regime of \S203~\ac{StGB} makes the local constraint an operational
@@ -27,7 +27,7 @@ eleven points, and the synthetic-corpus figures are upper bounds for camera-capt
 paper (\S\ref{sec:lim-corpus}).
 
 The stage that limits the pipeline is reading. The structuring stage exceeds 0.97 on
-perfect transcripts while the delivered pipeline, differing only in that the transcript
+perfect transcripts while the same stack, differing only in that the transcript
 comes from a real reader, reaches 0.85 on the same corpus at matched precision
 (\S\ref{sec:results-baseline}); and in the per-miss attribution --- taken with the
 survey-era reader and labelled as the diagnostic it is --- roughly half of all
@@ -68,7 +68,16 @@ unevaluated, never quietly dropped (\S\ref{sec:unevaluated}). No cloud compariso
 was run. The held-out corpus is small and single-annotator, so its figures establish a
 level and a direction, not precise values; the structuring model was never
 competitively selected, unlike the reader; and everything measured concerns German and
-European \ac{B2B} invoices, nothing else. Within those boundaries, the claims are as
+European \ac{B2B} invoices, nothing else. One boundary deserves naming here because it
+concerns the deployment premise itself: the hardware claim is two-tier, and the tiers carry
+different evidence. Every number reported above was produced on premises-class hardware ---
+nothing needed more than a single 24\,\ac{GB} graphics processor, running open-weights models
+under the author's control at every step --- while the laptop floor, whose memory ceiling caps
+the reader at roughly half of native page resolution, has a measured structuring stage but an
+unmeasured reading quality (\S\ref{sec:method-repro}). The delivered pipeline is open-weights,
+makes no network call, and fits the floor --- but its reading quality at the floor was not
+measured, and no figure here should be read as a floor figure
+(\S\ref{sec:lim-hardware}). Within those boundaries, the claims are as
 strong as the committed evidence behind them --- every number in this manuscript is
 generated from the archived measurement artefacts, none transcribed by hand ---
 and no stronger.

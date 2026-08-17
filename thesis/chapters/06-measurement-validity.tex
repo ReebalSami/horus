@@ -329,9 +329,9 @@ reader afterwards; Table~\ref{tab:reader-lineage} records that lineage.
 The most consequential measurement problem in this project was not a defect in the scoring
 code. It was a comparison between two numbers that were not comparable.
 
-The adaptation experiments had to run on rented hardware in full numeric precision, because
-they exceeded the local memory envelope (\S\ref{sec:method-repro}). The deployed baseline runs
-locally in 4-bit quantised precision. Comparing the full-precision adapter against the
+The adaptation experiments had to run on target-class hardware in full numeric precision,
+because they exceeded the floor's memory (\S\ref{sec:method-repro}). The deployed baseline runs
+at the floor in 4-bit quantised precision. Comparing the full-precision adapter against the
 quantised baseline measures the adapter \emph{and} a precision change at the same time.
 
 Table~\ref{tab:precision-confound} gives both readings. The unmatched comparison shows a

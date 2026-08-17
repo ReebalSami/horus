@@ -6,6 +6,17 @@
 % authoring pass; the archive records carry the same verified metadata, so the two
 % cannot drift apart silently.
 %
+% HONESTY NOTE (2026-08-16, third-pass review). The paragraph above was too strong and
+% is corrected here rather than quietly relaxed. A third review pass found four entries
+% whose metadata had NOT been verified against a primary source despite the blanket
+% claim: `fatura2` credited an author who does not appear on the work, `krieger2021german`
+% carried an invented descriptive title and "and others" for a fully resolvable author
+% list, `stberg62a` carried an invented statute heading, and `dsgvo32` was doing duty for
+% two different articles from a private commentary site. All four are repaired in place
+% with the correction recorded next to the entry. The lesson is the one Chapter 6 makes
+% about field specifications: a claim of verification is itself a claim to be checked, and
+% a comment asserting verification does not perform it.
+%
 % Entries are grouped by role in the argument, not alphabetically -- biblatex
 % sorts the printed bibliography, so grouping here is purely for maintenance.
 %
@@ -509,27 +520,55 @@
   urldate = {2026-08-09}
 }
 
-@online{fatura2,
-  author  = {Brandt, Mathieu},
-  title   = {{FATURA2}: synthetic invoice dataset from 50 templates},
-  year    = {2024},
-  url     = {https://huggingface.co/datasets/mathieu1256/FATURA2-invoices},
-  urldate = {2026-08-09}
+% Authorship corrected 2026-08-16 (third-pass review). The entry previously credited
+% "Mathieu Brandt", which is a mis-reading of the Hugging Face account name that hosts
+% the redistribution (mathieu1256/FATURA2-invoices). The dataset card itself cites the
+% canonical paper, whose three authors and 2023 date are used here.
+@inproceedings{fatura2,
+  author    = {Limam, Mahmoud and Dhiaf, Marwa and Kessentini, Yousri},
+  title     = {{FATURA}: A Multi-Layout Invoice Image Dataset for Document Analysis
+               and Understanding},
+  year      = {2023},
+  eprinttype = {arXiv},
+  eprint    = {2311.11856},
+  url       = {https://arxiv.org/abs/2311.11856},
+  urldate   = {2026-08-16}
 }
 
-% Title and authorship reproduced from the archive record only. The record names
-% "Krieger et al. (2021)" without given names and describes the artefact rather
-% than quoting a title page, so nothing further is asserted here. The dataset is
-% cited as a corpus that exists and was NOT used (licence/access, Chapter 5), so
-% precise authorship is not load-bearing -- but it is also not invented.
-@online{krieger2021german,
-  author  = {Krieger and others},
-  title   = {German invoice dataset: 977 real German invoices with 60+ annotated
-             classes},
-  year    = {2021},
-  organization = {Gesellschaft f\"ur Informatik / Wirtschaftsinformatik 2021},
-  url     = {https://dl.gi.de/bitstreams/38f719d8-6af3-4dd7-a0c6-bdb08bb893c1/download},
-  urldate = {2026-08-09}
+% Resolved 2026-08-16 (third-pass review). The entry previously carried an invented
+% descriptive title ("German invoice dataset: 977 real German invoices...") and
+% "Krieger and others" for authors, on the stated grounds that the record did not quote
+% a title page. It does exist and is fully resolvable: four named authors, a title, a
+% venue, a page range and a DOI, all verified against the Springer record and the GI
+% digital library. The 977-invoice figure and the 60+ classes are in the paper's own
+% dataset description; the reported macro-F1 of 0.8753 is its headline result and is
+% now engaged in Chapter 3 rather than the corpus being mentioned in isolation.
+@inproceedings{krieger2021german,
+  author    = {Krieger, Felix and Drews, Paul and Funk, Burkhardt and Wobbe, Till},
+  title     = {Information Extraction from Invoices: A Graph Neural Network Approach
+               for Datasets with High Layout Variety},
+  booktitle = {Innovation Through Information Systems ({WI}~2021)},
+  series    = {Lecture Notes in Information Systems and Organisation},
+  publisher = {Springer},
+  pages     = {5--20},
+  year      = {2021},
+  doi       = {10.1007/978-3-030-86797-3_1},
+  urldate   = {2026-08-16}
+}
+
+% Added 2026-08-16: the same group's follow-up, which is the closest published study of
+% the layout-shift question this thesis registers and leaves untested
+% (\S\ref{sec:unevaluated}).
+@article{krieger2023longtail,
+  author  = {Krieger, Felix and Drews, Paul and Funk, Burkhardt},
+  title   = {Automated Invoice Processing: Machine Learning-Based Information
+             Extraction for Long Tail Suppliers},
+  journal = {Intelligent Systems with Applications},
+  volume  = {20},
+  pages   = {200285},
+  year    = {2023},
+  doi     = {10.1016/j.iswa.2023.200285},
+  urldate = {2026-08-16}
 }
 
 % =====================================================================
@@ -579,21 +618,103 @@
   langid  = {german}
 }
 
+% Title corrected 2026-08-16 (third-pass review): the entry previously carried the
+% invented heading "Mitwirkung externer Personen". The statute's official heading,
+% verified against gesetze-im-internet.de, is "Inanspruchnahme von Dienstleistungen".
 @online{stberg62a,
   author  = {{Bundesrepublik Deutschland}},
-  title   = {\S~62a {StBerG} --- Mitwirkung externer Personen},
+  title   = {\S~62a {StBerG} --- Inanspruchnahme von Dienstleistungen},
   year    = {2026},
   url     = {https://www.gesetze-im-internet.de/stberg/__62a.html},
-  urldate = {2026-08-09},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+% Added 2026-08-16: the parallel service-provider provisions for the other two
+% professions named in Chapter 1. All three were introduced by the same 2017 act
+% (BT-Drs. 18/11936) that added \S 203 (3)--(4) StGB, and are near-identically worded.
+@online{brao43e,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~43e {BRAO} --- Inanspruchnahme von Dienstleistungen},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/brao/__43e.html},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{wpo50a,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~50a {WPO} --- Inanspruchnahme von Dienstleistungen},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/wipro/__50a.html},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{brak2024ki,
+  author  = {{Bundesrechtsanwaltskammer}},
+  title   = {Hinweise zum Einsatz von k\"unstlicher Intelligenz ({KI})},
+  year    = {2024},
+  url     = {https://www.brak.de/fileadmin/service/publikationen/Handlungshinweise/BRAK_Leitfaden_mit_Hinweisen_zum_KI-Einsatz_Stand_12_2024.pdf},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+% Re-pointed 2026-08-16 (third-pass review) from a private commentary site to the
+% consolidated official text on EUR-Lex, and split: Chapter 1 cites Art. 28 and
+% Art. 32 for different propositions, so both now have their own entry rather than
+% one entry standing in for two articles.
+@online{dsgvo28,
+  author  = {{Europ\"aische Union}},
+  title   = {Art.~28 {DSGVO} --- Auftragsverarbeiter},
+  year    = {2016},
+  url     = {https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX%3A02016R0679-20160504#d1e3244-1-1},
+  urldate = {2026-08-16},
   langid  = {german}
 }
 
 @online{dsgvo32,
   author  = {{Europ\"aische Union}},
   title   = {Art.~32 {DSGVO} --- Sicherheit der Verarbeitung},
-  year    = {2018},
-  url     = {https://dsgvo-gesetz.de/art-32-dsgvo/},
-  urldate = {2026-08-09},
+  year    = {2016},
+  url     = {https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX%3A02016R0679-20160504#d1e3484-1-1},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+% Added 2026-08-16: the supervisory authority's own position on the two propositions
+% Chapter 1 previously asserted without support -- that a processor inside the EEA can
+% still be reached by third-country law, and that contractual measures alone do not
+% cure it where the importer falls under US surveillance law.
+@online{edpb2024processors,
+  author  = {{European Data Protection Board}},
+  title   = {Opinion 22/2024 on certain obligations following from the reliance on
+             processor(s) and sub-processor(s)},
+  year    = {2024},
+  url     = {https://www.edpb.europa.eu/system/files/2024-10/edpb_opinion_202422_relianceonprocessors-sub-processors_en.pdf},
+  urldate = {2026-08-16}
+}
+
+@online{edpb2021supplementary,
+  author  = {{European Data Protection Board}},
+  title   = {Recommendations 01/2020 on measures that supplement transfer tools to
+             ensure compliance with the {EU} level of protection of personal data,
+             version 2.0},
+  year    = {2021},
+  url     = {https://www.edpb.europa.eu/system/files/2021-06/edpb_recommendations_202001vo.2.0_supplementarymeasurestransferstools_en.pdf},
+  urldate = {2026-08-16}
+}
+
+% Added 2026-08-16: the one publicly documented professional-secrecy amendment, cited
+% so Chapter 1's "at least one major provider offers one" is evidenced rather than
+% asserted. The 36-month expiry without a renewal clause is in the document itself.
+@online{msprofsecrecy,
+  author  = {{Microsoft}},
+  title   = {Microsoft Customer Agreement --- Zusatzvereinbarung f\"ur
+             Berufsgeheimnistr\"ager (German Data Secrecy Amendment)},
+  year    = {2021},
+  url     = {https://learn.microsoft.com/en-us/partner-center/agreements},
+  urldate = {2026-08-16},
   langid  = {german}
 }
 
@@ -614,6 +735,38 @@
   year    = {2026},
   url     = {https://www.gesetze-im-internet.de/ustdv_1980/__33.html},
   urldate = {2026-08-15},
+  langid  = {german}
+}
+
+% Added 2026-08-16 (third-pass review): the phased issuance obligation lives in the
+% transitional provision, not in \S 14 UStG, which Chapter 2 had been citing alone for
+% it. The chamber's FAQ supplies the dates and the small-amount exemption.
+@online{ustg27,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~27 Abs.~38 {UStG} --- \"Ubergangsvorschriften zur
+             obligatorischen elektronischen Rechnung},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/ustg_1980/__27.html},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{bstbkerechnung,
+  author  = {{Bundessteuerberaterkammer}},
+  title   = {{FAQ} zur Einf\"uhrung der verpflichtenden {E}-Rechnung f\"ur
+             Ums\"atze zwischen inl\"andischen Unternehmern},
+  year    = {2026},
+  url     = {https://www.bstbk.de/downloads/bstbk/steuerrecht-und-rechnungslegung/fachinfos/BStBK_FAQ_E-Rechnung_final.pdf},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{ferdprofiles,
+  author  = {{FeRD (Forum elektronische Rechnung Deutschland)}},
+  title   = {{ZUGFeRD} --- h\"aufig gestellte Fragen: Profile},
+  year    = {2026},
+  url     = {https://www.ferd-net.de/standards/zugferd-faq},
+  urldate = {2026-08-16},
   langid  = {german}
 }
 

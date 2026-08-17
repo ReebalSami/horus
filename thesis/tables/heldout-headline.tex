@@ -7,7 +7,7 @@
 
 \begin{table}[htbp]
   \centering
-  \caption{Header-field extraction on the held-out corpus of real invoices, zero-shot and fully local.}
+  \caption{Header-field extraction on the held-out corpus of real invoices, zero-shot, with open-weights models only.}
   \label{tab:heldout-headline}
   \begin{tabular}{lr}
     \toprule
@@ -27,6 +27,6 @@
 
   \vspace{4pt}
   \begin{minipage}{0.95\linewidth}\footnotesize
-  \textbf{Protocol note.} Corpus: real invoices collected from the author's own correspondence, never used for fitting, prompt design or selection. Answer key: the signed-off key, adjudicated across three independent reading channels and confirmed document by document by the author. Scope: the 34 registered header fields; repeating groups are excluded structurally, because their rows were never author-reviewed. Precision above recall means roughly four errors in five are a field left empty rather than a field invented --- for an accounting tool, the safer direction to fail in, because a gap is visible to a reviewer and a fabrication is not. An earlier ruler scored the same stored generations at 0.8767; the difference is the instrument, not the system, and is accounted for in Chapter~\ref{ch:measurement-validity}.
+  \textbf{Protocol note.} Corpus: real invoices collected from the author's own correspondence, never used for fitting, prompt design or selection. Answer key: the signed-off key, adjudicated across three independent reading channels and confirmed document by document by the author. Scope: the 34 registered header fields; repeating groups are excluded structurally, because their rows were never author-reviewed. Precision above recall means roughly four errors in five are a field left empty rather than a field invented --- for an accounting tool, the safer direction to fail in, because a gap is visible to a reviewer and a fabrication is not. \textbf{Venue.} Every model here is open-weights and no inference path makes a network call. Reading ran at full precision and native resolution on target-class hardware (a single 24\,GB graphics processor); structuring ran at the floor, on a 16\,GB laptop in its deployed 4-bit precision (\S\ref{sec:method-repro}). The figure is the pipeline's accuracy on the hardware class a firm would buy for it; the floor's capped-resolution reading is not measured on this corpus (\S\ref{sec:lim-hardware}). An earlier ruler scored the same stored generations at 0.8767; the difference is the instrument, not the system, and is accounted for in Chapter~\ref{ch:measurement-validity}.
   \end{minipage}
 \end{table}

@@ -203,8 +203,10 @@ chapter usually reports.
 \textbf{What exists} is a reproducible local development and evaluation environment: a locked
 dependency manifest resolved by a single command, a pinned interpreter version, the build
 targets described above, and continuous integration that verifies the whole of it on every
-change. On the target hardware --- one laptop, no accelerator, no network dependency on the
-inference path --- a checkout runs every experiment reported in this thesis. One external
+change. On the floor machine --- one laptop, no discrete accelerator, no network dependency on
+the inference path --- a checkout runs the delivered pipeline and every scoring and re-scoring
+pass reported in this thesis; the training and native-resolution reading passes require the
+target class (\S\ref{sec:method-repro}). One external
 dependency sits outside the Python environment: an independent validator used to cross-check
 the reference extraction is fetched on demand and verified against a pinned cryptographic
 hash, so the cross-check cannot silently become a different tool.

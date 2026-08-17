@@ -27,27 +27,41 @@ encoder--decoder trained end-to-end can map a page image directly to a structure
 sequence with no intermediate text at all \parencite{kim2022donut}.
 
 The fourth generation --- the subject of this thesis --- inverts Donut's bet. Rather than
-one end-to-end model per task, it offers general document \emph{transcription} as a
-foundation capability, packaged in small open-weights models explicitly built for local
-deployment. Within roughly a year of this writing there appeared, among others,
-granite-docling-258M, a compact end-to-end conversion model \parencite{granitedocling}
-underpinning the Docling toolchain \parencite{docling2025}; olmOCR-2, a seven-billion-parameter
-high-throughput transcription model \parencite{olmocr2}; the MinerU~2.5 parsing family
-\parencite{wang2026mineru}; the DeepSeek-OCR line, which frames page reading as optical context
-compression \parencite{deepseekocr2025,deepseekocr2026}; and general-purpose compact \acp{VLM}
-with strong document ability, such as Qwen3-VL \parencite{qwen3vl}. This wave is recent enough
-that the survey and selection in Chapters~\ref{ch:measurement-validity}
-and~\ref{ch:results} constitute, to the author's knowledge, the first systematic comparison
-of its members on German business-to-business invoices.
+one end-to-end model per task, it treats general document \emph{transcription} as a
+foundation capability. Its members are not one kind of artefact, and lumping them together
+would obscure the comparison this thesis makes, so they are separated here into three kinds.
+\textbf{Document-specialised open-weights readers} are trained for conversion and emit a
+structural target: granite-docling-258M, a compact end-to-end conversion model emitting
+DocTags markup \parencite{granitedocling} and underpinning the Docling toolchain
+\parencite{docling2025}, and olmOCR-2, a seven-billion-parameter transcription model emitting
+naturally ordered plain text \parencite{olmocr2}. \textbf{Document-parsing systems} are
+families or pipelines rather than single checkpoints: the MinerU~2.5 line
+\parencite{wang2026mineru} and the DeepSeek-OCR line, which frames page reading as optical
+context compression \parencite{deepseekocr2025,deepseekocr2026}. \textbf{General-purpose
+compact \acp{VLM} with strong document ability} are not document-specialised at all but
+compete on the same task, Qwen3-VL being the instance this thesis ends up selecting
+\parencite{qwen3vl}. The distinction is load-bearing twice over: it is what
+\S\ref{sec:rw-berghaus} needs in order to reconcile this thesis with the closest prior
+benchmark, and it is what \S\ref{sec:results-reader} finds to matter more than scale.
+
+This wave is recent enough that no published benchmark, in the sources reviewed for this
+thesis, systematically compares its members on German business-to-business
+invoices.\footnote{Searched: the arXiv computer-vision and computation-and-language
+listings, Google Scholar, the Hugging Face model and dataset hubs, the benchmark papers
+cited in this section and their forward citations, and the German-language auditing and
+information-systems venues that publish invoice-extraction work (\S\ref{sec:rw-german}),
+with a cut-off at the submission of this thesis. A negative search result is weaker
+evidence than a positive one, which is why the claim is stated as what was not found rather
+than as a first.} The survey and selection of Chapter~\ref{ch:results} are offered on that
+basis.
 
 \subsection{Benchmarks and corpora}
 
 The standard public corpora for invoice-adjacent extraction do not cover this thesis's
 setting. FUNSD targets form understanding in noisy scans \parencite{jaume2019funsd};
-CORD-v2 covers Indonesian till receipts \parencite{cordv2}; FATURA2 provides synthetic invoices
-from fifty templates without a legally grounded schema \parencite{fatura2}. A corpus of 977 real
-annotated German invoices exists but is access-restricted and could not be used here
-\parencite{krieger2021german}. On the benchmark side, OmniDocBench measures document parsing
+CORD-v2 covers Indonesian till receipts \parencite{cordv2}; FATURA provides 10{,}000
+synthetic invoices generated from fifty templates, annotated over 24 invented field classes
+rather than a legally grounded schema \parencite{fatura2}. On the benchmark side, OmniDocBench measures document parsing
 broadly \parencite{omnidocbench}, Real5-OmniDocBench extends it with five physical capture
 conditions \parencite{real5omnidocbench}, and MDPBench measures multilingual parsing across
 3{,}400 documents in 17 languages with a private evaluation split, reporting that
@@ -63,26 +77,51 @@ Chapter~\ref{ch:results} measures.
 \label{sec:rw-berghaus}
 
 The nearest neighbour to this thesis is the invoice-processing benchmark of
-\textcite{berghaus2025}. They evaluate eight multi-modal models from three families ---
-cloud-frontier models and open-weights general-purpose Gemma~3 --- on three public invoice
-and receipt datasets, under two processing strategies: native image input, and a
-parse-first arrangement that converts the document to markdown with Docling
-\parencite{docling2025} before a text-only model extracts the fields. Their headline finding is
+\textcite{berghaus2025}. They evaluate eight multi-modal models from three families --- two
+cloud-frontier families (GPT-5 and Gemini~2.5) and open-weights general-purpose Gemma~3 ---
+on three public invoice and receipt datasets, zero-shot, under two processing strategies:
+native image input, and a parse-first arrangement that converts the document to markdown
+with Docling \parencite{docling2025} and then asks the same models to extract the fields
+from that text alone. Their headline finding is
 that \textbf{native image processing generally outperforms the parse-first arrangement}.
 
 Taken at face value, that finding points in the opposite direction from this thesis's
-two-stage design, and the tension deserves to be stated rather than avoided. Three
-differences keep the results compatible. First, the model classes barely overlap: their
+two-stage design, and the tension deserves to be stated rather than avoided --- including the
+part of it that does \emph{not} dissolve.
+
+\textbf{Where the studies genuinely differ.} The model classes barely overlap: their
 strongest results come from cloud-frontier models far above this thesis's local envelope,
-and their open-weights models are general-purpose --- the specialised document
-\acp{VLM} that constitute this thesis's reading candidates are absent. Second, the
-parse-first arrangements differ in kind: their text arm is a layout-analysis converter
-producing markdown, whereas this thesis's reading stage is itself a \ac{VLM} transcriber,
-selected competitively (\S\ref{sec:results-reader}) --- ``parse-first loses with one
-converter'' does not establish that every two-stage arrangement loses. Third, and most
-importantly, this thesis's decisive argument for the split is not accuracy but
-\emph{measurability}: a stored transcript is what makes per-stage attribution and
-instrument validation possible at all (\S\ref{sec:design-two-stage}), and those
+and their open-weights arm is general-purpose Gemma~3 --- the document-specialised readers
+that constitute this thesis's reading candidates are absent. And in their parse-first arm
+the converter feeds markdown to the \emph{same} multi-modal models, so the arm tests
+whether those models do better on rendered text than on pixels; this thesis's reading stage
+is a separately selected transcriber feeding a different model chosen for structuring
+(\S\ref{sec:results-reader}), which is a different arrangement being asked a different
+question.
+
+\textbf{Where the obvious rebuttal fails, and must be given up.} It is tempting to answer
+that they tested only a layout-analysis converter and not a vision-language transcriber.
+That is not accurate. They report testing a second converter, SmolDocling, with results
+they describe as almost identical --- and SmolDocling is a compact document \ac{VLM}
+emitting DocTags, the direct predecessor of granite-docling-258M
+\parencite{granitedocling}, which is the very reader this thesis started with. So the
+vision-transcriber case is not untested; it was tested at the 256-million-parameter scale
+and did not rescue the parse-first arm.
+
+\textbf{What that leaves, and it is stronger than the rebuttal it replaces.} This thesis's
+own evidence agrees with theirs at that scale and diverges above it. Its first reader was a
+258-million-parameter DocTags model of the same family, and the pipeline built on it scored
+poorly for exactly the reason their result predicts --- the transcript did not carry what the
+structuring stage needed (\S\ref{sec:results-attribution}). The recovery came from
+replacing that reader with a four-billion-parameter general-purpose transcriber
+(\S\ref{sec:results-reader}). The honest reconciliation is therefore about \emph{scale and
+specialisation of the reading stage}, not about converter category: parse-first with a
+compact structural converter loses, in their data and in this thesis's; whether it loses
+with a reader an order of magnitude larger is what this thesis measures and they did not.
+
+\textbf{And the argument that does not depend on accuracy at all.} This thesis's decisive
+reason for the split is \emph{measurability}: a stored transcript is what makes per-stage
+attribution and instrument validation possible (\S\ref{sec:design-two-stage}), and those
 measurements, not the end-to-end score, produced this thesis's central findings. The
 accuracy evidence gathered here --- a small preliminary comparison in which the two-stage
 arrangement won (\S\ref{sec:results-preliminary}), consistent with published evidence that
@@ -90,6 +129,42 @@ imposed output formats degrade generation quality \parencite{tam2024format} --- 
 their benchmark and is labelled as such. Whether a single-shot arrangement overtakes the
 split \emph{within} the specialised local model class is an open question this thesis
 leaves explicitly to future work (\S\ref{sec:future-work}).
+
+\subsection{German invoices have been extracted before, and by whom}
+\label{sec:rw-german}
+
+The gap this thesis claims is a gap in a \emph{corpus--model} pairing, not an absence of
+German invoice-extraction research, and conflating the two would overstate it. The closest
+published work on German invoices comes from the auditing-digitalisation literature rather
+than from computer vision. \textcite{krieger2021german} assemble 977 real German invoices
+from 494 vendors, annotated over more than sixty classes, and extract from them with a graph
+neural network over \ac{OCR} output, reporting a macro-averaged \ac{F1} of 0.8753 on a
+deliberately layout-diverse set. Their follow-up \parencite{krieger2023longtail} studies
+precisely the question this thesis registers and leaves untested
+(\S\ref{sec:unevaluated}): how extraction quality behaves when the training layouts are
+skewed towards frequent suppliers and the test layouts are not, finding the gap between
+seen and unseen layouts much smaller for a LayoutLM-class transformer than for
+graph-based or forest-based alternatives.
+
+That work is close enough that the comparison must be made explicitly rather than left for
+a reader to make. \textbf{Three differences mean the numbers are not comparable, and none of
+them favours this thesis.} Their corpus is an order of magnitude larger and consists
+entirely of real documents, where this thesis's real-document evidence rests on 39. Their
+reference data is rule-annotated over an in-house class list, where this thesis's synthetic
+reference is extracted from the document's own embedded record under a public semantic
+standard --- different kinds of ground truth, each with its own failure mode. And their
+models consume \ac{OCR} output with layout coordinates under no hardware constraint, where
+this thesis constrains itself to open-weights models sized for a laptop and forbids a
+separate recognition engine. A macro-averaged score over their class list and a mean
+per-invoice score over the standard's business terms are not the same measurement, and no
+ranking between the two should be inferred from the fact that both round to roughly 0.88.
+
+\textbf{What remains genuinely open after their work} is what this thesis addresses: their
+corpus is access-restricted and could not be used here; it is not paired with a
+machine-exact reference under the European semantic model, so exact scoring against defined
+business terms is not available on it; and it predates the open-weights document
+\acp{VLM} entirely, so it says nothing about whether the reading stage or the structuring
+stage limits a pipeline built from them.
 
 \textbf{What this thesis adds} to this line of work: the missing model class (specialised
 open-weights document \acp{VLM} under an enforced local-hardware envelope), the missing
@@ -152,7 +227,7 @@ stage's contribution using reference-quality transcripts
 \label{sec:rw-adaptation}
 
 Low-rank adaptation trains small additive matrices while freezing the base weights, and is
-the standard method for adapting a model of this size on rented hardware \parencite{hu2021lora}.
+the standard method for adapting a model of this size on modest hardware \parencite{hu2021lora}.
 A growing body of evidence, however, bounds what such adaptation can add and warns what it
 can break. \textcite{ghosh2024limitations} find that \ac{LoRA}-based instruction tuning
 ``is limited to learning response initiation and style tokens'', with most of the answer
@@ -199,10 +274,14 @@ that would have engaged it are reported in Chapter~\ref{ch:limitations-future-wo
 \section{Positioning of This Thesis}
 \label{sec:rw-positioning}
 
-The gap this thesis fills sits at the intersection of the sections above. The specialised
+The gap this thesis fills sits at the intersection of the sections above, and it is narrower
+than any one of them. The specialised
 open-weights document \acp{VLM} of 2025--26 exist precisely to make local document
 understanding practical, yet the closest invoice benchmark predates them and evaluates
-cloud-frontier and general-purpose models instead \parencite{berghaus2025}; the public corpora
+cloud-frontier and general-purpose models instead \parencite{berghaus2025}; German invoice
+extraction has been studied, but with \ac{OCR}-plus-layout models on a restricted corpus
+without a machine-exact semantic reference and without a hardware constraint
+\parencite{krieger2021german,krieger2023longtail}; the public corpora
 do not pair German \ac{B2B} invoices with a machine-exact legal schema; and the evaluation
 literature supplies matching rules but not the discipline of validating the scoring
 apparatus that applies them. This thesis occupies that intersection: it evaluates the new
@@ -211,7 +290,7 @@ privacy-motivated hardware envelope stated in advance, with an attribution metho
 locates the binding constraint (reading, not structuring), and with the measuring
 instrument itself validated, repaired and reported alongside the system it measures.
 Where the closest prior work and this thesis point in different architectural directions
---- native image input against a two-stage split --- \S\ref{sec:rw-berghaus} argues the
-results are compatible once model class, converter class and the measurability argument
-are separated, and the residual disagreement is stated as an open question rather than
-resolved by assertion.
+--- native image input against a two-stage split --- \S\ref{sec:rw-berghaus} reconciles them
+on reader scale and specialisation rather than on converter category, gives up the
+converter-category rebuttal because that paper controls for it, and states the residual
+disagreement as an open question rather than resolving it by assertion.

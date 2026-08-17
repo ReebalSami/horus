@@ -100,20 +100,46 @@ emission, not degraded placement --- is consistent with published findings, and
 \subsection{Hardware Envelope}
 \label{sec:lim-hardware}
 
-The system was developed inside, and is delivered for, a single laptop with 16\,\ac{GB} of
-unified memory. That is a narrower claim than \emph{runs locally}: the privacy premise is
-on-premises processing, which would also permit a workstation with a discrete accelerator, and
-such a machine would likely support a larger reading model than the one selected here.
+The hardware claim is two-tier (\S\ref{sec:method-repro}): a \emph{target class} --- a
+workstation with one modern 24\,\ac{GB} graphics processor, the class on which every reading
+figure and the entire adaptation study were measured --- and a \emph{floor}, the author's
+16\,\ac{GB} laptop, on which the delivered demonstrator runs and the structuring stage is
+measured. Both tiers satisfy the privacy premise, which is on-premises processing, and neither
+is exotic. The limitation in this section is about how the evidence is distributed across the
+two tiers, not about whether the system is local.
 
-The envelope bound training and the heavier measurement passes, not delivered inference. The
-adaptation runs exceeded it and were moved to a rented accelerator, together with the
-precision-matched adaptation evaluations and the native-resolution reading passes
-(\S\ref{sec:method-repro}); the local-only property therefore holds for the delivered
-pipeline, but not for the process that produced its adapters or its final measurement record.
-Since neither the adapters nor the measurement harness is part of the delivered system, the
-delivered system remains fully local --- but a firm wishing to adapt the pipeline to its own
-documents, or to reproduce the full measurement, on its own hardware could not do so within
-this envelope.
+The floor bound training and native-resolution reading, not delivered inference. The
+adaptation runs exceeded the laptop and were taken --- together with the
+precision-matched adaptation evaluations, the reader comparison, and every reported reading
+pass --- on target-class hardware, rented for the purpose and running the same open-weights
+checkpoints under the author's control (\S\ref{sec:method-repro}). The local-only property
+therefore holds for the delivered pipeline at both tiers --- open-weights end to end, no
+network call on any inference path, both models resident within 16\,\ac{GB} --- and a firm at
+the target class could also adapt the pipeline and reproduce the full measurement record on
+premises. A firm equipped only at the floor could run the pipeline but not adapt it or
+reproduce the measurements.
+
+\textbf{The sharper form of this limitation, stated plainly.} On the laptop the reader's input
+is capped to roughly half an A4 page's resolution --- a Metal-memory workaround specific to
+this machine, not a quality choice and not a property of local deployment, since the same
+reader handles native resolution within a single 24\,\ac{GB} card. Every transcript in this
+thesis was produced above that cap, at the target class. The reading quality of the floor
+configuration was therefore not measured, on either corpus, and no figure reported here should
+be read as a floor figure.
+
+This matters more than a routine venue note, because it lands on the axis this thesis identifies
+as the dominant real-world cost. The channel comparison of \S\ref{sec:results-heldout} shows
+capture quality costing more than eleven points of mean per-invoice F$_1$, and page resolution
+is a capture-quality variable. The unmeasured floor penalty and the measured channel penalty are
+plausibly the same mechanism, which means the floor figure should be expected to sit below the
+reported one --- by an amount this thesis cannot state. Both directions of error are available to
+a reader who wants to speculate; the honest position is that the number is missing, not small.
+
+The measurement that would close it is bounded, requires no rented hardware and no new code,
+and is specified in \S\ref{sec:fw-envelope}. It was not taken within the scope of this thesis
+because the experiment track was frozen in favour of the writeup
+(\S\ref{sec:design-scope}), and recording the gap was judged better than an unplanned run
+reported without the pre-registration discipline the rest of the measurements carry.
 
 \subsection{Language, Document Class and Jurisdiction}
 \label{sec:lim-scope}
@@ -283,6 +309,27 @@ embedded text layer as a third, and the same printed-text gate and ranked escala
 three \emph{local} channels are independent enough for the two-channel-agreement rule to carry
 its current warrant is itself an open question, and it is the one that would have to be answered
 first.
+
+\subsection{Measure the Floor of the Envelope}
+\label{sec:fw-envelope}
+
+The most immediately available missing number in this thesis, and the cheapest to obtain: read
+the 39 held-out invoices with the selected reader \emph{on the laptop}, under the pixel cap the
+floor's runtime imposes, then structure and score them with the pipeline and scoring rules used
+throughout. Nothing new has to be built --- the reading script already supports the local path
+and already documents the cap as the reason it exists --- and nothing leaves the premises, so
+unlike the answer-key work (\S\ref{sec:lim-cloud-gt}) this measurement is itself deployable
+inside the constraint it evaluates.
+
+The comparison against Table~\ref{tab:heldout-headline} would be clean, because only the
+reading venue and resolution change: same documents, same answer key, same structurer, same
+scorer, same greedy decoding. The result would convert \S\ref{sec:lim-hardware} from a stated
+gap into a measured quantity --- the accuracy cost of the floor relative to the target class,
+on real documents --- which is the number a firm equipping below the target class would
+actually want and the one this thesis is currently unable to give. Two protocol requirements follow from
+Chapter~\ref{ch:measurement-validity}: the local transcripts must be archived like every other
+generation, and the comparison must be pre-registered as a two-cell design before the run, so
+that a disappointing local figure cannot be re-framed afterwards.
 
 \subsection{Robustness on Degraded Documents}
 \label{sec:fw-robustness}

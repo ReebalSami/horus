@@ -28,8 +28,9 @@
     \textbf{Layer 1 --- Reading and structuring}\\[2pt]
     \footnotesize A page image becomes a validated record: a vision model transcribes
     the page, a language model places the transcribed values into the invoice schema,
-    and a deterministic stage validates and repairs the result. Runs entirely on local
-    hardware.%
+    and a deterministic stage validates and repairs the result. Open-weights throughout;
+    no network call; nothing needs more than one 24\,GB graphics processor, and
+    structuring runs even on a 16\,GB laptop.%
   };
 
   \node[unbuilt, above=9mm of l1] (l2) {%

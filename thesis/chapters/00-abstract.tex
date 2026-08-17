@@ -16,13 +16,15 @@ German tax advisors, auditors and lawyers process client invoices under a
 professional-secrecy regime backed by criminal law, which makes sending those
 documents to external cloud services legally fraught and motivates processing
 that never leaves the firm. This thesis asks how reliably open-weights
-vision-language models sized for commodity hardware --- a laptop with 16\,GB of
-memory --- can convert German business-to-business invoices into the legally
+vision-language models sized for hardware a firm already owns --- nothing
+reported required more than a single 24\,GB graphics processor, and the
+structuring stage runs on a 16\,GB laptop --- can convert German
+business-to-business invoices into the legally
 grounded \acs{EN}~16931 semantic form, and which stage of the pipeline limits
 that reliability. It builds and measures HORUS, a two-stage pipeline in which
 Qwen3-VL-4B-Instruct transcribes the page image and gemma-4-E4B-it structures
-the transcript against the field registry; the delivered system runs both
-stages on-premises. Measurement
+the transcript against the field registry; no inference path makes a network
+call. Measurement
 rests on a synthetic \acf{ZUGFeRD} corpus whose embedded \acs{XML} supplies
 machine-exact references, and on 39 real invoices with an answer key adjudicated
 across three independent channels.

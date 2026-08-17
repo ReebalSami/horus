@@ -9,9 +9,10 @@ open-weights document models convert German business-to-business invoices into a
 representation on commodity hardware, and which stage of the pipeline limits that reliability.
 
 \textbf{On the first half: reliably enough to be useful under review, and not reliably enough to
-be unsupervised.} On real invoices, zero-shot and entirely local, header-field extraction
-reaches the high eighties on the headline aggregation
-(Table~\ref{tab:heldout-headline}). More important than the level is the shape: precision
+be unsupervised.} On real invoices, zero-shot and with open-weights models only, header-field
+extraction reaches the high eighties on the headline aggregation
+(Table~\ref{tab:heldout-headline}) --- reading on target-class hardware, structuring at the
+floor, as that table's protocol note records. More important than the level is the shape: precision
 substantially exceeds recall, so the dominant failure is an empty field, not an invented
 one. That is the profile a reviewed workflow can absorb. A practitioner checking a booking sees
 a gap and fills it; a practitioner cannot see a plausible fabrication. The system is therefore
@@ -27,7 +28,8 @@ develops what follows.
 
 The four sub-questions are answered as follows.
 
-\textbf{(1) How do recent open-weights document models compare on German e-invoice extraction?}
+\textbf{(1) How do recent open-weights document models compare as the reading stage, holding
+the structuring stage constant?}
 They differ less than expected on aggregate score and more than expected in \emph{failure mode}
 --- and the aggregate comparison turned out not to be decidable. On directly measured reading
 quality the two finalists sat within a point of each other, and their ordering inverted when
@@ -42,8 +44,8 @@ the other reads every region but occasionally slips a character inside a value
 value is attached to a named field and can be checked against the page, whereas a dropped block
 produces an absence indistinguishable from a field the document never carried.
 
-\textbf{(2) Does splitting reading from structuring beat a single model going straight from page
-to structured output?} On the evidence gathered here, yes --- but the evidence is weaker than the
+\textbf{(2) What evidence supports splitting reading from structuring, and what remains
+unproven?} On accuracy, the evidence gathered here favours the split --- but it is weaker than the
 question deserves and is labelled accordingly. The comparison was made on a small
 development subset before the scoring corrections, and it is reported as a preliminary study
 (\S\ref{sec:results-preliminary}). Its qualitative outcome was clear enough to determine the
@@ -54,15 +56,21 @@ nothing to do with accuracy: a two-stage pipeline lets the two failure sources b
 \emph{measured separately}, and a single-shot model does not. Given that the measurement turned
 out to be where most of this project's value lay, that is not a minor advantage.
 
-\textbf{(3) What accuracy is attainable inside a commodity local envelope?} The figures in
-Tables~\ref{tab:sealed-val-arms} and~\ref{tab:heldout-headline} were obtained on a single laptop
-with 16\,\ac{GB} of unified memory using 4-bit quantised weights. Full numeric precision is
-worth a small but measurable amount (Table~\ref{tab:sealed-val-arms}), so the quantisation used
-for deployment costs something real and modest. The binding local constraint turned out not to
-be inference at all --- inference fits comfortably --- but \emph{training}: the adaptation
-experiments exceeded the envelope and had to be moved to rented hardware
-(\S\ref{sec:method-repro}). A firm that wants to run this pipeline can; a firm that wants to
-fine-tune it on its own documents cannot, on this hardware.
+\textbf{(3) What accuracy is attainable inside a commodity local envelope, and which stage pays
+for it?} At the target class --- one modern 24\,\ac{GB} graphics processor --- the answer is
+the headline itself: every reading figure in this thesis was produced on exactly that class of
+machine, and nothing reported required more (\S\ref{sec:method-repro}). The structuring stage
+was additionally measured at the floor, on the 16\,\ac{GB} laptop, in the 4-bit precision it
+is deployed in (Table~\ref{tab:sealed-val-arms}); full numeric precision is worth a small but
+measurable amount, so quantisation costs something real and modest. What remains unmeasured is
+the floor's \emph{reading} quality: the laptop's memory ceiling forces a pixel cap that reads
+an A4 page at roughly half resolution, so while the pipeline loads and runs there, what it
+scores there on real documents is a missing number, and \S\ref{sec:lim-hardware} names it as a
+limitation rather than assuming the gap away. What the floor demonstrably rules out is
+\emph{training}: the adaptation experiments exceeded the laptop outright --- and then ran,
+like everything else, within the same single 24\,\ac{GB} card. A firm should size for the
+target class, can expect the structuring stage to run even below it, and should expect the
+reading stage to be the part that pays for any smaller machine.
 
 \textbf{(4) Where does the residual error originate?} In three places, in this order of
 magnitude: in reading, in the measurement, and only then in structuring. The measurement share
@@ -211,14 +219,20 @@ the ruler was corrected (\S\ref{sec:results-reader}).
 The premise of this work is that the document never leaves the firm
 (\S\ref{sec:motivation}). It is worth stating what that premise costs and where it held.
 
-\textbf{Inference is comfortable; training is not.} The full pipeline runs on a laptop with
-16\,\ac{GB} of unified memory. The adaptation experiments did not, and were moved to rented
-hardware together with the precision-matched evaluations and native-resolution reading
-passes recorded in \S\ref{sec:method-repro}. A firm can therefore \emph{run} this system on hardware it already owns, but cannot
-adapt it to its own document mix on that hardware --- and adapting on rented hardware means the
-training documents leave the premises, which reintroduces the problem the design exists to
-avoid. Since the adaptation produced no benefit here, that trade did not have to be made; had it
-produced one, the confidentiality argument would have had to be re-examined.
+\textbf{Inference fits both tiers; training fits only the target class; and the reading stage
+pays for the smaller machine.} Both models
+of the full pipeline load and run on a laptop with 16\,\ac{GB} of unified memory --- but only
+with the reader's input capped to roughly half an A4 page's resolution, which is why every
+reported transcript was produced on target-class hardware instead (\S\ref{sec:method-repro}).
+The adaptation experiments exceeded the laptop outright and ran on that same class: a single
+24\,\ac{GB} graphics processor was enough to train, evaluate and re-baseline both adapters. A
+firm that owns such a workstation can therefore both run and adapt this system without any
+document leaving the premises. A firm that owns only the floor can run it --- at a reading
+quality this thesis did not measure --- but would have to rent for adaptation, which means the
+training documents leave the premises and reintroduces the problem the design exists to
+avoid. Since the adaptation produced no benefit here, that trade did not have to be made; had
+it produced one, the confidentiality argument would have had to be re-examined for the
+floor-only firm.
 
 \textbf{Quantisation costs a small, measurable amount.} Table~\ref{tab:sealed-val-arms} gives
 the difference between 4-bit and full precision on the same corpus. The deployable configuration
@@ -227,9 +241,9 @@ is the weaker one, and that gap is part of the price of the local constraint.
 \textbf{The measurement itself broke the premise, deliberately and on record.} Two of the
 three channels used to build the held-out answer key are cloud services, so the content of
 those 39 invoices left local hardware (\S\ref{sec:method-heldout-gt}); and the
-native-resolution pass that transcribed them ran on a rented accelerator
-(\S\ref{sec:method-repro}) --- a machine under the author's control rather than a third-party
-service, which is a different privacy class, but off-premises nonetheless. The distinction
+native-resolution pass that transcribed them ran on the rented target-class instance
+(\S\ref{sec:method-repro}) --- open weights under the author's control rather than a
+third-party model service, which is a different privacy class, but off-premises nonetheless. The distinction
 relied on --- that a
 measuring instrument is not part of the delivered system --- is sound as far as it goes: nothing
 on the inference path makes a network call. But it is worth being clear that a practitioner
