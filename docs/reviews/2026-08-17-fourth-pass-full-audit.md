@@ -148,3 +148,21 @@ The manuscript uses `\textbf{…}` as paragraph lead-ins ~180 times across all c
 7. **F7–F10** — as decided in discussion.
 
 All fixes belong on one branch via the release-manager flow, followed by `make thesis-clean && make thesis` and a re-run of the float audit to confirm the placement repairs.
+
+---
+
+## 7. Disposition (2026-08-17, implemented on branch `docs/fourth-pass-fixes`)
+
+| Finding | Disposition |
+|---|---|
+| F1 | **Fixed** — two-paper repair. A deeper re-verification against the papers' own texts confirmed the conflation and extended it: the ch. 1 citation, the ch. 3 positioning summary, the `krieger2023longtail` record's `german` tag, and the dataset record's chimera citation were all conflation residue. New verified record `thiee-2023-invoice-extraction-pipeline.md`; `thiee2023invoices` added to the bibliography. |
+| F2 | **Fixed** — `HELM` added to the acronym list. |
+| F3 | **Fixed** — un-versioned wording ("Multiple review passes, documented under `docs/reviews/`…"). |
+| F4 | **Fixed** — `tab:corpus-composition` moved to its first prose promise in §5.2; the two page-37 pointers to `fig:gt-adjudication` (corpus-map caption + TikZ node) retargeted to `\S\ref{sec:method-heldout-gt}`, so the figure now lands beside its discussing section instead of trailing a far-forward promise. |
+| F5 | **Fixed** — all four appendix tables now referenced by number from their own appendix prose. |
+| F6 | **Fixed** — "authoryear". |
+| F7 | **Partially adopted** — `fhwedelrichtlinie` is now cited in Appendix E, closing the statutory-declaration loop. The eight tooling entries stay dormant deliberately: a `\nocite` block would print implementation-tool manuals in the bibliography with no in-text warrant. |
+| F8 | **Declined** — the archived record is a stub with unverified authors; per the archival rule the citation is not available until the record is completed, and the metric-separation precedent is already carried in-text by the KIEval citation. Record retained for provenance. |
+| F9 | **Fixed** — the 3 both-miss cells are now stated, with their coincidence with the text-layer ceiling's own misses; 931 + 16 + 13 + 3 = 963 sums visibly. |
+| F10 | **Adopted with a uniform rule** — bold is retained only for paragraph-initial run-in lead-ins and definitional first introductions; every in-paragraph stress bold (19 instances — the "~8" above undercounted the same class) converted to `\emph`. |
+| F11 | **No action**, as recommended. |

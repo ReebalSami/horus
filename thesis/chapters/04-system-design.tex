@@ -45,7 +45,7 @@ graph, with every answer traceable back to the document and field it came from.
 \label{sec:design-honest-null}
 
 One commitment binds every layer and is stated here because the rest of the design follows
-from it. \textbf{A field the document does not carry must come back absent, and a field the
+from it. \emph{A field the document does not carry must come back absent, and a field the
 system could not read must come back absent --- never guessed.}
 
 The justification is specific to the domain, not a general preference for caution. The
@@ -234,7 +234,7 @@ conventions to one canonical form, the several date conventions a European invoi
 one canonical form, a rate with or without its percent sign to one canonical form.
 
 One design principle governs the whole stage, and it is a hard constraint, not a
-preference: \textbf{repair may never invent a value}. The structural repair supplies delimiters
+preference: \emph{repair may never invent a value}. The structural repair supplies delimiters
 only, never a key and never a value, and it refuses to guess when the output was truncated in
 the middle of a value --- in that case the field is reported absent. A value that cannot be
 parsed becomes an absence, not a best guess. An unrecognised key is dropped, never
@@ -333,11 +333,11 @@ Chapter~\ref{ch:measurement-validity} documents at this level.
 The third layer would answer practitioner questions posed in natural language over the graph,
 locally, with the same confidentiality constraint as the layers below it.
 
-Two design commitments would govern it. First, \textbf{every answer carries its provenance}:
+Two design commitments would govern it. First, \emph{every answer carries its provenance}:
 the documents and the specific fields it was derived from, so that a practitioner can verify a
 figure rather than trust it. An unsourced answer is not merely less useful in this domain; it
 is unusable, because the professional obligation attaches to the booking and not to the tool.
-Second, \textbf{retrieval strategy is a question to be measured, not assumed}. Flat vector
+Second, \emph{retrieval strategy is a question to be measured, not assumed}. Flat vector
 retrieval over document text and graph-structured retrieval have different strengths, and the
 comparison between them is an active, unsettled research question
 \parencite{han2025,edge2024graphrag}. The plausible outcome is that the answer differs by question
