@@ -135,36 +135,42 @@ leaves explicitly to future work (\S\ref{sec:future-work}).
 
 The gap this thesis claims is a gap in a \emph{corpus--model} pairing, not an absence of
 German invoice-extraction research, and conflating the two would overstate it. The closest
-published work on German invoices comes from the auditing-digitalisation literature rather
-than from computer vision. \textcite{krieger2021german} assemble 977 real German invoices
-from 494 vendors, annotated over more than sixty classes, and extract from them with a graph
-neural network over \ac{OCR} output, reporting a macro-averaged \ac{F1} of 0.8753 on a
-deliberately layout-diverse set. Their follow-up \parencite{krieger2023longtail} studies
-precisely the question this thesis registers and leaves untested
-(\S\ref{sec:unevaluated}): how extraction quality behaves when the training layouts are
-skewed towards frequent suppliers and the test layouts are not, finding the gap between
-seen and unseen layouts much smaller for a LayoutLM-class transformer than for
-graph-based or forest-based alternatives.
+published line of work comes from the auditing-digitalisation literature rather than from
+computer vision. \textcite{krieger2021german} introduce a graph neural network over
+\ac{OCR} output and evaluate it on 1,129 real one-page invoices in English ---
+hand-annotated for three key items across 277 vendors, all addressed to a single recipient
+--- reporting a macro-averaged \ac{F1} of 0.8753 on a deliberately layout-diverse set.
+\textcite{thiee2023invoices} carry that model family to German documents: a design-science
+study over 977 real German invoices from 494 vendors, rule-annotated over more than sixty
+classes, whose first design cycle augments the graph model with a German-language text
+encoder and reports an \ac{F1} of 0.823 on the same three headline fields. A further study
+from the same group \parencite{krieger2023longtail} examines precisely the question this
+thesis registers and leaves untested (\S\ref{sec:unevaluated}): how extraction quality
+behaves when the training layouts are skewed towards frequent suppliers and the test
+layouts are not, finding the gap between seen and unseen layouts much smaller for a
+LayoutLM-class transformer than for graph-based or forest-based alternatives.
 
 That work is close enough that the comparison must be made explicitly rather than left for
 a reader to make. \textbf{Three differences mean the numbers are not comparable, and none of
-them favours this thesis.} Their corpus is an order of magnitude larger and consists
+them favours this thesis.} Their corpora are an order of magnitude larger and consist
 entirely of real documents, where this thesis's real-document evidence rests on 39. Their
-reference data is rule-annotated over an in-house class list, where this thesis's synthetic
-reference is extracted from the document's own embedded record under a public semantic
-standard --- different kinds of ground truth, each with its own failure mode. And their
-models consume \ac{OCR} output with layout coordinates under no hardware constraint, where
-this thesis constrains itself to open-weights models sized for a laptop and forbids a
-separate recognition engine. A macro-averaged score over their class list and a mean
-per-invoice score over the standard's business terms are not the same measurement, and no
-ranking between the two should be inferred from the fact that both round to roughly 0.88.
+reference data is annotated in-house --- by hand in the English study, by rules in the
+German one --- where this thesis's synthetic reference is extracted from the document's own
+embedded record under a public semantic standard: different kinds of ground truth, each
+with its own failure mode. And their models consume \ac{OCR} output with layout coordinates
+under no hardware constraint, where this thesis constrains itself to open-weights models
+sized for a laptop and forbids a separate recognition engine. A macro-averaged score over
+an in-house class list and a mean per-invoice score over the standard's business terms are
+not the same measurement: no ranking should be inferred from the fact that the English
+study's 0.8753 and this thesis's held-out figure round to the same 0.88, and none from the
+German study's lower 0.823 either.
 
-\textbf{What remains genuinely open after their work} is what this thesis addresses: their
-corpus is access-restricted and could not be used here; it is not paired with a
+\textbf{What remains genuinely open after their work} is what this thesis addresses: both
+corpora are access-restricted and could not be used here; neither is paired with a
 machine-exact reference under the European semantic model, so exact scoring against defined
-business terms is not available on it; and it predates the open-weights document
-\acp{VLM} entirely, so it says nothing about whether the reading stage or the structuring
-stage limits a pipeline built from them.
+business terms is not available on them; and the line of work predates the specialised
+open-weights document \acp{VLM} evaluated here, so it says nothing about whether the
+reading stage or the structuring stage limits a pipeline built from them.
 
 \textbf{What this thesis adds} to this line of work: the missing model class (specialised
 open-weights document \acp{VLM} under an enforced local-hardware envelope), the missing
@@ -279,9 +285,9 @@ than any one of them. The specialised
 open-weights document \acp{VLM} of 2025--26 exist precisely to make local document
 understanding practical, yet the closest invoice benchmark predates them and evaluates
 cloud-frontier and general-purpose models instead \parencite{berghaus2025}; German invoice
-extraction has been studied, but with \ac{OCR}-plus-layout models on a restricted corpus
+extraction has been studied, but with \ac{OCR}-plus-layout models on restricted corpora
 without a machine-exact semantic reference and without a hardware constraint
-\parencite{krieger2021german,krieger2023longtail}; the public corpora
+\parencite{krieger2021german,thiee2023invoices,krieger2023longtail}; the public corpora
 do not pair German \ac{B2B} invoices with a machine-exact legal schema; and the evaluation
 literature supplies matching rules but not the discipline of validating the scoring
 apparatus that applies them. This thesis occupies that intersection: it evaluates the new

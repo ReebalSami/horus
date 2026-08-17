@@ -535,14 +535,17 @@
   urldate   = {2026-08-16}
 }
 
-% Resolved 2026-08-16 (third-pass review). The entry previously carried an invented
+% Resolved 2026-08-16 (third-pass review): the entry previously carried an invented
 % descriptive title ("German invoice dataset: 977 real German invoices...") and
-% "Krieger and others" for authors, on the stated grounds that the record did not quote
-% a title page. It does exist and is fully resolvable: four named authors, a title, a
-% venue, a page range and a DOI, all verified against the Springer record and the GI
-% digital library. The 977-invoice figure and the 60+ classes are in the paper's own
-% dataset description; the reported macro-F1 of 0.8753 is its headline result and is
-% now engaged in Chapter 3 rather than the corpus being mentioned in isolation.
+% "Krieger and others" for authors; both were repaired against the Springer record.
+% CORRECTED AGAIN 2026-08-17 (fourth-pass review). The third pass verified this entry's
+% METADATA but transplanted another paper's CORPUS onto it. This paper's own dataset
+% section reads: "The dataset is composed of 1129 English one-page invoices from 277
+% different vendors", hand-annotated for three key items, all addressed to the same
+% recipient (an audit firm); its headline result is a macro-F1 of 0.8753 over those
+% three items, and its limitations section states "we only used English invoices".
+% The 977 German invoices / 494 vendors / 60+ rule-annotated classes belong to the
+% same group's later design-science study, cited here as `thiee2023invoices`.
 @inproceedings{krieger2021german,
   author    = {Krieger, Felix and Drews, Paul and Funk, Burkhardt and Wobbe, Till},
   title     = {Information Extraction from Invoices: A Graph Neural Network Approach
@@ -556,9 +559,31 @@
   urldate   = {2026-08-16}
 }
 
-% Added 2026-08-16: the same group's follow-up, which is the closest published study of
-% the layout-shift question this thesis registers and leaves untested
-% (\S\ref{sec:unevaluated}).
+% Added 2026-08-17 (fourth-pass review). The paper that actually carries the 977-invoice
+% German corpus (494 vendors / 531 recipients, rule-based annotations over 60+ classes)
+% that the brainstorm-era stub and the third pass had attributed to `krieger2021german`.
+% Same research group; adapts the 2021 graph model to German documents with a
+% German-language text encoder and reports F1 0.823 on the three headline fields in its
+% first design cycle. Verified against the GI digital library item (DOI + PDF
+% 09_01_06_Thiee.pdf, which contains the 977/494/531 corpus table verbatim).
+@inproceedings{thiee2023invoices,
+  author    = {Thi{\'e}e, Lukas-Walter and Krieger, Felix and Funk, Burkhardt},
+  title     = {Extraction of Information from Invoices --- Challenges in the
+               Extraction Pipeline},
+  booktitle = {{INFORMATIK} 2023 --- Designing Futures: Zuk{\"u}nfte gestalten},
+  series    = {Lecture Notes in Informatics ({LNI})},
+  publisher = {Gesellschaft f{\"u}r Informatik},
+  address   = {Bonn},
+  pages     = {1777--1792},
+  year      = {2023},
+  doi       = {10.18420/inf2023_180},
+  urldate   = {2026-08-17}
+}
+
+% Added 2026-08-16: the same group's follow-up on the layout-shift question this thesis
+% registers and leaves untested (\S\ref{sec:unevaluated}). Note (fourth pass): its corpus
+% is the audit firm's primarily-English collection, not a German set --- it is cited for
+% the template-shift methodology, not as German-language prior art.
 @article{krieger2023longtail,
   author  = {Krieger, Felix and Drews, Paul and Funk, Burkhardt},
   title   = {Automated Invoice Processing: Machine Learning-Based Information
