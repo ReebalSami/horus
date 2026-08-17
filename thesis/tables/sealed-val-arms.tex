@@ -1,0 +1,28 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/eval-zeroshot-bf16-val.json; data/finetune/eval-oracle-bf16-val.json; data/finetune/eval-zeroshot-qwen-adr059-val.json; data/finetune/eval-oracle-adr059-val.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{Zero-shot structurer performance on the sealed validation split, in both numeric precisions and on both input conditions.}
+  \label{tab:sealed-val-arms}
+  \begin{tabular}{lrrr}
+    \toprule
+    Arm & Overall F$_1$ & Flat F$_1$ & Spurious rate \\
+    \midrule
+    bf16 / CUDA \quad reader transcript & 0.8480 & 0.8843 & 0.1575 \\
+    bf16 / CUDA \quad perfect text & 0.9778 & 0.9832 & 0.0204 \\
+    \midrule
+    4-bit / Apple silicon \quad reader transcript & 0.8257 & 0.8649 & 0.1462 \\
+    4-bit / Apple silicon \quad perfect text & 0.9719 & 0.9743 & 0.0145 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Corpus: the 29 sealed synthetic invoices, never used for fitting or selection. Structurer: \texttt{google/gemma-4-E4B-it}, greedy decoding, 29/29 parsed in every arm. Ground truth is extracted from each invoice's own embedded XML and is exact by construction. \emph{Reader transcript} is the deployed pipeline: the structurer reads what the vision model transcribed. \emph{Perfect text} replaces that transcript with text rendered from the ground truth, so it measures the structurer with the reading stage removed --- an instrument, not a deliverable. Both aggregations are means over the 29 per-invoice scores. Overall pools flat fields with repeating-group cells; flat covers the header fields only. Spurious rate is the share of emitted values for fields the document does not carry.
+  \end{minipage}
+\end{table}

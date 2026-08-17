@@ -1,6 +1,9 @@
 # ADR-019: Structured-output probe — bug catalog
 
-**Status**: Proposed
+**Status**: Accepted — every defect catalogued below was fixed and the invalidated verdict was
+re-derived under ADR-020 (rescore methodology) and ADR-021 (verdict matrix), both Accepted. The
+index has recorded this record as Accepted since those children landed; the status line here had
+lagged and is corrected 2026-08-09.
 **Date**: 2026-05-21
 **Parent**: ADR-018 (structured-output prompting probe)
 **Children (forthcoming)**: ADR-020 (rescore methodology), ADR-021 (probe verdict matrix — threshold + denominator amendments)

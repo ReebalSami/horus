@@ -1,7 +1,7 @@
 ---
 source_url: "https://arxiv.org/abs/2408.02442"
 source_title: "Let Me Speak Freely? A Study on the Impact of Format Restrictions on Performance of Large Language Models"
-source_author: "Zhi Rui Tam et al. (arXiv 2408.02442 — full authorship to verify on next clip pass)"
+source_author: "Zhi Rui Tam, Cheng-Kuang Wu, Yi-Lin Tsai, Chieh-Yen Lin, Hung-yi Lee, Yun-Nung Chen (Appier AI Research + National Taiwan University); published at EMNLP 2024 Industry Track, pp. 1218--1236"
 source_date: "2024-08"
 retrieved_date: "2026-05-31"
 extracted_concepts: []

@@ -1,0 +1,29 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): scripts/findability_corrected.py (over data/finetune/bakeoff/)
+
+\begin{table}[htbp]
+  \centering
+  \caption{Reading quality per candidate after every miss was judged by hand against the page image.}
+  \label{tab:reader-findability}
+  \begin{tabular}{lrr}
+    \toprule
+    Reader & Corrected findability & Real misses \\
+    \midrule
+    Embedded text layer \emph{(ceiling)} & 0.995 & 3 \\
+    Qwen3-VL-8B-Instruct & 0.976 & 13 \\
+    Qwen3-VL-4B-Instruct & 0.970 & 16 \\
+    olmOCR-2-7B & 0.965 & 19 \\
+    MinerU2.5-Pro (2604) & 0.925 & 40 \\
+    MinerU2.5-Pro (2605) & 0.753 & 129 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Measured on the sealed validation split. Findability asks a question of the transcript alone --- for each reference value, is it present at all, allowing the formatting variants a German invoice actually uses --- so it isolates reading from structuring. \emph{Corrected} means that 23 reference values which no channel could locate anywhere on the page, including the embedded text layer, are excluded as unanswerable rather than charged to every candidate equally. The embedded text layer is the ceiling: it is what the document itself contains, so no vision system can exceed it. This metric has a known blind spot --- a value can be present as a string while the surrounding structure is destroyed --- which is why it decided nothing on its own.
+  \end{minipage}
+\end{table}

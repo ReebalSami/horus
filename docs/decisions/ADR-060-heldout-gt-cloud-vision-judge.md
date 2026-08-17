@@ -1,6 +1,14 @@
 # ADR-060: Held-out ground-truth authority — cloud vision judge over page images
 
-**Status**: Proposed (sample-validation gate below decides scope before any full re-author)
+**Status**: Accepted — executed on all 39 documents. The sample gate cleared the judge against
+the text-layer draft, but the printed-evidence pass then exposed a structural limit this record
+had anticipated: 12 documents (338 asserted cells) carry no embedded characters at all, so
+nothing deterministic could check a reading for them. That fired supersession trigger 2 as
+designed, escalating to multi-channel agreement (ADR-061) and then to adjudication with author
+sign-off (ADR-062). **The judge is channel 1 of three in the signed-off key, never the sole
+authority**: of 1,326 cells, 285 rest on printed-text proof, 178 on two-channel agreement, 248
+on author decision, and 615 are null-claims. The privacy cost recorded below stands as written —
+invoice content left owned hardware for measurement only, never on the inference path.
 **Date**: 2026-08-04
 **Refs**: ADR-040 (the held-out Belege set + its GT convention this supersedes), ADR-054 (scope freeze; what the thesis may claim), ADR-057 (reader selection — the reader whose output is being judged), ADR-011 (supersession over deletion), ADR-023 (corpus-absent auto-skip), #114 (held-out evaluation ticket), `docs/architecture/belege-heldout-datasheet.md` (the `verified: 0/39` record)
 

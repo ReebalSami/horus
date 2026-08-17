@@ -1,0 +1,70 @@
+%% How a vision-language model reads a page: patch embedding -> vision encoder ->
+%% projection -> autoregressive decoder conditioned on visual tokens + prompt.
+%%
+%% Hand-authored TikZ (not generated): it depicts the standard architecture described
+%% in \S\ref{sec:bg-vlm} (Vaswani et al. 2017; Dosovitskiy et al. 2021), not a
+%% measurement, so there is no data source to derive it from. It deliberately carries
+%% no invoice-specific content: nothing in this architecture knows what an invoice is,
+%% which is exactly the point the accompanying prose makes.
+%%
+%% Input from a chapter with:  \input{figures/vlm-anatomy.tex}
+
+\begin{tikzpicture}[
+    font=\small,
+    node distance=6mm,
+    block/.style={
+      draw=horusaccent, line width=0.8pt, rounded corners=2pt,
+      fill=horuswash, text width=2.3cm, align=center,
+      minimum height=1.5cm, inner sep=3pt,
+    },
+    endpoint/.style={
+      draw=horusmuted, line width=0.6pt, rounded corners=1pt,
+      fill=white, text width=1.4cm, align=center,
+      font=\scriptsize, minimum height=1.0cm, inner sep=3pt,
+    },
+    flow/.style={-{Stealth[length=2.4mm]}, line width=0.8pt, draw=horusaccent},
+    onflow/.style={font=\scriptsize, text=horusink, align=center, inner sep=2pt},
+  ]
+
+  %% Page -> patch grid. The grid is drawn, not described: the one visual idea a
+  %% reader must take away is that the page becomes a sequence of image tokens.
+  \node[endpoint, minimum height=1.5cm] (page) {page\\image};
+  \begin{scope}[shift={($(page.east)+(7mm,-5.4mm)$)}]
+    \foreach \x in {0,1,2} \foreach \y in {0,1,2}
+      \draw[draw=horusmuted, line width=0.5pt, fill=white]
+        (\x*3.4mm, \y*3.4mm) rectangle ++(3.0mm,3.0mm);
+  \end{scope}
+  \node[onflow, anchor=north] at ($(page.east)+(12mm,-7mm)$) {fixed-size\\patches};
+
+  \node[block, right=22mm of page] (vit) {\textbf{Vision encoder}\\[2pt]\scriptsize a
+    transformer over the patch sequence};
+  \node[block, right=10mm of vit] (proj) {\textbf{Projection}\\[2pt]\scriptsize maps visual
+    embeddings into the language model's space};
+  \node[block, right=10mm of proj] (dec) {\textbf{Decoder}\\[2pt]\scriptsize
+    autoregressively generates text conditioned on visual tokens and the prompt};
+  \node[endpoint, right=4mm of dec] (out) {output\\tokens};
+
+  \draw[flow] (page) -- node[onflow, above=1mm, pos=0.5] {} (vit);
+  \draw[flow] (vit) -- (proj);
+  \draw[flow] (proj) -- (dec);
+  \draw[flow] (dec) -- (out);
+
+  \node[onflow, anchor=south] at ($(vit.north east)!0.5!(proj.north west) + (0,2.5mm)$)
+    {visual\\embeddings};
+  \node[onflow, anchor=south] at ($(proj.north east)!0.5!(dec.north west) + (0,2.5mm)$)
+    {visual\\tokens};
+
+  %% The prompt enters the decoder from below: it is the second conditioning channel,
+  %% and everything task-specific in this thesis lives in it.
+  \node[endpoint, below=9mm of dec] (prompt) {textual\\prompt};
+  \draw[flow] (prompt) -- (dec);
+
+  \node[
+    draw=horusmuted, line width=0.5pt, rounded corners=2pt, dotted,
+    fill=white, text=horusink, font=\scriptsize, align=left,
+    text width=4.6cm, inner sep=4pt,
+    below=9mm of vit.south west, anchor=north west,
+  ] {No component of this architecture is invoice-specific: all task behaviour
+    is elicited by the prompt and learned from training data.};
+
+\end{tikzpicture}

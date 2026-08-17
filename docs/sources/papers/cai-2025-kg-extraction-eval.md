@@ -1,7 +1,7 @@
 ---
 source_url: "https://arxiv.org/abs/2506.12367"
-source_title: "Evaluating Knowledge Graph Construction at Two Levels: Edge-Level Accuracy and Graph-Level Structural Properties"
-source_author: "Junyi Cai, Brendan O'Connor"
+source_title: "Understanding the Effect of Knowledge Graph Extraction Error on Downstream Graph Analyses: A Case Study on Affiliation Graphs"
+source_author: "Erica Cai, Brendan O'Connor"
 source_date: "2025-06"
 retrieved_date: "2026-05-08"
 extracted_concepts: []

@@ -1,6 +1,13 @@
 # ADR-062: Held-out GT adjudication model and provenance schema
 
-**Status**: Proposed
+**Status**: Accepted — executed to completion. **39/39 documents signed off, 0 pending.** The
+five provenance classes partition all 1,326 cells exactly: 615 `null-claim`, 285
+`text-layer-proven`, 178 `two-channel-agreed`, 248 `author-adjudicated` (`exempt-by-policy`
+resolved into author decisions during sign-off). So **463 cells auto-accepted on a recorded
+warrant and 248 were decided by hand** — against 711 that would otherwise have needed review,
+which is the reduction this model existed to produce. Every promoted document parses cleanly
+through `build_groundtruth_from_json`. `verified: true` was set only by author review, per
+invoice, exactly as ADR-060 required; no model closed that gap.
 
 **Context**
 

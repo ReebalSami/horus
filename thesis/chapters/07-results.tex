@@ -1,0 +1,483 @@
+\chapter{Results}
+\label{ch:results}
+
+\section{How to Read This Chapter}
+\label{sec:results-reading}
+
+Every number in this chapter is generated from a committed evaluation report rather than
+transcribed, and every table states the corpus, model stack, numeric precision, scoring ruler
+and aggregation it was produced under. Two tables that differ in any of those are not
+comparable, and the protocol notes are what make that checkable instead of assumed.
+
+Three conventions govern what may be claimed.
+
+\textbf{In-sample figures are never reported as accuracy.} Some measurements in this project
+were taken on documents that also informed prompt design, or on small development subsets, or
+under scoring rules later found defective. Those results are diagnostic: they answer
+\emph{which approach is worth pursuing}, not \emph{how well does the system perform}. They are
+confined to \S\ref{sec:results-preliminary} and labelled there.
+
+\textbf{Perfect-text figures are never reported as deliverable capability.} Where the
+structuring stage is measured on text rendered from the reference data, the number is an upper
+bound obtained with an instrument that does not exist at inference time
+(\S\ref{sec:method-attribution}). It appears throughout as an attribution device and nowhere as
+a claim about the system.
+
+\textbf{Superseded figures are not quoted for precision.} Several measurements in this project
+were re-scored after the corrections of Chapter~\ref{ch:measurement-validity}. Where an earlier
+figure matters to an argument, this chapter refers to what changed and why, not treating
+a superseded number as if it still stood.
+
+\section{Preliminary Studies}
+\label{sec:results-preliminary}
+
+Three studies shaped the design before any sealed measurement was taken. All three are
+in-sample, all three predate the scoring corrections, and none of their figures is an accuracy
+claim. They are reported because the decisions they produced shaped the architecture, and a reader
+entitled to question those decisions is entitled to see what informed them.
+
+\textbf{A survey of local candidate readers} evaluated a cohort of open-weight document and
+vision-language models on a small set of invoices under the local hardware envelope. Its
+function was elimination, not ranking. It removed candidates that could not be run at all on
+the target hardware, candidates whose available ports were incompatible with the platform, and
+candidates that produced degenerate output. The scores it produced are low and are superseded
+twice over --- by a change of reader and by the scoring corrections --- so they are not quoted.
+What survived the survey is what mattered: a shortlist of readers worth measuring properly.
+
+\textbf{A probe of structured-output prompting} asked whether instructing a reading model to
+emit structured data directly, rather than transcribing to text for a second model to structure,
+was competitive. The literature gave reason for caution: format restrictions have been shown to
+degrade model performance on reasoning-adjacent tasks rather than being a free convenience
+\parencite{tam2024format}. The probe's first verdict had to be withdrawn --- the measurement harness
+was silently discarding valid model output, one model emitting a well-formed object per page
+that the adapter could not parse once pages were concatenated. After repair, the finding stood
+qualitatively: direct structured emission was not competitive with the two-stage arrangement on
+this corpus, and the two-stage design was retained.
+
+\textbf{A comparison of pipeline arrangements} measured a rule-based extraction baseline against
+a single-shot arrangement and against the orchestrated two-stage arrangement on a small
+development subset. The orchestrated arrangement won clearly, and that ordering is the reason
+the architecture of Chapter~\ref{ch:system-design} has the shape it does. Two details from that
+study are worth carrying forward. First, all three arms emitted \emph{no} values for absent
+fields, which is early evidence that the honest-null contract is satisfiable, not merely
+aspirational. Second, a token-budget defect was depressing the orchestrated arm until it was
+found --- the model was being cut off before it finished emitting, and the resulting score was a
+measurement of the budget, not of the approach.
+
+\section{Reader Selection}
+\label{sec:results-reader}
+
+The pipeline's reading stage was selected by competitive comparison. This is worth stating
+plainly because the structuring stage was not, and \S\ref{sec:results-adaptation} returns to
+that asymmetry as a limitation.
+
+\subsection{Why aggregate scores could not decide it}
+
+Two candidates emerged from the survey as finalists: Qwen3-VL-4B-Instruct, a general-purpose
+vision-language model at four billion parameters \parencite{qwen3vl}, and olmOCR-2-7B, a
+purpose-built document-transcription model at seven billion \parencite{olmocr2}. The two available
+instruments told conflicting stories about them. On end-to-end score under the pre-correction
+ruler, the transcription model led by two to five points (Table~\ref{tab:reader-lineage}). On
+reading quality measured directly on the transcript (\S\ref{sec:method-answerability}), the
+general-purpose model led narrowly under that same defective ruler (0.777 against 0.774) ---
+and when the corrections of Chapter~\ref{ch:measurement-validity} were applied to the
+identical stored transcripts, that ordering \emph{inverted} (0.906 against 0.913), both
+readings within a point of each other.
+
+An ordering that flips when the ruler is corrected is not evidence that the second model is
+better. It is evidence that \textbf{the instrument does not separate these two candidates}, and
+that a selection made on it would have been arbitrary. That is the finding, and it forced the
+decision onto the individual misses.
+
+One asymmetry in the record must be stated. After the ruler repairs, only the selected reader
+was re-measured end-to-end (the fourth row of Table~\ref{tab:reader-lineage}); the
+transcription model's post-correction end-to-end score was never taken. Its transcripts are
+retained, so the measurement remains possible --- but by that point the selection no longer
+rested on end-to-end score at all, because an instrument that had already flipped its verdict
+once under a ruler repair had disqualified itself as the deciding instrument.
+
+\input{tables/reader-lineage.tex}
+
+\subsection{The per-miss audit, and its verdict}
+
+The decision therefore moved to the individual misses. Every remaining miss of the
+then-leading transcription model --- 52 individual ``missing'' values across the 29 sealed
+validation invoices --- was judged by hand against the page image and against both finalists'
+transcripts, and classified as a genuine reading failure, a comparison-rule artefact, or a
+value not findable on the page by anything. That audit produced 23 exclusions --- values
+absent from the page and from its own embedded text layer, which no vision system could
+recover --- plus six ruler repairs. A symmetric pass over the general-purpose model's own
+residual misses followed, exposing two further ruler gaps, so that neither finalist was
+audited under a rule the other was spared.
+Table~\ref{tab:reader-findability} reports the corrected result.
+
+\input{tables/reader-findability.tex}
+
+The two finalists are statistically indistinguishable on corrected reading quality. An exact
+McNemar test over the 963 paired per-cell findability outcomes --- 931 cells both readers
+find, 16 only the general-purpose model finds, 13 only the transcription model finds ---
+gives $p = 0.71$, so the observed ordering is well within what chance produces on discordant
+counts this small. What does separate them is that they \textbf{fail in different ways},
+which is the substantive finding:
+
+\begin{itemize}
+  \item The document-transcription model produces near-flawless characters but silently drops
+        letterhead and footer blocks --- which is exactly where a German invoice prints the
+        tax identifier, the bank details and the seller's registered identity.
+  \item The general-purpose model reads every margin block but makes occasional
+        character-level slips \emph{inside} values: a transposed letter, a duplicated digit.
+\end{itemize}
+
+For this application the second failure mode is preferable, and the reason is the honest-null
+contract rather than the score. A dropped block produces an absence, and under the honest-null
+contract an absence is exactly what a genuinely missing field also produces --- so the failure
+is camouflaged by the system's own convention, and it removes several legally mandatory
+particulars at once, systematically, on every document sharing that layout. A character slip
+produces a value that is present and wrong: it is attached to a named field, so a reviewer has
+something concrete to check against the page, and the misreading is per-value rather than
+per-region. An error a reviewer can see is worth more than an error of equal magnitude that
+looks like a legitimate blank. The general-purpose model was selected.
+
+\subsection{A pre-registered test that failed}
+
+The obvious next question is whether the larger sibling of the selected model is better. Because
+a favourable reading was available in advance --- more parameters, better reading --- the test
+was pre-registered with a conjunctive rule: the challenger had to pass on reading quality,
+\emph{and} introduce no new failure class, \emph{and} stay within a stated wall-clock factor.
+All three, or the incumbent stands.
+
+It passed on reading quality, with fewer real misses than the incumbent
+(Table~\ref{tab:reader-findability}). It passed on wall-clock. It failed the middle criterion:
+on one document it collapsed into a degenerate repetition loop, emitting thousands of repeated
+characters and losing several fields entirely --- a failure mode the incumbent does not exhibit
+on any document in the corpus.
+
+A rare catastrophic failure is worse than a slightly higher rate of small ones for a system
+whose value proposition is that a practitioner can trust its output. The incumbent stands. This
+is reported at length because the conjunctive rule is what made the outcome defensible: had the
+criteria been weighed after the fact, a marginally better reading score against a single
+anomaly would have been easy to rationalise in either direction.
+
+\section{Where the Shortfall Sits}
+\label{sec:results-attribution}
+
+The central question is which stage limits the pipeline. Three instruments answer it
+(\S\ref{sec:method-attribution}), and their verdict is unambiguous.
+
+Table~\ref{tab:attribution-clusters} and Figure~\ref{fig:attribution} give the same structuring
+model on the reader's transcript and on text rendered from the reference. Only the input text
+differs, so the gap between the two bars is attributable to reading. The gap is present in every
+field cluster and it is large --- smallest on the core header fields, largest on the repeating
+structures.
+
+\input{tables/attribution-clusters.tex}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{attribution-by-cluster}
+  \caption[Reader-limited versus structurer-limited performance]{The same structuring model on
+  the reading model's transcript and on text rendered from the reference data, per field
+  cluster. Only the input text differs between the two bars, so the annotated gap is the part
+  of the shortfall attributable to reading. Measured with a superseded reading model: this
+  attributes a shortfall between stages, it does not score the delivered system.}
+  \label{fig:attribution}
+\end{figure}
+
+Table~\ref{tab:attribution-shares} attributes every individual signal-bearing error to a stage
+by the per-miss test: was the value in the transcript at all? Roughly half of all errors are
+values the transcript never contained, which no structuring model could have recovered. That
+per-miss split is a \emph{lower bound} on the reading share, because it credits the structurer
+with every value that was readable yet mangled in transit --- a transcript can contain a value
+in a form so degraded that failing to place it is still, causally, a reading problem. The
+pipeline-level decomposition is starker and uses explicit denominators: of the roughly 0.32
+shortfall from a perfect score, the 0.28 between the two arms of
+Table~\ref{tab:attribution-clusters} is attributable to reading, because only the input text
+differs between them; the 0.04 the structurer leaves even on perfect text bounds its own
+capability gap. By the per-miss count the stages split evenly; by the pipeline-level bound,
+reading accounts for the substantial majority. Both statements are true, they answer different
+questions, and the protocol note to Table~\ref{tab:attribution-shares} carries the exact
+figures for each.
+
+\input{tables/attribution-shares.tex}
+
+\textbf{This measurement is diagnostic, not a system score, and the distinction is not
+cosmetic.} It was taken with a reading model that was subsequently replaced --- the survey
+reader, not the selected one. What it establishes is the \emph{attribution method} and the
+\emph{ordering of the two stages}, both of which survive the reader change. What it does not
+establish is any figure for the delivered system; those are in
+\S\ref{sec:results-baseline} and \S\ref{sec:results-heldout}.
+
+The finding is the thesis's central empirical claim: \textbf{on this task, with local models at
+this scale, reading is the binding constraint and structuring is not.} Chapter~\ref{ch:discussion}
+takes up what follows from that for system design.
+
+\section{The Sealed Baseline}
+\label{sec:results-baseline}
+
+Table~\ref{tab:sealed-val-arms} gives the zero-shot pipeline on the sealed validation split, in
+both numeric precisions and on both input conditions. Four observations.
+
+\input{tables/sealed-val-arms.tex}
+
+\textbf{The deployable configuration --- 4-bit weights on a laptop --- reaches a score in the
+mid-eighties on flat header fields.} That is the figure a practitioner would experience, on
+generated pages.
+
+\textbf{The structuring stage is near its ceiling on perfect text.} Given text rendered from the
+reference, the same model scores in the high nineties. The structuring stage is not what limits
+this pipeline, which corroborates \S\ref{sec:results-attribution} on the current reader rather
+than the superseded one.
+
+\textbf{Full numeric precision is worth a measurable amount} --- the difference between the two
+stacks is small but not negligible, and \S\ref{sec:results-adaptation} shows why that
+seemingly minor quantity mattered enormously.
+
+\textbf{The spurious-emission rate is markedly lower on perfect text than on transcripts.} The
+model invents fewer values when the input is clean. This is intuitive and it is also the
+mechanism that the adaptation result turns on.
+
+\section{Adaptation: A Negative Result}
+\label{sec:results-adaptation}
+
+The scope decision for this thesis made a fine-tuning experiment conditional: it would be
+attempted only if the zero-shot pipeline fell short of a stated threshold, and only after
+cheaper explanations had been eliminated. Both conditions were met, so the experiment ran.
+
+\subsection{Cheaper explanations were eliminated first}
+
+Before any training, every underperforming field was classified by cause: value absent from the
+input, value present but never named in the field specification, or value present and named but
+rejected by a comparison rule. A gap of the second kind is a specification defect, and
+repairing it by fine-tuning would credit the adapter with a gain that a one-line change would
+have produced.
+
+The classification escalated three candidate fields for per-document inspection.
+\textbf{All three turned out not to be specification-fixable.} One was a net-versus-gross confusion between two
+labels that were both already grounded, and it landed mostly on the \emph{perfect-text} arm ---
+which means there was no headroom to recover. One emitted a character-identical value on almost
+every document that carried it, with most of its remaining misses caused by a
+normalisation asymmetry, not by the model. One was corrupted reference data on two of its
+three misses. The verdict was zero warranted specification repairs, so the fine-tuning
+experiment was not being handed a gap that belonged to the prompt.
+
+\subsection{The design: two adapters, one variable}
+
+Rather than train one adapter and measure it, two were trained, differing only in the input
+distribution they saw: one on the reader's actual transcripts, one on text rendered from the
+reference. Both are low-rank adapters \parencite{hu2021lora} on the structuring model's language
+tower only --- its vision and audio components stay frozen and receive no input, consistent
+with how the pipeline uses the model (\S\ref{sec:method-architecture}). Each was then
+evaluated on both conditions, giving the grid in Table~\ref{tab:finetune-grid} and
+Figure~\ref{fig:finetune-grid}.
+
+The reason for two is that a single measurement would have been uninterpretable. An adapter
+trained and evaluated on transcripts conflates two distinct claims --- learning the output
+schema, and learning to survive reading noise --- and a gain on one is indistinguishable from a
+gain on the other. The grid separates them. The perfect-text adapter is an instrument and is
+never proposed as a deliverable.
+
+The recipe, in Table~\ref{tab:hyperparameters}, was registered before either run, along with the
+selection rule, the requirement of a matched-precision baseline, and the commitment to publish a
+null result. No hyperparameter sweep was performed, which is a limitation and is recorded as
+one in Chapter~\ref{ch:limitations-future-work}.
+
+\input{tables/hyperparameters.tex}
+
+\input{tables/finetune-grid.tex}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{finetune-grid}
+  \caption[The adaptation grid]{Two adapters, each evaluated on both input conditions, against
+  the matched-precision baseline. Every cell regresses. Note that the baseline shown is
+  re-measured in the adapters' own numeric precision; the deployed 4-bit baseline is lower, and
+  comparing against it instead is what Table~\ref{tab:precision-confound} shows to be
+  misleading.}
+  \label{fig:finetune-grid}
+\end{figure}
+
+\subsection{The result}
+
+\textbf{All four cells of the grid regress.} Table~\ref{tab:finetune-grid} gives the deltas
+against the matched baseline in each evaluation condition. No arrangement of the two adapters
+and the two conditions produces an improvement over doing nothing.
+
+Two further observations make the result interpretable instead of merely negative.
+
+\textbf{The spurious-emission rate rises where the score falls.} The adapter trained on
+transcripts has the highest spurious-emission rate of any arm measured in this thesis
+(Table~\ref{tab:finetune-grid}) --- markedly above its own baseline. The adapter did not lose
+the ability to place values; it gained a propensity to emit them where the document carries
+none. That is a specific, mechanistic finding, not a general degradation, and
+Chapter~\ref{ch:discussion} reads it against the published literature on the same effect.
+
+\textbf{Both arms overfit after one epoch.} Table~\ref{tab:devloss} and
+Figure~\ref{fig:devloss} give the loss on the held-back slice by epoch. Both arms reach their
+minimum after a single epoch and never return to it within the six-epoch budget. The selection
+rule --- lowest loss on that slice --- therefore chose the earliest checkpoint in both arms,
+which is not a tuning decision but the rule doing what it was registered to do. The six-epoch
+budget existed to make the turn visible, not to be used.
+
+\input{tables/devloss.tex}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\textwidth]{devloss-curve}
+  \caption[Dev-slice loss by epoch]{Loss on the held-back development slice, by epoch, for both
+  adapters. Both minimise after one epoch; the registered selection rule therefore chose the
+  earliest checkpoint in both arms. The slice is carved from the fitting set and is disjoint
+  from the sealed validation split, so selecting on it leaks nothing into any reported score.}
+  \label{fig:devloss}
+\end{figure}
+
+With 100 fitting examples against a model of this size, immediate overfitting is not surprising.
+What the grid adds is that the overfitting is not the whole story: the perfect-text adapter,
+evaluated on perfect text, also regresses, and it saw clean input throughout.
+
+\subsection{The comparison that would have inverted the conclusion}
+
+Table~\ref{tab:precision-confound} is the most important table in this chapter, and it is not
+about the adapter.
+
+The adapters were trained in full precision on target-class hardware because they exceeded the
+floor's memory. The deployed baseline runs in 4-bit precision at the floor. Comparing the two
+directly measures the adapter and a precision change simultaneously --- and because the
+adapter's damage and full precision's benefit are of similar size, they nearly cancel. The
+unmatched comparison reads as no measurable harm. The matched comparison, against a baseline
+re-measured in the adapter's own precision, shows a regression roughly twenty times larger.
+
+\input{tables/precision-confound.tex}
+
+Had the baseline not been re-measured, this thesis would have reported that a fine-tuned
+structurer performs about the same as an untuned one, and would have drawn the wrong conclusion
+from a correctly computed number. Chapter~\ref{ch:measurement-validity} treats the general
+lesson; here the point is narrower and sharper: \textbf{the conclusion of this experiment is a
+property of the experimental design, not of the measurement precision.}
+
+\section{Real Invoices}
+\label{sec:results-heldout}
+
+The synthetic corpus answers whether the pipeline can read a well-formed generated page. The
+held-out corpus answers whether that survives real documents. This is the result the thesis
+exists to produce.
+
+\subsection{The headline}
+
+Table~\ref{tab:heldout-headline} gives header-field extraction on 39 real invoices, zero-shot,
+with open-weights models only, against an answer key adjudicated across three independent
+channels and signed off document by document. All 39 documents parsed and scored; none was
+dropped.
+
+\textbf{Venue.} Every model involved is open-weights and nothing on the inference path makes a
+network call. The reading pass ran at full precision and native page resolution on
+target-class hardware --- a single 24\,\ac{GB} graphics processor, which transcribed all
+58 pages in roughly sixteen minutes --- and the structuring pass ran at the floor, on the
+laptop in its deployed 4-bit precision (\S\ref{sec:method-repro}). The figure below is
+therefore the pipeline's accuracy on the hardware class a firm would buy for it. What the
+floor configuration's capped reader would score on the same documents is a separate, smaller
+question, recorded as open in \S\ref{sec:lim-hardware}.
+
+\input{tables/heldout-headline.tex}
+
+The result is that performance largely survives the transition from generated pages to real
+ones. That is not a trivial finding: the documents were produced by other people's billing
+systems, in two languages, with layouts the pipeline was never shown, and roughly a quarter of
+them were phone-scanned paper rather than exported files.
+
+\subsection{The error profile matters more than the score}
+
+Precision is substantially higher than recall (Table~\ref{tab:heldout-headline}). Roughly four
+errors in five are a field left empty, not a field invented.
+
+For an accounting application this is the safer direction to fail in, and the asymmetry is not
+incidental --- it is the honest-null contract of \S\ref{sec:design-honest-null}, with the
+gap-versus-fabrication argument made there, showing up in the numbers. A system with the
+opposite profile at the same F$_1$ would be considerably less useful, which is why the
+spurious-emission rate is tracked as a first-class metric throughout instead of folded into
+an aggregate.
+
+\subsection{Degraded capture is the real cost}
+
+Table~\ref{tab:heldout-by-channel} and Figure~\ref{fig:heldout-channel} break the corpus down by
+language and acquisition channel, and this is the most useful measurement in the thesis for
+anyone who might deploy the system.
+
+\textbf{Language costs little. Capture channel costs a great deal.} English and German
+email-native documents score close together. Phone-scanned German documents fall away sharply
+--- a gap of more than eleven points of mean per-invoice F$_1$ against the email-native
+documents. And the scans in this corpus are the \emph{favourable} kind of degraded input:
+scanning-app output that has already been deskewed and contrast-enhanced
+(\S\ref{sec:method-data}), not raw camera photographs. The gap for uncorrected captures
+should be expected to be larger, not smaller.
+
+Two properties of that gap deserve emphasis.
+
+\textbf{It survives the ruler correction.} The gap is present under both the superseded and the
+current scoring rules, at similar magnitude. It is not an artefact of the answer-key work
+described in Chapter~\ref{ch:measurement-validity}.
+
+\textbf{It is a recall gap, not a precision gap.} Figure~\ref{fig:heldout-pr} separates the two:
+precision holds up on the scanned documents while recall falls. \textbf{Degraded input makes the
+system abstain, not hallucinate.} That is the behaviour one would want if forced to choose, and it is
+worth noting that nothing in the design explicitly asked for it.
+
+\input{tables/heldout-by-channel.tex}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{heldout-by-channel}
+  \caption[Held-out performance by capture channel]{Header-field extraction on real invoices,
+  by language and acquisition channel, under both aggregations. The dashed line is the
+  whole-corpus mean. Language costs little; phone-scanned capture costs a great deal.}
+  \label{fig:heldout-channel}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{heldout-precision-recall}
+  \caption[Precision and recall by capture channel]{The same corpus split into precision and
+  recall. Precision holds up on phone-scanned documents while recall falls, which means degraded
+  input makes the system abstain rather than invent.}
+  \label{fig:heldout-pr}
+\end{figure}
+
+\textbf{This result is independently corroborated.} A benchmark published during this project,
+covering 3{,}400 documents in 17 languages, reports an average drop of 17.8\,\% on photographed
+versus digital documents for open-source parsing models \parencite{mdpbench2026}. Its degraded
+condition is harsher than this corpus's --- printed pages photographed under controlled
+adverse conditions, against scan-app output here --- so the two numbers are not directly
+comparable; what they share is the direction and the order of magnitude. That agreement
+matters because a single-annotator corpus of 39 documents cannot carry a general claim on its
+own, and here it does not have to.
+
+\subsection{What this result does not cover}
+
+The held-out claim is about header fields. Repeating-group rows are excluded structurally,
+because their reference rows were never author-reviewed and could not be reviewed affordably
+(\S\ref{sec:method-heldout-gt}). Line-item extraction is measured on the synthetic corpus,
+where the reference is exact and free, and is reported in
+Table~\ref{tab:attribution-clusters}. The limitation, and the known route to closing it, are in
+Chapter~\ref{ch:limitations-future-work}.
+
+\section{Summary of Findings}
+\label{sec:results-summary}
+
+\begin{enumerate}
+  \item \textbf{Reading is the binding constraint.} The same structuring model given text
+        rendered from the reference scores far higher than it does on the reading model's
+        transcript, in every field cluster. Roughly half of all individual errors are values
+        the transcript never contained.
+  \item \textbf{Local, zero-shot header extraction on real invoices works better than expected
+        and fails in the right direction.} Precision well above recall; four errors in five are
+        omissions, not fabrications.
+  \item \textbf{Degraded capture, not language, is the dominant real-world cost}, at more than
+        eleven points of mean per-invoice F$_1$, corroborated independently by a contemporary
+        multilingual benchmark.
+  \item \textbf{Parameter-efficient adaptation of the structuring stage does not help}, in any
+        of four configurations, and it specifically increases the rate at which the model emits
+        values for fields the document does not carry.
+  \item \textbf{Two selection decisions could not be made on aggregate score.} Reader selection
+        required per-miss adjudication because the reading-quality ordering inverted when the
+        ruler was corrected; the adaptation conclusion required a precision-matched baseline,
+        without which it would have been the opposite.
+\end{enumerate}

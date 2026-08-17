@@ -1,6 +1,13 @@
 # ADR-061: Second held-out GT channel — Azure AI Document Intelligence `prebuilt-invoice`
 
-**Status**: Proposed
+**Status**: Accepted — executed on all 39 documents (62 page images, well inside the F0 free
+quota, €0). Independence was the property bought and it paid: **178 cells reached
+`two-channel-agreed` on Azure's testimony alone**, and those are almost entirely the Tier B
+cells that no printed-evidence gate could ever have settled. Without this channel those 178
+would have escalated to the author's desk on top of the 248 already there. The three-valued
+coverage decision proved load-bearing — collapsing Azure's `NOT_COVERED` silence into "absent"
+would have handed unearned confirmations to Tier B nulls. Feeds ADR-062 (adjudication) and
+ADR-063 (grading scope).
 
 **Context**
 

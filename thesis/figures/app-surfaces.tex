@@ -1,0 +1,70 @@
+%% The five surfaces of the prototype application (\S\ref{sec:sys-app}) around the
+%% local tracking store: three read-only research surfaces that recompute at display
+%% time, one live-extraction surface that runs the pipeline, and the adjudication
+%% surface that produced the held-out answer key. The read/write asymmetry is the
+%% design content: adjudication writes to a separate location and never overwrites
+%% the channels it reads.
+%%
+%% Hand-authored TikZ (not generated): it depicts the application's design, not a
+%% measurement.
+%%
+%% Input from a chapter with:  \input{figures/app-surfaces.tex}
+
+\begin{tikzpicture}[
+    font=\small,
+    store/.style={
+      draw=horusaccent, line width=1.0pt, rounded corners=2pt,
+      fill=horuswash, text width=3.2cm, align=center, inner sep=5pt,
+    },
+    surface/.style={
+      draw=horusaccent, line width=0.7pt, rounded corners=2pt,
+      fill=white, text width=3.2cm, align=center,
+      font=\scriptsize, inner sep=4pt,
+    },
+    writer/.style={
+      draw=horuswarn, line width=0.7pt, rounded corners=2pt,
+      fill=white, text width=3.2cm, align=center,
+      font=\scriptsize, inner sep=4pt,
+    },
+    readflow/.style={-{Stealth[length=2.0mm]}, line width=0.6pt, draw=horusaccent},
+    writeflow/.style={-{Stealth[length=2.0mm]}, line width=0.7pt, draw=horuswarn,
+      dashed},
+    grp/.style={font=\scriptsize\bfseries, text=horusink, align=center},
+  ]
+
+  \node[store] (store) {\textbf{local tracking store}\\[1pt]\scriptsize per-cell
+    provenance: configuration, page image, transcript, raw output, parsed record,
+    per-field outcomes};
+
+  %% Three read-only surfaces on the left; the shared design rule sits under them.
+  \node[surface, above left=6mm and 10mm of store] (overview)
+    {\textbf{overview}\\headline accuracy per approach};
+  \node[surface, left=10mm of store] (explorer)
+    {\textbf{invoice explorer}\\page image, transcript, record, per-field verdict};
+  \node[surface, below left=6mm and 10mm of store] (compare)
+    {\textbf{approach comparison}\\methods side by side, per-field failure breakdown};
+
+  \draw[readflow] (store.west) ++(-1mm,0) -- (explorer.east);
+  \draw[readflow] (store.north west) -- (overview.east);
+  \draw[readflow] (store.south west) -- (compare.east);
+
+  \node[grp, above=2mm of overview, text width=6.8cm, align=left, anchor=south west,
+        xshift=-2mm] {read-only: recompute from stored outcomes at display time ---
+    a surface that recomputes cannot show a stale number};
+
+  %% Live extraction on the upper right: same configuration, same resolution, never
+  %% scores. Adjudication on the lower right: the one writer, quarantined.
+  \node[surface, above right=6mm and 10mm of store] (live)
+    {\textbf{live extraction}\\runs the pipeline on this machine, at the evaluated
+    resolution; never scores --- an upload has no reference};
+  \draw[readflow] (live.south west) -- (store.north east);
+
+  \node[writer, below right=6mm and 10mm of store] (adjud)
+    {\textbf{adjudication surface}\\248 escalated cells, ranked by damage; sign-off
+    writes provenance to a separate location, never over the channels it reads};
+  \draw[readflow] (store.south east) -- (adjud.north west);
+  \draw[writeflow] (adjud.south) -- ++(0,-4mm) -| node[pos=0.25, below,
+    font=\scriptsize, text=horuswarn] {signed-off answer key (separate location)}
+    ++(-2.0cm,0);
+
+\end{tikzpicture}

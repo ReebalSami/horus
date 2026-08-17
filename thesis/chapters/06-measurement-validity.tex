@@ -1,0 +1,393 @@
+\chapter{Measurement Validity: Validating the Ruler}
+\label{ch:measurement-validity}
+
+\section{Why This Chapter Exists}
+\label{sec:validity-why}
+
+A measurement claim rests on two things: the system measured, and the instrument that measured
+it. The document-understanding literature spends most of its effort on the first. This chapter
+is about the second, and it exists because on this task the instrument turned out to be the
+larger source of error.
+
+The claim is specific and it is not a generality about careful work. Over the course of this
+project, a sequence of defects was found in the evaluation apparatus --- in the reference data,
+in the comparison rules, in the diagnostic aggregation, and in the field specification given to
+the model. Each was found by opening individual documents, not by looking at aggregates.
+Each had been invisible in every number reported up to the point it was found. Several of them
+moved reported scores by more than any modelling change made in this project. One of them, had
+it gone unnoticed, would have caused this thesis to report the opposite of its actual
+conclusion.
+
+That is a result about method, and it is reported as one. It also carries a warning that
+generalises past this system: \textbf{a document-extraction score computed by naive comparison
+against canonical reference data is systematically pessimistic, and the size of the bias is not
+small}. A reader who takes one thing from this thesis should take that.
+
+The chapter proceeds by stating the discipline that separates repairing an instrument from
+inflating a score (\S\ref{sec:validity-discipline}), then the four classes of defect found
+(\S\ref{sec:validity-reference}--\S\ref{sec:validity-specification}), then what correcting them
+was worth (\S\ref{sec:validity-effect}), then the near-miss
+(\S\ref{sec:validity-confound}), and finally what remains broken and is recorded instead of
+repaired (\S\ref{sec:validity-open}). Figure~\ref{fig:defect-chronology} gives the whole
+sequence in one view, with each defect class pointing at the evidence that carries its
+effect.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figures/defect-chronology.tex}
+  \caption[The defect classes and their evidence]{The defect classes of this chapter, in
+  the order the audit surfaced them. Every one was found by opening individual documents,
+  repaired under the four-rule discipline of \S\ref{sec:validity-discipline}, and measured
+  on frozen generations; the two red entries are the project's own errors, reported
+  because they are the strongest argument for the rules.}
+  \label{fig:defect-chronology}
+\end{figure}
+
+\section{The Discipline: Repair Versus Inflation}
+\label{sec:validity-discipline}
+
+Every correction described in this chapter raises a score. That is exactly the property that
+makes the activity dangerous, because a sufficiently motivated experimenter can improve any
+result by adjusting the scoring rules until it looks better. Four rules separate the two
+activities, and they were fixed before the corrections began.
+
+\textbf{A correction may only change how a representation is compared, never whether a wrong
+answer counts as right.} Stripping a label from a predicted invoice number so that
+\emph{Invoice no.\ 471102} matches the reference \emph{471102} is a representation change: the
+model read the number correctly. Accepting \emph{471103} would not be. Every correction in this
+chapter is of the first kind, and each one carries a regression test asserting that a
+genuinely wrong value still fails.
+
+\textbf{Any rule applied to a predicted value is applied identically to the reference value.}
+Asymmetric normalisation is the specific mechanism by which a fairness fix becomes a scoring
+error, and \S\ref{sec:validity-selfinflicted} reports the occasion on which this project
+violated its own rule and what it cost.
+
+\textbf{The effect of a correction is measured on frozen model outputs.} Generations are
+archived, so a scoring change can be applied to identical stored predictions and the entire
+difference attributed to the instrument. Had the outputs been regenerated, a representation fix
+and a model change would have been inseparable. This is the single most useful practice
+described in this chapter, and it is cheap: it requires only that generations be written to
+disk.
+
+\textbf{An exclusion requires a criterion declared in advance and applied by a rule.} A cell
+may be removed from scoring only on a stated, general warrant --- never case by case after
+observing whether the model happened to get it right. Where a criterion could not be
+generalised safely, it was deliberately confined to the one field the evidence supported, and
+\S\ref{sec:validity-reference} says why.
+
+\section{Class One: The Reference Data Was Wrong or Ill-Posed}
+\label{sec:validity-reference}
+
+The reference for the synthetic corpus is extracted from each document's own embedded data, so
+it cannot disagree with itself. It can still be an unfair standard, in three distinct ways.
+
+\textbf{Optional values the reference omits and the page implies.} The invoice standard makes
+several totals optional. A document with no discounts may omit the discount total entirely
+rather than record it as zero. A model reading the page may reasonably emit zero. Scoring that
+as a fabrication punishes a correct reading of an absent quantity. The correction treats an
+omitted optional total and an explicit zero as the same claim --- in both directions, so a
+model that emits a non-zero value where the reference omits one still fails.
+
+\textbf{Document-level scalars that are undefined for some documents.} The schema carries a
+single tax rate, inherited from the era when an invoice had one. A document carrying two
+different rates has no single rate, so no answer is correct and the field is ill-posed for that
+document. It is excluded, not scored --- and separately, an invoice whose only rate is
+zero per cent presents the same problem in a different guise, because a zero rate is
+indistinguishable from an absent one by value alone. Both exclusions are rule-driven on a
+declared criterion.
+
+\textbf{Reference data that is simply incomplete.} The document-type code map initially covered
+the common invoice codes and not the full family the standard defines, so documents typed with
+a less common code were scored against nothing. A construction invoice and an insurer's invoice
+carry their own codes; the page prints the German phrase, the reference stores the numeric code,
+and the map between them has to be complete or the field fails for reasons that have nothing to
+do with reading. Similarly, payment terms are sometimes carried only as free text, so a
+reference built solely from structured fields records an absence the page contradicts.
+
+\textbf{The held-out corpus needed a fourth kind of correction}, and this one deserves care
+because it is the most easily abused. Eight cells in the signed-off answer key carry values
+that \emph{no} reading channel could locate anywhere in the page text --- not the vision model,
+not the commercial service, not the text-layer parser, not the author reading the image. A
+value that is not on the page cannot be extracted from the page by any vision system, so
+scoring it as a miss measures the answer key, not the system.
+
+The temptation is to generalise that criterion. It was deliberately not generalised, for a
+reason worth stating: the criterion is confounded across fields. One amount is unlocatable on a
+dozen documents and yet correctly recovered on eleven of them, because it is fixed
+arithmetically by other fields without being read. Keying the exclusion on provenance class alone
+would therefore have discarded correct answers. The exclusion was applied to exactly one field,
+on evidence specific to it: every present cell of that field rests on an author decision with
+no printed proof and no cross-channel agreement, the standard derives it from no other field,
+and the model recovers none of them while scoring perfectly on the same field given perfect
+text. The effect is reported in Table~\ref{tab:heldout-headline}: recall improves, the false-
+negative count falls, and \textbf{the true-positive and false-positive counts do not move at
+all}. Not one correct answer was discarded to obtain it.
+
+\section{Class Two: The Comparison Rule Punished Correct Answers}
+\label{sec:validity-comparison}
+
+The second class is the gap between an exact reference and a fair comparison. The reference
+stores canonical machine values; the page prints what a human reads. Four examples stand for
+the class.
+
+\textbf{Values printed with their label.} An invoice prints \emph{Invoice no.\ 471102}. A model
+transcribing and extracting faithfully may return the whole phrase. The number is right; the
+string differs. The correction strips a recognised leading label from the predicted side before
+comparison.
+
+\textbf{Controlled vocabularies the page never prints.} The standard encodes tax categories as
+letters and payment methods as numeric codes. No invoice prints \emph{category S}; it prints a
+German phrase describing the tax treatment. A model that reads the phrase and reports it has
+read correctly, and a comparison against the code letter scores it wrong. The correction maps
+the printed forms onto the coded ones.
+
+\textbf{Identifiers carrying a structural prefix.} A supplier's article number may be printed
+with a global trade item number prefix that the reference stores separately. Comparing the two
+as strings fails on a correct reading.
+
+\textbf{Sign conventions.} Discount and prepayment totals are stored unsigned in most
+documents and printed with a minus sign. A model that emits the printed form is right and
+scores as a miss.
+
+None of these is exotic. All four are the ordinary consequence of measuring a
+page-reading system against machine-readable reference data, which is why the class matters
+beyond this project: any evaluation constructed the same way inherits the same bias, and
+inherits it silently.
+
+\section{Class Three: The Apparatus Itself Was Broken}
+\label{sec:validity-apparatus}
+
+The third class is the most uncomfortable, because these are defects in the measuring code
+rather than in the difficulty of the task.
+
+\textbf{The per-field diagnostic was contaminated by non-signal outcomes.} A correct absence
+and an excluded cell were both being accumulated into each field's reported mean --- the first
+contributing a perfect score, the second a zero. Neither carries information about how well a
+field was read. The consequence is that a field's reported number became partly a function of
+\emph{how often that field happens to be absent}: a field that is usually absent and correctly
+predicted absent drifted upward toward a perfect score, while a field with many legitimate
+exclusions drifted toward zero.
+
+The practical damage is worth stating precisely, because it is the clearest example in this
+project of a diagnostic defect with real consequences. The plan at the time was to aim the
+adaptation experiment at the weakest fields. The contaminated ranking put the document-level tax
+rate near the bottom and the rounding amount at a perfect score. \textbf{Both were artefacts,
+and the ranking was wrong in both directions.} An adaptation study aimed using that ranking
+would have targeted a field that was fine and ignored one that was not.
+
+The headline metrics were never affected --- they derive from true-positive, false-positive and
+false-negative counts, which were always computed correctly. This was a diagnostic defect. But
+the diagnostic is what aims the work, so a defect there propagates into every decision about
+what to fix next. The repair introduced a single shared predicate for signal-bearing outcomes,
+used at all three aggregation sites, and a field with no signal-bearing outcomes is now omitted
+instead of reported as perfect. Reporting a perfect score there says \emph{always right} when
+it means \emph{never asked}.
+
+\textbf{The perfect-text instrument was unfaithful.} Instrument three of
+\S\ref{sec:method-attribution} renders text from the reference data and feeds it to the
+structuring stage. If that renderer omits or misstates something the reference contains, the
+resulting ceiling is wrong --- and wrong in an unpredictable direction, not merely
+optimistic, because the structurer may be penalised for a value the renderer never showed it.
+Five defects were found in it. Two fields that had been scoring zero on perfect text turned out
+to be scoring zero because the renderer never rendered them; after repair they score near the
+top of the range. Table~\ref{tab:oracle-renderer-correction} reports the whole effect on
+identical archived generations.
+
+\input{tables/oracle-renderer-correction.tex}
+
+\textbf{The reading-quality proxy was dishonest about blank pages.} A reader that returns
+nothing for a page is not a reader that found nothing to report; it is a failure. The proxy
+initially treated an empty transcript as a legitimate zero, which allowed a decode failure to
+be averaged in with genuine misses instead of being surfaced as a distinct fault.
+
+\textbf{Structural output repair had to be bounded.} A model that emits a \ac{JSON} object with
+a missing delimiter has produced a recoverable answer, and refusing to parse it discards a
+correct reading. But repair must supply structure only, never values. That boundary is
+explicit: delimiters may be inserted, content may not be invented.
+
+\section{Class Four: The Field Specification Was Not Grounded in the Data}
+\label{sec:validity-specification}
+
+The fourth class was not anticipated and is, in retrospect, the most instructive.
+
+The specification given to the structuring stage tells it which fields exist and what they tend
+to be called on a German invoice. Those printed-label lists are not documentation. \textbf{They
+are empirical claims about what invoices print}, and they had been written from domain
+knowledge, not measured against the corpus.
+
+Auditing them against all 146 documents found that \textbf{34 of 63 label variants never
+occurred in the corpus at all}. Each was a false claim, and each cost specification budget that
+would otherwise have gone to a label the corpus actually prints. The failure was not uniform:
+the two fields that had been scoring zero on perfect text were precisely the two whose only
+German label was the standard's own term, which no invoice in the corpus prints. Meanwhile a
+label appearing on 91 of 146 documents, for a field present on 138, was missing from the list
+entirely.
+
+Worse, the audit found \textbf{four reference values embedded in the specification as
+illustrative examples}. A concrete example value in a field description is, by construction, a
+candidate answer: it hands the model the reference for any document that carries it and
+inflates that document's score. This is evaluation contamination, and it was introduced by the
+same well-meant impulse that produces good documentation.
+
+Two details of how that was found matter more than the finding.
+
+\textbf{The fourth leak was introduced while removing the third.} Replacing a leaked German
+payment-method phrase with an English one substituted one reference value for another. Care was
+not sufficient; the defect recurred within minutes, in the act of fixing it.
+
+\textbf{It was caught only after the detector was strengthened.} The first detector compared
+descriptions against reference values in canonical form. A date written in German day-first
+notation does not match its ordered-numeric reference form as a string, so a date-shaped leak
+passed the check. Comparing against \emph{printed} variants instead of canonical ones is what
+surfaced it.
+
+The conclusion drawn was that vigilance is the wrong instrument for this class of defect. It is
+now gated by two mechanisms instead of watched: a self-contained test that rejects
+value-shaped content in any field description, and a corpus-backed audit that reports the
+occurrence count of every label variant. After repair, no ungrounded variant and no leaked
+value remains.
+
+\textbf{One further footgun was found and is recorded, not resolved.} A diagnostic that
+constructs the experiment configuration with its defaults, instead of loading the project's
+configuration file, silently selects a superseded reading model, because the canonical choice
+lives in the configuration, not in the default. The first audit run did exactly that and
+therefore measured the wrong pipeline --- a weak reader makes genuinely printed labels look
+ungrounded. Both audit tools now load the configuration explicitly. The stale default remains a
+live hazard for any future script that constructs the configuration bare, and it is listed in
+Chapter~\ref{ch:limitations-future-work}.
+
+\section{A Correction That Was Itself a Defect}
+\label{sec:validity-selfinflicted}
+
+One correction in this project broke the symmetry rule of \S\ref{sec:validity-discipline}, and
+it is reported here because it is the clearest illustration of why that rule
+exists.
+
+The sign-convention fix of \S\ref{sec:validity-comparison} was first implemented on the
+predicted side only, on the stated premise that the reference always stores these totals
+unsigned. That premise is false. A credit note in the corpus carries a negative discount total
+in its reference data --- correctly, because on a credit note the quantity is negative. Folding
+the sign on one side only turns a correct negative prediction into a positive one and scores it
+as a miss: \textbf{precisely the failure mode the fix existed to remove}, reintroduced by the
+fix.
+
+The repair folds both sides, scoped to the three fields whose convention warrants it, and
+leaves signed the one total that is legitimately signed. Two regression tests now assert the
+symmetry and the exception.
+
+The general lesson is not that this particular premise was wrong. It is that a claim about what
+the reference data contains is an empirical claim about a corpus, and stating it in a code
+comment does not make it true. It has to be checked against the corpus, in the same way the
+field specification did.
+
+\section{What Correcting the Instrument Was Worth}
+\label{sec:validity-effect}
+
+All of the following was measured on frozen generations. No model ran, so no part of these
+differences is attributable to the system under test.
+
+\textbf{On the perfect-text arm}, Table~\ref{tab:oracle-renderer-correction} gives the effect
+of repairing the renderer: every metric improves, the spurious-emission rate falls, and two
+fields move from scoring nothing to scoring near the top of the range because they had never
+been rendered at all.
+
+\textbf{On the reading arm}, Table~\ref{tab:reader-lineage} shows the same reading model scored
+before and after the corrections. The gap between those two rows is instrument, not model:
+the same transcripts, the same structurer, the same documents.
+Figure~\ref{fig:ruler-correction} plots both arms.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\textwidth]{ruler-correction}
+  \caption[Effect of the scoring corrections]{The effect of repairing the measuring apparatus,
+  on both arms, computed from identical archived generations. No model ran between the two
+  points, so the entire movement is attributable to the instrument rather than to the system
+  under test.}
+  \label{fig:ruler-correction}
+\end{figure}
+
+\textbf{On the held-out corpus}, the protocol note to Table~\ref{tab:heldout-headline} records
+what the answer-key correction was worth, with the true-positive and false-positive counts held
+constant by construction.
+
+\textbf{And on a decision}, the effect was qualitative, not numerical. On directly
+measured reading quality, the two candidate reading models were separated by three thousandths
+under the defective ruler, with the general-purpose model ahead. After the corrections ---
+applied to identical stored transcripts --- the ordering inverted, with the gap still under a
+point (\S\ref{sec:results-reader}). The correct conclusion from an ordering that flips when
+the ruler is fixed is not that the second model is better; it is that \textbf{the instrument
+does not separate these two candidates at all}, and a selection made on it would have been
+arbitrary. That is what forced the reader decision onto a hand-judged review of every
+individual miss, which Chapter~\ref{ch:results} reports. End-to-end score, for completeness,
+favoured the transcription model before the corrections and was re-taken only for the selected
+reader afterwards; Table~\ref{tab:reader-lineage} records that lineage.
+
+\section{The Near-Miss}
+\label{sec:validity-confound}
+
+The most consequential measurement problem in this project was not a defect in the scoring
+code. It was a comparison between two numbers that were not comparable.
+
+The adaptation experiments had to run on target-class hardware in full numeric precision,
+because they exceeded the floor's memory (\S\ref{sec:method-repro}). The deployed baseline runs
+at the floor in 4-bit quantised precision. Comparing the full-precision adapter against the
+quantised baseline measures the adapter \emph{and} a precision change at the same time.
+
+Table~\ref{tab:precision-confound} gives both readings. The unmatched comparison shows a
+difference small enough to read as no measurable harm. The matched comparison, against a
+baseline re-measured in the adapter's own precision, shows a regression roughly twenty times
+larger. The two effects --- the damage the adapter does and the gain full precision brings ---
+very nearly cancel.
+
+Had the baseline not been re-measured, this thesis would have reported that the adaptation was
+harmless. It is not. The requirement to re-measure was written down before the runs, as a
+precondition, not a check, which is the only reason the cancellation was caught.
+
+Two things follow. The first is narrow: precision must be matched. The second is general and is
+the reason this section exists. \textbf{The confound was not visible in either number.} Both
+figures were correctly computed, both were reproducible, and their difference was small and
+plausible. Nothing about the output signalled that the comparison was invalid. Only a rule
+fixed in advance caught it.
+
+\section{What Remains Broken}
+\label{sec:validity-open}
+
+Two items are recorded as open and unrepaired, because reporting only the defects that
+were fixed would misrepresent the state of the apparatus.
+
+\textbf{One field regressed under the renderer repair and stays regressed.} The supplier
+article number scores worse after the perfect-text renderer was corrected than before. The
+repair was still right --- it made the renderer faithful to the reference --- but it exposed a
+comparison problem in that field that has not been resolved. It is reported as a regression
+instead of smoothed away, and Table~\ref{tab:oracle-renderer-correction} covers the aggregate
+in which it sits.
+
+\textbf{The stale configuration default remains.} Described in
+\S\ref{sec:validity-specification}: a diagnostic that builds its configuration from defaults
+selects a superseded reading model. The two audit tools were fixed; the default was not.
+
+\section{What Generalises}
+\label{sec:validity-generalises}
+
+Four practices carried the weight here, and none of them is specific to invoices.
+
+\textbf{Archive generations.} A stored prediction can be re-scored under a corrected rule, which
+makes an instrument repair measurable in isolation. Almost every number in this chapter depends
+on that one habit.
+
+\textbf{Treat the field specification as data to be measured.} Label lists, alias tables and
+example values are empirical claims about a corpus. Measure their occurrence, record the count
+next to each entry, and never place a concrete value in a specification --- describe the shape
+instead. A value-shaped example is by construction a candidate answer.
+
+\textbf{Distinguish the three causes of a zero.} A field scoring nothing on perfect input has
+one of three causes: the value is absent from the input, the value is present but the
+specification never names it, or the value is present and named and the comparison rule rejects
+it. The middle cause is the one that is routinely forgotten, and it is the one that must never
+be handed to a fine-tuning run --- otherwise the adapter is credited with a gain that a one-line
+specification change would have produced.
+
+\textbf{Gate what recurs.} Where a defect class recurred under active attention --- as the
+contamination class did, within minutes, during its own repair --- vigilance has been
+demonstrated to be insufficient. Replace it with a test and an audit that fail loudly.

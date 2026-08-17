@@ -27,9 +27,15 @@ Source: `~/Projects/cascade-system/docs/structure.md` (this is the downstream co
     │   └── <from-cascade-id>-<topic>.md
     ├── retros/                     # project-local retros (per-milestone or per-sprint)
     │   └── <milestone-slug>.md
-    └── prompts/
-        └── stages/                 # one file per phase from phases.yaml
-            └── NN-<phase-slug>.md
+    ├── prompts/
+    │   ├── stages/                 # one file per phase from phases.yaml
+    │   │   └── NN-<phase-slug>.md
+    │   └── reviews/                # reusable thesis-review prompts (2026-08-16)
+    │       └── <scope>-review-prompt.md
+    ├── reviews/                    # review RECORDS (ADR-069)
+    │   └── <date>-<scope>-review.md
+    └── sources/                    # archived cited sources (ADR-002)
+        └── <type>/<slug>.md
 ```
 
 ## Placement rules
@@ -49,6 +55,9 @@ Source: `~/Projects/cascade-system/docs/structure.md` (this is the downstream co
 | `docs/retros/` | `<milestone-slug>.md` or `<phase-name>.md` |
 | `docs/architecture/` | `*.excalidraw` or `*.mmd` |
 | `docs/prompts/stages/` | `NN-<phase-slug>.md` (NN matches phase order in `phases.yaml`) |
+| `docs/prompts/reviews/` | `<scope>-review-prompt.md` (reusable prompt INPUTS; the resulting review RECORDS go to `docs/reviews/`) |
+| `docs/reviews/` | `<date>-<scope>-review.md` (per ADR-069) |
+| `docs/sources/` | `<type>/<slug>.md` (per ADR-002) |
 
 ## Validators
 

@@ -1,0 +1,37 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/adapter/horus_training_provenance.json; data/finetune/adapter-oracle/horus_training_provenance.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{The adaptation recipe, as recorded by the training runs themselves.}
+  \label{tab:hyperparameters}
+  \begin{tabular}{lrr}
+    \toprule
+    Setting & Reader arm & Perfect-text arm \\
+    \midrule
+    Rank & 8 & identical \\
+    Scaling factor & 16.0 & identical \\
+    Dropout & 0.05 & identical \\
+    Learning rate & 0.0001 & identical \\
+    Schedule & cosine & identical \\
+    Warm-up fraction & 0.03 & identical \\
+    Epoch budget & 6.0 & identical \\
+    Batch size & 1 & identical \\
+    Gradient accumulation & 8 & identical \\
+    Sequence budget (auto-sized) & 6144 & 3840 \\
+    Seed & 42 & identical \\
+    Fitting examples & 100 & 100 \\
+    Adapted modules & 258 & 258 \\
+    Dev-slice size & 17 & 17 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Read from the provenance file each run wrote, not from the configuration it was asked to use, so the table reports what executed. The sequence budget is the one setting that differs, and it is derived rather than chosen: the trainer sizes it to the longest example in that arm's own training set, rounded up to a 256-token boundary and capped at 8192. Neither cap binds, so no training example was truncated in either arm. The difference is therefore a consequence of the variable under study --- reader transcripts are longer than rendered text --- and not an independent second variable. Adapted modules are confined to the text tower; the vision tower stays frozen throughout.
+  \end{minipage}
+\end{table}

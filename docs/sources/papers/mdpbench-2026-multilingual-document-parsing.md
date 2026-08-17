@@ -1,6 +1,7 @@
 ---
 source_url: "https://arxiv.org/abs/2603.28130"
-source_title: "MDPBench: Multilingual Document Parsing Benchmark"
+source_title: "MDPBench: A Benchmark for Multilingual Document Parsing in Real-World Scenarios"
+source_author: "Zhang Li, Zhibo Lin, Qiang Liu, Ziyang Zhang, Shuo Zhang, Zidun Guo, Jiajun Song, Jiarui Zhang, Xiang Bai, Yuliang Liu"
 source_date: "2026-03"
 retrieved_date: "2026-07-31"
 extracted_concepts: []

@@ -4,34 +4,90 @@
 \section{Motivation}
 \label{sec:motivation}
 
-German tax advisors (\textit{Steuerberater}), auditors
-(\textit{Wirtschaftspr\"ufer}), and lawyers (\textit{Rechtsanw\"alte}) process
-large volumes of client documents --- incoming invoices
-(\textit{Eingangsrechnungen}) and supporting receipts (\textit{Belege}) --- as a
-daily core activity. Recent progress in document \acp{VLM} makes it tempting to
+German tax advisors, auditors and lawyers process large volumes of client
+documents --- incoming invoices and supporting receipts --- as a daily core
+activity. Recent progress in document \acp{VLM} makes it tempting to
 automate this work with cloud services. For these professions, however, the
 question is not only one of data protection: it also touches professional
 secrecy, which is protected by criminal law.
 
 % SUPERVISOR GATE (issue #96): this paragraph was deliberately SOFTENED from an
-% earlier, overstated version that claimed cloud processing is simply forbidden.
-% The nuance below is verified against the federal chamber of tax advisors'
-% guidance and German legal/IT commentary, but a legal claim in a thesis needs
-% human sign-off. Confirm the wording with the supervisor before submission.
-The \ac{DSGVO} can be satisfied for cloud processing through a data-processing
-agreement and EU data residency. Professional secrecy adds a second, separate
-requirement: under \S203~\ac{StGB} together with \S62a~\ac{StBerG}, any external
-service provider who gains access to client data must be bound to
-confidentiality in text form, and foreign providers must additionally satisfy a
-comparable-secrecy test \cite{bstbk2026}. This requirement is not categorically
-unmeetable: at least one major cloud provider offers a contractual amendment
-specifically for holders of professional secrets. Two considerations nevertheless
-keep local processing attractive. First, the providers of the strongest
-general-purpose language models do not currently offer an equivalent amendment.
-Second, and independently of any contract, providers under United States
-jurisdiction remain subject to extraterritorial access powers, which is precisely
-the residual risk the comparable-secrecy test addresses. Local inference removes
-the question rather than managing it: the document never leaves the firm. This
+% earlier, overstated version that claimed cloud processing is simply forbidden,
+% and was then CORRECTED on 2026-08-16 (third-pass review) against the statutes
+% themselves, the two professional chambers' own AI guidance and the European
+% supervisory board's published opinions. Three defects were repaired: the
+% service-provider requirements were sourced to the tax-advisor statute alone
+% although all three named professions have their own; the data-protection
+% sentence implied that a processor contract plus EU hosting settles the matter;
+% and the provider claim was absolute where the evidence supports only a narrower
+% one. The apparatus sits in footnotes to keep this a motivation paragraph rather
+% than a legal treatise (see the scope note in \S\ref{sec:scope}).
+% Still a legal claim in a thesis: confirm the wording with the supervisor.
+Two bodies of law bear on that temptation, and they are separate.
+\emph{Data protection} governs the processing of personal data, and a
+cloud arrangement addresses it through a processor contract, appropriate
+technical measures and processing inside the \ac{EU} (Art.~28, 32 \ac{DSGVO}
+\parencite{dsgvo28,dsgvo32}). It does not, however, dispose of the question:
+the \ac{EDPB} holds that a processor established inside Europe may still be
+reached by third-country law, that contract wording to that effect does not
+release it from its obligations, and that where the recipient falls under
+United States surveillance law, contractual and organisational measures alone
+will generally not restore an equivalent level of protection --- only technical
+ones can \parencite{edpb2024processors,edpb2021supplementary}.
+
+\emph{Professional secrecy} is the second body, it is backed by criminal law,
+and it is the one that binds harder here for two reasons that are easy to miss.
+The first is subject matter: it protects everything entrusted in the exercise of
+the profession, including the affairs of \emph{legal persons}, where data
+protection is concerned with natural ones \parencite{bstbk2026}. A thesis about
+business-to-business invoices therefore sits almost entirely inside the stricter
+regime and only partly inside the better-known one. The second is that
+disclosure to an outside provider is permitted only on conditions the provider
+must actively meet: the provider has to be selected with care and bound to
+confidentiality in text form, instructed about the criminal consequences of a
+breach, and restricted to the knowledge the service actually requires;
+services performed abroad additionally require a level of secrecy protection
+comparable to the domestic one; and where the service serves one specific client
+matter rather than the firm's general infrastructure, the client's own consent is
+required as well.\footnote{\S203~\ac{StGB} \parencite{stgb203} names these
+professions --- \textit{Steuerberater}, \textit{Wirtschaftspr\"ufer},
+\textit{Rechtsanw\"alte} --- as holders of protected secrets and, since the 2017
+reform, both permits disclosure to contributing outside persons where necessary
+and makes the professional criminally liable for failing to bind them. The
+contractual
+requirements are set out separately for each profession, in near-identical terms:
+\S62a~\ac{StBerG} for tax advisors \parencite{stberg62a}, \S43e~\ac{BRAO} for
+lawyers \parencite{brao43e}, and \S50a~\ac{WPO} for auditors
+\parencite{wpo50a}, each attaching to that profession's own confidentiality duty
+--- \S57 Abs.~1~\ac{StBerG} \parencite{stberg57}, \S43a Abs.~2~\ac{BRAO} and
+\S43~\ac{WPO} respectively.} Both chambers make the practical consequence explicit,
+and it is the point most often elided: a data-protection processing agreement is
+\emph{not} the same instrument and does not satisfy the confidentiality
+requirement, and the two obligations stand side by side rather than one absorbing
+the other \parencite{bstbk2026,brak2024ki,bstbkdsgvo}.
+
+These conditions are not categorically unmeetable. One major cloud provider
+publishes an amendment written specifically for holders of professional secrets
+and referring to the criminal provision by name.\footnote{Microsoft's
+\emph{Zusatzvereinbarung f\"ur Berufsgeheimnistr\"ager} / German Data Secrecy
+Amendment \parencite{msprofsecrecy}. Two limits are worth noting: the amendment
+runs for 36 months from acceptance with no renewal clause while the framework
+agreement it supplements is open-ended, and published university assessments of
+it record gaps specifically for \ac{AI} services. Of the remaining large
+providers, one supplies a comparable document only on request under a
+non-disclosure agreement and one has no published equivalent at all.} What
+does not currently exist is such an amendment from the providers offering the
+strongest general-purpose language models directly: their published terms
+address data protection and are silent on professional
+secrecy \parencite{openaidpa,anthropicdpa}, and the route that does carry the
+amendment reaches those models only through a cloud platform
+\parencite{azureopenaieu}. Independently of any contract, providers under United
+States jurisdiction remain subject to extraterritorial access powers --- which is
+precisely the residual risk the comparable-secrecy test exists to address.
+
+Local inference removes the question rather than managing it: the document never
+leaves the firm, so no provider has to be selected, bound, instructed, monitored
+or consented to. This
 thesis takes that constraint as its operational premise --- not as its research
 contribution --- and asks what is technically achievable \emph{within} it.
 
@@ -42,10 +98,17 @@ Working locally confines the system to models that fit on commodity, on-premises
 hardware. This raises a concrete empirical question: how reliably do small,
 locally hosted, open-weights document \acp{VLM} --- the wave of specialised models
 released from late~2025 onward --- convert German B2B invoices into a structured,
-legally meaningful form? Prior work on invoice processing with vision models
-\cite{berghaus2025} benchmarked large cloud models but did not include the recent
-specialised open-weights document \acp{VLM}; that omission is the gap this thesis
-addresses.
+legally meaningful form? The closest prior work benchmarked cloud-frontier models
+and general-purpose open-weights models on invoice extraction, but included none
+of the recent \emph{specialised} open-weights document \acp{VLM} and no German
+B2B corpus \parencite{berghaus2025}. German invoice extraction itself is not
+unstudied --- it has been addressed with recognition-plus-layout models on a
+restricted real corpus \parencite{krieger2021german} --- but not with this model
+class, not against a machine-exact reference under the European semantic standard,
+and not under a hardware constraint. That intersection is the gap this thesis
+addresses; \S\ref{sec:rw-german} makes the comparison with the German literature
+explicit and \S\ref{sec:rw-positioning} returns to where the closest benchmark's
+findings and this thesis's diverge.
 
 A second problem emerges only once such a system is measured seriously. An
 end-to-end extraction score conflates three very different failure sources: the
@@ -68,18 +131,23 @@ representation on commodity on-premises hardware --- and which stage of that
 pipeline limits the achievable reliability?
 \end{quote}
 
-\noindent It is addressed through four sub-questions:
+\noindent It is addressed through four sub-questions. They are worded to match
+what this thesis actually measures, which is narrower than the general form each
+question could take; \S\ref{sec:rq-map} states for each one where it is answered
+and how strong that answer is.
 
 \begin{enumerate}
-  \item How do recent open-weights document \acp{VLM} compare with one another on
-        German e-invoice field extraction?
-  \item Does splitting the task into a reading stage and a structuring stage
-        outperform a single model that goes from page image straight to
-        structured output?
-  \item What accuracy is attainable inside the memory and throughput envelope of
-        commodity local hardware?
-  \item Where does the residual error actually originate --- in reading, in
-        structuring, or in the measurement?
+  \item\label{rq:readers} How do recent open-weights document \acp{VLM} compare
+        with one another \emph{as the reading stage} of a German e-invoice
+        extraction pipeline, holding the structuring stage constant?
+  \item\label{rq:split} What evidence supports splitting the task into a reading
+        stage and a structuring stage rather than using a single model that goes
+        from page image straight to structured output --- and what about that
+        comparison remains unproven?
+  \item\label{rq:envelope} What accuracy is attainable inside the memory envelope
+        of commodity local hardware, and which stage pays for that envelope?
+  \item\label{rq:attribution} Where does the residual error actually originate
+        --- in reading, in structuring, or in the measurement?
 \end{enumerate}
 
 \noindent These are made falsifiable through a hypothesis set registered before
@@ -89,30 +157,83 @@ layers that were subsequently placed outside the scope of this thesis; those
 hypotheses are reported as registered-but-not-evaluated in
 Chapter~\ref{ch:limitations-future-work} rather than quietly dropped.
 
+\subsection*{What each question is answered with}
+\label{sec:rq-map}
+
+A question can be answered by a sealed measurement, by a diagnostic instrument,
+by a preliminary study, or not at all, and those are not interchangeable. The
+mapping is stated here so that no answer later in the thesis has to be weighed
+against a promise made in this chapter.
+
+\begin{itemize}
+  \item \textbf{Question~\ref{rq:readers}} --- answered by a sealed measurement of
+        reading quality plus a hand-judged audit of every residual miss
+        (\S\ref{sec:results-reader}). The finding is partly negative: the
+        aggregate instruments did not separate the two finalists, so the decision
+        rests on failure mode rather than on score. One finalist's end-to-end
+        score was never re-taken under the corrected scoring rules, and that
+        asymmetry is stated where the table appears.
+  \item \textbf{Question~\ref{rq:split}} --- answered \emph{preliminarily} on
+        accuracy (\S\ref{sec:results-preliminary}: in-sample, small, predating
+        the scoring corrections) and \emph{decisively} on measurability
+        (\S\ref{sec:design-two-stage}). Whether a single-shot arrangement
+        overtakes the split within this model class is left open on purpose
+        (\S\ref{sec:rw-berghaus}).
+  \item \textbf{Question~\ref{rq:envelope}} --- answered at two tiers carrying
+        different evidence. Nothing reported needed more than a workstation-class
+        machine with a single 24\,\ac{GB} graphics processor, where every reading
+        figure was produced; the structuring stage is additionally measured at the
+        floor of a 16\,\ac{GB} laptop, in its deployed precision
+        (Table~\ref{tab:sealed-val-arms}). The one missing number is the floor's
+        reading quality --- the laptop caps the reader at half resolution --- which
+        \S\ref{sec:method-repro} records and \S\ref{sec:lim-hardware} carries as a
+        limitation. Throughput is deliberately not claimed: it was instrumented
+        earlier in the project and the confirmatory comparison was not run, so it
+        is reported as registered-but-unevaluated (Appendix~\ref{app:hypotheses}).
+  \item \textbf{Question~\ref{rq:attribution}} --- answered by three instruments
+        that agree (\S\ref{sec:results-attribution}), and it is the question this
+        thesis answers most firmly.
+\end{itemize}
+
 \section{Contributions}
 \label{sec:contributions}
 
-% TODO(contributions): finalise once results land. Draft claims:
 This thesis contributes:
 
 \begin{itemize}
-  \item an evaluation of recent open-weights local document \acp{VLM} on German
-        e-invoice extraction, closing the cloud-only gap in \cite{berghaus2025};
-  \item a compliance-aware evaluation suite that weights fields by their legal
-        importance under \S14~\ac{UStG}/\S33~\ac{UStDV} rather than treating all
-        fields alike under a single token \ac{F1};
-  \item a \emph{measurement-validity} methodology: a documented chain of
-        ground-truth and scoring corrections that separates genuine model error
-        from scoring artefact --- for instance, cases where the model correctly
-        reproduces what the page shows while the reference stores a different
-        but equivalent representation;
-  \item an \emph{attribution} method that decomposes end-to-end error into a
-        reading share, a structuring share and a measurement share, using
-        reference-quality transcripts as an upper bound on what the structuring
-        stage can achieve; and
-  \item a locally deployable prototype and a reproducible evaluation harness as
-        engineering artefacts.
+  \item an evaluation of recent \emph{specialised} open-weights local document
+        \acp{VLM} on German e-invoice extraction --- the model class and corpus
+        class absent from the closest prior benchmark \parencite{berghaus2025} ---
+        together with a measurement on 39 \emph{real} invoices whose answer key
+        was adjudicated across three independent reading channels;
+  \item a \emph{measurement-validity} methodology, and the empirical finding that
+        motivates it: a documented chain of reference-data and scoring defects,
+        several of which moved reported scores further than any modelling change
+        in this project, and one of which would have inverted a conclusion had it
+        gone unnoticed (Chapter~\ref{ch:measurement-validity});
+  \item an \emph{attribution} method that separates reading error from structuring
+        error by replacing the transcript with text rendered from the reference,
+        and by asking of every individual miss whether the value was present in
+        the transcript at all --- yielding the thesis's central claim, that
+        reading rather than structuring is the binding constraint at this scale;
+  \item a reproducible negative result: parameter-efficient adaptation of the
+        structuring stage fails in all four cells of a two-by-two design, and
+        fails by a specific mechanism --- it raises the rate at which the model
+        emits values for fields the document does not carry; and
+  \item a locally deployable prototype --- HORUS, for Hybrid \ac{OCR}-free
+        Reading and Understanding System --- and a reproducible evaluation
+        harness as engineering artefacts.
 \end{itemize}
+
+\noindent One contribution claimed in an earlier plan for this work is
+\emph{not} delivered, and is named here rather than quietly dropped. A
+compliance-aware metric weighting fields by their legal importance under
+\S14~\ac{UStG} and \S33~\ac{UStDV} was designed and then abandoned, because the
+weights would have been chosen by the author and a headline number resting on an
+author-chosen weight vector is comparable to nothing.
+Section~\ref{sec:method-metrics} gives the reasoning; unweighted figures are
+reported instead, with per-field results given in full so that a reader who wants
+to weight them can.
 
 \section{Scope and Delimitations}
 \label{sec:scope}
@@ -132,9 +253,10 @@ states what was left out and why.
 \paragraph{A note on terminology.} \emph{\ac{OCR}-free} in this thesis is an
 architectural statement, not a claim about model names: the pipeline contains no
 separate character-recognition engine, and the vision-language model maps page
-pixels directly to output tokens. Several models in the evaluated cohort
-nevertheless carry \ac{OCR} in their names, because their authors named them
-after the task they perform rather than after the architecture they use. The two
+pixels directly to output tokens. Several models in the evaluated cohort ---
+olmOCR-2 among them --- nevertheless carry \ac{OCR} in their names, because
+their authors named them after the task they perform rather than after the
+architecture they use. The two
 usages are independent, and the naming is not a contradiction.
 
 \section{Thesis Structure}
@@ -144,8 +266,17 @@ usages are independent, and the naming is not a contradiction.
 Chapter~\ref{ch:background} introduces the technical and legal background, and
 Chapter~\ref{ch:related-work} positions the thesis against prior work.
 Chapter~\ref{ch:system-design} presents the system design and states which parts
-of it are evaluated here. Chapter~\ref{ch:methodology} specifies the corpus, the
+of it are evaluated here. Chapter~\ref{ch:methodology} specifies the corpora, the
 ground truth, the metric suite and the pre-registration discipline.
+
+Chapter~\ref{ch:measurement-validity} then does something a thesis does not
+usually need a chapter for: it establishes that the measuring apparatus is sound
+before any model claim is made with it. It is placed between the method and the
+results because that is the order in which it has to be read --- the corrections
+it describes are the reason the numbers in Chapter~\ref{ch:results} can be
+trusted, and several of them are larger than anything a modelling decision
+achieved.
+
 Chapter~\ref{ch:results} reports the results, and
 Chapter~\ref{ch:implementation} describes the prototype.
 Chapter~\ref{ch:discussion} interprets the findings,

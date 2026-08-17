@@ -1,0 +1,99 @@
+%% The three-channel ground-truth adjudication of \S\ref{sec:method-heldout-gt}:
+%% three independent reading channels plus a deterministic printed-text gate feed a
+%% combiner; every cell lands in one of five provenance classes; only the warranted
+%% classes are accepted automatically, the rest are ranked by damage and adjudicated
+%% by the author against the page image.
+%%
+%% Hand-authored TikZ. Counts mirror the prose of \S\ref{sec:method-heldout-gt} and
+%% the generated datasheet tables of Appendix~\ref{app:heldout} (1,326 cells; 463
+%% accepted on a recorded warrant; 248 author-decided; 39/39 documents signed off).
+%%
+%% Input from a chapter with:  \input{figures/gt-adjudication.tex}
+
+\begin{tikzpicture}[
+    font=\small,
+    channel/.style={
+      draw=horusaccent, line width=0.7pt, rounded corners=2pt,
+      fill=horuswash, text width=3.1cm, align=center,
+      font=\scriptsize, inner sep=4pt, minimum height=9mm,
+    },
+    gate/.style={
+      draw=horuswarn, line width=0.7pt, dashed, rounded corners=2pt,
+      fill=white, text=horuswarn, text width=3.1cm, align=center,
+      font=\scriptsize, inner sep=4pt,
+    },
+    stage/.style={
+      draw=horusaccent, line width=0.8pt, rounded corners=2pt,
+      fill=horuswash, text width=3.0cm, align=center, inner sep=5pt,
+    },
+    class/.style={
+      draw=horusmuted, line width=0.6pt, rounded corners=1pt,
+      fill=white, text width=2.75cm, align=left,
+      font=\scriptsize, inner sep=3pt,
+    },
+    flow/.style={-{Stealth[length=2.2mm]}, line width=0.7pt, draw=horusaccent},
+    dimflow/.style={-{Stealth[length=2.0mm]}, line width=0.6pt, draw=horusmuted},
+    lbl/.style={font=\scriptsize\itshape, text=horusink, align=center},
+  ]
+
+  %% The three channels are stacked; independence -- different architectures failing
+  %% differently -- is the property being bought, and the caption says so.
+  \node[channel] (c1) {\textbf{text-layer draft}\\the document's own embedded
+    characters};
+  \node[channel, below=2.5mm of c1] (c2) {\textbf{frontier cloud vision model}\\reads
+    the page images, schema-constrained};
+  \node[channel, below=2.5mm of c2] (c3) {\textbf{commercial document service}\\
+    purpose-trained invoice model};
+  \node[gate, below=4mm of c3] (gate) {\textbf{printed-text gate}\\deterministic: is
+    this string in the document's own characters? proves presence, not assignment};
+
+  \node[stage, right=13mm of c2] (comb) {\textbf{Combiner}\\[2pt]\scriptsize assigns
+    every cell one of five provenance classes};
+
+  \draw[flow] (c1.east) -- ++(4mm,0) |- ($(comb.west)+(0,3mm)$);
+  \draw[flow] (c2.east) -- (comb.west);
+  \draw[flow] (c3.east) -- ++(4mm,0) |- ($(comb.west)+(0,-3mm)$);
+  \draw[-{Stealth[length=2.0mm]}, line width=0.6pt, draw=horuswarn, dashed]
+    (gate.east) -- ++(6mm,0) |- ($(comb.south)+(0,-1mm)$) -- (comb.south);
+
+  %% The five classes, grouped by what happens next.
+  \node[class, right=11mm of comb, yshift=17mm] (k1) {\textbf{proven by printed text}
+    --- gate + two channels agree};
+  \node[class, below=1.8mm of k1] (k2) {\textbf{agreed by two channels} --- no
+    deterministic backing};
+  \node[class, below=1.8mm of k2] (k3) {\textbf{claimed absent} --- every capable
+    channel reports absence};
+  \node[class, below=1.8mm of k3, draw=horuswarn, text=horuswarn] (k4)
+    {\textbf{exempt by policy} --- escalated};
+  \node[class, below=1.8mm of k4, draw=horuswarn, text=horuswarn] (k5)
+    {\textbf{decided by the author} --- escalated};
+
+  \foreach \k in {k1,k2,k3,k4,k5}
+    \draw[dimflow] (comb.east) -- (\k.west);
+
+  %% Outcomes: automatic acceptance on a recorded warrant, or ranked escalation to
+  %% the author. The counts are the datasheet's.
+  \node[stage, right=10mm of k2, text width=2.6cm, yshift=5mm] (auto)
+    {\textbf{accepted on a recorded warrant}\\[1pt]\scriptsize 463 cells};
+  \node[stage, right=10mm of k4, text width=2.6cm, yshift=-2mm,
+        draw=horuswarn, fill=white] (author)
+    {\textbf{ranked by damage, adjudicated by the author}\\[1pt]\scriptsize 248
+    cells, against the page image};
+
+  \draw[dimflow] (k1.east) -- (auto.west);
+  \draw[dimflow] (k2.east) -- (auto.west);
+  \draw[dimflow] (k3.east) -- (auto.west);
+  \draw[dimflow] (k4.east) -- (author.west);
+  \draw[dimflow] (k5.east) -- (author.west);
+
+  \node[
+    draw=horusaccent, line width=0.8pt, rounded corners=2pt, fill=horuswash,
+    text width=2.4cm, align=center, inner sep=5pt,
+    below=6mm of author,
+  ] (key) {\textbf{signed-off answer key}\\[1pt]\scriptsize 1{,}326 cells,\\39/39
+    documents confirmed individually};
+  %% The accepted-cells flow travels along the right margin so it crosses nothing.
+  \draw[flow] (auto.east) -- ++(2.5mm,0) |- (key.east);
+  \draw[flow] (author.south) -- (key.north);
+
+\end{tikzpicture}

@@ -1,0 +1,29 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/adapter/horus_training_provenance.json; data/finetune/adapter-oracle/horus_training_provenance.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{Held-back dev-slice loss by epoch for both adapters. Both minimise after one epoch and never recover.}
+  \label{tab:devloss}
+  \begin{tabular}{rrrl}
+    \toprule
+    Epoch & Reader arm & Perfect-text arm &  \\
+    \midrule
+    1 & 0.1956 & 0.0965 & \quad$\leftarrow$ selected \\
+    2 & 0.3918 & 0.3095 &  \\
+    3 & 0.4438 & 0.3799 &  \\
+    4 & 0.4183 & 0.3644 &  \\
+    5 & 0.3857 & 0.3150 &  \\
+    6 & 0.3801 & 0.3078 &  \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Loss is measured on a 17-invoice dev slice carved out of the training split, disjoint from both the fitting set and the sealed validation split, so selecting on it leaks nothing into the reported score. The two arms share the same dev slice. The selection rule --- lowest dev loss --- was fixed before the runs and is enforced by the trainer rather than applied by hand. Loss rises by 2.00$\times$ (reader) and 3.21$\times$ (perfect text) at the second epoch and stays above the epoch-one value for the remaining budget, so the six-epoch budget was never a target: it existed to make the turn visible.
+  \end{minipage}
+\end{table}

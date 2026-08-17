@@ -1,0 +1,96 @@
+\chapter{Conclusion}
+\label{ch:conclusion}
+
+% NOTE: future work lives in Ch.~\ref{ch:limitations-future-work} (per the
+% ADR-055 amendment), so this chapter stays short and does not repeat it.
+
+This thesis began with a question forced by law rather than by technology: how reliably
+can current open-weights document \acp{VLM}, deployable on hardware a German tax
+firm already owns, convert business-to-business invoices into the legally grounded
+\ac{EN}~16931 form --- and which stage of such a pipeline limits what is achievable? The
+professional-secrecy regime of \S203~\ac{StGB} makes the local constraint an operational
+premise, not a preference (\S\ref{sec:motivation}), and the thesis asked what is
+honestly attainable within it.
+
+\section*{The answer}
+\addcontentsline{toc}{section}{The answer}
+
+The answer has a shape, not just a number. On 39 real invoices the system never saw
+during development, zero-shot header-field extraction reaches a mean per-invoice
+\ac{F1} of 0.88 against an answer key adjudicated across three independent channels
+(\S\ref{sec:results-heldout}). The error profile leans the right way for the domain:
+precision 0.95 against recall 0.85, with four errors in five being omissions a reviewer
+can see rather than fabrications a reviewer must catch --- the honest-null contract of
+the design (\S\ref{sec:design-honest-null}) showing up in the measurements. The cost
+structure is equally clear: language costs little, degraded capture costs more than
+eleven points, and the synthetic-corpus figures are upper bounds for camera-captured
+paper (\S\ref{sec:lim-corpus}).
+
+The stage that limits the pipeline is reading. The structuring stage exceeds 0.97 on
+perfect transcripts while the same stack, differing only in that the transcript
+comes from a real reader, reaches 0.85 on the same corpus at matched precision
+(\S\ref{sec:results-baseline}); and in the per-miss attribution --- taken with the
+survey-era reader and labelled as the diagnostic it is --- roughly half of all
+individual errors were values the transcript never contained
+(\S\ref{sec:results-attribution}). Effort spent
+below the binding constraint is wasted: the single cheapest improvement made in this
+project was swapping the reading model --- one configuration line --- and the most
+expensive intervention attempted, a pre-registered low-rank adaptation of the
+structuring stage, regressed in all four cells of its design and specifically raised
+the rate of values invented for absent fields (\S\ref{sec:results-adaptation}).
+Both outcomes point the same way: at this scale, buy reading quality, do not tune
+structuring.
+
+\section*{The contribution to remember}
+\addcontentsline{toc}{section}{The contribution to remember}
+
+If one thing from this thesis outlives its model rankings --- and model rankings from
+this period will not live long --- it should be the measurement discipline of
+Chapter~\ref{ch:measurement-validity}. The scoring corrections documented there moved
+reported figures by amounts comparable to the differences between models; one
+un-repaired comparison rule inverted the ordering of two candidate readers; and one
+precision-mismatched baseline, caught because a pre-registered rule required the
+re-measurement, would have flipped the adaptation conclusion from harmful to harmless
+(\S\ref{sec:validity-confound}). None of these defects announced themselves; every one
+was found by treating the measuring apparatus as a system under test, with frozen
+generations as the mechanism that makes an instrument repair measurable in isolation
+from a model change. A reported score is a claim about a model \emph{and} about the
+ruler it was measured with, and this thesis's experience suggests the ruler's share of
+the uncertainty is routinely underestimated.
+
+\section*{What this thesis does not claim}
+\addcontentsline{toc}{section}{What this thesis does not claim}
+
+The boundaries are stated as plainly as the results. The knowledge-graph and query
+layers were designed and their hypotheses registered, but they were not built or
+evaluated, and no finding here bears on them; the registered hypotheses are reported as
+unevaluated, never quietly dropped (\S\ref{sec:unevaluated}). No cloud comparison
+was run. The held-out corpus is small and single-annotator, so its figures establish a
+level and a direction, not precise values; the structuring model was never
+competitively selected, unlike the reader; and everything measured concerns German and
+European \ac{B2B} invoices, nothing else. One boundary deserves naming here because it
+concerns the deployment premise itself: the hardware claim is two-tier, and the tiers carry
+different evidence. Every number reported above was produced on premises-class hardware ---
+nothing needed more than a single 24\,\ac{GB} graphics processor, running open-weights models
+under the author's control at every step --- while the laptop floor, whose memory ceiling caps
+the reader at roughly half of native page resolution, has a measured structuring stage but an
+unmeasured reading quality (\S\ref{sec:method-repro}). The delivered pipeline is open-weights,
+makes no network call, and fits the floor --- but its reading quality at the floor was not
+measured, and no figure here should be read as a floor figure
+(\S\ref{sec:lim-hardware}). Within those boundaries, the claims are as
+strong as the committed evidence behind them --- every number in this manuscript is
+generated from the archived measurement artefacts, none transcribed by hand ---
+and no stronger.
+
+\section*{Outlook}
+\addcontentsline{toc}{section}{Outlook}
+
+The path forward is ordered by the evidence, not by ambition, and
+Chapter~\ref{ch:limitations-future-work} states it in full: improve capture and
+reading before touching structuring; treat the unbuilt layers as the next vertical,
+carrying the same measurement discipline upward; and re-run the sealed harness as the
+model generation turns over, which the frozen-artefact design makes cheap. The
+practical conclusion for the profession that motivated this work is modest and
+useful: a locally deployable pipeline that reads most of a real invoice correctly,
+fails visibly rather than plausibly, and comes with an evaluation apparatus that can
+say --- with evidence --- when it has become good enough to trust.

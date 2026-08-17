@@ -1,0 +1,166 @@
+{
+  "test": "exact McNemar, two-sided, over paired per-cell findability outcomes",
+  "ruler": "horus.finetune.answerability (ADR-056/057 variants) + audited exclusions",
+  "corpus": "sealed val split",
+  "n_invoices": 29,
+  "n_cells": 963,
+  "n_excluded_cells": 23,
+  "readers": {
+    "qwen": "Qwen/Qwen3-VL-4B-Instruct",
+    "olmocr": "allenai/olmOCR-2-7B-1025"
+  },
+  "qwen_misses": 16,
+  "olmocr_misses": 19,
+  "both_found": 931,
+  "both_missed": 3,
+  "discordant_qwen_found_olmocr_missed": 16,
+  "discordant_qwen_missed_olmocr_found": 13,
+  "p_value": 0.7111,
+  "discordant_cells": [
+    {
+      "stem": "Avoir_FR_type380_EN16931",
+      "field": "seller_name",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "Avoir_FR_type380_EN16931",
+      "field": "seller_address",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "Avoir_FR_type381_MINIMUM",
+      "field": "seller_name",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "Facture_UE_BASICWL",
+      "field": "seller_name",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "Facture_UE_BASICWL",
+      "field": "seller_address",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "Facture_UE_BASICWL",
+      "field": "buyer_order_reference",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "MustangGnuaccountingBeispielRE-20170509_505",
+      "field": "seller_vat_id",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "MustangGnuaccountingBeispielRE-20170509_505",
+      "field": "seller_iban",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "MustangGnuaccountingBeispielRE-20170509_505",
+      "field": "seller_bic",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "MustangGnuaccountingBeispielRE-20171118_506",
+      "field": "seller_vat_id",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "MustangGnuaccountingBeispielRE-20171118_506",
+      "field": "seller_iban",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "MustangGnuaccountingBeispielRE-20171118_506",
+      "field": "seller_bic",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "ZUGFeRD_1p0_COMFORT_SEPA_Prenotification",
+      "field": "seller_name",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "ZUGFeRD_1p0_COMFORT_SEPA_Prenotification",
+      "field": "seller_address",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "ZUGFeRD_1p0_EXTENDED_Kostenrechnung",
+      "field": "invoice_number",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "ZUGFeRD_1p0_EXTENDED_Kostenrechnung",
+      "field": "issue_date",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "fail3",
+      "field": "seller_vat_id",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "fail3",
+      "field": "seller_iban",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "fail3",
+      "field": "seller_bic",
+      "found_by": "qwen"
+    },
+    {
+      "stem": "zugferd_2p0_BASIC_Einfach",
+      "field": "seller_name",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p0_BASIC_Einfach",
+      "field": "seller_address",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p0_EN16931_Rabatte",
+      "field": "seller_name",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p0_EN16931_Rabatte",
+      "field": "seller_address",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p1_BASIC_Taxifahrt",
+      "field": "seller_address",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Einfach_DueDate",
+      "field": "seller_name",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Einfach_DueDate",
+      "field": "seller_address",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Rabatte",
+      "field": "seller_name",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p1_EN16931_Rabatte",
+      "field": "seller_address",
+      "found_by": "olmocr"
+    },
+    {
+      "stem": "zugferd_2p1_MINIMUM_Rechnung",
+      "field": "seller_name",
+      "found_by": "olmocr"
+    }
+  ]
+}

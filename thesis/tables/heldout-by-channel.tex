@@ -1,0 +1,28 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): eval/heldout-breakdown.json; data/self-collected/_eval/eval-zeroshot-heldout-adr065.json (private)
+
+\begin{table}[htbp]
+  \centering
+  \caption{Held-out performance by language and capture channel. Photographed documents cost far more than language does.}
+  \label{tab:heldout-by-channel}
+  \begin{tabular}{lrrrrr}
+    \toprule
+    Channel & $n$ & Mean/invoice & Pooled & Precision & Recall \\
+    \midrule
+    English, email-native PDF & 11 & 0.9345 & 0.9408 & 0.9805 & 0.9042 \\
+    German, email-native PDF & 18 & 0.9027 & 0.9079 & 0.9533 & 0.8667 \\
+    German, phone scan & 10 & 0.7889 & 0.8371 & 0.9225 & 0.7661 \\
+    \midrule
+    \textbf{All documents} & \textbf{39} & \textbf{0.8825} & \textbf{0.8987} & \textbf{0.9530} & \textbf{0.8503} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} Both aggregations are derived from the same scoring run under the same ruler, so the row totals and the whole-corpus row are mutually consistent. Mean per invoice counts every document once regardless of how many fields it carries, and answers how the system behaves on a document handed to it. Cell-pooled sums all outcomes before computing one score, so field-dense documents pull harder, and answers what share of extracted cells is correct. Neither is a maximum over documents. Precision holds up on phone scans while recall falls, meaning degraded input makes the system abstain rather than invent. Email-native documents average 0.9148 against 0.7889 for photographs, a gap of 12.6 points.
+  \end{minipage}
+\end{table}

@@ -1,0 +1,71 @@
+%% The two-corpus design of \S\ref{sec:method-data} in one picture: where each corpus
+%% comes from, where its reference data comes from, and what each is allowed to claim.
+%%
+%% Hand-authored TikZ. Counts mirror the generated composition tables verbatim
+%% (Table~\ref{tab:corpus-composition}: 117 + 29 = 146, from data/finetune/split.json;
+%% Table~\ref{tab:heldout-composition}: 11 + 18 + 10 = 39, from the committed sanitised
+%% datasheet) -- the figure carries no number that a generated table does not.
+%%
+%% Input from a chapter with:  \input{figures/corpus-map.tex}
+
+\begin{tikzpicture}[
+    font=\small,
+    corpus/.style={
+      draw=horusaccent, line width=0.8pt, rounded corners=2pt,
+      fill=horuswash, text width=5.6cm, align=left, inner sep=6pt,
+    },
+    inner/.style={
+      draw=horusmuted, line width=0.6pt, rounded corners=1pt,
+      fill=white, text width=2.35cm, align=center,
+      font=\scriptsize, inner sep=3pt,
+    },
+    gt/.style={
+      draw=horuswarn, line width=0.7pt, dashed, rounded corners=2pt,
+      fill=white, text=horuswarn, text width=5.6cm, align=left,
+      font=\scriptsize, inner sep=5pt,
+    },
+    claim/.style={font=\scriptsize\itshape, text=horusink, text width=5.6cm, align=left},
+  ]
+
+  %% Left: the synthetic corpus. Its defining property is the self-referencing file.
+  \node[corpus] (syn) {%
+    \textbf{Synthetic corpus --- 146 hybrid invoices}\\[1pt]
+    {\scriptsize public reference corpus + programmatic generation; born-digital
+    renders, clean by construction}\\[4pt]
+    \begin{tikzpicture}[node distance=3mm]
+      \node[inner] (fit) {\textbf{117 fitting}\\prompt design,\\adaptation};
+      \node[inner, right=of fit] (val) {\textbf{29 sealed}\\validation split,\\hash-frozen};
+      \draw[-{Stealth[length=1.8mm]}, line width=0.5pt, draw=horusmuted, dashed]
+        (fit.east) -- (val.west);
+    \end{tikzpicture}%
+  };
+  \node[gt, below=3.5mm of syn] (syngt) {%
+    \textbf{Reference: extracted, not annotated.} Each document embeds a
+    machine-readable \ac{XML} statement of its own content; render the page for the
+    models, extract the embedding for the scorer (\S\ref{sec:method-gt}).%
+  };
+  \node[claim, below=2.5mm of syngt] (synclaim)
+    {answers: \emph{can the pipeline read a well-formed generated page?} --- upper
+    bound for degraded capture};
+
+  %% Right: the held-out corpus. Its defining property is that it is real and sealed.
+  \node[corpus, right=9mm of syn] (held) {%
+    \textbf{Held-out corpus --- 39 real invoices}\\[1pt]
+    {\scriptsize author's own business correspondence; other issuers' systems, unseen
+    layouts; sealed before use}\\[4pt]
+    \begin{tikzpicture}[node distance=2mm]
+      \node[inner, text width=1.4cm] (en) {\textbf{11}\\EN / email};
+      \node[inner, text width=1.4cm, right=of en] (de) {\textbf{18}\\DE / email};
+      \node[inner, text width=1.4cm, right=of de] (scan) {\textbf{10}\\DE / phone scan};
+    \end{tikzpicture}%
+  };
+  \node[gt, below=3.5mm of held] (heldgt) {%
+    \textbf{Reference: adjudicated, then signed off.} No embedded data exists, so the
+    answer key is built from three independent reading channels and author
+    adjudication (Figure~\ref{fig:gt-adjudication}).%
+  };
+  \node[claim, below=2.5mm of heldgt] (heldclaim)
+    {answers: \emph{does performance survive real documents and real capture?} ---
+    the result the thesis exists to produce};
+
+\end{tikzpicture}

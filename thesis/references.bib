@@ -1,9 +1,35 @@
 % HORUS thesis bibliography (biblatex + biber; alphabetic style).
 %
-% Seeded from THESIS_BRAINSTORM_STATE_v2.md Sec. 15 + docs/sources/.
-% TODO: VERIFY every entry (authors, years, venues, page numbers) against the
-% primary source before submission; archive each under docs/sources/<type>/ per
-% the horus-source-archival rule. Entries marked "approx." need completion.
+% PROVENANCE. Every entry below is backed by a record under docs/sources/<type>/
+% per the horus-source-archival rule. Author lists, titles, venues and arXiv
+% identifiers were verified against the primary source during the 2026-08-09
+% authoring pass; the archive records carry the same verified metadata, so the two
+% cannot drift apart silently.
+%
+% HONESTY NOTE (2026-08-16, third-pass review). The paragraph above was too strong and
+% is corrected here rather than quietly relaxed. A third review pass found four entries
+% whose metadata had NOT been verified against a primary source despite the blanket
+% claim: `fatura2` credited an author who does not appear on the work, `krieger2021german`
+% carried an invented descriptive title and "and others" for a fully resolvable author
+% list, `stberg62a` carried an invented statute heading, and `dsgvo32` was doing duty for
+% two different articles from a private commentary site. All four are repaired in place
+% with the correction recorded next to the entry. The lesson is the one Chapter 6 makes
+% about field specifications: a claim of verification is itself a claim to be checked, and
+% a comment asserting verification does not perform it.
+%
+% Entries are grouped by role in the argument, not alphabetically -- biblatex
+% sorts the printed bibliography, so grouping here is purely for maintenance.
+%
+% RULE: do not add an entry here without first creating or completing its record
+% under docs/sources/. A citation whose archive record says "authors TBD" is a
+% citation this project is not entitled to make.
+%
+% DATING CONVENTION for continuously-maintained web resources (software
+% repositories, vendor documentation, consolidated statutes): these have no fixed
+% publication date. Where the archive record supplies a real date it is used;
+% otherwise `year` carries the ACCESS year, which always equals `urldate`. The year
+% on such an entry therefore states when the resource was consulted, not when it
+% was created. German statutes are cited in their consolidated form as accessed.
 
 @article{kerr1998,
   author  = {Kerr, Norbert L.},
@@ -32,34 +58,55 @@
   year      = {2022}
 }
 
-% approx. -- verify authors/title/venue
-@online{berghaus2025,
-  author  = {Berghaus and others},
-  title   = {Multi-Modal Vision vs.\ Text-Based Parsing for Invoice Processing},
+% Verified 2026-05-13 (authors + headline figures) and re-confirmed 2026-08-09.
+% docs/sources/papers/berghaus-2025-multimodal-invoice-parsing.md is the canonical
+% record; docs/sources/papers/2025-multimodal-vision-text-invoice-benchmark.md is a
+% consolidated duplicate of the same arXiv identifier and is NOT a second entry.
+% Corrected 2026-08-15 (supervisor review): first author is DAVID Berghaus (the
+% entry previously said "Marco"), the title was truncated (it omitted
+% "Benchmarking LLM Strategies"), and the paper has since appeared at IEEE
+% BigData 2025. Verified against arXiv 2509.04469 and the Lamarr Institute
+% publication page. The earlier "verified" comments on this entry were wrong.
+@inproceedings{berghaus2025,
+  author  = {Berghaus, David and Berger, Armin and Hillebrand, Lars and
+             Cvejoski, Kostadin and Sifa, Rafet},
+  title   = {Multi-Modal Vision vs.\ Text-Based Parsing: Benchmarking {LLM}
+             Strategies for Invoice Processing},
+  booktitle = {2025 IEEE International Conference on Big Data (BigData)},
   year    = {2025},
   eprinttype = {arXiv},
   eprint  = {2509.04469},
   url     = {https://arxiv.org/abs/2509.04469},
-  urldate = {2026-05-06}
+  urldate = {2026-08-15}
 }
 
-% approx. -- verify authors/title
-@online{cai2025,
-  author  = {Cai and O'Connor},
-  title   = {Evaluating Knowledge Graph Extraction at Micro and Macro Levels},
+% Corrected 2026-08-15 (supervisor review): the previous entry carried an
+% invented title (a paraphrase of the abstract) and the wrong first-author
+% given name ("Junyi"). Real title and authors verified against arXiv
+% 2506.12367 and the Applied Network Science version (10.1007/s41109-025-00749-0).
+@article{cai2025,
+  author  = {Cai, Erica and O'Connor, Brendan},
+  title   = {Understanding the Effect of Knowledge Graph Extraction Error on
+             Downstream Graph Analyses: A Case Study on Affiliation Graphs},
+  journaltitle = {Applied Network Science},
   year    = {2025},
+  doi     = {10.1007/s41109-025-00749-0},
   eprinttype = {arXiv},
   eprint  = {2506.12367},
   url     = {https://arxiv.org/abs/2506.12367},
-  urldate = {2026-05-06}
+  urldate = {2026-08-15}
 }
 
-% approx. -- verify authors/title
+% The previous version of this entry carried url = {https://arxiv.org/} -- a
+% non-resolving placeholder -- and no arXiv identifier. Corrected 2026-08-09 from
+% docs/sources/papers/han-2025-graphrag-vs-vector-rag.md.
 @online{han2025,
-  author  = {Han and others},
-  title   = {An Empirical Comparison of Graph-Augmented and Vector Retrieval-Augmented Generation},
+  author  = {Han, Haoyu and others},
+  title   = {Retrieval-Augmented Generation with Graphs ({GraphRAG})},
   year    = {2025},
-  url     = {https://arxiv.org/},
+  eprinttype = {arXiv},
+  eprint  = {2501.00309},
+  url     = {https://arxiv.org/abs/2501.00309},
   urldate = {2026-05-06}
 }
 
@@ -83,7 +130,12 @@
 }
 
 @online{docling2025,
-  author  = {{Docling Team}},
+  author  = {Livathinos, Nikolaos and Auer, Christoph and Lysak, Maksym and
+             Nassar, Ahmed and Dolfi, Michele and Vagenas, Panos and
+             Berrospi Ramis, Cesar and Omenetti, Matteo and Dinkla, Kasper and
+             Kim, Yusik and Gupta, Shubham and Teixeira de Lima, Rafael and
+             Weber, Valery and Morin, Lucas and Meijer, Ingmar and
+             Kuropiatnyk, Viktor and Staar, Peter W. J.},
   title   = {Docling Technical Report},
   year    = {2025},
   eprinttype = {arXiv},
@@ -92,18 +144,19 @@
   urldate = {2026-05-06}
 }
 
-% approx. -- verify
 @online{olmocr2,
-  author  = {{Allen Institute for AI}},
-  title   = {{olmOCR-2}},
+  author  = {Poznanski, Jake and others},
+  organization = {{Allen Institute for AI}},
+  title   = {{olmOCR-2}: high-throughput document transcription},
   year    = {2025},
-  url     = {https://olmocr.allenai.org/},
+  url     = {https://allenai.org/blog/olmocr2},
   urldate = {2026-05-06}
 }
 
 @online{zugferdcorpus,
   author  = {{ZUGFeRD Community}},
   title   = {{ZUGFeRD}/{Factur-X} Corpus},
+  year    = {2025},
   url     = {https://github.com/ZUGFeRD/corpus},
   urldate = {2026-05-06}
 }
@@ -126,4 +179,774 @@
   eprint  = {1803.09010},
   url     = {https://arxiv.org/abs/1803.09010},
   urldate = {2026-05-06}
+}
+
+% =====================================================================
+%  Architecture foundations (Chapter 2 background)
+% =====================================================================
+
+@inproceedings{vaswani2017attention,
+  author    = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and
+               Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and
+               Kaiser, Lukasz and Polosukhin, Illia},
+  title     = {Attention Is All You Need},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2017},
+  eprinttype = {arXiv},
+  eprint    = {1706.03762},
+  url       = {https://arxiv.org/abs/1706.03762},
+  urldate   = {2026-08-09}
+}
+
+@inproceedings{dosovitskiy2021vit,
+  author    = {Dosovitskiy, Alexey and Beyer, Lucas and Kolesnikov, Alexander and
+               Weissenborn, Dirk and Zhai, Xiaohua and Unterthiner, Thomas and
+               Dehghani, Mostafa and Minderer, Matthias and Heigold, Georg and
+               Gelly, Sylvain and Uszkoreit, Jakob and Houlsby, Neil},
+  title     = {An Image is Worth 16x16 Words: Transformers for Image Recognition
+               at Scale},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprinttype = {arXiv},
+  eprint    = {2010.11929},
+  url       = {https://arxiv.org/abs/2010.11929},
+  urldate   = {2026-08-09}
+}
+
+% =====================================================================
+%  Parameter-efficient adaptation and its documented failure modes
+%  (Chapters 2, 3, 7 and 9)
+% =====================================================================
+
+@inproceedings{hu2021lora,
+  author    = {Hu, Edward J. and Shen, Yelong and Wallis, Phillip and
+               Allen-Zhu, Zeyuan and Li, Yuanzhi and Wang, Shean and
+               Wang, Lu and Chen, Weizhu},
+  title     = {{LoRA}: Low-Rank Adaptation of Large Language Models},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2022},
+  eprinttype = {arXiv},
+  eprint    = {2106.09685},
+  url       = {https://arxiv.org/abs/2106.09685},
+  urldate   = {2026-08-09}
+}
+
+% Load-bearing for Chapter 9: reports that LoRA fine-tuning "is limited to
+% learning response initiation and style tokens" -- the mechanism behind an
+% adapter that raises emission without raising capability.
+@inproceedings{ghosh2024limitations,
+  author    = {Ghosh, Sreyan and Evuru, Chandra Kiran Reddy and Kumar, Sonal and
+               Ramaneswaran, S. and Aneja, Deepali and Jin, Zeyu and
+               Duraiswami, Ramani and Manocha, Dinesh},
+  title     = {A Closer Look at the Limitations of Instruction Tuning},
+  booktitle = {Proceedings of the 41st International Conference on Machine
+               Learning (ICML)},
+  pages     = {15559--15589},
+  year      = {2024},
+  eprinttype = {arXiv},
+  eprint    = {2402.05119},
+  url       = {https://arxiv.org/abs/2402.05119},
+  urldate   = {2026-08-09}
+}
+
+@online{kang2024unfamiliar,
+  author  = {Kang, Katie and Wallace, Eric and Tomlin, Claire and
+             Kumar, Aviral and Levine, Sergey},
+  title   = {Unfamiliar Finetuning Examples Control How Language Models
+             Hallucinate},
+  year    = {2024},
+  eprinttype = {arXiv},
+  eprint  = {2403.05612},
+  url     = {https://arxiv.org/abs/2403.05612},
+  urldate = {2026-08-09}
+}
+
+% The closest published analogue to this thesis's negative result: 800 controlled
+% LoRA runs on Llama3.1-8B and Gemma3-4B, premised on SFT "implicitly rewarding
+% always responding". Gemma3-4B is the predecessor generation of the structurer
+% used here -- a related family, NOT the same model.
+@online{uluoglakci2026humility,
+  author  = {Uluoglakci, Cem and Taskaya Temizel, Tugba},
+  title   = {Inducing Epistemological Humility in Large Language Models:
+             A Targeted {SFT} Approach to Reducing Hallucination},
+  year    = {2026},
+  eprinttype = {arXiv},
+  eprint  = {2603.17504},
+  url     = {https://arxiv.org/abs/2603.17504},
+  urldate = {2026-08-09}
+}
+
+@online{kaplan2026why,
+  author  = {Kaplan, Guy and Gekhman, Zorik and Zhu, Zhen and Rozner, Lotem and
+             Reif, Yuval and Swayamdipta, Swabha and Hoiem, Derek and
+             Schwartz, Roy},
+  title   = {Why Fine-Tuning Encourages Hallucinations and How to Fix It},
+  year    = {2026},
+  eprinttype = {arXiv},
+  eprint  = {2604.15574},
+  url     = {https://arxiv.org/abs/2604.15574},
+  urldate = {2026-08-09}
+}
+
+% =====================================================================
+%  Measurement, metrics and evaluation validity (Chapters 3, 5 and 6)
+% =====================================================================
+
+@inproceedings{biten2019anls,
+  author    = {Biten, Ali Furkan and Tito, Rub\`en and Mafla, Andres and
+               Gomez, Lluis and Rusi\~nol, Mar\c{c}al and Valveny, Ernest and
+               Jawahar, C.~V. and Karatzas, Dimosthenis},
+  title     = {Scene Text Visual Question Answering},
+  booktitle = {IEEE/CVF International Conference on Computer Vision (ICCV)},
+  year      = {2019},
+  url       = {https://openaccess.thecvf.com/content_ICCV_2019/papers/Biten_Scene_Text_Visual_Question_Answering_ICCV_2019_paper.pdf},
+  urldate   = {2026-08-09}
+}
+
+@online{peer2024anlsstar,
+  author  = {Peer, David and Sch\"opf, Philemon and Nebendahl, Volckmar and
+             Rietzler, Alexander and Stabinger, Sebastian},
+  title   = {{ANLS*} --- A Universal Document Processing Metric for Generative
+             Large Language Models},
+  year    = {2024},
+  eprinttype = {arXiv},
+  eprint  = {2402.03848},
+  url     = {https://arxiv.org/abs/2402.03848},
+  urldate = {2026-08-09}
+}
+
+% Provides the published vocabulary for the distinction this thesis's metric suite
+% is built on: scoring individual entities separately from grouped (repeating)
+% structures, because industrial extraction depends on the grouping being right.
+% Upgraded 2026-08-15 from the bare arXiv record to the published ICDAR 2025
+% version (Springer LNCS 16025, pp. 270-286).
+@inproceedings{kieval2025,
+  author  = {Khang, Minsoo and Jung, Sang Chul and Park, Sungrae and
+             Hong, Teakgyu},
+  title   = {{KIEval}: Evaluation Metric for Document Key Information Extraction},
+  booktitle = {Document Analysis and Recognition --- ICDAR 2025},
+  series  = {Lecture Notes in Computer Science},
+  volume  = {16025},
+  pages   = {270--286},
+  publisher = {Springer},
+  year    = {2025},
+  doi     = {10.1007/978-3-032-04624-6_16},
+  eprinttype = {arXiv},
+  eprint  = {2503.05488},
+  url     = {https://arxiv.org/abs/2503.05488},
+  urldate = {2026-08-15}
+}
+
+@inproceedings{ribeiro2020checklist,
+  author    = {Ribeiro, Marco Tulio and Wu, Tongshuang and Guestrin, Carlos and
+               Singh, Sameer},
+  title     = {Beyond Accuracy: Behavioral Testing of {NLP} Models with
+               {CheckList}},
+  booktitle = {Proceedings of the 58th Annual Meeting of the Association for
+               Computational Linguistics (ACL)},
+  year      = {2020},
+  eprinttype = {arXiv},
+  eprint    = {2005.04118},
+  url       = {https://arxiv.org/abs/2005.04118},
+  urldate   = {2026-08-09}
+}
+
+@online{liang2022helm,
+  author  = {Liang, Percy and Bommasani, Rishi and Lee, Tony and others},
+  title   = {Holistic Evaluation of Language Models ({HELM})},
+  year    = {2022},
+  eprinttype = {arXiv},
+  eprint  = {2211.09110},
+  url     = {https://arxiv.org/abs/2211.09110},
+  urldate = {2026-08-09}
+}
+
+% Cited in Chapter 6: structured output is not a free win. Motivates measuring
+% the structured-output prompting arm rather than assuming it.
+@inproceedings{tam2024format,
+  author    = {Tam, Zhi Rui and Wu, Cheng-Kuang and Tsai, Yi-Lin and
+               Lin, Chieh-Yen and Lee, Hung-yi and Chen, Yun-Nung},
+  title     = {Let Me Speak Freely? A Study on the Impact of Format Restrictions
+               on Performance of Large Language Models},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural
+               Language Processing: Industry Track},
+  pages     = {1218--1236},
+  address   = {Miami, Florida},
+  publisher = {Association for Computational Linguistics},
+  year      = {2024},
+  eprinttype = {arXiv},
+  eprint    = {2408.02442},
+  url       = {https://arxiv.org/abs/2408.02442},
+  urldate   = {2026-08-09}
+}
+
+% =====================================================================
+%  Research practice (Chapters 3 and 5)
+% =====================================================================
+
+@online{zinkevich2018rules,
+  author  = {Zinkevich, Martin},
+  organization = {Google},
+  title   = {Rules of Machine Learning: Best Practices for {ML} Engineering},
+  year    = {2018},
+  url     = {https://developers.google.com/machine-learning/guides/rules-of-ml},
+  urldate = {2026-08-09}
+}
+
+@online{neuripschecklist,
+  author  = {{NeurIPS Organizing Committee}},
+  title   = {{NeurIPS} Paper Checklist Guidelines},
+  year    = {2024},
+  url     = {https://neurips.cc/public/guides/PaperChecklist},
+  urldate = {2026-08-09}
+}
+
+% =====================================================================
+%  Document readers surveyed or deployed (Chapters 3, 6 and 7)
+% =====================================================================
+
+@online{deepseekocr2025,
+  author  = {{DeepSeek AI}},
+  title   = {{DeepSeek-OCR}: Contexts Optical Compression},
+  year    = {2025},
+  eprinttype = {arXiv},
+  eprint  = {2510.18234},
+  url     = {https://arxiv.org/abs/2510.18234},
+  urldate = {2026-08-09}
+}
+
+@online{deepseekocr2026,
+  author  = {{DeepSeek AI}},
+  title   = {{DeepSeek-OCR-2}: Improved Contexts Optical Compression},
+  year    = {2026},
+  eprinttype = {arXiv},
+  eprint  = {2601.20552},
+  url     = {https://arxiv.org/abs/2601.20552},
+  urldate = {2026-08-09}
+}
+
+@online{wang2026mineru,
+  author  = {Wang, Bin and He, Tianyao and Ouyang, Linke and others},
+  organization = {OpenDataLab},
+  title   = {{MinerU2.5-Pro}: Pushing the Limits of Data-Centric Document Parsing
+             at Scale},
+  year    = {2026},
+  eprinttype = {arXiv},
+  eprint  = {2604.04771},
+  url     = {https://arxiv.org/abs/2604.04771},
+  urldate = {2026-08-09}
+}
+
+@online{qwen3vl,
+  author  = {{Alibaba Qwen Team}},
+  title   = {{Qwen3-VL-4B-Instruct}},
+  year    = {2025},
+  url     = {https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct},
+  urldate = {2026-08-09}
+}
+
+@online{gemma4e4b,
+  author  = {{Google DeepMind}},
+  title   = {{Gemma 4 E4B-it}: instruction-tuned natively multimodal model},
+  year    = {2026},
+  url     = {https://huggingface.co/google/gemma-4-E4B-it},
+  urldate = {2026-08-09}
+}
+
+@online{granitedoclingmlx,
+  author  = {{IBM Research}},
+  title   = {{Granite-Docling-258M} (MLX port)},
+  year    = {2025},
+  url     = {https://huggingface.co/ibm-granite/granite-docling-258M-mlx},
+  urldate = {2026-08-09}
+}
+
+% =====================================================================
+%  Benchmarks and corpora (Chapter 5, appendix datasheet)
+% =====================================================================
+
+% The independent corroboration of this thesis's degraded-input finding: reports an
+% average 17.8% drop on photographed versus digital documents for open-source
+% parsers across 17 languages, and maintains a private evaluation split for the
+% same contamination reason this project seals its held-out set.
+@online{mdpbench2026,
+  author  = {Li, Zhang and Lin, Zhibo and Liu, Qiang and Zhang, Ziyang and
+             Zhang, Shuo and Guo, Zidun and Song, Jiajun and Zhang, Jiarui and
+             Bai, Xiang and Liu, Yuliang},
+  title   = {{MDPBench}: A Benchmark for Multilingual Document Parsing in
+             Real-World Scenarios},
+  year    = {2026},
+  eprinttype = {arXiv},
+  eprint  = {2603.28130},
+  url     = {https://arxiv.org/abs/2603.28130},
+  urldate = {2026-08-09}
+}
+
+@online{omnidocbench,
+  author  = {{OpenDataLab}},
+  title   = {{OmniDocBench}: a comprehensive document-understanding benchmark},
+  year    = {2024},
+  url     = {https://huggingface.co/datasets/opendatalab/OmniDocBench},
+  urldate = {2026-08-09}
+}
+
+@online{real5omnidocbench,
+  author  = {{OpenDataLab}},
+  title   = {{Real5-OmniDocBench}: real-world extension with five physical
+             capture conditions},
+  year    = {2026},
+  eprinttype = {arXiv},
+  eprint  = {2603.04205},
+  url     = {https://arxiv.org/abs/2603.04205},
+  urldate = {2026-08-09}
+}
+
+@inproceedings{jaume2019funsd,
+  author    = {Jaume, Guillaume and Ekenel, Hazim Kemal and Thiran, Jean-Philippe},
+  title     = {{FUNSD}: A Dataset for Form Understanding in Noisy Scanned
+               Documents},
+  booktitle = {International Conference on Document Analysis and Recognition
+               Workshops (ICDARW)},
+  year      = {2019},
+  url       = {https://guillaumejaume.github.io/FUNSD/},
+  urldate   = {2026-08-09}
+}
+
+@online{cordv2,
+  author  = {{NAVER CLOVA}},
+  title   = {{CORD-v2}: Consolidated Receipt Dataset for Post-OCR Parsing},
+  year    = {2022},
+  url     = {https://huggingface.co/datasets/naver-clova-ix/cord-v2},
+  urldate = {2026-08-09}
+}
+
+% Authorship corrected 2026-08-16 (third-pass review). The entry previously credited
+% "Mathieu Brandt", which is a mis-reading of the Hugging Face account name that hosts
+% the redistribution (mathieu1256/FATURA2-invoices). The dataset card itself cites the
+% canonical paper, whose three authors and 2023 date are used here.
+@inproceedings{fatura2,
+  author    = {Limam, Mahmoud and Dhiaf, Marwa and Kessentini, Yousri},
+  title     = {{FATURA}: A Multi-Layout Invoice Image Dataset for Document Analysis
+               and Understanding},
+  year      = {2023},
+  eprinttype = {arXiv},
+  eprint    = {2311.11856},
+  url       = {https://arxiv.org/abs/2311.11856},
+  urldate   = {2026-08-16}
+}
+
+% Resolved 2026-08-16 (third-pass review). The entry previously carried an invented
+% descriptive title ("German invoice dataset: 977 real German invoices...") and
+% "Krieger and others" for authors, on the stated grounds that the record did not quote
+% a title page. It does exist and is fully resolvable: four named authors, a title, a
+% venue, a page range and a DOI, all verified against the Springer record and the GI
+% digital library. The 977-invoice figure and the 60+ classes are in the paper's own
+% dataset description; the reported macro-F1 of 0.8753 is its headline result and is
+% now engaged in Chapter 3 rather than the corpus being mentioned in isolation.
+@inproceedings{krieger2021german,
+  author    = {Krieger, Felix and Drews, Paul and Funk, Burkhardt and Wobbe, Till},
+  title     = {Information Extraction from Invoices: A Graph Neural Network Approach
+               for Datasets with High Layout Variety},
+  booktitle = {Innovation Through Information Systems ({WI}~2021)},
+  series    = {Lecture Notes in Information Systems and Organisation},
+  publisher = {Springer},
+  pages     = {5--20},
+  year      = {2021},
+  doi       = {10.1007/978-3-030-86797-3_1},
+  urldate   = {2026-08-16}
+}
+
+% Added 2026-08-16: the same group's follow-up, which is the closest published study of
+% the layout-shift question this thesis registers and leaves untested
+% (\S\ref{sec:unevaluated}).
+@article{krieger2023longtail,
+  author  = {Krieger, Felix and Drews, Paul and Funk, Burkhardt},
+  title   = {Automated Invoice Processing: Machine Learning-Based Information
+             Extraction for Long Tail Suppliers},
+  journal = {Intelligent Systems with Applications},
+  volume  = {20},
+  pages   = {200285},
+  year    = {2023},
+  doi     = {10.1016/j.iswa.2023.200285},
+  urldate = {2026-08-16}
+}
+
+% =====================================================================
+%  Standards and law (Chapter 2)
+% =====================================================================
+
+% Corrected 2026-08-15 (supervisor review): the entry previously cited a
+% third-party tool vendor's portal (mustangproject.org) for a CEN standard.
+% It now cites the standard itself; the ZUGFeRD profile documents are cited
+% separately via `zugferdanhang`.
+@report{en16931,
+  author  = {{European Committee for Standardization (CEN)}},
+  title   = {{EN} 16931-1:2017 --- Electronic invoicing --- Part 1: Semantic
+             data model of the core elements of an electronic invoice},
+  type    = {European Standard},
+  institution = {CEN},
+  location = {Brussels},
+  year    = {2017},
+  url     = {https://ec.europa.eu/digital-building-blocks/sites/display/DIGITAL/EN+16931+compliance},
+  urldate = {2026-08-15}
+}
+
+@online{zugferdanhang,
+  author  = {{FeRD (Forum elektronische Rechnung Deutschland)} and {FNFE-MPE}},
+  title   = {{ZUGFeRD} 2.5 / {Factur-X} 1.09 --- Technischer Anhang},
+  year    = {2026},
+  url     = {https://www.ferd-net.de/publikationen-produkte/publikationen/detailseite/zugferd-25-deutsch},
+  urldate = {2026-08-09},
+  langid  = {german}
+}
+
+@online{stgb203,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~203 {StGB} --- Verletzung von Privatgeheimnissen},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/stgb/__203.html},
+  urldate = {2026-08-09},
+  langid  = {german}
+}
+
+@online{stberg57,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~57 {StBerG} --- Allgemeine Berufspflichten},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/stberg/__57.html},
+  urldate = {2026-08-09},
+  langid  = {german}
+}
+
+% Title corrected 2026-08-16 (third-pass review): the entry previously carried the
+% invented heading "Mitwirkung externer Personen". The statute's official heading,
+% verified against gesetze-im-internet.de, is "Inanspruchnahme von Dienstleistungen".
+@online{stberg62a,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~62a {StBerG} --- Inanspruchnahme von Dienstleistungen},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/stberg/__62a.html},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+% Added 2026-08-16: the parallel service-provider provisions for the other two
+% professions named in Chapter 1. All three were introduced by the same 2017 act
+% (BT-Drs. 18/11936) that added \S 203 (3)--(4) StGB, and are near-identically worded.
+@online{brao43e,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~43e {BRAO} --- Inanspruchnahme von Dienstleistungen},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/brao/__43e.html},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{wpo50a,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~50a {WPO} --- Inanspruchnahme von Dienstleistungen},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/wipro/__50a.html},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{brak2024ki,
+  author  = {{Bundesrechtsanwaltskammer}},
+  title   = {Hinweise zum Einsatz von k\"unstlicher Intelligenz ({KI})},
+  year    = {2024},
+  url     = {https://www.brak.de/fileadmin/service/publikationen/Handlungshinweise/BRAK_Leitfaden_mit_Hinweisen_zum_KI-Einsatz_Stand_12_2024.pdf},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+% Re-pointed 2026-08-16 (third-pass review) from a private commentary site to the
+% consolidated official text on EUR-Lex, and split: Chapter 1 cites Art. 28 and
+% Art. 32 for different propositions, so both now have their own entry rather than
+% one entry standing in for two articles.
+@online{dsgvo28,
+  author  = {{Europ\"aische Union}},
+  title   = {Art.~28 {DSGVO} --- Auftragsverarbeiter},
+  year    = {2016},
+  url     = {https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX%3A02016R0679-20160504#d1e3244-1-1},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{dsgvo32,
+  author  = {{Europ\"aische Union}},
+  title   = {Art.~32 {DSGVO} --- Sicherheit der Verarbeitung},
+  year    = {2016},
+  url     = {https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX%3A02016R0679-20160504#d1e3484-1-1},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+% Added 2026-08-16: the supervisory authority's own position on the two propositions
+% Chapter 1 previously asserted without support -- that a processor inside the EEA can
+% still be reached by third-country law, and that contractual measures alone do not
+% cure it where the importer falls under US surveillance law.
+@online{edpb2024processors,
+  author  = {{European Data Protection Board}},
+  title   = {Opinion 22/2024 on certain obligations following from the reliance on
+             processor(s) and sub-processor(s)},
+  year    = {2024},
+  url     = {https://www.edpb.europa.eu/system/files/2024-10/edpb_opinion_202422_relianceonprocessors-sub-processors_en.pdf},
+  urldate = {2026-08-16}
+}
+
+@online{edpb2021supplementary,
+  author  = {{European Data Protection Board}},
+  title   = {Recommendations 01/2020 on measures that supplement transfer tools to
+             ensure compliance with the {EU} level of protection of personal data,
+             version 2.0},
+  year    = {2021},
+  url     = {https://www.edpb.europa.eu/system/files/2021-06/edpb_recommendations_202001vo.2.0_supplementarymeasurestransferstools_en.pdf},
+  urldate = {2026-08-16}
+}
+
+% Added 2026-08-16: the one publicly documented professional-secrecy amendment, cited
+% so Chapter 1's "at least one major provider offers one" is evidenced rather than
+% asserted. The 36-month expiry without a renewal clause is in the document itself.
+@online{msprofsecrecy,
+  author  = {{Microsoft}},
+  title   = {Microsoft Customer Agreement --- Zusatzvereinbarung f\"ur
+             Berufsgeheimnistr\"ager (German Data Secrecy Amendment)},
+  year    = {2021},
+  url     = {https://learn.microsoft.com/en-us/partner-center/agreements},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+% Added 2026-08-15 for Chapter 2 (e-invoicing background). Archived under
+% docs/sources/legal/ per horus-source-archival.
+@online{ustg14,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~14 {UStG} --- Ausstellung von Rechnungen},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/ustg_1980/__14.html},
+  urldate = {2026-08-15},
+  langid  = {german}
+}
+
+@online{ustdv33,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~33 {UStDV} --- Rechnungen \"uber Kleinbetr\"age},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/ustdv_1980/__33.html},
+  urldate = {2026-08-15},
+  langid  = {german}
+}
+
+% Added 2026-08-16 (third-pass review): the phased issuance obligation lives in the
+% transitional provision, not in \S 14 UStG, which Chapter 2 had been citing alone for
+% it. The chamber's FAQ supplies the dates and the small-amount exemption.
+@online{ustg27,
+  author  = {{Bundesrepublik Deutschland}},
+  title   = {\S~27 Abs.~38 {UStG} --- \"Ubergangsvorschriften zur
+             obligatorischen elektronischen Rechnung},
+  year    = {2026},
+  url     = {https://www.gesetze-im-internet.de/ustg_1980/__27.html},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{bstbkerechnung,
+  author  = {{Bundessteuerberaterkammer}},
+  title   = {{FAQ} zur Einf\"uhrung der verpflichtenden {E}-Rechnung f\"ur
+             Ums\"atze zwischen inl\"andischen Unternehmern},
+  year    = {2026},
+  url     = {https://www.bstbk.de/downloads/bstbk/steuerrecht-und-rechnungslegung/fachinfos/BStBK_FAQ_E-Rechnung_final.pdf},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@online{ferdprofiles,
+  author  = {{FeRD (Forum elektronische Rechnung Deutschland)}},
+  title   = {{ZUGFeRD} --- h\"aufig gestellte Fragen: Profile},
+  year    = {2026},
+  url     = {https://www.ferd-net.de/standards/zugferd-faq},
+  urldate = {2026-08-16},
+  langid  = {german}
+}
+
+@report{xrechnung,
+  author  = {{Koordinierungsstelle f\"ur IT-Standards (KoSIT)}},
+  title   = {{XRechnung} --- Standard f\"ur elektronische Rechnungen der
+             \"offentlichen Verwaltung Deutschlands},
+  type    = {National {CIUS} of {EN}~16931},
+  institution = {KoSIT},
+  year    = {2024},
+  url     = {https://xeinkauf.de/xrechnung/},
+  urldate = {2026-08-15},
+  langid  = {german}
+}
+
+@online{bstbkdsgvo,
+  author  = {{Bundessteuerberaterkammer}},
+  title   = {Hinweise f\"ur den Umgang mit personenbezogenen Daten durch
+             Steuerberater und Steuerberatungsgesellschaften},
+  year    = {2026},
+  url     = {https://www.bstbk.de/downloads/bstbk/steuerrecht-und-rechnungslegung/fachinfos/Hinweise-fuer-den-Umgang-mit-personenbezogenen-Daten-durch-Steuerberater-und-Steuerberatungsgesellschaften.pdf},
+  urldate = {2026-08-09},
+  langid  = {german}
+}
+
+% Cited in the threat model: the contractual posture a cloud deployment would
+% depend on, which the local design removes the need for.
+@online{openaidpa,
+  author  = {{OpenAI}},
+  title   = {Data Processing Addendum},
+  year    = {2026},
+  url     = {https://openai.com/policies/data-processing-addendum/},
+  urldate = {2026-08-09}
+}
+
+@online{anthropicdpa,
+  author  = {{Anthropic}},
+  title   = {Data Processing Addendum},
+  year    = {2026},
+  url     = {https://www.anthropic.com/legal/dpa},
+  urldate = {2026-08-09}
+}
+
+@online{azureopenaieu,
+  author  = {{Microsoft}},
+  title   = {Azure {OpenAI} Service --- data, privacy and security for
+             European regions},
+  year    = {2026},
+  url     = {https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/use-your-data-securely},
+  urldate = {2026-08-09}
+}
+
+% =====================================================================
+%  Implementation tooling (Chapter 8, appendix reproduction records)
+% =====================================================================
+
+@online{doclinglib,
+  author  = {{IBM Research} and {Linux Foundation AI and Data}},
+  title   = {Docling --- open-source document parsing library},
+  year    = {2026},
+  url     = {https://github.com/docling-project/docling},
+  urldate = {2026-08-09}
+}
+
+@online{mustangproject,
+  author  = {St\"ark, Jochen and others},
+  title   = {Mustang Project --- open-source {ZUGFeRD} generator and validator},
+  year    = {2026},
+  url     = {https://www.mustangproject.org/zugferd/},
+  urldate = {2026-08-09}
+}
+
+@online{facturxpython,
+  author  = {de Lattre, Alexis},
+  organization = {Akretion},
+  title   = {factur-x --- Python library for the {Factur-X} e-invoicing standard},
+  year    = {2026},
+  url     = {https://github.com/akretion/factur-x},
+  urldate = {2026-08-09}
+}
+
+@online{fpdf2,
+  author  = {{py-pdf community}},
+  title   = {fpdf2 --- PDF generation library for Python},
+  year    = {2026},
+  url     = {https://github.com/py-pdf/fpdf2},
+  urldate = {2026-08-09}
+}
+
+@online{huggingfacetransformers,
+  author  = {{Hugging Face}},
+  title   = {Transformers --- model-definition framework for machine learning
+             across text, vision, audio and multimodal inputs},
+  year    = {2026},
+  url     = {https://github.com/huggingface/transformers},
+  urldate = {2026-08-09}
+}
+
+@online{peftlib,
+  author  = {{Hugging Face}},
+  title   = {{PEFT} --- parameter-efficient fine-tuning methods for large
+             pretrained models},
+  year    = {2026},
+  url     = {https://github.com/huggingface/peft},
+  urldate = {2026-08-09}
+}
+
+@online{trllib,
+  author  = {{Hugging Face}},
+  title   = {{TRL} --- post-training library for supervised fine-tuning and
+             preference optimisation},
+  year    = {2026},
+  url     = {https://github.com/huggingface/trl},
+  urldate = {2026-08-09}
+}
+
+@online{mlxvlm,
+  author  = {Canuma, Prince and others},
+  title   = {{MLX-VLM} --- vision-language model inference and fine-tuning on
+             Apple silicon},
+  year    = {2026},
+  url     = {https://github.com/Blaizzy/mlx-vlm},
+  urldate = {2026-08-09}
+}
+
+@online{mlflow,
+  author  = {{Databricks} and {Linux Foundation AI and Data}},
+  title   = {{MLflow} --- an open-source platform for the machine-learning
+             lifecycle},
+  year    = {2026},
+  url     = {https://mlflow.org/},
+  urldate = {2026-08-09}
+}
+
+@online{streamlit,
+  author  = {{Snowflake Inc.}},
+  title   = {Streamlit --- multipage applications},
+  year    = {2026},
+  url     = {https://docs.streamlit.io/develop/concepts/multipage-apps},
+  urldate = {2026-08-09}
+}
+
+@online{pydantic,
+  author  = {Colvin, Samuel and others},
+  title   = {Pydantic --- data validation using Python type hints},
+  year    = {2026},
+  url     = {https://docs.pydantic.dev/latest/},
+  urldate = {2026-08-09}
+}
+
+@online{azuredocintelligence,
+  author  = {{Microsoft}},
+  title   = {Azure {AI} Document Intelligence --- prebuilt invoice model},
+  year    = {2026},
+  url     = {https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/},
+  urldate = {2026-08-09}
+}
+
+@online{anthropicsdk,
+  author  = {{Anthropic}},
+  title   = {Anthropic {SDK} for Python --- Messages {API}},
+  year    = {2026},
+  url     = {https://github.com/anthropics/anthropic-sdk-python},
+  urldate = {2026-08-09}
+}
+
+% =====================================================================
+%  Institutional requirements (title page, declaration, appendix)
+% =====================================================================
+
+% Corrected 2026-08-15 (supervisor review): the URL previously pointed at the
+% university homepage, which does not host the document. The Richtlinie is
+% distributed institution-internally; cited as an institutional document.
+@report{fhwedelrichtlinie,
+  author  = {{Fachhochschule Wedel}},
+  title   = {Richtlinie f\"ur die Anfertigung schriftlicher Arbeiten,
+             Version 3.0},
+  type    = {Institutional guideline},
+  institution = {Fachhochschule Wedel},
+  year    = {2024},
+  note    = {Distributed institution-internally to thesis candidates},
+  langid  = {german}
 }

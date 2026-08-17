@@ -1,0 +1,27 @@
+% GENERATED FILE -- DO NOT EDIT BY HAND.
+% Regenerate with: make thesis-assets  (scripts/thesis_assets.py)
+% Editing this file by hand breaks the guarantee that every number in the
+% manuscript is derived from committed evidence (ADR-055).
+
+% Source(s): data/finetune/eval-oracle-tier1-val.json; data/finetune/eval-oracle-adr059-val.json
+
+\begin{table}[htbp]
+  \centering
+  \caption{Repairing the perfect-text renderer. Measured on identical archived generations, so the whole difference is attributable to the measuring instrument.}
+  \label{tab:oracle-renderer-correction}
+  \begin{tabular}{lrrr}
+    \toprule
+    Metric & Before & After & $\Delta$ \\
+    \midrule
+    Overall F$_1$ & 0.9676 & 0.9719 & +0.0043 \\
+    Flat F$_1$ & 0.9641 & 0.9743 & +0.0102 \\
+    Presence-conditional F$_1$ & 0.9717 & 0.9812 & +0.0095 \\
+    Spurious rate & 0.0176 & 0.0145 & -0.0031 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{4pt}
+  \begin{minipage}{0.95\linewidth}\footnotesize
+  \textbf{Protocol note.} No inference ran. Both columns score the same stored model outputs; only the renderer that produces the perfect-text input, and the scoring rules applied to it, changed. This is the discipline that makes an apparatus repair distinguishable from a model improvement: had these outputs been regenerated, the two causes would have been inseparable. Presence-conditional F$_1$ scores only fields the document actually carries, so it is insensitive to how often fields are absent.
+  \end{minipage}
+\end{table}
