@@ -63,7 +63,7 @@ each is allowed to claim.
   scale and an exact, extracted reference (Table~\ref{tab:corpus-composition}); the
   held-out corpus supplies external validity on real documents and real capture
   (Table~\ref{tab:heldout-composition}), at the price of an answer key that had to be
-  built and adjudicated (Figure~\ref{fig:gt-adjudication}).}
+  built and adjudicated (\S\ref{sec:method-heldout-gt}).}
   \label{fig:corpus-map}
 \end{figure}
 
@@ -72,6 +72,8 @@ each is allowed to claim.
 The first is built from the public reference corpus for German hybrid electronic invoices
 \parencite{zugferdcorpus}, supplemented with programmatically generated documents. Its composition
 and its split are given in Table~\ref{tab:corpus-composition}.
+
+\input{tables/corpus-composition.tex}
 
 The reason this corpus exists is not scale. It is that a hybrid electronic invoice carries the
 same content twice: once as a page a human reads, and once as an embedded machine-readable
@@ -177,7 +179,7 @@ with a digit missing.
 Scoring against that key produced a figure that measured the key, not the system. It
 was retracted in the same working session in which it was produced. The relevant lesson is
 not that an automated draft is unreliable --- that is unsurprising --- but that
-\textbf{the failure was invisible in the aggregate}. The number looked like a plausible
+\emph{the failure was invisible in the aggregate}. The number looked like a plausible
 result for a hard task. It was only caught by opening individual documents and reading them.
 
 \subsection{Three independent channels and an adjudication rule}
@@ -266,7 +268,7 @@ author-reviewed, because rows do not align across channels --- one reader splits
 another merges --- so positional comparison manufactures disagreements out of segmentation
 rather than out of error. Reviewing them properly would have meant several times the header
 workload with no ranking and no warrant. Consequently the held-out claim in this thesis is
-about \textbf{header-field extraction}, groups are excluded structurally, not by a
+about \emph{header-field extraction}, groups are excluded structurally, not by a
 reporting convention, and line-item extraction is measured on the synthetic corpus where the
 reference is exact and free. Neither question is dropped; each is answered on the corpus that
 can support it. The limitation is recorded in
@@ -386,8 +388,6 @@ profile so that no profile appears on only one side. The split was fixed before 
 work and recorded with its seed and a content hash for each side, so that a later run can
 \emph{prove} it scored the same documents instead of asserting it. Table~\ref{tab:corpus-composition}
 gives the composition and the hash.
-
-\input{tables/corpus-composition.tex}
 
 Three guards keep the validation set clean:
 

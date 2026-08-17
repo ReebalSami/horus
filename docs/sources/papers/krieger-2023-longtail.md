@@ -5,12 +5,14 @@ source_author: "Felix Krieger, Paul Drews, Burkhardt Funk"
 source_date: "2023"
 retrieved_date: "2026-08-16"
 extracted_concepts: []
-tags: ["invoice", "german", "layout-shift", "template-shift", "layoutlm", "auditing", "related-work"]
+tags: ["invoice", "layout-shift", "template-shift", "layoutlm", "auditing", "related-work"]
 archived_pdf: ""
 status: verified
 ---
 
 **Full citation.** Krieger, Drews & Funk (2023), *Automated Invoice Processing: Machine Learning-Based Information Extraction for Long Tail Suppliers*, **Intelligent Systems with Applications 20:200285**, DOI **10.1016/j.iswa.2023.200285**.
+
+**Corpus note (fourth-pass review, 2026-08-17).** The study runs on the audit firm's experimental invoice collection — per Krieger's dissertation (Leuphana, 2023), the languages of the documents across this line of work are "primarily English". It is cited in the thesis for the **template-shift methodology**, not as German-language prior art (the original `german` tag was a residue of the two-paper conflation corrected in this pass).
 
 **What it studies.** How extraction quality behaves when the training population of invoice layouts is skewed towards a few frequent suppliers while the test layouts are not — the "long tail" of infrequent suppliers. The research pipeline pays explicit attention to the **distribution of layouts in the data split**, which is the methodological point. Finding: the accuracy gap between in-sample and out-of-sample layouts is **much larger for Chargrid and random-forest models than for a LayoutLM transformer**, which also has the best overall predictive quality.
 
