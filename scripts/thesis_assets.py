@@ -20,11 +20,12 @@ Sources, all committed unless marked:
 * `data/self-collected/_eval/*.json` -- held-out reports (PRIVATE, git-ignored)
 * `eval/heldout-breakdown.json`   -- sanitised cache of the held-out per-channel breakdown
 
-Privacy (ADR-040). Held-out inputs are client documents and never leave the git-ignored
-tree. This script emits aggregate counts and scores only -- never a field value, a filename,
-or an invoice identifier. That is the same disclosure class as the committed datasheet, which
-already publishes these rates. When the private corpus is absent the per-channel breakdown is
-read from the sanitised cache instead, so the thesis rebuilds on a clean checkout.
+Privacy (ADR-040). Held-out inputs are the author's own incoming business correspondence --
+not client documents -- and never leave the git-ignored tree. This script emits aggregate
+counts and scores only -- never a field value, a filename, or an invoice identifier. That is
+the same disclosure class as the committed datasheet, which already publishes these rates.
+When the private corpus is absent the per-channel breakdown is read from the sanitised cache
+instead, so the thesis rebuilds on a clean checkout.
 """
 
 from __future__ import annotations
@@ -33,7 +34,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT / "src") not in sys.path:
@@ -407,7 +408,7 @@ def build_hyperparameters() -> str:
     oracle_hp = oracle["hyperparameters"]
     labels = {
         "lora_rank": "Rank",
-        "lora_alpha": "Scaling factor",
+        "lora_alpha": "LoRA alpha",
         "lora_dropout": "Dropout",
         "learning_rate": "Learning rate",
         "lr_schedule": "Schedule",
@@ -1134,6 +1135,14 @@ def _longtable(
     return "\n".join(lines)
 
 
+#: Registry fields carried at document level that EN~16931 defines only inside a repeating
+#: group, so the flat `bt_code` alone would overstate how the standard scopes them. Marked
+#: in the generated table and explained in its note. `tax_rate` (BT-119) is defined per VAT
+#: breakdown row (BG-23), which is why it is ill-posed on multi-rate invoices and excluded
+#: there (ADR-045 / ADR-052).
+_DERIVED_MARK: Final[dict[str, str]] = {"tax_rate": r"\textsuperscript{\dag}"}
+
+
 def build_field_registry() -> str:
     """The full 34-field flat registry plus the three repeating groups, from the code.
 
@@ -1148,7 +1157,7 @@ def build_field_registry() -> str:
         rows.append(
             [
                 r"\texttt{" + _tex_escape(spec.english_key) + "}",
-                _tex_escape(spec.bt_code),
+                _tex_escape(spec.bt_code) + _DERIVED_MARK.get(spec.english_key, ""),
                 _tex_escape(spec.german_label),
                 spec.field_type.lower(),
             ]
@@ -1179,7 +1188,7 @@ def build_field_registry() -> str:
         ),
         label="tab:field-registry",
         colspec="llll",
-        header=["Field", "BT", "German label (EN~16931 term)", "Type"],
+        header=["Field", "BT / BG", "German label (EN~16931 term)", "Type"],
         rows=rows,
         font_size=r"\footnotesize\setlength{\tabcolsep}{4pt}",
         note=(
@@ -1192,7 +1201,15 @@ def build_field_registry() -> str:
             r"(\S\ref{sec:validity-specification}). Types: \emph{money} and "
             r"\emph{rate} are decimal-normalised, \emph{date} is ISO-normalised, "
             r"\emph{code} is vocabulary-mapped and \emph{string} is "
-            "whitespace-normalised, symmetrically on both reference and prediction."
+            "whitespace-normalised, symmetrically on both reference and prediction. "
+            "Type names denote the comparison rule applied, not the business meaning of "
+            r"the value: \texttt{quantity} (BT-129) is an invoiced count rather than an "
+            r"amount, and is typed \emph{money} because it takes the same "
+            "decimal-normalising comparator. Address rows carry group codes (BG-) rather "
+            r"than term codes. \textsuperscript{\dag}~marks the one field the registry "
+            "carries at document level that the standard defines only inside the "
+            r"\ac{VAT} breakdown group (BG-23); it is consequently ill-posed on invoices "
+            r"bearing more than one rate, and excluded there (\S\ref{sec:validity-reference})."
         ),
         sources=["src/horus/eval/ground_truth.py (FIELDS, REPEATING_GROUPS)"],
     )

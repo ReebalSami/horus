@@ -102,22 +102,22 @@ registered one, and the sealed validation set is never passed to the trainer at 
 \label{sec:impl-verification}
 
 The project carries a test suite of 1{,}265 tests. Its composition reflects where the risk
-actually sits: the two largest files cover the scoring rules and the typed schema with its
-repair pass, and the value normalisers and reference extraction follow closely, because those
-are the components whose defects corrupt results silently instead of loudly. Several
-tests exist specifically to pin down invariants that were violated once --- that the field
-registry has the size the reported figures assume, that normalisation is applied to both sides
-of a comparison, and that no concrete value from the corpus appears inside a prompt.
+actually sits: the largest file by a clear margin covers the scoring rules, and the orchestration
+harness, the reference extraction, and the typed schema with its value normalisers and repair
+pass follow, because those are the components whose defects corrupt results silently instead of
+loudly. Several tests exist specifically to pin down invariants that were violated once --- that
+the field registry has the size the reported figures assume, that normalisation is applied to both
+sides of a comparison, and that no concrete value from the corpus appears inside a prompt.
 
 Tests that require the corpus, or that require Apple-Silicon inference, skip themselves by
 predicate instead of being excluded by a marker or deleted. The same suite therefore runs
 locally with the corpus present, locally without it, and in continuous integration, with the
 skips visible in the output, not hidden in configuration.
 
-Continuous integration runs on every push and every pull request: linting, formatting,
-type-checking with a cleared cache, and the full suite. The cleared type-check cache is a
-response to a specific incident --- a warm cache silently masked an import error after a
-configuration change --- and is documented as such, not as a general caution.
+Continuous integration runs on every push to the main branch and every pull request against it:
+linting, formatting, type-checking with a cleared cache, and the full suite. The cleared
+type-check cache is a response to a specific incident --- a warm cache silently masked an import
+error after a configuration change --- and is documented as such, not as a general caution.
 
 \subsection{The operational interface}
 \label{sec:impl-assets}

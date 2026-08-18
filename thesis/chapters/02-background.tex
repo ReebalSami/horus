@@ -48,6 +48,15 @@ output directly, with Donut as the canonical demonstration \parencite{kim2022don
 models this thesis surveys are \ac{OCR}-free in that sense: no external text detector or
 recogniser runs anywhere in the pipeline.
 
+A note on names, because they invite the opposite conclusion. Several models evaluated here
+carry \ac{OCR} in their names --- olmOCR-2, DeepSeek-OCR, PaddleOCR-VL --- and one might read
+that as contradicting the claim just made. It does not. The names denote the \emph{task} the
+model was specialised for, page transcription, which is historically \ac{OCR}'s task. They do
+not denote the \emph{mechanism}: each is a single vision-language model that maps pixels to
+text in one pass, with no character-recognition engine inside it and none invoked beside it.
+\ac{OCR}-free is a claim about pipeline architecture throughout this thesis, never about
+nomenclature.
+
 Document-specialised \acp{VLM} share that anatomy and differ in scale, in specialisation
 and in what they emit --- Figure~\ref{fig:cohort-comparison} contrasts the three families
 this thesis draws on. granite-docling, a 258-million-parameter model built on the Idefics3
@@ -168,7 +177,10 @@ and \S~33 \ac{UStDV} relaxes those requirements for small-amount invoices up to
 250~Euro, which may lawfully omit the recipient's identity and the separate tax amount
 \parencite{ustdv33}. Two consequences matter for this thesis. First, the field registry
 (\S\ref{sec:method-schema}) is an alignment to \ac{EN}~16931 business terms rather than
-an invented schema, so every extracted field has a defined legal meaning. Second, field
+an invented schema, so an extracted field's meaning is fixed by the standard rather than by
+this thesis --- with one documented exception, a single document-level tax rate that the
+standard defines only per breakdown group and which is therefore ill-posed on multi-rate
+invoices (\S\ref{sec:validity-reference}). Second, field
 \emph{absence} is frequently lawful rather than defective --- a Kleinbetragsrechnung
 simply does not carry a buyer identity --- which is one root of the honest-null contract
 (\S\ref{sec:design-honest-null}): a system that guesses a value for a field the document

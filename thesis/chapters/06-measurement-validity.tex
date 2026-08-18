@@ -124,6 +124,15 @@ text. The effect is reported in Table~\ref{tab:heldout-headline}: recall improve
 negative count falls, and \emph{the true-positive and false-positive counts do not move at
 all}. Not one correct answer was discarded to obtain it.
 
+\textbf{A second class of exclusion was never declared.} The apparatus withdraws a cell from
+scoring whenever the answer key holds a value with no comparable normalised form. The
+neutralisation just described is one route into that state. The other is an accident: where the
+author's own signed-off value fails to parse into its declared type, the cell is withdrawn by
+the same internal marker --- on no criterion at all. Twenty-two cells are withdrawn this way,
+against the eight withdrawn deliberately, and all twenty-two are dates.
+\S\ref{sec:validity-open} reports it as an open defect, because the collision between the two
+routes is the more instructive part of it.
+
 \section{Class Two: The Comparison Rule Punished Correct Answers}
 \label{sec:validity-comparison}
 
@@ -190,9 +199,12 @@ structuring stage. If that renderer omits or misstates something the reference c
 resulting ceiling is wrong --- and wrong in an unpredictable direction, not merely
 optimistic, because the structurer may be penalised for a value the renderer never showed it.
 Five defects were found in it. Two fields that had been scoring zero on perfect text turned out
-to be scoring zero because the renderer never rendered them; after repair they score near the
-top of the range. Table~\ref{tab:oracle-renderer-correction} reports the whole effect on
-identical archived generations.
+to be scoring zero because the renderer labelled them with the standard's own schema
+vocabulary, which no invoice in the corpus prints: the values were shown, under a wording the
+model could not map to the field, so it returned nothing on the very input that was supposed to
+be maximally answerable. After repair they score near the top of the range.
+Table~\ref{tab:oracle-renderer-correction} reports the whole effect on identical archived
+generations.
 
 \input{tables/oracle-renderer-correction.tex}
 
@@ -353,8 +365,26 @@ fixed in advance caught it.
 \section{What Remains Broken}
 \label{sec:validity-open}
 
-Two items are recorded as open and unrepaired, because reporting only the defects that
+Three items are recorded as open and unrepaired, because reporting only the defects that
 were fixed would misrepresent the state of the apparatus.
+
+\textbf{One internal marker carries two unrelated meanings, and one of them is a defect.} A cell
+is withdrawn from scoring when the answer key holds no comparable normalised value. Two
+situations produce that state through the same encoding: the ratified neutralisation of
+\S\ref{sec:validity-reference}, and a signed-off value the parser could not read. The first is a
+declared decision applied by a rule; the second is a locale-parsing gap nobody chose. Thirty
+cells of the held-out key are withdrawn in total --- eight for the first reason, twenty-two for
+the second, and all twenty-two of those are dates.
+
+What makes this worth recording is that no reported figure could have exposed it. A withdrawn
+cell leaves the numerator and the denominator alike, so it is invisible in \ac{F1}, precision and
+recall; and the cell count reported for this corpus is already the count after withdrawal. Only
+a per-cell pass against the provenance record separates the two causes. The direction of the
+resulting bias is undetermined without a re-score, but the affected cells are exact-match dates
+and seventeen of the twenty-two fall in the language and capture channel the system reads best
+(\S\ref{sec:results-heldout}) --- so the more likely effect is that the reported figure is
+understated, not flattered. Repairing the parser moves a published number, so it is held for its
+own regression pass rather than folded into a correction pass over the manuscript.
 
 \textbf{One field regressed under the renderer repair and stays regressed.} The supplier
 article number scores worse after the perfect-text renderer was corrected than before. The

@@ -74,8 +74,10 @@ that asymmetry as a limitation.
 \subsection{Why aggregate scores could not decide it}
 
 Two candidates emerged from the survey as finalists: Qwen3-VL-4B-Instruct, a general-purpose
-vision-language model at four billion parameters \parencite{qwen3vl}, and olmOCR-2-7B, a
-purpose-built document-transcription model at seven billion \parencite{olmocr2}. The two available
+vision-language model of 4.4 billion parameters \parencite{qwen3vl}, and olmOCR-2-7B, a
+purpose-built document-transcription model of 8.3 billion \parencite{olmocr2}.\footnote{Both
+names cite the language backbone rather than the full multimodal checkpoint; the figures given
+here are the checkpoints as published.} The two available
 instruments told conflicting stories about them. On end-to-end score under the pre-correction
 ruler, the transcription model led by two to five points (Table~\ref{tab:reader-lineage}). On
 reading quality measured directly on the transcript (\S\ref{sec:method-answerability}), the
@@ -118,7 +120,18 @@ McNemar test over the 963 paired per-cell findability outcomes --- 931 cells bot
 find, 16 only the general-purpose model finds, 13 only the transcription model finds, and
 3 that neither finds, the same three cells the embedded text layer itself lacks ---
 gives $p = 0.71$, so the observed ordering is well within what chance produces on discordant
-counts this small. What does separate them is that they \emph{fail in different ways},
+counts this small.
+
+One qualification on that test. It treats the 963 cells as independent trials, and they are
+not: they nest within 29 invoices, and cells on the same page share a layout, a scan quality
+and an issuer's typography, so outcomes within an invoice are correlated. The consequence runs
+in the conservative direction here. Positive intra-invoice correlation reduces the effective
+sample size, which \emph{widens} the interval a difference must clear and pushes $p$ further
+from significance --- so a test that ignored the nesting cannot have manufactured the
+null result it reports. A clustered alternative would be required to claim a difference from
+these data; it is not required to decline to claim one, which is all this passage does.
+
+What does separate the two readers is that they \emph{fail in different ways},
 which is the substantive finding:
 
 \begin{itemize}
@@ -384,6 +397,19 @@ The result is that performance largely survives the transition from generated pa
 ones. That is not a trivial finding: the documents were produced by other people's billing
 systems, in two languages, with layouts the pipeline was never shown, and roughly a quarter of
 them were phone-scanned paper rather than exported files.
+
+\textbf{The headline pools two languages, and the research question names one.} Of the 39
+documents, 28 are German and 11 are English, so the figure above is not a German-only
+measurement. Summing the two German rows of Table~\ref{tab:heldout-by-channel} gives 417 true
+positives against 25 false positives and 84 false negatives, i.e.\ a pooled F$_1$ of
+$0.884$ and a per-invoice mean of $0.862$ over the 28 German invoices --- both slightly
+\emph{below} the mixed-corpus headline, because the English email subset is the
+best-read channel in the corpus (Table~\ref{tab:heldout-by-channel}). Pooling therefore
+flatters the German figure rather than the reverse, and the German-specific claim is the
+weaker of the two. The English documents are retained in the headline because they were
+collected under the same procedure and adjudicated under the same rule, and excluding them
+after seeing the per-channel split would be the selection this thesis spends
+Chapter~\ref{ch:measurement-validity} arguing against.
 
 \subsection{The error profile matters more than the score}
 

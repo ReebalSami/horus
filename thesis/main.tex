@@ -44,10 +44,21 @@
 % two-digit chapter (ch.10): with KOMA's default width the entry renders as
 % "10.Conclusion" with no space. Figures get extra width for chapters with >= 10
 % figures.
-\DeclareTOCStyleEntry[numwidth=2em]{tocline}{chapter}
-\DeclareTOCStyleEntry[numwidth=3em]{tocline}{section}
-\DeclareTOCStyleEntry[numwidth=3em]{tocline}{figure}
-\DeclareTOCStyleEntry[numwidth=3em]{tocline}{table}
+%
+% pagenumberwidth is widened for the same reason one step further out: the body
+% runs past p.99 and the front matter reaches roman VIII, and KOMA's default field
+% is too narrow for a bold three-digit arabic or four-character roman page number.
+% Left at the default it produced 13 overfull \hbox warnings in main.toc/.lof/.lot
+% (12 at ~1.6pt, one at 3.2pt for "VIII") -- sub-millimetre and invisible in print,
+% but they are warnings in a build this project reports as clean.
+%
+% subsection needs more than section: chapter 10 reaches "10.1.10." and
+% "10.3.10.", four components wide, which overflows the section-level field.
+\DeclareTOCStyleEntry[numwidth=2em,pagenumberwidth=2.2em]{tocline}{chapter}
+\DeclareTOCStyleEntry[numwidth=3em,pagenumberwidth=2.2em]{tocline}{section}
+\DeclareTOCStyleEntry[numwidth=3.8em,pagenumberwidth=2.2em]{tocline}{subsection}
+\DeclareTOCStyleEntry[numwidth=3em,pagenumberwidth=2.2em]{tocline}{figure}
+\DeclareTOCStyleEntry[numwidth=3em,pagenumberwidth=2.2em]{tocline}{table}
 \tableofcontents
 \listoffigures
 \listoftables
