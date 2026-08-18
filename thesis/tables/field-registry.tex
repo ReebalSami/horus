@@ -9,11 +9,11 @@
 \begin{longtable}{llll}
   \caption{The field registry: 34 flat header fields and 3 repeating groups, aligned to EN~16931 business terms.}\label{tab:field-registry}\\
     \toprule
-    Field & BT & German label (EN~16931 term) & Type \\
+    Field & BT / BG & German label (EN~16931 term) & Type \\
     \midrule
   \endfirsthead
     \toprule
-    Field & BT & German label (EN~16931 term) & Type \\
+    Field & BT / BG & German label (EN~16931 term) & Type \\
     \midrule
   \endhead
     \bottomrule
@@ -34,7 +34,7 @@
     \texttt{tax\_total\_amount} & BT-110 & Umsatzsteuer gesamt & money \\
     \texttt{grand\_total\_amount} & BT-112 & Bruttobetrag & money \\
     \texttt{due\_payable\_amount} & BT-115 & Zahlbetrag & money \\
-    \texttt{tax\_rate} & BT-119 & Umsatzsteuersatz & rate \\
+    \texttt{tax\_rate} & BT-119\textsuperscript{\dag} & Umsatzsteuersatz & rate \\
     \texttt{seller\_address} & BG-5 & Anschrift (Verkäufer) & string \\
     \texttt{buyer\_address} & BG-8 & Anschrift (Käufer) & string \\
     \texttt{document\_type} & BT-3 & Belegart & code \\
@@ -72,5 +72,5 @@
 \end{longtable}
 \endgroup
 \begin{minipage}{0.95\linewidth}\footnotesize
-\textbf{Protocol note.} Generated directly from the registry in \texttt{src/horus/eval/ground\_truth.py}, the single structure that drives the structurer's field specification, the scorer and the reference extractor, so this listing cannot drift from the code. The German label is the canonical EN~16931 term, which is not always the wording a real page prints; corpus-measured printed labels are tracked separately (\S\ref{sec:validity-specification}). Types: \emph{money} and \emph{rate} are decimal-normalised, \emph{date} is ISO-normalised, \emph{code} is vocabulary-mapped and \emph{string} is whitespace-normalised, symmetrically on both reference and prediction.
+\textbf{Protocol note.} Generated directly from the registry in \texttt{src/horus/eval/ground\_truth.py}, the single structure that drives the structurer's field specification, the scorer and the reference extractor, so this listing cannot drift from the code. The German label is the canonical EN~16931 term, which is not always the wording a real page prints; corpus-measured printed labels are tracked separately (\S\ref{sec:validity-specification}). Types: \emph{money} and \emph{rate} are decimal-normalised, \emph{date} is ISO-normalised, \emph{code} is vocabulary-mapped and \emph{string} is whitespace-normalised, symmetrically on both reference and prediction. Type names denote the comparison rule applied, not the business meaning of the value: \texttt{quantity} (BT-129) is an invoiced count rather than an amount, and is typed \emph{money} because it takes the same decimal-normalising comparator. Address rows carry group codes (BG-) rather than term codes. \textsuperscript{\dag}~marks the one field the registry carries at document level that the standard defines only inside the \ac{VAT} breakdown group (BG-23); it is consequently ill-posed on invoices bearing more than one rate, and excluded there (\S\ref{sec:validity-reference}).
 \end{minipage}

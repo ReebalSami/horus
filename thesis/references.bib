@@ -1,21 +1,45 @@
 % HORUS thesis bibliography (biblatex + biber; authoryear style).
 %
-% PROVENANCE. Every entry below is backed by a record under docs/sources/<type>/
-% per the horus-source-archival rule. Author lists, titles, venues and arXiv
-% identifiers were verified against the primary source during the 2026-08-09
-% authoring pass; the archive records carry the same verified metadata, so the two
-% cannot drift apart silently.
+% PROVENANCE. Each entry below is intended to be backed by a record under
+% docs/sources/<type>/ per the horus-source-archival rule, carrying the same
+% verified metadata so the two cannot drift apart silently. That is the standard
+% this file is held to -- NOT a claim that it has always been met. See the
+% correction log below, which is cumulative and is the honest statement.
 %
-% HONESTY NOTE (2026-08-16, third-pass review). The paragraph above was too strong and
-% is corrected here rather than quietly relaxed. A third review pass found four entries
-% whose metadata had NOT been verified against a primary source despite the blanket
-% claim: `fatura2` credited an author who does not appear on the work, `krieger2021german`
-% carried an invented descriptive title and "and others" for a fully resolvable author
-% list, `stberg62a` carried an invented statute heading, and `dsgvo32` was doing duty for
-% two different articles from a private commentary site. All four are repaired in place
-% with the correction recorded next to the entry. The lesson is the one Chapter 6 makes
-% about field specifications: a claim of verification is itself a claim to be checked, and
-% a comment asserting verification does not perform it.
+% CORRECTION LOG. Three successive review passes each found metadata that had not
+% been verified against a primary source despite an earlier blanket claim that it
+% had. The claim was the defect; the entries were the symptom.
+%
+%   Third pass (2026-08-16) -- four entries: `fatura2` credited an author who does
+%   not appear on the work; `krieger2021german` carried an invented descriptive
+%   title and "and others" for a fully resolvable author list; `stberg62a` carried
+%   an invented statute heading; `dsgvo32` was doing duty for two different
+%   articles, sourced from a private commentary site.
+%
+%   Fourth pass (2026-08-17) -- one conflation: `krieger2021german` had been
+%   repaired at the citation surface (authors, title, DOI, pages all verified) while
+%   the corpus DESCRIPTION attributed to it -- 977 German invoices -- belongs to a
+%   different paper by the same group (`thiee2023invoices`). The verified paper's
+%   corpus is 1,129 English invoices. Verifying a citation's metadata is not
+%   verifying the claims made about it.
+%
+%   Fifth pass (2026-08-18) -- three entries plus three archive defects. Entries:
+%   `deepseekocr2026` carried an INVENTED title ("Improved Contexts Optical
+%   Compression" appears nowhere in the work; the real subtitle is "Visual Causal
+%   Flow"), and both DeepSeek entries plus `real5omnidocbench` substituted a
+%   corporate name for named authors -- with `real5omnidocbench` additionally
+%   attributed to OpenDataLab, which authored the PARENT benchmark rather than this
+%   extension. Archive side: `edge2024graphrag` and `dsgvo28` had NO record at all
+%   (the nearest files covered a different artefact -- a library, and a different
+%   article), and the `dsgvo32` record still pointed at the private commentary site
+%   the third pass had moved the ENTRY away from. Each is repaired in place, with
+%   the correction recorded next to the entry and in the archive record.
+%
+% All repairs above are in place. The number of passes it took is the point worth
+% keeping: the lesson is the one Chapter 6 makes about field specifications -- a
+% claim of verification is itself a claim to be checked, and a comment asserting
+% verification does not perform it. Every pass that trusted the previous pass's
+% assertion instead of re-deriving it found something the previous pass had missed.
 %
 % Entries are grouped by role in the argument, not alphabetically -- biblatex
 % sorts the printed bibliography, so grouping here is purely for maintenance.
@@ -405,8 +429,12 @@
 %  Document readers surveyed or deployed (Chapters 3, 6 and 7)
 % =====================================================================
 
+% Author list corrected 2026-08-18 (fifth pass): the entry credited the
+% corporate name {DeepSeek AI}; the paper names three authors. Verified against
+% arXiv 2510.18234 / the Hugging Face papers record.
 @online{deepseekocr2025,
-  author  = {{DeepSeek AI}},
+  author  = {Wei, Haoran and Sun, Yaofeng and Li, Yukun},
+  organization = {DeepSeek-AI},
   title   = {{DeepSeek-OCR}: Contexts Optical Compression},
   year    = {2025},
   eprinttype = {arXiv},
@@ -415,9 +443,17 @@
   urldate = {2026-08-09}
 }
 
+% Title AND author list corrected 2026-08-18 (fifth pass). The entry carried an
+% INVENTED title -- "Improved Contexts Optical Compression" appears nowhere in
+% the work; it was a descriptive paraphrase of the 2025 sibling's subtitle. The
+% real subtitle is "Visual Causal Flow" (the paper's contribution is DeepEncoder
+% V2 reordering visual tokens by image semantics, not a compression increment).
+% Same corporate-author substitution as the sibling. Verified against arXiv
+% 2601.20552 / the Hugging Face papers record.
 @online{deepseekocr2026,
-  author  = {{DeepSeek AI}},
-  title   = {{DeepSeek-OCR-2}: Improved Contexts Optical Compression},
+  author  = {Wei, Haoran and Sun, Yaofeng and Li, Yukun},
+  organization = {DeepSeek-AI},
+  title   = {{DeepSeek-OCR} 2: Visual Causal Flow},
   year    = {2026},
   eprinttype = {arXiv},
   eprint  = {2601.20552},
@@ -490,10 +526,17 @@
   urldate = {2026-08-09}
 }
 
+% Author list AND title corrected 2026-08-18 (fifth pass). The entry attributed
+% the benchmark to {OpenDataLab}, which authored the PARENT OmniDocBench -- not
+% this extension, which comes from the PaddlePaddle group (the dataset is hosted
+% at PaddlePaddle/Real5-OmniDocBench). The title was a descriptive paraphrase.
+% Verified against arXiv 2603.04205 / the Hugging Face papers record.
 @online{real5omnidocbench,
-  author  = {{OpenDataLab}},
-  title   = {{Real5-OmniDocBench}: real-world extension with five physical
-             capture conditions},
+  author  = {Zhou, Changda and Gao, Ziyue and Wang, Xueqing and Gao, Tingquan
+             and Cui, Cheng and Tang, Jing and Liu, Yi},
+  organization = {PaddlePaddle},
+  title   = {{Real5-OmniDocBench}: A Full-Scale Physical Reconstruction
+             Benchmark for Robust Document Parsing in the Wild},
   year    = {2026},
   eprinttype = {arXiv},
   eprint  = {2603.04205},

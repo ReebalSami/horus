@@ -241,4 +241,27 @@
     pdfauthor={\authorname}
 }
 
+% --- Last-resort line-breaking slack ---
+% A small \emergencystretch lets TeX add an extra pass with slightly looser
+% interword spacing rather than emitting a marginally overfull line. Used here for
+% one residual 0.38pt overfull paragraph containing unbreakable tokens ("3B--7B",
+% parenthesised signed numbers); 1em is small enough that the loosened lines are
+% not visually distinguishable, and it is the standard remedy rather than raising
+% \hbadness to hide the warning.
+\setlength{\emergencystretch}{1em}
+
+% --- Float pages: align to the top, not the vertical centre ---
+% LaTeX's default \@fptop is `0pt plus 1fil', which vertically centres the content
+% of a float-only page. A tall table deferred to such a page therefore renders
+% under a large block of white space -- observed on the held-out headline table
+% (Table 7.10), which is the thesis's central result and was sitting below roughly
+% 40% dead height. Zeroing \@fptop and pushing the slack to the bottom top-aligns
+% every float page. Applies to all deferred floats, so the generated tables stay
+% consistent with each other rather than each needing a hand-tuned placement.
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{12pt plus 1fil}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
+
 \renewcommand\theadfont{}

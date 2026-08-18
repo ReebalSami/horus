@@ -47,6 +47,7 @@ from horus.eval.heldout import (
     build_gt_cache,
     load_heldout_index,
 )
+from horus.eval.promotion import PROMOTED_DIRNAME, PROMOTED_SCHEMA_VERSION
 from horus.finetune.dataset import DEFAULT_HELDOUT_GT_DIRNAME
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -240,7 +241,15 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
     lines.append(f"- **Invoices:** {len(items)}")
     lines.append(f"- **Ground truth drafted:** {n_drafted} / {len(items)}")
     lines.append(f"- **Ground truth author-verified:** {n_verified} / {len(items)}")
-    lines.append(f"- **GT schema version:** {GT_SCHEMA_VERSION}\n")
+    # Two trees, two schema versions -- report both explicitly. Printing only the
+    # draft constant made this datasheet appear to contradict the thesis appendix,
+    # which correctly describes the signed-off key as the provenance-carrying
+    # schema 2 (fifth-pass audit, F8).
+    lines.append(
+        f"- **GT schema version:** {GT_SCHEMA_VERSION} in the `{GT_DIRNAME}/` draft tree; "
+        f"{PROMOTED_SCHEMA_VERSION} (provenance-carrying) in the `{PROMOTED_DIRNAME}/` "
+        "signed-off tree, which is what the held-out evaluation grades against\n"
+    )
 
     lines.append("## Composition\n")
     lines.append("| Axis | Value | Count |")

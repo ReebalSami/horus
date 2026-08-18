@@ -33,11 +33,13 @@ would obscure the comparison this thesis makes, so they are separated here into 
 \textbf{Document-specialised open-weights readers} are trained for conversion and emit a
 structural target: granite-docling-258M, a compact end-to-end conversion model emitting
 DocTags markup \parencite{granitedocling} and underpinning the Docling toolchain
-\parencite{docling2025}, and olmOCR-2, a seven-billion-parameter transcription model emitting
-naturally ordered plain text \parencite{olmocr2}. \textbf{Document-parsing systems} are
+\parencite{docling2025}, and olmOCR-2, a transcription-specialised fine-tune of Qwen2.5-VL-7B
+emitting naturally ordered plain text \parencite{olmocr2}. \textbf{Document-parsing systems} are
 families or pipelines rather than single checkpoints: the MinerU~2.5 line
 \parencite{wang2026mineru} and the DeepSeek-OCR line, which frames page reading as optical
-context compression \parencite{deepseekocr2025,deepseekocr2026}. \textbf{General-purpose
+context compression \parencite{deepseekocr2025} and then, in its second iteration, as a
+question of the \emph{order} in which a page's visual tokens should be read
+\parencite{deepseekocr2026}. \textbf{General-purpose
 compact \acp{VLM} with strong document ability} are not document-specialised at all but
 compete on the same task, Qwen3-VL being the instance this thesis ends up selecting
 \parencite{qwen3vl}. The distinction is load-bearing twice over: it is what
@@ -285,11 +287,12 @@ than any one of them. The specialised
 open-weights document \acp{VLM} of 2025--26 exist precisely to make local document
 understanding practical, yet the closest invoice benchmark predates them and evaluates
 cloud-frontier and general-purpose models instead \parencite{berghaus2025}; German invoice
-extraction has been studied, but with \ac{OCR}-plus-layout models on restricted corpora
+extraction has been studied once, with an \ac{OCR}-plus-layout model on a restricted corpus,
 without a machine-exact semantic reference and without a hardware constraint
-\parencite{krieger2021german,thiee2023invoices,krieger2023longtail}; the public corpora
-do not pair German \ac{B2B} invoices with a machine-exact legal schema; and the evaluation
-literature supplies matching rules but not the discipline of validating the scoring
+\parencite{thiee2023invoices}, alongside the same group's English-corpus work on the graph
+model it adapts and on layout shift \parencite{krieger2021german,krieger2023longtail}; the
+public corpora do not pair German \ac{B2B} invoices with a machine-exact legal schema; and the
+evaluation literature supplies matching rules but not the discipline of validating the scoring
 apparatus that applies them. This thesis occupies that intersection: it evaluates the new
 model class on the corpus class it will actually meet in a German firm, under a
 privacy-motivated hardware envelope stated in advance, with an attribution method that

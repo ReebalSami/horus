@@ -29,7 +29,9 @@ registered.
 
 % The register is verbatim quotation, so the wording cannot be adjusted for line
 % breaking; give TeX extra stretch instead of letting hypothesis text protrude.
-\begingroup\emergencystretch=2em
+% 3em rather than 2em: the H1 entry combines a long \item label with two
+% unbreakable tokens ("(3B--7B)", "X~pp") and still protruded by 0.38pt at 2em.
+\begingroup\emergencystretch=3em
 \begin{description}
   \item[H1 (Layer 1) --- registered 2026-05-08.] Local document \acp{VLM}
         (3B--7B) reach compliance-aware \ac{F1} within X~pp of \ac{EU}-hosted cloud
@@ -74,10 +76,16 @@ registered.
         \ac{ZUGFeRD} corpus, and the cohort's local document \acp{VLM} run within
         the M1~Pro / 16\,\ac{GB} unified-memory envelope. The ${\geq}3\times$
         threshold is literature-grounded, not fitted to any project result.
-        \emph{Disposition: instrumentation was delivered; the confirmatory sweep
-        was not run within scope --- not evaluated. The memory-envelope clause is
-        consistent with every local run reported, but no dedicated sweep is
-        claimed.}
+        \emph{Disposition: partially evaluated by a dedicated eight-model sweep.
+        The memory-envelope clause holds for seven of the eight, whose peak working
+        sets range 1.31--8.40\,\ac{GB} against the host's 12.71\,\ac{GB}
+        recommended ceiling; the eighth breached it at 105\,\% and is documented as
+        the exception. The ${\geq}3\times$ decode clause is not cleanly evaluable on
+        this hardware --- decode-only timing is not exposed by the
+        \ac{MPS} backend's public interface, and the one deliberately
+        model-matched and precision-matched pair failed on that backend, so the
+        ``at comparable \ac{F1}'' precondition never held. That is a final,
+        documented position rather than an open task.}
 \end{description}
 \endgroup
 
@@ -88,8 +96,9 @@ stated in \S\ref{sec:method-hypotheses}.
 \chapter{Held-Out Test Set Datasheet}
 \label{app:heldout}
 
-The held-out corpus of 39 real invoices is private by design (client documents;
-\S\ref{sec:method-data}). This appendix reproduces its sanitised datasheet
+The held-out corpus of 39 real invoices is private by design --- it is the author's own
+incoming business correspondence, not client material (\S\ref{sec:method-data}). This
+appendix reproduces its sanitised datasheet
 \parencite{gebru2018datasheets}: composition counts (Table~\ref{tab:heldout-composition}),
 per-field presence in the signed-off answer key (Table~\ref{tab:heldout-presence}), and
 the cryptographic freeze table (Table~\ref{tab:heldout-freeze}) --- no filenames, no
@@ -234,6 +243,6 @@ reasoning trail is part of the repository rather than of the author's memory.
         by hand.
   \item[Verification gates.] \texttt{make test} (the suite whose size
         Chapter~\ref{ch:implementation} reports), \texttt{make lint},
-        \texttt{make typecheck}; continuous integration runs on every push and
-        pull request.
+        \texttt{make typecheck}; continuous integration runs on every push to the
+        main branch and every pull request against it.
 \end{description}

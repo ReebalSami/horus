@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck audit-prompts glossary experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet thesis thesis-clean clean
+.PHONY: help install test lint format typecheck audit-prompts audit-heldout-exclusions glossary experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet thesis thesis-clean clean
 
 # Default target — list available commands.
 help:
@@ -9,6 +9,7 @@ help:
 	@echo "  format          uv run ruff format (apply formatting)"
 	@echo "  typecheck       uv run mypy src tests"
 	@echo "  audit-prompts   corpus-backed audit of the structurer prompt surface (ADR-058)"
+	@echo "  audit-heldout-exclusions  per-cell audit of which held-out answer-key cells the scorer EXCLUDES, split by cause (ADR-072; LOCAL-ONLY)"
 	@echo "  glossary        print the field glossary + per-alias corpus grounding (RAW=1 for prompt text)"
 	@echo "  experiment      jupytext + papermill on NB=experiments/<name>.py CFG=configs/<name>.yaml"
 	@echo "  eda             Quarto render NB=experiments/<name>.py CFG=configs/<name>.yaml -> single chapter HTML + PDF (ADR-024)"
@@ -57,6 +58,16 @@ typecheck:
 # CFG selects the reader lineage whose transcripts define "printed" (ADR-057 winner).
 audit-prompts:
 	uv run python scripts/audit_field_prompts.py --config $(or $(CFG),configs/finetune-structurer.yaml)
+
+# Per-cell audit of the held-out answer key's EXCLUDED cells, split by cause (ADR-072).
+# Two unrelated situations share the scorer's single `normalizer_rejected` state: ADR-065's
+# ratified neutralisation, and a cell whose signed-off value `validate_and_repair` could not
+# coerce to its declared type. Both vanish from F1/precision/recall alike, and the reported
+# denominator is already net of both, so only a per-cell pass can separate them. Read-only;
+# stdout carries counts + field names + document ids only (ADR-040), never field values.
+# Needs the held-out corpus on disk, so it is a target rather than a pytest.
+audit-heldout-exclusions:
+	uv run python scripts/audit_heldout_exclusions.py $(if $(IDS),--ids $(IDS),)
 
 # Print the rendered field glossary with per-alias corpus grounding counts.
 # `make glossary RAW=1` prints the exact prompt text with no annotations.
