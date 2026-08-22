@@ -5,7 +5,7 @@ This chapter positions the thesis against four bodies of work: vision-based docu
 information extraction, the evaluation of extraction quality, parameter-efficient
 adaptation of compact models, and knowledge-graph construction. The first three each end
 with a statement of what this thesis adds. The fourth deliberately does not, because the
-layers it informed were designed but not built (\S\ref{sec:design-scope}), and honesty
+layers it informed were designed but not built (Section~\ref{sec:design-scope}), and honesty
 about that is worth more than a claimed contribution.
 
 \section{Vision-Based Invoice and Document Information Extraction}
@@ -43,15 +43,15 @@ question of the \emph{order} in which a page's visual tokens should be read
 compact \acp{VLM} with strong document ability} are not document-specialised at all but
 compete on the same task, Qwen3-VL being the instance this thesis ends up selecting
 \parencite{qwen3vl}. The distinction is load-bearing twice over: it is what
-\S\ref{sec:rw-berghaus} needs in order to reconcile this thesis with the closest prior
-benchmark, and it is what \S\ref{sec:results-reader} finds to matter more than scale.
+Section~\ref{sec:rw-berghaus} needs in order to reconcile this thesis with the closest prior
+benchmark, and it is what Section~\ref{sec:results-reader} finds to matter more than scale.
 
 This wave is recent enough that no published benchmark, in the sources reviewed for this
 thesis, systematically compares its members on German business-to-business
 invoices.\footnote{Searched: the arXiv computer-vision and computation-and-language
 listings, Google Scholar, the Hugging Face model and dataset hubs, the benchmark papers
 cited in this section and their forward citations, and the German-language auditing and
-information-systems venues that publish invoice-extraction work (\S\ref{sec:rw-german}),
+information-systems venues that publish invoice-extraction work (Section~\ref{sec:rw-german}),
 with a cut-off at the submission of this thesis. A negative search result is weaker
 evidence than a positive one, which is why the claim is stated as what was not found rather
 than as a first.} The survey and selection of Chapter~\ref{ch:results} are offered on that
@@ -70,7 +70,7 @@ conditions \parencite{real5omnidocbench}, and MDPBench measures multilingual par
 open-source parsers lose an average of 17.8\,\% on photographed relative to digital
 documents \parencite{mdpbench2026}. None of these pairs German \ac{B2B} invoices with a
 machine-exact semantic reference. The \ac{ZUGFeRD} corpus this thesis builds on
-(\S\ref{sec:method-data}) does exactly that: each document embeds its own reference as
+(Section~\ref{sec:method-data}) does exactly that: each document embeds its own reference as
 structured data under the \ac{EN}~16931 semantic model \parencite{en16931}, which is what makes
 scoring exact and ground truth free --- at the price of visual cleanliness, a price
 Chapter~\ref{ch:results} measures.
@@ -98,7 +98,7 @@ that constitute this thesis's reading candidates are absent. And in their parse-
 the converter feeds markdown to the \emph{same} multi-modal models, so the arm tests
 whether those models do better on rendered text than on pixels; this thesis's reading stage
 is a separately selected transcriber feeding a different model chosen for structuring
-(\S\ref{sec:results-reader}), which is a different arrangement being asked a different
+(Section~\ref{sec:results-reader}), which is a different arrangement being asked a different
 question.
 
 \textbf{Where the obvious rebuttal fails, and must be given up.} It is tempting to answer
@@ -114,23 +114,23 @@ and did not rescue the parse-first arm.
 own evidence agrees with theirs at that scale and diverges above it. Its first reader was a
 258-million-parameter DocTags model of the same family, and the pipeline built on it scored
 poorly for exactly the reason their result predicts --- the transcript did not carry what the
-structuring stage needed (\S\ref{sec:results-attribution}). The recovery came from
+structuring stage needed (Section~\ref{sec:results-attribution}). The recovery came from
 replacing that reader with a four-billion-parameter general-purpose transcriber
-(\S\ref{sec:results-reader}). The honest reconciliation is therefore about \emph{scale and
+(Section~\ref{sec:results-reader}). The honest reconciliation is therefore about \emph{scale and
 specialisation of the reading stage}, not about converter category: parse-first with a
 compact structural converter loses, in their data and in this thesis's; whether it loses
 with a reader an order of magnitude larger is what this thesis measures and they did not.
 
 \textbf{And the argument that does not depend on accuracy at all.} This thesis's decisive
 reason for the split is \emph{measurability}: a stored transcript is what makes per-stage
-attribution and instrument validation possible (\S\ref{sec:design-two-stage}), and those
+attribution and instrument validation possible (Section~\ref{sec:design-two-stage}), and those
 measurements, not the end-to-end score, produced this thesis's central findings. The
 accuracy evidence gathered here --- a small preliminary comparison in which the two-stage
-arrangement won (\S\ref{sec:results-preliminary}), consistent with published evidence that
+arrangement won (Section~\ref{sec:results-preliminary}), consistent with published evidence that
 imposed output formats degrade generation quality \parencite{tam2024format} --- is weaker than
 their benchmark and is labelled as such. Whether a single-shot arrangement overtakes the
 split \emph{within} the specialised local model class is an open question this thesis
-leaves explicitly to future work (\S\ref{sec:future-work}).
+leaves explicitly to future work (Section~\ref{sec:future-work}).
 
 \subsection{German invoices have been extracted before, and by whom}
 \label{sec:rw-german}
@@ -147,7 +147,7 @@ study over 977 real German invoices from 494 vendors, rule-annotated over more t
 classes, whose first design cycle augments the graph model with a German-language text
 encoder and reports an \ac{F1} of 0.823 on the same three headline fields. A further study
 from the same group \parencite{krieger2023longtail} examines precisely the question this
-thesis registers and leaves untested (\S\ref{sec:unevaluated}): how extraction quality
+thesis registers and leaves untested (Section~\ref{sec:unevaluated}): how extraction quality
 behaves when the training layouts are skewed towards frequent suppliers and the test
 layouts are not, finding the gap between seen and unseen layouts much smaller for a
 LayoutLM-class transformer than for graph-based or forest-based alternatives.
@@ -194,7 +194,7 @@ ANLS$^{\star}$ generalised that tolerance to the structured outputs of document 
 evaluation closer to industrial use by scoring grouped entities (a line item's fields
 belonging together) separately from individual ones, arguing that extraction quality in
 application settings is experienced as correction cost, not as isolated cell accuracy
-\parencite{kieval2025}. This thesis's metric suite (\S\ref{sec:method-metrics}) sits in that
+\parencite{kieval2025}. This thesis's metric suite (Section~\ref{sec:method-metrics}) sits in that
 lineage: field-level scoring under symmetric, type-aware canonicalisation, group-level
 cells reported alongside flat ones, and abstention scored as a first-class outcome ---
 the last being a property none of the cited rules make explicit, and which the honest-null
@@ -221,7 +221,7 @@ defect history of their own comparison rules, and published extraction results r
 state how sensitive their rankings are to representation handling. This thesis documents
 that sensitivity on its own data --- scoring corrections moved reported figures by amounts
 comparable to the differences between models, and the ordering of two candidate readers
-inverted under a ruler repair (\S\ref{sec:results-reader}) --- which suggests the
+inverted under a ruler repair (Section~\ref{sec:results-reader}) --- which suggests the
 sensitivity is not a peculiarity of this project.
 
 \textbf{What this thesis adds}: a documented defect taxonomy for extraction scoring on a
@@ -229,7 +229,7 @@ task where the reference is machine-readable while the input is a rendered page;
 discipline of re-scoring frozen generations so that instrument repairs are measurable in
 isolation from model changes; and an attribution design that bounds the structuring
 stage's contribution using reference-quality transcripts
-(\S\ref{sec:method-attribution}).
+(Section~\ref{sec:method-attribution}).
 
 \section{Parameter-Efficient Adaptation of Compact Models}
 \label{sec:rw-adaptation}
@@ -250,7 +250,7 @@ interference with pre-trained knowledge and show that freezing parameter groups 
 preserve task performance while reducing it.
 
 This literature predicts the shape, though not the certainty, of the negative result in
-\S\ref{sec:results-adaptation}: an adapter trained on a corpus whose supervision mostly
+Section~\ref{sec:results-adaptation}: an adapter trained on a corpus whose supervision mostly
 rewards emitting values learns, among other things, to emit --- and this thesis's task
 contractually requires the opposite on absent fields. Chapter~\ref{ch:discussion} develops
 the mechanism.
@@ -264,7 +264,7 @@ as a first-class metric (the spurious-emission rate) rather than as an impressio
 \label{sec:rw-kg}
 
 Three works shaped the design of the layers this thesis specified but did not build
-(\S\ref{sec:design-layer2}, \S\ref{sec:design-layer3}). Edge et~al.\ \parencite{edge2024graphrag}
+(Sections~\ref{sec:design-layer2} and~\ref{sec:design-layer3}). Edge et~al.\ \parencite{edge2024graphrag}
 introduced GraphRAG, retrieval over an
 extracted graph rather than flat chunks, for query-focused summarisation over corpora;
 Han et~al.\ \parencite{han2025} survey the graph-versus-flat retrieval question
@@ -299,7 +299,7 @@ privacy-motivated hardware envelope stated in advance, with an attribution metho
 locates the binding constraint (reading, not structuring), and with the measuring
 instrument itself validated, repaired and reported alongside the system it measures.
 Where the closest prior work and this thesis point in different architectural directions
---- native image input against a two-stage split --- \S\ref{sec:rw-berghaus} reconciles them
+--- native image input against a two-stage split --- Section~\ref{sec:rw-berghaus} reconciles them
 on reader scale and specialisation rather than on converter category, gives up the
 converter-category rebuttal because that paper controls for it, and states the residual
 disagreement as an open question rather than resolving it by assertion.

@@ -687,7 +687,7 @@ def build_reader_lineage() -> str:
             "after the repairs, only the selected reader was re-measured end-to-end. "
             "olmOCR-2-7B's transcripts are retained, but its post-repair end-to-end score "
             "was never taken, because by then selection had moved to instruments this score "
-            "cannot provide (\\S\\ref{sec:results-reader})."
+            "cannot provide (Section~\\ref{sec:results-reader})."
         ),
         sources=[
             "data/finetune/eval-zeroshot-val.json",
@@ -1001,9 +1001,9 @@ def build_heldout_headline(data: dict[str, Any]) -> str:
             "network call. Reading ran at full precision and native resolution on "
             "target-class hardware (a single 24\\,GB graphics processor); structuring ran at "
             "the floor, on a 16\\,GB laptop in its deployed 4-bit precision "
-            "(\\S\\ref{sec:method-repro}). The figure is the pipeline's accuracy on the "
-            "hardware class a firm would buy for it; the floor's capped-resolution reading "
-            "is not measured on this corpus (\\S\\ref{sec:lim-hardware})." + superseded_note
+            "(Section~\\ref{sec:method-repro}). The figure is the pipeline's accuracy on the "
+            "hardware class a company would buy for it; the floor's capped-resolution reading "
+            "is not measured on this corpus (Section~\\ref{sec:lim-hardware})." + superseded_note
         ),
         sources=[
             str(HELDOUT_CACHE),
@@ -1198,7 +1198,7 @@ def build_field_registry() -> str:
             "extractor, so this listing cannot drift from the code. The German label is "
             "the canonical EN~16931 term, which is not always the wording a real page "
             "prints; corpus-measured printed labels are tracked separately "
-            r"(\S\ref{sec:validity-specification}). Types: \emph{money} and "
+            r"(Section~\ref{sec:validity-specification}). Types: \emph{money} and "
             r"\emph{rate} are decimal-normalised, \emph{date} is ISO-normalised, "
             r"\emph{code} is vocabulary-mapped and \emph{string} is "
             "whitespace-normalised, symmetrically on both reference and prediction. "
@@ -1209,7 +1209,7 @@ def build_field_registry() -> str:
             r"than term codes. \textsuperscript{\dag}~marks the one field the registry "
             "carries at document level that the standard defines only inside the "
             r"\ac{VAT} breakdown group (BG-23); it is consequently ill-posed on invoices "
-            r"bearing more than one rate, and excluded there (\S\ref{sec:validity-reference})."
+            r"bearing more than one rate, and excluded there (Section~\ref{sec:validity-reference})."
         ),
         sources=["src/horus/eval/ground_truth.py (FIELDS, REPEATING_GROUPS)"],
     )
@@ -1264,7 +1264,7 @@ def build_heldout_datasheet_tables() -> tuple[str, str, str]:
             "filenames, no field values, no invoice content. The channel named "
             r"\texttt{iphone-pdf-scan} is scanning-app output: camera captures deskewed "
             "and contrast-enhanced into a PDF without a text layer "
-            r"(\S\ref{sec:method-data})."
+            r"(Section~\ref{sec:method-data})."
         ),
         sources=[str(DATASHEET_MD)],
     )
@@ -1286,7 +1286,7 @@ def build_heldout_datasheet_tables() -> tuple[str, str, str]:
         rows=presence_rows,
         note=(
             "Presence, not accuracy: a field absent from an invoice is an honest null in "
-            "the answer key (\\S\\ref{sec:method-heldout-gt}), and per-field "
+            "the answer key (Section~\\ref{sec:method-heldout-gt}), and per-field "
             "\\emph{scores} on so small a corpus would carry denominators this thesis "
             "does not consider reportable. Converted verbatim from the committed "
             "sanitised datasheet."

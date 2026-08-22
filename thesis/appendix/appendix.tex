@@ -5,7 +5,7 @@
 
 The registry is the single structure from which the structurer's field
 specification, the scoring comparison and the reference extractor are all derived
-(\S\ref{sec:method-schema}). It is reproduced here as Table~\ref{tab:field-registry}
+(Section~\ref{sec:method-schema}). It is reproduced here as Table~\ref{tab:field-registry}
 in generated form --- the table is emitted by the same asset pipeline as every results
 table, directly from the registry source code, so the appendix cannot disagree with
 the system.
@@ -38,7 +38,7 @@ registered.
         state of the art on \ac{ZUGFeRD} German invoices.
         \emph{Disposition: the local arm is characterised in
         Chapter~\ref{ch:results}; the cloud arm was deliberately not run
-        (\S\ref{sec:unevaluated}), so the comparison is not evaluated. The
+        (Section~\ref{sec:unevaluated}), so the comparison is not evaluated. The
         compliance-aware weighting was abandoned
         (Appendix~\ref{app:metric-spec}); unweighted figures are reported.}
   \item[H2 (Layer 1, architecture) --- registered 2026-05-08.] Single-shot
@@ -46,9 +46,9 @@ registered.
         \ac{ZUGFeRD}; orchestrated pipelines beat single-shot on \emph{degraded}
         Belege where validator-retry corrects errors (directional flip).
         \emph{Disposition: partially addressed as a preliminary, pre-correction
-        study (\S\ref{sec:results-preliminary}) whose qualitative outcome informed
+        study (Section~\ref{sec:results-preliminary}) whose qualitative outcome informed
         the architecture; not confirmatory. The validator-retry arm was never built
-        (\S\ref{sec:unevaluated}).}
+        (Section~\ref{sec:unevaluated}).}
   \item[H3 (Layer 2) --- registered 2026-05-08.] Compliance-aware extraction
         \ac{F1} predicts knowledge-graph compliance pass-rate monotonically;
         standard token \ac{F1} is a worse predictor.
@@ -69,7 +69,7 @@ registered.
         robustness hypothesis was discussed as a candidate and never registered.
         \emph{Disposition: no claim attaches to it. Template shift was partially and
         accidentally addressed by the held-out corpus
-        (\S\ref{sec:unevaluated}).}
+        (Section~\ref{sec:unevaluated}).}
   \item[H8 (Layer 1, efficiency) --- formalised 2026-05-31.] \ac{MLX}-routed
         \acp{VLM} achieve ${\geq}3\times$ decode tokens per second compared to
         Transformers-\ac{MPS}-routed \acp{VLM} at comparable \ac{F1} on the
@@ -91,13 +91,13 @@ registered.
 
 The reporting rule attached to the register --- every experiment cites the hypothesis
 it tests by its verbatim definition or is explicitly labelled exploratory --- is
-stated in \S\ref{sec:method-hypotheses}.
+stated in Section~\ref{sec:method-hypotheses}.
 
 \chapter{Held-Out Test Set Datasheet}
 \label{app:heldout}
 
 The held-out corpus of 39 real invoices is private by design --- it is the author's own
-incoming business correspondence, not client material (\S\ref{sec:method-data}). This
+incoming business correspondence, not client material (Section~\ref{sec:method-data}). This
 appendix reproduces its sanitised datasheet
 \parencite{gebru2018datasheets}: composition counts (Table~\ref{tab:heldout-composition}),
 per-field presence in the signed-off answer key (Table~\ref{tab:heldout-presence}), and
@@ -107,7 +107,7 @@ which is itself generated from the private corpus by the project's held-out tool
 nothing here is hand-transcribed.
 
 All 39 documents carry a drafted and author-verified answer key
-(\S\ref{sec:method-heldout-gt}), ground-truth schema version~2 (the provenance-carrying
+(Section~\ref{sec:method-heldout-gt}), ground-truth schema version~2 (the provenance-carrying
 schema).
 
 \input{tables/heldout-composition.tex}
@@ -121,7 +121,7 @@ schema).
 
 This appendix is a design record of something this thesis chose \emph{not} to do, kept
 because the abandonment is itself a methodological decision the reader should be able
-to audit (\S\ref{sec:contributions}, \S\ref{sec:method-metrics}).
+to audit (Sections~\ref{sec:contributions} and~\ref{sec:method-metrics}).
 
 The original design (registered with the hypothesis set on 2026-05-08) was a
 \emph{compliance-aware} \ac{F1}: each registry field would carry a weight of 3, 2
@@ -173,11 +173,11 @@ enough to be auditable.
         were used for one \emph{data-authoring} purpose only, never on the inference
         path: a frontier vision model and a commercial document-understanding service
         as two of the three adjudication channels for the held-out answer key
-        (\S\ref{sec:method-heldout-gt}), with the privacy trade-off stated there.
+        (Section~\ref{sec:method-heldout-gt}), with the privacy trade-off stated there.
   \item \textbf{Code.} The experimental harness, evaluation code, scripts and tests
         were developed with AI assistance under continuous author review, in a
         repository whose every change passed through version control, linting,
-        type-checking and the test suite (\S\ref{sec:impl-verification}). All
+        type-checking and the test suite (Section~\ref{sec:impl-verification}). All
         architectural and methodological decisions are recorded as numbered decision
         records with their rationale (Appendix~\ref{app:repro}).
   \item \textbf{Prose.} Chapters were drafted iteratively with AI assistance from
@@ -190,7 +190,7 @@ enough to be auditable.
   \item \textbf{What AI did not produce.} No experimental result, measurement,
         or reported number was generated by a language model: every number in this
         manuscript is emitted by the deterministic asset pipeline from committed
-        measurement artefacts (\S\ref{sec:impl-assets}), and the measurements
+        measurement artefacts (Section~\ref{sec:impl-assets}), and the measurements
         themselves come from the instrumented runs described in
         Chapters~\ref{ch:methodology} and~\ref{ch:results}. Literature citations
         were verified against the cited sources; the bibliography records
@@ -227,19 +227,19 @@ reasoning trail is part of the repository rather than of the author's memory.
         audit live in the same trail (Appendix~\ref{app:hypotheses}).
   \item[Environment.] Python version and dependencies are pinned (lockfile);
         the package manager is uv; local inference uses \ac{MLX}
-        \parencite{mlxvlm} on the hardware stated in \S\ref{sec:method-repro};
+        \parencite{mlxvlm} on the hardware stated in Section~\ref{sec:method-repro};
         adaptation runs used the recorded rented-\ac{GPU} environment with
         per-run provenance files capturing the recipe, seeds, library versions and
-        loss curves (\S\ref{sec:results-adaptation}).
+        loss curves (Section~\ref{sec:results-adaptation}).
   \item[Experiment tracking.] Runs are tracked in MLflow with their configuration
         and metrics; sealed splits are fixed by recorded hashes
-        (\S\ref{sec:method-splits}); every generation --- transcripts, structurer
+        (Section~\ref{sec:method-splits}); every generation --- transcripts, structurer
         outputs, scores --- is persisted, which is what makes the frozen-generation
         re-scoring of Chapter~\ref{ch:measurement-validity} possible.
   \item[Manuscript build.] The thesis builds with \texttt{make thesis}
         (latexmk); every table and figure is generated by
         \texttt{make thesis-assets} from committed evidence and included verbatim
-        (\S\ref{sec:impl-assets}). No measured number in this manuscript is typed
+        (Section~\ref{sec:impl-assets}). No measured number in this manuscript is typed
         by hand.
   \item[Verification gates.] \texttt{make test} (the suite whose size
         Chapter~\ref{ch:implementation} reports), \texttt{make lint},

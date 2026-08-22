@@ -8,7 +8,7 @@ scope in plain words --- because a design chapter is the easiest place in a thes
 intention read as an achievement.
 
 The system was conceived as three layers. One of them was implemented and evaluated; the
-other two remain design. \S\ref{sec:design-scope} explains why the scope was narrowed, and
+other two remain design. Section~\ref{sec:design-scope} explains why the scope was narrowed, and
 Chapter~\ref{ch:limitations-future-work} lists the hypotheses that consequently went
 untested instead of dropping them from the record.
 
@@ -57,10 +57,10 @@ because it looks exactly like a correct answer. The failure mode that matters he
 therefore not a low score; it is a confident wrong answer that survives review.
 
 Three design consequences follow, and each is visible later in this chapter: the repair stage
-may never invent a value (\S\ref{sec:design-validation}); the evaluation treats a correct
+may never invent a value (Section~\ref{sec:design-validation}); the evaluation treats a correct
 absence as a first-class outcome and measures the rate of values emitted for fields that do
-not exist (\S\ref{sec:method-metrics}); and, in the adaptation study of
-\S\ref{sec:results-adaptation}, a change that raises raw extraction while raising that rate is
+not exist (Section~\ref{sec:method-metrics}); and, in the adaptation study of
+Section~\ref{sec:results-adaptation}, a change that raises raw extraction while raising that rate is
 read as a regression rather than an improvement.
 
 \subsection{Why the reading layer is the load-bearing one}
@@ -84,7 +84,7 @@ achieves is therefore a precondition for the other two being meaningful, not mer
 item on a list.
 
 That precondition turned out to be more demanding than anticipated, which is what
-\S\ref{sec:design-scope} is about.
+Section~\ref{sec:design-scope} is about.
 
 \section{Layer 1: Reading and Structuring}
 \label{sec:design-layer1}
@@ -100,8 +100,8 @@ Figure~\ref{fig:pipeline}.
   \caption[The Layer~1 pipeline]{The Layer~1 pipeline: three stages, the artefact that
   passes between them, and the point at which the two transcript-level measurement
   instruments attach. The transcript boundary is what makes the reading and structuring
-  stages separately accountable; \S\ref{sec:method-attribution} defines the instruments
-  and \S\ref{sec:results-attribution} reports what they found.}
+  stages separately accountable; Section~\ref{sec:method-attribution} defines the instruments
+  and Section~\ref{sec:results-attribution} reports what they found.}
   \label{fig:pipeline}
 \end{figure}
 
@@ -128,7 +128,7 @@ identical --- a wrong value in a field. Two stages give each failure mode its ow
 a-priori design choice. A probe compared instructing a reading model to emit structured data
 directly against the two-stage arrangement, and a further study compared a rule-based
 extraction baseline, a single-shot arrangement and the two-stage arrangement on a development
-subset. The two-stage arrangement scored higher in both; \S\ref{sec:results-preliminary} reports those
+subset. The two-stage arrangement scored higher in both; Section~\ref{sec:results-preliminary} reports those
 studies with the caveats they require. The finding also has support in the literature:
 imposing a rigid output format on a generative model has been shown to degrade its
 performance on the reasoning-adjacent part of the task instead of being a free convenience
@@ -153,17 +153,17 @@ reader preserved it in reading order. A two-column layout, a table whose columns
 meaning, a value printed in a box beside its label instead of after it --- all of these
 survive only as well as the reader serialises them. The structuring stage cannot recover what
 the transcript does not carry, and this is not a hypothetical cost: it is the mechanism behind
-the attribution result of \S\ref{sec:results-attribution}. A single-shot model, whatever else
+the attribution result of Section~\ref{sec:results-attribution}. A single-shot model, whatever else
 it gives up, never loses layout information at an internal boundary, because it has no such
 boundary. The design accepts this cost in exchange for accountability, and the thesis reports
 the size of the cost instead of assuming it away.
 
 Two further consequences of the split are worth naming. The two stages run sequentially, so
 latency is additive and two sets of model weights must fit within the same memory envelope ---
-a real constraint on the hardware this system targets (\S\ref{sec:method-repro}). And each
+a real constraint on the hardware this system targets (Section~\ref{sec:method-repro}). And each
 stage can be replaced independently: changing the reading model is a configuration change that
 requires nothing of the structuring stage, which is what made the reader comparison of
-\S\ref{sec:results-reader} affordable.
+Section~\ref{sec:results-reader} affordable.
 
 \subsection{The target schema}
 \label{sec:design-schema}
@@ -192,7 +192,7 @@ registry, which generates the specification given to the structuring model, driv
 and drives the reporting. Had the specification and the scorer carried separate field lists,
 they could have drifted --- a field asked for and never scored, or scored and never asked for
 --- and the drift would have been invisible in the results.
-\S\ref{sec:method-schema} treats the methodological consequences; the point here is that the
+Section~\ref{sec:method-schema} treats the methodological consequences; the point here is that the
 single-registry arrangement is an architectural property of the system, not a convention
 upheld by discipline.
 
@@ -239,7 +239,7 @@ only, never a key and never a value, and it refuses to guess when the output was
 the middle of a value --- in that case the field is reported absent. A value that cannot be
 parsed becomes an absence, not a best guess. An unrecognised key is dropped, never
 mapped to the field it most resembles. The reason is the honest-null contract of
-\S\ref{sec:design-honest-null}: in this domain a plausible fabrication is worse than a gap,
+Section~\ref{sec:design-honest-null}: in this domain a plausible fabrication is worse than a gap,
 because the gap is visible to the reviewer who has to sign the booking and the fabrication is
 not. A repair stage that guesses is a fabrication engine with a reassuring name.
 
@@ -254,7 +254,7 @@ an invention.
 that the invoice standard guarantees --- that line amounts sum to the line total, that base plus
 tax equals the grand total, that the amount due follows from the grand total and any prepayment.
 Those checks would catch a class of reading error that is otherwise silent, and they are a
-natural extension of the stage; they are not implemented here, and \S\ref{sec:fw-production}
+natural extension of the stage; they are not implemented here, and Section~\ref{sec:fw-production}
 records that as future work instead of describing them as if they existed. Nothing in this
 thesis's results depends on a consistency check that was not performed.
 
@@ -282,7 +282,7 @@ would have been unrecoverable.
 
 \emph{Not implemented or evaluated within the scope of this thesis. Everything in this section
 describes an intended design; no claim in this thesis rests on it. See
-\S\ref{sec:design-scope} and Chapter~\ref{ch:limitations-future-work}.}
+Section~\ref{sec:design-scope} and Chapter~\ref{ch:limitations-future-work}.}
 
 \subsection{Why a graph rather than a document store}
 
@@ -328,7 +328,7 @@ Chapter~\ref{ch:measurement-validity} documents at this level.
 \label{sec:design-layer3}
 
 \emph{Not implemented or evaluated within the scope of this thesis. See
-\S\ref{sec:design-scope} and Chapter~\ref{ch:limitations-future-work}.}
+Section~\ref{sec:design-scope} and Chapter~\ref{ch:limitations-future-work}.}
 
 The third layer would answer practitioner questions posed in natural language over the graph,
 locally, with the same confidentiality constraint as the layers below it.
@@ -357,7 +357,7 @@ The narrowing was a decision taken during the work, and the reason is a finding,
 shortage of effort.
 
 The measurement of Layer~1 established two things. The first is that the reading stage, not the
-structuring stage, is what limits this pipeline (\S\ref{sec:results-attribution}) --- so the
+structuring stage, is what limits this pipeline (Section~\ref{sec:results-attribution}) --- so the
 most valuable available work was on the foundation, not on new floors above it. The second is
 more uncomfortable and more decisive: the apparatus measuring Layer~1 was itself defective in
 several distinct ways, and most of what initially looked like model error was measurement error.
@@ -373,12 +373,12 @@ be interrogated. Chapter~\ref{ch:discussion} returns to this trade-off and to wh
 Two consequences are recorded.
 
 \textbf{The hypotheses covering the upper layers were registered before the narrowing, and are
-reported as not evaluated.} They are listed in \S\ref{sec:unevaluated}, and the verbatim
+reported as not evaluated.} They are listed in Section~\ref{sec:unevaluated}, and the verbatim
 register with registration dates is Appendix~\ref{app:hypotheses}. None of them is dropped
 from the record, for the reason Chapter~\ref{ch:limitations-future-work} states.
 
 \textbf{The unbuilt layers are not counted as contributions.} The contribution claimed in
-\S\ref{sec:contributions} is Layer~1 together with the measurement methodology that made its
+Section~\ref{sec:contributions} is Layer~1 together with the measurement methodology that made its
 results trustworthy. This chapter describes the full design because the design motivates the
 architecture of Layer~1 and because the upper layers are where the work continues --- not
 because a diagram is evidence.

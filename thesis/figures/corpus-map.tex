@@ -1,4 +1,4 @@
-%% The two-corpus design of \S\ref{sec:method-data} in one picture: where each corpus
+%% The two-corpus design of Section~\ref{sec:method-data} in one picture: where each corpus
 %% comes from, where its reference data comes from, and what each is allowed to claim.
 %%
 %% Hand-authored TikZ. Counts mirror the generated composition tables verbatim
@@ -42,7 +42,7 @@
   \node[gt, below=3.5mm of syn] (syngt) {%
     \textbf{Reference: extracted, not annotated.} Each document embeds a
     machine-readable \ac{XML} statement of its own content; render the page for the
-    models, extract the embedding for the scorer (\S\ref{sec:method-gt}).%
+    models, extract the embedding for the scorer (Section~\ref{sec:method-gt}).%
   };
   \node[claim, below=2.5mm of syngt] (synclaim)
     {answers: \emph{can the pipeline read a well-formed generated page?} --- upper
@@ -62,7 +62,7 @@
   \node[gt, below=3.5mm of held] (heldgt) {%
     \textbf{Reference: adjudicated, then signed off.} No embedded data exists, so the
     answer key is built from three independent reading channels and author
-    adjudication (\S\ref{sec:method-heldout-gt}).%
+    adjudication (Section~\ref{sec:method-heldout-gt}).%
   };
   \node[claim, below=2.5mm of heldgt] (heldclaim)
     {answers: \emph{does performance survive real documents and real capture?} ---
