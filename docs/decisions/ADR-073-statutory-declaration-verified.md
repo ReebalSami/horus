@@ -44,6 +44,8 @@ Tab. 1 (§3.1, p. 5) enumerates the written parts and marks each `obligatorisch`
 
 (The figure was 113 before this pass's layout repairs — the disclosure prose added for ADR-072 and findings D1/D2, plus the top-aligned float pages, cost two body pages. Re-measure after any further body addition: the remaining headroom is 5 pages.)
 
+**Measurement note, 2026-08-22** (the re-measure this section calls for, taken after the examiner-review pass of `docs/reviews/2026-08-18-first-supervisor-comment-registry.md` § 7). Two corrections to the paragraph above. First, a precision error in the original measurement: at the build this ADR measured, the abstract occupied arabic p. 1 and the chapters pp. 2–115 — so "body chapters 1–11 occupy arabic pages 1–115" conflated the two; the count was 115 arabic body pages *including* the abstract, 114 pages of chapters. Second, the current figure: after the review pass (numeric citations, prose tightening, and the Future-Work chapter promotion, which added one chapter opening), the abstract sits on p. 1, chapters 1–12 end on p. 114, and Appendix A opens on p. 115 — **114 arabic body pages including the abstract, 113 pages of chapters**, inside the 80–120 window under either counting convention. Headroom to the 120 wall: 6 pages.
+
 ### 4. Formal apparatus verified against the template, not the prose — no change made
 
 The Richtlinie's prose (§3.5 items 3–7) gives margins of left 3,5 cm / right 4 cm / top 3 cm / bottom 3 cm and `Schriftgröße 11`. The manuscript sets `inner=2.5cm, outer=2.0cm, top=1.5cm, bottom=1.5cm` at `12pt`, under a comment claiming it matches the FH Wedel template.
