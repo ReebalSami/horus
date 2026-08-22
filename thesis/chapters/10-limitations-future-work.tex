@@ -239,8 +239,8 @@ is included because it is routinely mistaken for one of them, and was not regist
 \section{Future Work}
 \label{sec:future-work}
 
-The items below are ordered by what the results of this thesis suggest, not by convenience. The
-first two follow directly from the finding that reading is the binding constraint.
+The items below are ordered by what the results of this thesis suggest, not by convenience.
+The first follows directly from the finding that reading is the binding constraint.
 
 \subsection{Improve the Reading Stage, Not the Structuring Stage}
 \label{sec:fw-reader}
@@ -264,15 +264,6 @@ already exists.
 enhancement address the channel gap directly. Given that the channel gap is the dominant
 real-world cost measured here, an intervention on the image may be worth more than any
 intervention on the models.
-
-\subsection{Measure Real Line Items}
-\label{sec:fw-groups}
-
-The route to closing Section~\ref{sec:lim-groups} is known and is not research: adjudicate the held-out
-group rows under a \emph{set-based} matching rule instead of a positional one, so that a reader
-which merges two lines is not penalised as though it had misread them. That requires a matching
-criterion defined before adjudication begins, and it requires the same ranked-escalation and
-provenance-class discipline the header key used. It is expensive but it is bounded work.
 
 \subsection{Teach Abstention Rather Than Always Answering}
 \label{sec:fw-abstention}
@@ -312,10 +303,22 @@ confidential --- and since the synthetic corpus carries exact reference data, su
 would be cleanly scored. The result would be a lower bound on the cost of the constraint, because
 the synthetic corpus is the easy case for both sides.
 
-\subsection{Locally Adjudicable Ground Truth}
+\subsection{Extend the Answer Key: Real Line Items, Local Adjudication}
 \label{sec:fw-local-gt}
+\label{sec:fw-groups}
 
-Closing Section~\ref{sec:lim-cloud-gt} requires the three-channel adjudication to run without a cloud
+Two pieces of answer-key work would extend what the held-out corpus can support, and they
+share the same adjudication discipline.
+
+\textbf{Measure real line items.} The route to closing Section~\ref{sec:lim-groups} is known
+and is not research: adjudicate the held-out group rows under a \emph{set-based} matching
+rule instead of a positional one, so that a reader which merges two lines is not penalised
+as though it had misread them. That requires a matching criterion defined before
+adjudication begins, and it requires the same ranked-escalation and provenance-class
+discipline the header key used. It is expensive but it is bounded work.
+
+\textbf{Adjudicate locally.} Closing Section~\ref{sec:lim-cloud-gt} requires the three-channel
+adjudication to run without a cloud
 service: a local vision model as one channel, a local \ac{OCR}-plus-layout stack as a second, the
 embedded text layer as a third, and the same printed-text gate and ranked escalation. Whether
 three \emph{local} channels are independent enough for the two-channel-agreement rule to carry
