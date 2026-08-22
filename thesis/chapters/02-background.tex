@@ -130,10 +130,10 @@ Section~\ref{sec:method-architecture} and its threats in Chapter~\ref{ch:discuss
 \subsection{The semantic model and its carriers}
 
 \ac{EN}~16931 is the European standard defining the \emph{semantic model} of an
-electronic invoice: an enumerated set of business terms --- \ac{BT}-numbered fields such
-as BT-1 (invoice number), BT-31 (seller \ac{VAT} identifier) and BT-112 (grand total
-including \ac{VAT}) --- with defined meanings, cardinalities and datatypes
-\parencite{en16931}. The
+electronic invoice: an enumerated set of business terms with defined meanings,
+cardinalities and datatypes \parencite{en16931} --- \ac{BT}-numbered fields such as BT-1
+(invoice number), BT-31 (seller \ac{VAT} identifier) and BT-112 (grand total
+including \ac{VAT}). The
 standard deliberately separates \emph{what} an invoice says from \emph{how} it is
 serialised. Germany carries the model in two forms. \textbf{XRechnung} is the national
 pure-\ac{XML} profile for invoices to public-sector buyers, maintained by KoSIT
@@ -149,7 +149,7 @@ public-sector standard \parencite{ferdprofiles}. The profile fixes how much of t
 model the embedded \ac{XML} must carry, and two of the six carry too little to be invoices
 at all: MINIMUM and BASIC~WL omit line items and are recognised only as booking aids, not
 as complete invoices under German \ac{VAT} law \parencite{ferdprofiles}. That matters for
-this thesis twice over --- the corpus of Section~\ref{sec:method-data} deliberately spans the
+this thesis twice over: the corpus of Section~\ref{sec:method-data} deliberately spans the
 range including those two profiles, and Section~\ref{sec:bg-legal-target} argues that the
 extraction target is legally grounded, which is a claim about the \emph{field definitions}
 rather than about every document in the corpus being a lawful invoice.
@@ -170,15 +170,15 @@ held-out corpus of Section~\ref{sec:method-data} samples.
 \label{sec:bg-legal-target}
 
 German law prescribes invoice content independently of any serialisation standard.
-\S~14 \ac{UStG} lists the mandatory particulars an invoice must carry --- the parties'
+\S~14 \ac{UStG} lists the mandatory particulars an invoice must carry: the parties'
 identities, the supplier's tax or \ac{VAT} identifier, issue date, a sequential invoice
-number, the supply, the net amount per rate, the tax rate and amount \parencite{ustg14} ---
-and \S~33 \ac{UStDV} relaxes those requirements for small-amount invoices up to
+number, the supply, the net amount per rate, the tax rate and amount \parencite{ustg14}.
+\S~33 \ac{UStDV} relaxes those requirements for small-amount invoices up to
 250~Euro, which may lawfully omit the recipient's identity and the separate tax amount
 \parencite{ustdv33}. Two consequences matter for this thesis. First, the field registry
 (Section~\ref{sec:method-schema}) is an alignment to \ac{EN}~16931 business terms rather than
 an invented schema, so an extracted field's meaning is fixed by the standard rather than by
-this thesis --- with one documented exception, a single document-level tax rate that the
+this thesis, with one documented exception: a single document-level tax rate that the
 standard defines only per breakdown group and which is therefore ill-posed on multi-rate
 invoices (Section~\ref{sec:validity-reference}). Second, field
 \emph{absence} is frequently lawful rather than defective --- a Kleinbetragsrechnung
@@ -287,8 +287,8 @@ hypotheses, decision rules and thresholds \emph{before} the corresponding data i
 collected, so that an outcome can be checked against a commitment instead of a memory.
 This thesis registers its hypothesis set and selection rules in advance
 (Section~\ref{sec:method-hypotheses}, Appendix~\ref{app:hypotheses}), and two of its results
---- the conjunctive reader-sibling test and the adaptation experiment's matched-baseline
-requirement --- are only defensible because the rule predates the outcome
+are only defensible because the rule predates the outcome: the conjunctive reader-sibling
+test and the adaptation experiment's matched-baseline requirement
 (Sections~\ref{sec:results-reader} and~\ref{sec:results-adaptation}).
 
 \subsection{Reproducibility mechanics}

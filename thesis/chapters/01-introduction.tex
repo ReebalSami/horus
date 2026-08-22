@@ -102,11 +102,11 @@ legally meaningful form? The closest prior work benchmarked cloud-frontier model
 and general-purpose open-weights models on invoice extraction, but included none
 of the recent \emph{specialised} open-weights document \acp{VLM} and no German
 B2B corpus \parencite{berghaus2025}. German invoice extraction itself is not
-unstudied --- it has been addressed with a recognition-plus-layout model on a
+unstudied: it has been addressed with a recognition-plus-layout model on a
 restricted real German corpus \parencite{thiee2023invoices}, adapting an approach the
-same group had developed on English invoices \parencite{krieger2021german} --- but not
-with this model class, not against a machine-exact reference under the European semantic standard,
-and not under a hardware constraint. That intersection is the gap this thesis
+same group had developed on English invoices \parencite{krieger2021german}. What that
+work does not cover is this model class, a machine-exact reference under the European
+semantic standard, and a hardware constraint. That intersection is the gap this thesis
 addresses; Section~\ref{sec:rw-german} makes the comparison with the German literature
 explicit and Section~\ref{sec:rw-positioning} returns to where the closest benchmark's
 findings and this thesis's diverge.
@@ -203,8 +203,8 @@ This thesis contributes:
 
 \begin{itemize}
   \item an evaluation of recent \emph{specialised} open-weights local document
-        \acp{VLM} on German e-invoice extraction --- the model class and corpus
-        class absent from the closest prior benchmark \parencite{berghaus2025} ---
+        \acp{VLM} on German e-invoice extraction, the model class and corpus
+        class absent from the closest prior benchmark \parencite{berghaus2025},
         together with a measurement on 39 \emph{real} invoices whose answer key
         was adjudicated across three independent reading channels;
   \item a \emph{measurement-validity} methodology, and the empirical finding that
