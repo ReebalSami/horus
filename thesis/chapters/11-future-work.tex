@@ -1,0 +1,143 @@
+\chapter{Future Work}
+\label{ch:future-work}
+
+% Promoted from section 10.3 on the first examiner's 2026-08-18 review
+% (registry row R37): the section had accumulated a series of very short
+% numbered subsections, which read better as sections of their own chapter.
+% Labels are carried over unchanged so every existing reference resolves.
+
+The items below are ordered by what the results of this thesis suggest, not by convenience.
+The first follows directly from the finding that reading is the binding constraint.
+
+\section{Improve the Reading Stage, Not the Structuring Stage}
+\label{sec:fw-reader}
+
+The attribution result (Section~\ref{sec:results-attribution}) says the largest available gain is in
+reading. Three specific directions follow.
+
+\textbf{Adapt the reading model rather than the structuring model.} This thesis adapted the stage
+that was not the bottleneck. Low-rank adaptation of the vision tower on invoice pages is the
+untested experiment that the attribution evidence actually recommends, and it is a different
+experiment from the one reported here.
+
+\textbf{Ensemble across readers with complementary failure modes.} The two finalists fail
+differently and in a way that looks exploitable: one drops letterhead and footer regions while
+reading characters near-flawlessly, the other reads every region with occasional character slips
+(Section~\ref{sec:results-reader}). A combination that takes regions from the first and characters from
+the second is a concrete proposal, and the per-miss classification data needed to evaluate it
+already exists.
+
+\textbf{Pre-process before reading.} Deskewing, contrast normalisation and resolution
+enhancement address the channel gap directly. Given that the channel gap is the dominant
+real-world cost measured here, an intervention on the image may be worth more than any
+intervention on the models.
+
+\section{Teach Abstention Rather Than Always Answering}
+\label{sec:fw-abstention}
+
+The adaptation failed by raising spurious emission (Section~\ref{sec:disc-finetune}), which is what
+supervised fine-tuning on exclusively-filled targets would be expected to do
+\parencite{uluoglakci2026humility}. The corresponding untested variant is a training set that includes
+appropriate absence as a taught behaviour: documents where a field is genuinely missing, with the
+correct answer being the null. This thesis's training data contained no such examples, and the
+mechanism points directly at that gap.
+
+\section{Knowledge-Graph Construction}
+\label{sec:fw-kg}
+
+The most direct continuation of the designed-but-unbuilt architecture
+(Section~\ref{sec:design-layer2}). The interesting question is not whether a graph can be built --- it
+can --- but how extraction error propagates into it: does a field-level error rate predict a
+compliance-decision error rate, or does the graph's redundancy absorb some errors while amplifying
+others? That is a measurement question, and the per-field outcome data this thesis produces is the
+right input to it.
+
+\section{Analytical Query and Retrieval Comparison}
+\label{sec:fw-query}
+
+Building the query layer (Section~\ref{sec:design-layer3}) would let the second and third unevaluated
+hypotheses be tested. The open question worth answering is narrower than the design: which
+\emph{classes} of question genuinely benefit from graph structure over flat retrieval, since the
+answer is unlikely to be uniform across question types.
+
+\section{A Cloud Comparison That Respects the Premise}
+\label{sec:fw-cloud}
+
+Quantifying the accuracy cost of the local-only constraint requires running the same corpus
+through a frontier cloud model. That cannot be done with client documents without violating the
+premise. It can be done on the synthetic corpus, where every document is generated and none is
+confidential --- and since the synthetic corpus carries exact reference data, such a comparison
+would be cleanly scored. The result would be a lower bound on the cost of the constraint, because
+the synthetic corpus is the easy case for both sides.
+
+\section{Extend the Answer Key: Real Line Items, Local Adjudication}
+\label{sec:fw-local-gt}
+\label{sec:fw-groups}
+
+Two pieces of answer-key work would extend what the held-out corpus can support, and they
+share the same adjudication discipline.
+
+\textbf{Measure real line items.} The route to closing Section~\ref{sec:lim-groups} is known
+and is not research: adjudicate the held-out group rows under a \emph{set-based} matching
+rule instead of a positional one, so that a reader which merges two lines is not penalised
+as though it had misread them. That requires a matching criterion defined before
+adjudication begins, and it requires the same ranked-escalation and provenance-class
+discipline the header key used. It is expensive but it is bounded work.
+
+\textbf{Adjudicate locally.} Closing Section~\ref{sec:lim-cloud-gt} requires the three-channel
+adjudication to run without a cloud
+service: a local vision model as one channel, a local \ac{OCR}-plus-layout stack as a second, the
+embedded text layer as a third, and the same printed-text gate and ranked escalation. Whether
+three \emph{local} channels are independent enough for the two-channel-agreement rule to carry
+its current warrant is itself an open question, and it is the one that would have to be answered
+first.
+
+\section{Measure the Floor of the Envelope}
+\label{sec:fw-envelope}
+
+The most immediately available missing number in this thesis, and the cheapest to obtain: read
+the 39 held-out invoices with the selected reader \emph{on the laptop}, under the pixel cap the
+floor's runtime imposes, then structure and score them with the pipeline and scoring rules used
+throughout. Nothing new has to be built --- the reading script already supports the local path
+and already documents the cap as the reason it exists --- and nothing leaves the premises, so
+unlike the answer-key work (Section~\ref{sec:lim-cloud-gt}) this measurement is itself deployable
+inside the constraint it evaluates.
+
+The comparison against Table~\ref{tab:heldout-headline} would be clean, because only the
+reading venue and resolution change: same documents, same answer key, same structurer, same
+scorer, same greedy decoding. The result would convert Section~\ref{sec:lim-hardware} from a stated
+gap into a measured quantity --- the accuracy cost of the floor relative to the target class,
+on real documents --- which is the number a company equipping below the target class would
+actually want and the one this thesis is currently unable to give. Two protocol requirements follow from
+Chapter~\ref{ch:measurement-validity}: the local transcripts must be archived like every other
+generation, and the comparison must be pre-registered as a two-cell design before the run, so
+that a disappointing local figure cannot be re-framed afterwards.
+
+\section{Robustness on Degraded Documents}
+\label{sec:fw-robustness}
+
+The channel gap measured here is the most actionable finding in the thesis, and it was measured on
+ten photographed documents. A controlled degradation study --- the same documents captured at
+several resolutions, angles and lighting conditions --- would turn a two-level comparison into a
+response curve, and would say where on that curve a company's document-handling practice needs to
+sit. The protocol from the multilingual parsing benchmark \parencite{mdpbench2026} is a reasonable
+template.
+
+\section{Production Hardening}
+\label{sec:fw-production}
+
+What a company would additionally need: throughput and batching, audit logging of every extraction
+with its provenance, and the review interface that the precision-over-recall error profile
+(Section~\ref{sec:results-heldout}) makes viable.
+
+One specific and cheap addition belongs here. The validate-and-repair stage does not currently
+check the arithmetic identities the invoice standard guarantees --- line amounts summing to the
+line total, taxable base plus tax equalling the grand total, the amount due following from the
+grand total and any prepayment (Section~\ref{sec:design-validation}). Those identities are
+deterministic, require no model, and would convert a class of silent misreading into a flagged
+document. They would not improve any score reported in this thesis, which is precisely why they
+were not built; they would improve the reviewability of the output, which is what a company would
+actually be buying. The prototype of
+Chapter~\ref{ch:implementation} includes a review surface for exactly this reason, but it was
+built to support the evaluation, not a company's daily workflow, and the difference between
+those two is substantial.
