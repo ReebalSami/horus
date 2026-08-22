@@ -109,7 +109,7 @@ Figure~\ref{fig:pipeline}.
 \label{sec:design-two-stage}
 
 The obvious arrangement is one model: hand a vision-language model the page image and a
-schema, and ask it for the filled record directly. The design here does not do that. It uses
+schema, and ask it for the filled record directly. The design here uses
 two models in sequence --- a \textbf{reader} that transcribes the page to plain text with no
 knowledge of the schema, and a \textbf{structurer} that receives that text plus the field
 specification and emits the record.
@@ -128,7 +128,7 @@ identical --- a wrong value in a field. Two stages give each failure mode its ow
 a-priori design choice. A probe compared instructing a reading model to emit structured data
 directly against the two-stage arrangement, and a further study compared a rule-based
 extraction baseline, a single-shot arrangement and the two-stage arrangement on a development
-subset. The two-stage arrangement won in both; \S\ref{sec:results-preliminary} reports those
+subset. The two-stage arrangement scored higher in both; \S\ref{sec:results-preliminary} reports those
 studies with the caveats they require. The finding also has support in the literature:
 imposing a rigid output format on a generative model has been shown to degrade its
 performance on the reasoning-adjacent part of the task instead of being a free convenience
@@ -350,9 +350,8 @@ Both commitments describe an intended design. Neither was implemented, and neith
 \section{Scope of This Thesis}
 \label{sec:design-scope}
 
-\textbf{Layer~1 was built and measured. Layers~2 and~3 were designed and were neither
-implemented nor evaluated.} Everything reported in Chapters~\ref{ch:results}
-and~\ref{ch:discussion} concerns Layer~1.
+\textbf{Layer~1 was built and measured; everything reported in Chapters~\ref{ch:results}
+and~\ref{ch:discussion} concerns it.}
 
 The narrowing was a decision taken during the work, and the reason is a finding, not a
 shortage of effort.
@@ -371,7 +370,7 @@ could have come from the query, the graph, the extraction, or the ruler. The jud
 a narrower claim that can be trusted is worth more than a three-layer demonstration that cannot
 be interrogated. Chapter~\ref{ch:discussion} returns to this trade-off and to what is lost by it.
 
-Two consequences are recorded, not glossed.
+Two consequences are recorded.
 
 \textbf{The hypotheses covering the upper layers were registered before the narrowing, and are
 reported as not evaluated.} They are listed in \S\ref{sec:unevaluated}, and the verbatim

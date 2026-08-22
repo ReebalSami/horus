@@ -15,7 +15,7 @@ is indistinguishable, to a reader, from one that was tested and inconvenient.
 
 The 146-document corpus is generated: its pages are rendered from the same data that supplies
 the reference, so they are clean by construction --- no skew, no shadow, no stamp, no staple, no
-handwriting, no compression artefact. Real documents in a tax firm arrive with all of those.
+handwriting, no compression artefact. Real documents in a tax-consulting company arrive with all of those.
 
 The held-out corpus exists precisely to bound this, and it does so with a number:
 phone-scanned documents score more than eleven points of mean per-invoice F$_1$ below
@@ -114,9 +114,9 @@ precision-matched adaptation evaluations, the reader comparison, and every repor
 pass --- on target-class hardware, rented for the purpose and running the same open-weights
 checkpoints under the author's control (\S\ref{sec:method-repro}). The local-only property
 therefore holds for the delivered pipeline at both tiers --- open-weights end to end, no
-network call on any inference path, both models resident within 16\,\ac{GB} --- and a firm at
+network call on any inference path, both models resident within 16\,\ac{GB} --- and a company at
 the target class could also adapt the pipeline and reproduce the full measurement record on
-premises. A firm equipped only at the floor could run the pipeline but not adapt it or
+premises. A company equipped only at the floor could run the pipeline but not adapt it or
 reproduce the measurements.
 
 \textbf{The sharper form of this limitation, stated plainly.} On the laptop the reader's input
@@ -337,7 +337,7 @@ The comparison against Table~\ref{tab:heldout-headline} would be clean, because 
 reading venue and resolution change: same documents, same answer key, same structurer, same
 scorer, same greedy decoding. The result would convert \S\ref{sec:lim-hardware} from a stated
 gap into a measured quantity --- the accuracy cost of the floor relative to the target class,
-on real documents --- which is the number a firm equipping below the target class would
+on real documents --- which is the number a company equipping below the target class would
 actually want and the one this thesis is currently unable to give. Two protocol requirements follow from
 Chapter~\ref{ch:measurement-validity}: the local transcripts must be archived like every other
 generation, and the comparison must be pre-registered as a two-cell design before the run, so
@@ -349,14 +349,14 @@ that a disappointing local figure cannot be re-framed afterwards.
 The channel gap measured here is the most actionable finding in the thesis, and it was measured on
 ten photographed documents. A controlled degradation study --- the same documents captured at
 several resolutions, angles and lighting conditions --- would turn a two-level comparison into a
-response curve, and would say where on that curve a firm's document-handling practice needs to
+response curve, and would say where on that curve a company's document-handling practice needs to
 sit. The protocol from the multilingual parsing benchmark \parencite{mdpbench2026} is a reasonable
 template.
 
 \subsection{Production Hardening}
 \label{sec:fw-production}
 
-What a firm would additionally need: throughput and batching, audit logging of every extraction
+What a company would additionally need: throughput and batching, audit logging of every extraction
 with its provenance, and the review interface that the precision-over-recall error profile
 (\S\ref{sec:results-heldout}) makes viable.
 
@@ -366,8 +366,8 @@ line total, taxable base plus tax equalling the grand total, the amount due foll
 grand total and any prepayment (\S\ref{sec:design-validation}). Those identities are
 deterministic, require no model, and would convert a class of silent misreading into a flagged
 document. They would not improve any score reported in this thesis, which is precisely why they
-were not built; they would improve the reviewability of the output, which is what a firm would
+were not built; they would improve the reviewability of the output, which is what a company would
 actually be buying. The prototype of
 Chapter~\ref{ch:implementation} includes a review surface for exactly this reason, but it was
-built to support the evaluation, not a firm's daily workflow, and the difference between
+built to support the evaluation, not a company's daily workflow, and the difference between
 those two is substantial.
