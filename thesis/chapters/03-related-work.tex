@@ -79,7 +79,7 @@ Chapter~\ref{ch:results} measures.
 \label{sec:rw-berghaus}
 
 The nearest neighbour to this thesis is the invoice-processing benchmark of
-\textcite{berghaus2025}. They evaluate eight multi-modal models from three families --- two
+Berghaus et~al.\ \parencite{berghaus2025}. They evaluate eight multi-modal models from three families --- two
 cloud-frontier families (GPT-5 and Gemini~2.5) and open-weights general-purpose Gemma~3 ---
 on three public invoice and receipt datasets, zero-shot, under two processing strategies:
 native image input, and a parse-first arrangement that converts the document to markdown
@@ -138,11 +138,11 @@ leaves explicitly to future work (\S\ref{sec:future-work}).
 The gap this thesis claims is a gap in a \emph{corpus--model} pairing, not an absence of
 German invoice-extraction research, and conflating the two would overstate it. The closest
 published line of work comes from the auditing-digitalisation literature rather than from
-computer vision. \textcite{krieger2021german} introduce a graph neural network over
+computer vision. Krieger et~al.\ \parencite{krieger2021german} introduce a graph neural network over
 \ac{OCR} output and evaluate it on 1,129 real one-page invoices in English ---
 hand-annotated for three key items across 277 vendors, all addressed to a single recipient
 --- reporting a macro-averaged \ac{F1} of 0.8753 on a deliberately layout-diverse set.
-\textcite{thiee2023invoices} carry that model family to German documents: a design-science
+Thiée et~al.\ \parencite{thiee2023invoices} carry that model family to German documents: a design-science
 study over 977 real German invoices from 494 vendors, rule-annotated over more than sixty
 classes, whose first design cycle augments the graph model with a German-language text
 encoder and reports an \ac{F1} of 0.823 on the same three headline fields. A further study
@@ -237,15 +237,15 @@ stage's contribution using reference-quality transcripts
 Low-rank adaptation trains small additive matrices while freezing the base weights, and is
 the standard method for adapting a model of this size on modest hardware \parencite{hu2021lora}.
 A growing body of evidence, however, bounds what such adaptation can add and warns what it
-can break. \textcite{ghosh2024limitations} find that \ac{LoRA}-based instruction tuning
+can break. Ghosh et~al.\ \parencite{ghosh2024limitations} find that \ac{LoRA}-based instruction tuning
 ``is limited to learning response initiation and style tokens'', with most of the answer
-content drawn from pre-trained knowledge. \textcite{kang2024unfamiliar} show that how a
+content drawn from pre-trained knowledge. Kang et~al.\ \parencite{kang2024unfamiliar} show that how a
 fine-tuned model behaves under uncertainty is controlled by the unfamiliar examples in its
-training set. \textcite{uluoglakci2026humility} diagnose that
+training set. Uluoglakci and Taskaya Temizel \parencite{uluoglakci2026humility} diagnose that
 standard supervised fine-tuning ``implicitly rewards always responding'' --- across 800
 controlled \ac{LoRA} runs, including on the predecessor generation of this thesis's
 structuring model --- and treat abstention as a skill that must be explicitly taught.
-\textcite{kaplan2026why} locate fine-tuning-induced hallucination in
+Kaplan et~al.\ \parencite{kaplan2026why} locate fine-tuning-induced hallucination in
 interference with pre-trained knowledge and show that freezing parameter groups can
 preserve task performance while reducing it.
 
@@ -264,12 +264,12 @@ as a first-class metric (the spurious-emission rate) rather than as an impressio
 \label{sec:rw-kg}
 
 Three works shaped the design of the layers this thesis specified but did not build
-(\S\ref{sec:design-layer2}, \S\ref{sec:design-layer3}). \textcite{edge2024graphrag}
+(\S\ref{sec:design-layer2}, \S\ref{sec:design-layer3}). Edge et~al.\ \parencite{edge2024graphrag}
 introduced GraphRAG, retrieval over an
 extracted graph rather than flat chunks, for query-focused summarisation over corpora;
-\textcite{han2025} survey the graph-versus-flat retrieval question
+Han et~al.\ \parencite{han2025} survey the graph-versus-flat retrieval question
 systematically. Most relevantly to the evaluation this thesis would have
-needed, \textcite{cai2025} evaluate knowledge-graph extraction at two levels simultaneously
+needed, Cai and O'Connor \parencite{cai2025} evaluate knowledge-graph extraction at two levels simultaneously
 --- edge-level accuracy in the standard \ac{NLP} sense, and the bias that extraction error
 induces in downstream graph-level analyses --- and find that below a quality threshold,
 graph metrics drift in consistent, metric-specific directions. That

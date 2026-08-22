@@ -135,7 +135,7 @@ rises markedly above its own baseline (Table~\ref{tab:finetune-grid}). The failu
 \emph{when the model answers}, not in \emph{how well it answers}.
 
 That is precisely what supervised fine-tuning has been reported to do.
-\textcite{uluoglakci2026humility} state the premise directly: models hallucinate partly
+Uluoglakci and Taskaya Temizel \parencite{uluoglakci2026humility} state the premise directly: models hallucinate partly
 because supervised fine-tuning ``implicitly rewards always responding''. Their study runs 800
 controlled adaptation runs across two model families --- one of which is the immediate
 predecessor generation of the structuring model used here --- and their remedy is to train
@@ -145,7 +145,7 @@ a filled record. On that reading, the adapter learned exactly what it was shown.
 
 Three further results in that literature line up with what was measured.
 
-\textbf{Adaptation of this kind learns style, not knowledge.} \textcite{ghosh2024limitations}
+\textbf{Adaptation of this kind learns style, not knowledge.} Ghosh et~al.\ \parencite{ghosh2024limitations}
 report that low-rank adaptation ``is limited to learning response initiation and style
 tokens''. If the intervention cannot add capability and can adjust output
 disposition, then a task already near its ceiling on clean input
@@ -154,13 +154,13 @@ adapter evaluated on perfect text --- the cell with the cleanest input and the l
 regresses too, which is consistent with this and not with a simple overfitting story.
 
 \textbf{Unfamiliar training examples govern how a model hallucinates.}
-\textcite{kang2024unfamiliar} find that the character of a fine-tuned model's hallucinations
+Kang et~al.\ \parencite{kang2024unfamiliar} find that the character of a fine-tuned model's hallucinations
 is controlled by the unfamiliar examples in its training set. The transcript-trained adapter was fed exactly
 that: noisy transcripts containing artefacts, dropped regions and character slips. Its
 spurious-emission rate is the highest of any arm measured in this thesis.
 
 \textbf{Freezing parameters preserves task performance while reducing hallucination.}
-\textcite{kaplan2026why} frame the effect as a stability--plasticity trade-off and report
+Kaplan et~al.\ \parencite{kaplan2026why} frame the effect as a stability--plasticity trade-off and report
 that suppressing factual plasticity by freezing parameter groups can preserve task
 performance while reducing hallucination. The intervention here did the opposite: it added plasticity
 to the text tower of a model that was already competent at the task.

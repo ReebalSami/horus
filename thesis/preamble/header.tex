@@ -203,21 +203,24 @@
 }
 
 % --- Bibliography (biblatex + biber) ---
-%% authoryear per the first examiner's established preference: both prior graded
-%% works under the same supervisor (WS25 seminar, SS25 deep-learning project) use
-%% this exact option set, rendering (Author et al. Year) via \parencite/\textcite.
-%% The Richtlinie prescribes the short-reference method and defers the concrete
-%% form to the supervisor (Richtlinie 3.0, "Zitierweise: Kurzbelegmethode").
-%% Switched from the template default `alphabetic` in the 2026-08-16 review pass.
+%% numeric-comp per the first examiner's WRITTEN instruction in his 2026-08-18
+%% review of the interim manuscript: "Ich persoenlich bevorzuge bei der
+%% Literaturangabe den IEEE oder ACM bibstyle - dort werden die Cites durch
+%% Nummern in Eckigen Klammern angegeben" (registry row R02; ADR-074).
+%% The earlier `authoryear` rationale ("per the first examiner's established
+%% preference", inferred from two prior graded works) is thereby falsified by
+%% primary evidence and withdrawn. The Richtlinie is satisfied either way: it
+%% prescribes the short-reference method and defers the concrete form to the
+%% supervisor (Richtlinie 3.0, "Zitierweise: Kurzbelegmethode").
+%% sorting=nty keeps the bibliography alphabetical (the order he reviewed);
+%% the numeric labels follow that order. He named the style family, not the
+%% sort (ADR-074 leaves it to this build). numeric-comp compresses runs of
+%% labels in one bracket ([2-4] instead of [2; 3; 4]).
 \usepackage[
     backend=biber,
-    style=authoryear,
-    natbib=true,
+    style=numeric-comp,
     sorting=nty,
-    maxbibnames=99,
-    maxcitenames=2,
-    uniquename=false,
-    uniquelist=false
+    maxbibnames=99
 ]{biblatex}
 \addbibresource{references.bib}
 % Long archive/dataset URLs must be breakable anywhere, or they protrude into
