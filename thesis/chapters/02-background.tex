@@ -48,14 +48,10 @@ output directly, with Donut as the canonical demonstration \parencite{kim2022don
 models this thesis surveys are \ac{OCR}-free in that sense: no external text detector or
 recogniser runs anywhere in the pipeline.
 
-A note on names, because they invite the opposite conclusion. Several models evaluated here
-carry \ac{OCR} in their names --- olmOCR-2, DeepSeek-OCR, PaddleOCR-VL --- and one might read
-that as contradicting the claim just made. It does not. The names denote the \emph{task} the
-model was specialised for, page transcription, which is historically \ac{OCR}'s task. They do
-not denote the \emph{mechanism}: each is a single vision-language model that maps pixels to
-text in one pass, with no character-recognition engine inside it and none invoked beside it.
-\ac{OCR}-free is a claim about pipeline architecture throughout this thesis, never about
-nomenclature.
+Several models evaluated here carry \ac{OCR} in their names --- olmOCR-2, DeepSeek-OCR,
+PaddleOCR-VL. As Section~\ref{sec:scope} states, the names denote the transcription task
+those models were specialised for, not the mechanism: each maps pixels to text in one
+pass, with no character-recognition engine inside it and none invoked beside it.
 
 Document-specialised \acp{VLM} share that anatomy and differ in scale, in specialisation
 and in what they emit --- Figure~\ref{fig:cohort-comparison} contrasts the three families
@@ -74,7 +70,9 @@ the two output disciplines apart; Section~\ref{sec:design-two-stage} gives the r
   \input{figures/cohort-comparison.tex}
   \caption[Three model families, one anatomy]{Three model families relevant to this
   thesis, contrasted by base lineage, scale, specialisation and output discipline.
-  Architectural facts follow the published model cards \parencite{granitedocling,olmocr2,qwen3vl}.}
+  Architectural facts follow the published model cards \parencite{granitedocling,olmocr2,qwen3vl};
+  scale labels follow the published model names, with exact checkpoint sizes reported in
+  Chapter~\ref{ch:results}.}
   \label{fig:cohort-comparison}
 \end{figure}
 
@@ -89,7 +87,7 @@ workable, and both appear throughout the results.
 
 \textbf{Quantisation} stores the trained weights at reduced numeric precision. The
 models here run in 4-bit quantised form for deployment, roughly a quarter of the weight
-storage of the 16-bit (\ac{bf16}) representation they were trained in --- weight storage
+storage of the \ac{bf16} representation they were trained in --- weight storage
 only, since activations, attention caches and image preprocessing consume memory a
 quantised checkpoint does not reduce. Quantisation is not
 free: Chapter~\ref{ch:results} measures the cost directly, and
@@ -246,8 +244,8 @@ advanced than it.
 
 Comparing one extracted field against its reference yields one of \emph{five} outcomes,
 and all five are needed to follow the later chapters. A \ac{TP} is a field whose extracted
-value matches the reference; an \ac{FP} is an emitted value that is wrong or belongs to a
-field the document does not carry; an \ac{FN} is a reference value the system failed to
+value matches the reference; a \ac{FP} is an emitted value that is wrong or belongs to a
+field the document does not carry; a \ac{FN} is a reference value the system failed to
 produce; a \ac{TN} is a field the document does not carry and the system correctly left
 empty; and a fifth outcome, \emph{excluded}, marks a cell that is ill-posed and is scored
 neither way --- a document-level tax rate on an invoice carrying two different rates, for

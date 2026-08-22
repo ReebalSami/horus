@@ -271,7 +271,7 @@ def build_finetune_grid() -> str:
         font_size=r"\small",
         note=(
             "Corpus and structurer as in Table~\\ref{tab:sealed-val-arms}. Every arm here is "
-            "bf16 on CUDA, including the baseline: comparing a bf16 adapter against the "
+            "bf16 on \\ac{CUDA}, including the baseline: comparing a bf16 adapter against the "
             "4-bit deployment baseline would measure the adapter \\emph{and} a precision "
             "change at once. The two adapters differ only in the input distribution they were "
             "trained on; rank, scaling, dropout, schedule, seed and target modules are "
@@ -1036,21 +1036,20 @@ def build_heldout_by_channel(data: dict[str, Any]) -> str:
             r"\textbf{" + _num(float(data["recall"])) + "}",
         ]
     )
-    email = [e for e in data["channels"] if str(e["channel"]).endswith("/email")]
+    de_email = [e for e in data["channels"] if str(e["channel"]) == "german/email"]
     scan = [e for e in data["channels"] if "scan" in str(e["channel"])]
     gap_note = ""
-    if email and scan:
-        email_weighted = sum(float(e["mean_per_invoice_f1"]) * int(e["n"]) for e in email) / sum(
-            int(e["n"]) for e in email
-        )
+    if de_email and scan:
+        email_mean = float(de_email[0]["mean_per_invoice_f1"])
         scan_mean = float(scan[0]["mean_per_invoice_f1"])
         gap_note = (
-            f" Email-native documents average {email_weighted:.4f} against {scan_mean:.4f} "
-            f"for photographs, a gap of {100 * (email_weighted - scan_mean):.1f} points."
+            f" German email-native documents average {email_mean:.4f} against {scan_mean:.4f} "
+            f"for German phone scans, a like-for-like gap of "
+            f"{100 * (email_mean - scan_mean):.1f} points."
         )
     return _table(
         caption=(
-            "Held-out performance by language and capture channel. Photographed documents "
+            "Held-out performance by language and capture channel. Phone-scanned documents "
             "cost far more than language does."
         ),
         label="tab:heldout-by-channel",

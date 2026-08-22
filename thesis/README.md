@@ -87,7 +87,7 @@ thesis/
 
 ## Status
 
-All thirteen chapters, the abstract and all six appendices are drafted. Applied
+All twelve chapters, the abstract and all six appendices are drafted. Applied
 review passes, in order: the 2026-08-15 supervisor-review fix plan (evidential
 repairs M1--M7, bibliography corrections, missing prose, appendices, formatting);
 the 2026-08-16 second pass (seven new figures — every chapter 2--8 carries at
@@ -95,9 +95,11 @@ least one visual — duplication trimmed, AI-usage appendix sharpened); the
 2026-08-18 examiner review of the interim manuscript, worked as a 38-row registry
 (R01--R38: citation style switched to `numeric-comp` per his written instruction,
 ADR-074; limitations/future-work split into own chapters; measurement-venue
-scoping per ADR-070); and the 2026-08-20 Feinschliff pass. Green build verified:
-140 pp, zero unresolved references and citations, zero overfull boxes, 1,265
-tests passing. Review records under `../docs/reviews/`.
+scoping per ADR-070); the 2026-08-20 Feinschliff pass; and the 2026-08-22
+fresh-eyes arena review (three independent AI reviewers; fixes verified against
+source, ADRs and the rendered PDF). Green build verified: 141 pp, zero
+unresolved references and citations, zero overfull boxes, 1,265 tests passing.
+Review records under `../docs/reviews/`.
 Per-chapter status: `../docs/prompts/stages/05-writeup.md` §2.
 
 ## TODO before submission

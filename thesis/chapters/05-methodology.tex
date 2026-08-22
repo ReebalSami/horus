@@ -373,7 +373,7 @@ every score partly a function of how often fields happen to be empty, which is a
 the corpus, not of the system.
 
 \textbf{On weighting fields by legal importance.} An earlier design weighted fields by their
-significance under \S14 \ac{UStG} and \S33 \ac{UStDV}, so that omitting a mandatory invoice
+significance under \S~14 \ac{UStG} and \S~33 \ac{UStDV}, so that omitting a mandatory invoice
 particular would cost more than omitting an optional one. This was not carried through, and
 the reason is methodological, not practical: the weights would have been chosen by the
 author, and a headline number that depends on an author-chosen weight vector is not
@@ -538,10 +538,11 @@ each move is recorded. The venue was a rented single-\ac{GPU} instance: one NVID
 It ran the same open-weights checkpoints under the author's control, less than six
 \ac{GPU}-hours in total. Renting the target class for measurement is what kept the author's
 hardware from confounding the science; it is not a cloud dependency of the system, and no
-model provider processed anything at any point. The documents that instance handled were the
+model-provider service processed anything in these passes. The documents that instance handled were the
 synthetic corpus and the author's own collected invoices --- no client document and no third
 party's confidential data. Four classes of pass ran there in full precision, enumerated
 exhaustively because a reader is entitled to know which numbers were produced where.
+\acused{CUDA}\phantomsection\label{acro:CUDA}% arm-label tables print CUDA verbatim; mark it used and anchor the list's link here, at the venue that explains the platform
 
 \begin{enumerate}
   \item \textbf{Adapter training}, which exceeded the floor's memory outright. A

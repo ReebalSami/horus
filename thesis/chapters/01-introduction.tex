@@ -49,18 +49,18 @@ breach, and restricted to the knowledge the service actually requires;
 services performed abroad additionally require a level of secrecy protection
 comparable to the domestic one; and where the service serves one specific client
 matter rather than the company's general infrastructure, the client's own consent is
-required as well.\footnote{\S203~\ac{StGB} \parencite{stgb203} names these
+required as well.\footnote{\S~203~\ac{StGB} \parencite{stgb203} names these
 professions --- \textit{Steuerberater}, \textit{Wirtschaftspr\"ufer},
 \textit{Rechtsanw\"alte} --- as holders of protected secrets and, since the 2017
 reform, both permits disclosure to contributing outside persons where necessary
 and makes the professional criminally liable for failing to bind them. The
 contractual
 requirements are set out separately for each profession, in near-identical terms:
-\S62a~\ac{StBerG} for tax advisors \parencite{stberg62a}, \S43e~\ac{BRAO} for
-lawyers \parencite{brao43e}, and \S50a~\ac{WPO} for auditors
+\S~62a~\ac{StBerG} for tax advisors \parencite{stberg62a}, \S~43e~\ac{BRAO} for
+lawyers \parencite{brao43e}, and \S~50a~\ac{WPO} for auditors
 \parencite{wpo50a}, each attaching to that profession's own confidentiality duty
---- \S57 Abs.~1~\ac{StBerG} \parencite{stberg57}, \S43a Abs.~2~\ac{BRAO} and
-\S43~\ac{WPO} respectively.} Both chambers make the practical consequence explicit,
+--- \S~57 Abs.~1~\ac{StBerG} \parencite{stberg57}, \S~43a Abs.~2~\ac{BRAO} and
+\S~43~\ac{WPO} respectively.} Both chambers make the practical consequence explicit,
 and it is the point most often elided: a data-protection processing agreement is
 \emph{not} the same instrument and does not satisfy the confidentiality
 requirement, and the two obligations stand side by side rather than one absorbing
@@ -94,8 +94,8 @@ contribution --- and asks what is technically achievable \emph{within} it.
 \section{Problem Statement}
 \label{sec:problem}
 
-Working locally confines the system to models that fit on commodity, on-premises
-hardware. This raises a concrete empirical question: how reliably do small,
+Working locally confines the system to models that fit on commodity
+on-premises hardware. This raises a concrete empirical question: how reliably do small,
 locally hosted, open-weights document \acp{VLM} --- the wave of specialised models
 released from late~2025 onward --- convert German B2B invoices into a structured,
 legally meaningful form? The closest prior work benchmarked cloud-frontier models
@@ -134,8 +134,8 @@ pipeline limits the achievable reliability?
 
 \noindent It is addressed through four sub-questions. They are worded to match
 what this thesis actually measures, which is narrower than the general form each
-question could take; Section~\ref{sec:rq-map} states for each one where it is answered
-and how strong that answer is.
+question could take; the mapping at the end of this section states for each one where
+it is answered and how strong that answer is.
 
 \begin{enumerate}
   \item\label{rq:readers} How do recent open-weights document \acp{VLM} compare
@@ -159,7 +159,6 @@ hypotheses are reported as registered-but-not-evaluated in
 Chapter~\ref{ch:limitations} rather than quietly dropped.
 
 \subsection*{What each question is answered with}
-\label{sec:rq-map}
 
 A question can be answered by a sealed measurement, by a diagnostic instrument,
 by a preliminary study, or not at all, and those are not interchangeable. The
@@ -188,9 +187,10 @@ against a promise made in this chapter.
         (Table~\ref{tab:sealed-val-arms}). The one missing number is the floor's
         reading quality --- the laptop caps the reader at half resolution --- which
         Section~\ref{sec:method-repro} records and Section~\ref{sec:lim-hardware} carries as a
-        limitation. Throughput is deliberately not claimed: it was instrumented
-        earlier in the project and the confirmatory comparison was not run, so it
-        is reported as registered-but-unevaluated (Appendix~\ref{app:hypotheses}).
+        limitation. Throughput is deliberately not claimed: the efficiency
+        hypothesis's decode-speed clause proved not cleanly evaluable on this
+        hardware, and the register records that as a final position rather than
+        an open task (Appendix~\ref{app:hypotheses}).
   \item \textbf{Question~\ref{rq:attribution}} --- answered by three instruments
         that agree (Section~\ref{sec:results-attribution}), and it is the question this
         thesis answers most firmly.
@@ -229,7 +229,7 @@ This thesis contributes:
 \noindent One contribution claimed in an earlier plan for this work is
 \emph{not} delivered, and is named here rather than quietly dropped. A
 compliance-aware metric weighting fields by their legal importance under
-\S14~\ac{UStG} and \S33~\ac{UStDV} was designed and then abandoned, because the
+\S~14~\ac{UStG} and \S~33~\ac{UStDV} was designed and then abandoned, because the
 weights would have been chosen by the author and a headline number resting on an
 author-chosen weight vector is comparable to nothing.
 Section~\ref{sec:method-metrics} gives the reasoning; unweighted figures are
