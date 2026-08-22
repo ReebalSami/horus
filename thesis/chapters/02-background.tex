@@ -283,12 +283,12 @@ positions it and Chapter~\ref{ch:measurement-validity} audits it.
 \subsection{Pre-registration and HARKing}
 
 A hypothesis stated after the data has been seen is not a test, it is a description.
-Kerr \parencite{kerr1998} named the practice \ac{HARKing} --- hypothesising after the
-results are known --- and catalogued why it corrupts the evidentiary value of
-research even when every individual number is correct. The standard defence is to register
-hypotheses, decision rules and thresholds \emph{before} the corresponding data is
-collected, so that an outcome can be checked against a commitment instead of a memory.
-This thesis registers its hypothesis set and selection rules in advance
+Kerr \parencite{kerr1998} named the practice \ac{HARKing} and catalogued why it
+corrupts the evidentiary value of research even when every number is correct. The
+standard defence is to register hypotheses, decision rules and thresholds
+\emph{before} the data is collected, so that an outcome is checked against a
+commitment instead of a memory.
+This thesis does so
 (Section~\ref{sec:method-hypotheses}, Appendix~\ref{app:hypotheses}), and two of its results
 are only defensible because the rule predates the outcome: the conjunctive reader-sibling
 test and the adaptation experiment's matched-baseline requirement
@@ -296,14 +296,13 @@ test and the adaptation experiment's matched-baseline requirement
 
 \subsection{Reproducibility mechanics}
 
-Three mechanical disciplines carry the reproducibility weight in this thesis, and they
-are background because none is novel. \emph{Determinism}: greedy decoding makes every
+Three mechanical disciplines carry the reproducibility weight in this thesis; none is
+novel, hence background. \emph{Determinism}: greedy decoding makes every
 reported figure a function of model, prompt and input (Section~\ref{sec:bg-local}).
 \emph{Artefact retention}: every generation --- transcripts, structurer outputs, scores
---- is persisted, so a scoring change can be re-applied to frozen outputs and measured
-in isolation from model changes, the mechanism Chapter~\ref{ch:measurement-validity}
-depends on. \emph{Recorded provenance}: runs are tracked with their configuration,
-split hashes and environment, and the data itself is documented in datasheet form
+--- is persisted, so a scoring change can be re-run on frozen outputs in
+isolation from model changes. \emph{Recorded provenance}: runs are tracked with configuration,
+split hashes and environment, and the data is documented in datasheet form
 \parencite{gebru2018datasheets} (Appendix~\ref{app:heldout}). None of this guarantees
 correctness; it guarantees that an error, once suspected, can be located --- which
 Chapter~\ref{ch:measurement-validity} demonstrates repeatedly.
