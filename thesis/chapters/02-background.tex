@@ -131,21 +131,24 @@ Section~\ref{sec:method-architecture} and its threats in Chapter~\ref{ch:discuss
 
 \ac{EN}~16931 is the European standard defining the \emph{semantic model} of an
 electronic invoice: an enumerated set of business terms with defined meanings,
-cardinalities and datatypes \parencite{en16931} --- \ac{BT}-numbered fields such as BT-1
-(invoice number), BT-31 (seller \ac{VAT} identifier) and BT-112 (grand total
-including \ac{VAT}). The
-standard deliberately separates \emph{what} an invoice says from \emph{how} it is
-serialised. Germany carries the model in two forms. \textbf{XRechnung} is the national
+cardinalities and datatypes \parencite{en16931}. The terms are \ac{BT}-numbered fields
+such as BT-1 (invoice number), BT-31 (seller \ac{VAT} identifier) and BT-112 (grand
+total including \ac{VAT}). The standard deliberately separates \emph{what} an invoice
+says from \emph{how} it is serialised.
+
+Germany carries the model in two forms. \textbf{XRechnung} is the national
 pure-\ac{XML} profile for invoices to public-sector buyers, maintained by KoSIT
 \parencite{xrechnung}: machine-first, with no visual page at all. \textbf{\ac{ZUGFeRD}}
 (technically aligned with the Franco-German Factur-X specification) is a \emph{hybrid}:
 a \ac{PDF}/A-3 file whose visible pages are an ordinary human-readable invoice and which
 embeds, inside the same file, a machine-readable \ac{XML} instance of the invoice in
-\ac{CII} syntax \parencite{zugferdanhang}. \ac{ZUGFeRD} defines five conformance profiles
-of increasing completeness --- MINIMUM, BASIC~WL, BASIC, EN~16931 (also called COMFORT),
-EXTENDED --- plus a sixth, XRECHNUNG, which is a \emph{reference} profile whose \ac{XML}
-requirements are set by KoSIT rather than by FeRD, so that a hybrid file can satisfy the
-public-sector standard \parencite{ferdprofiles}. The profile fixes how much of the semantic
+\ac{CII} syntax \parencite{zugferdanhang}.
+
+\ac{ZUGFeRD} defines five conformance profiles of increasing completeness: MINIMUM,
+BASIC~WL, BASIC, EN~16931 (also called COMFORT) and EXTENDED. A sixth, XRECHNUNG, is a
+\emph{reference} profile whose \ac{XML} requirements are set by KoSIT rather than by
+FeRD, so that a hybrid file can satisfy the public-sector standard
+\parencite{ferdprofiles}. The profile fixes how much of the semantic
 model the embedded \ac{XML} must carry, and two of the six carry too little to be invoices
 at all: MINIMUM and BASIC~WL omit line items and are recognised only as booking aids, not
 as complete invoices under German \ac{VAT} law \parencite{ferdprofiles}. That matters for

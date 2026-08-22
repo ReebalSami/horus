@@ -70,8 +70,8 @@ the candidate models failed in exactly that way.
 
 \textbf{Sweeps are resumable.} Before running a cell the harness asks the tracking store
 whether that cell already completed, and skips it if so. Interrupting a multi-hour sweep and
-restarting it therefore costs only the cell in flight. This is not a convenience feature: on
-this hardware a full sweep does not reliably fit into one uninterrupted session, and without
+restarting it therefore costs only the cell in flight. On this hardware this is a necessity
+rather than a convenience: a full sweep does not reliably fit into one uninterrupted session, and without
 resumability the practical choice would have been between smaller sweeps and unreliable ones.
 
 \textbf{Every cell records its own provenance.} Each run carries the configuration that
