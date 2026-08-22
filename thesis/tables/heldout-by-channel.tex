@@ -7,7 +7,7 @@
 
 \begin{table}[htbp]
   \centering
-  \caption{Held-out performance by language and capture channel. Photographed documents cost far more than language does.}
+  \caption{Held-out performance by language and capture channel. Phone-scanned documents cost far more than language does.}
   \label{tab:heldout-by-channel}
   \begin{tabular}{lrrrrr}
     \toprule
@@ -23,6 +23,6 @@
 
   \vspace{4pt}
   \begin{minipage}{0.95\linewidth}\footnotesize
-  \textbf{Protocol note.} Both aggregations are derived from the same scoring run under the same ruler, so the row totals and the whole-corpus row are mutually consistent. Mean per invoice counts every document once regardless of how many fields it carries, and answers how the system behaves on a document handed to it. Cell-pooled sums all outcomes before computing one score, so field-dense documents pull harder, and answers what share of extracted cells is correct. Neither is a maximum over documents. Precision holds up on phone scans while recall falls, meaning degraded input makes the system abstain rather than invent. Email-native documents average 0.9148 against 0.7889 for photographs, a gap of 12.6 points.
+  \textbf{Protocol note.} Both aggregations are derived from the same scoring run under the same ruler, so the row totals and the whole-corpus row are mutually consistent. Mean per invoice counts every document once regardless of how many fields it carries, and answers how the system behaves on a document handed to it. Cell-pooled sums all outcomes before computing one score, so field-dense documents pull harder, and answers what share of extracted cells is correct. Neither is a maximum over documents. Precision holds up on phone scans while recall falls, meaning degraded input makes the system abstain rather than invent. German email-native documents average 0.9027 against 0.7889 for German phone scans, a like-for-like gap of 11.4 points.
   \end{minipage}
 \end{table}

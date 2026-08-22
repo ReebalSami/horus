@@ -1,5 +1,5 @@
 %% Layer 1 in detail: three stages, the artefact that flows between them, and where the
-%% two measurement instruments attach.
+%% two transcript-level measurement instruments attach.
 %%
 %% Hand-authored TikZ (not generated): it depicts a design, so there is no data source to
 %% derive it from. The instrument annotations carry as much weight as the stages -- they are
@@ -34,7 +34,7 @@
     onflow/.style={font=\scriptsize, text=horusink, align=center, inner sep=2pt},
   ]
 
-  \node[endpoint] (page) {page image\\\itshape 300\,dpi};
+  \node[endpoint] (page) {page image\\\itshape 300\,DPI};
   \node[stage, right=of page] (reader) {\textbf{Reader}\\[2pt]\scriptsize a vision model
     transcribes the page};
   \node[stage, right=14mm of reader] (structurer) {\textbf{Structurer}\\[2pt]\scriptsize a
@@ -66,11 +66,11 @@
     ] (box) {};
   \end{scope}
 
-  %% Both measurement instruments act on the transcript, which is why they share one box and
-  %% one attachment point. Instrument 1 removes the reading stage from the measurement without
-  %% changing anything else, making the structurer's own ceiling observable. Instrument 2 asks,
-  %% for each individual miss, whether the value was in the transcript at all -- the question
-  %% that assigns an error to a stage.
+  %% Both transcript-level instruments act on the transcript, which is why they share one
+  %% box and one attachment point. The labels use the instrument names of the methodology
+  %% chapter (Section sec:method-attribution): instrument two is per-miss findability,
+  %% instrument three the perfect-text ceiling; instrument one (cluster-level re-scoring)
+  %% attaches to stored predictions, not to the transcript, and is not drawn here.
   \coordinate (tap) at ($(reader.east)!0.5!(structurer.west)$);
   \node[
     draw=horuswarn, line width=0.7pt, dashed, rounded corners=2pt,
@@ -78,10 +78,13 @@
     font=\scriptsize, inner sep=5pt,
     below=13mm of box.south, anchor=north,
   ] (instruments) {%
-    \textbf{The transcript is where both measurement instruments attach:}\\[2pt]
-    \textbf{1.} replace it with text rendered from the ground truth --- this removes the
-    reading stage from the measurement and changes nothing else\\[1pt]
-    \textbf{2.} for each individual miss, ask whether the value was present in it at all%
+    \textbf{The transcript is where the two transcript-level measurement instruments
+    attach:}\\[2pt]
+    \textbf{Instrument two, per-miss findability:} for each individual miss, ask whether
+    the value was present in it at all\\[1pt]
+    \textbf{Instrument three, the perfect-text ceiling:} replace it with text rendered
+    from the ground truth --- this removes the reading stage from the measurement and
+    changes nothing else%
   };
   \draw[probe] (instruments.north) -- (tap);
 

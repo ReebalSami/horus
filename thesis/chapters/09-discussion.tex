@@ -246,7 +246,8 @@ three channels used to build the held-out answer key are cloud services, so the 
 those 39 invoices left local hardware (Section~\ref{sec:method-heldout-gt}); and the
 native-resolution pass that transcribed them ran on the rented target-class instance
 (Section~\ref{sec:method-repro}); that pass ran open weights under the author's control rather
-than a third-party model service, a different privacy class, but off-premises nonetheless. The distinction
+than through a third-party model service --- a different privacy class, but off-premises
+nonetheless. The distinction
 relied on --- that a
 measuring instrument is not part of the delivered system --- is sound as far as it goes: nothing
 on the inference path makes a network call. But it is worth being clear that a practitioner
@@ -290,7 +291,7 @@ advance, not discovered afterwards, which is the only reason it was controlled.
 \textbf{Does the metric measure legal usability?} No, and this should not be overstated. F$_1$
 over registered header fields measures extraction correctness. It does not measure whether a
 booking would be accepted by a tax authority, whether the invoice satisfies the mandatory
-particulars of \S14~\ac{UStG}, or whether an input-tax deduction would survive audit. The
+particulars of \S~14~\ac{UStG}, or whether an input-tax deduction would survive audit. The
 weighted, compliance-aware metric that would have gestured at this was abandoned for the reason
 given in Section~\ref{sec:method-metrics}. What is reported is a technical measurement with a legal
 motivation, not a legal assessment.
@@ -319,7 +320,7 @@ justify.
 
 \textbf{Single annotator.} The held-out answer key was adjudicated by one person --- the author
 --- so no inter-annotator agreement can be reported. The three-channel design and the
-automatic-acceptance rule reduce the exposure, in that 463 of the decided cells rest on either
+automatic-acceptance rule reduce the exposure, in that 463 cells rest on either
 printed-text proof or two independent channels agreeing, not on judgement
 (Section~\ref{sec:method-heldout-gt}). The remaining 248 do rest on judgement, and that is an
 irreducible limitation of a single-author corpus.

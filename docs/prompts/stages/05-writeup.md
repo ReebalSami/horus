@@ -5,7 +5,7 @@
 | **Phase** | 7/7 — `writeup` (per `.windsurf/phases.yaml`) |
 | **Skill** | `@writeup` (forward-reference; not yet an L1 skill — authored manually for now) |
 | **Milestone** | `submission-ready` |
-| **Status** | Open — full draft complete; author read-through pending |
+| **Status** | Open — submission build ready (2026-08-22, 141 pp); author read-through pending |
 | **Date opened** | 2026-06-28 |
 | **Scope** | Compile the master-thesis manuscript from the project's results. This doc is the phase's living index: it opens with the authoring setup (ADR-055) and tracks chapter status + content waves. Thesis scope itself is frozen by ADR-054. |
 
@@ -28,13 +28,14 @@
 
 ## 2. Chapter status
 
-Chapter map reshaped 2026-07-31 for ADR-054's scope freeze, then extended
-2026-08-09 with Measurement Validity as its own chapter (ch.6), giving the
-twelve-chapter map below. All chapters and all six appendices are **drafted**
-as of 2026-08-15 (supervisor-review fix plan applied; see
-`docs/reviews/2026-08-15-first-supervisor-review.md`), and the 2026-08-16
-second-pass review is applied on top
-(`docs/reviews/2026-08-16-second-supervisor-review.md`).
+Chapter map reshaped 2026-07-31 for ADR-054's scope freeze, extended
+2026-08-09 with Measurement Validity as its own chapter (ch.6), then split
+2026-08-18 per the examiner registry (R37: Limitations and Future Work become
+their own chapters), giving the twelve-chapter map below. All chapters and
+all six appendices are **drafted**; applied review passes in order:
+2026-08-15 supervisor fix plan, 2026-08-16 second pass, 2026-08-18 examiner
+registry (R01–R38), 2026-08-20 Feinschliff, 2026-08-22 fresh-eyes arena
+review. Records under `docs/reviews/`.
 
 | Ch | Title | Status |
 |---|---|---|
@@ -47,8 +48,9 @@ second-pass review is applied on top
 | 7 | Results | **Drafted** — reader-selection story retold on the correct instrument; McNemar test added; two-decomposition attribution |
 | 8 | Implementation and Prototype | **Drafted** |
 | 9 | Discussion | **Drafted** |
-| 10 | Limitations and Future Work | **Drafted** |
-| 11 | Conclusion | **Drafted** (2026-08-15) |
+| 10 | Limitations | **Drafted** (split from Future Work 2026-08-18, R37) |
+| 11 | Future Work | **Drafted** (own chapter since 2026-08-18, R37) |
+| 12 | Conclusion | **Drafted** (2026-08-15) |
 | — | Abstract | **Drafted** (2026-08-15, English-only) |
 | A–F | Appendices | **Drafted** (2026-08-15): field registry (generated), hypothesis register, datasheet, abandoned metric record, AI-usage, reproducibility |
 
@@ -58,8 +60,11 @@ second-pass review is applied on top
 - **Wave 2 (done, 2026-07-31)**: rebase onto the landed endgame work; ADR renumber 054→055; formal-compliance fixes (part order, verbatim declaration, title-page data policy, contents-list spacing); chapter map reshaped to the frozen scope; Introduction rewritten. Build green (32 pp).
 - **Wave 3 (done, 2026-08-09–14)**: full prose of Methodology, Measurement Validity, Results, System Design, Implementation, Discussion, Limitations; tables/figures generated from committed evidence.
 - **Wave 4 (done, 2026-08-15)**: supervisor-review fix plan — evidential repairs (M1–M7), bibliography corrections, Background, Related Work, Conclusion, Abstract, all appendices, formatting pass.
-- **Wave 4b (done, 2026-08-16)**: second-pass review + fixes — citation style switched to `authoryear` (`\parencite`/`\textcite`, the supervisor's established preference), seven new figures (VLM anatomy, cohort comparison, LoRA, corpus map, GT adjudication, defect chronology, app surfaces), German-parenthetical cleanup, deduplication trim, AI-usage appendix sharpened to the FH disclosure template, ch.11 cross-ref fix. Build green: 128 pp, zero unresolved, worst overfull 3.2 pt.
-- **Wave 5 (open)**: author read-through of the full PDF; then submission build.
+- **Wave 4b (done, 2026-08-16)**: second-pass review + fixes — citation style switched to `authoryear` (later superseded by Wave 4c), seven new figures (VLM anatomy, cohort comparison, LoRA, corpus map, GT adjudication, defect chronology, app surfaces), German-parenthetical cleanup, deduplication trim, AI-usage appendix sharpened to the FH disclosure template, ch.11 cross-ref fix. Build green: 128 pp, zero unresolved, worst overfull 3.2 pt.
+- **Wave 4c (done, 2026-08-18)**: examiner review of the interim manuscript worked as a 38-row registry (R01–R38) — citation style switched to `numeric-comp` per his written instruction (ADR-074), Limitations/Future-Work split into own chapters (R37), measurement-venue scoping per ADR-070.
+- **Wave 4d (done, 2026-08-20)**: Feinschliff pass over the registry outcome.
+- **Wave 4e (done, 2026-08-22)**: final audit (submission date fixed to 2026-08-24, ch.2 orphan-line condensation) + fresh-eyes arena review with three independent AI reviewers; every finding verified against source, ADRs and the rendered PDF before fixing (`docs/reviews/2026-08-22-arena-fresh-eyes-review.md`). Build green: 141 pp, zero unresolved, zero overfull, 1,265 tests.
+- **Wave 5 (open)**: author read-through of the full PDF; then submission.
 - **Writing model**: Claude Opus 5 at high/xhigh effort (per the ADR-055 amendment).
 
 ## 4. Open items
@@ -69,11 +74,11 @@ second-pass review is applied on top
 - **Read-through of the full PDF** — the author signs off every sentence before
   submission (the AI-usage appendix documents the drafting process; the
   declaration asserts the disclosure).
-- Mention the citation-style switch to the supervisor at the next meeting —
-  the Richtlinie prescribes the short-reference ("Kurzbeleg") method and says the
-  supervisor's own preference overrides; `authoryear` now matches the preference
-  established in the WS25 seminar and the SS25 project (switched 2026-08-16).
 - Print, sign and date the statutory declaration in the submitted copies.
+
+**Resolved (2026-08-18, Wave 4c):** the citation-style question — the examiner's
+written instruction settled it as `numeric-comp` (R02, ADR-074); no meeting nod
+needed.
 
 **Resolved this wave (2026-08-15):**
 

@@ -5,15 +5,15 @@
 % ADR-055 amendment), so this chapter stays short and does not repeat it.
 
 This thesis began with a question forced by law rather than by technology: how reliably
-can current open-weights document \acp{VLM}, deployable on hardware a German tax
+can current open-weights document \acp{VLM}, deployable on hardware a German tax-consulting
 company already owns, convert business-to-business invoices into the legally grounded
 \ac{EN}~16931 form --- and which stage of such a pipeline limits what is achievable? The
-professional-secrecy regime of \S203~\ac{StGB} makes the local constraint an operational
+professional-secrecy regime of \S~203~\ac{StGB} makes the local constraint an operational
 premise, not a preference (Section~\ref{sec:motivation}), and the thesis asked what is
 honestly attainable within it.
 
-\section*{The answer}
-\addcontentsline{toc}{section}{The answer}
+\section*{The Answer}
+\addcontentsline{toc}{section}{The Answer}
 
 The answer has a shape, not just a number. On 39 real invoices the system never saw
 during development, zero-shot header-field extraction reaches a mean per-invoice
@@ -41,8 +41,8 @@ the rate of values invented for absent fields (Section~\ref{sec:results-adaptati
 Both outcomes point the same way: at this scale, buy reading quality, do not tune
 structuring.
 
-\section*{The contribution to remember}
-\addcontentsline{toc}{section}{The contribution to remember}
+\section*{The Contribution to Remember}
+\addcontentsline{toc}{section}{The Contribution to Remember}
 
 If one thing from this thesis outlives its model rankings --- and model rankings from
 this period will not live long --- it should be the measurement discipline of
@@ -58,8 +58,8 @@ from a model change. A reported score is a claim about a model \emph{and} about 
 ruler it was measured with, and this thesis's experience suggests the ruler's share of
 the uncertainty is routinely underestimated.
 
-\section*{What this thesis does not claim}
-\addcontentsline{toc}{section}{What this thesis does not claim}
+\section*{What This Thesis Does Not Claim}
+\addcontentsline{toc}{section}{What This Thesis Does Not Claim}
 
 The boundaries are stated as plainly as the results. The knowledge-graph and query
 layers were designed and their hypotheses registered, but they were not built or
@@ -70,7 +70,7 @@ level and a direction, not precise values; the structuring model was never
 competitively selected, unlike the reader; and everything measured concerns German and
 European \ac{B2B} invoices, nothing else. One boundary deserves naming here because it
 concerns the deployment premise itself: the hardware claim is two-tier, and the tiers carry
-different evidence. Every number reported above was produced on premises-class hardware:
+different evidence. Every number reported above was produced on hardware a company plausibly owns:
 nothing needed more than a single 24\,\ac{GB} graphics processor, running open-weights models
 under the author's control at every step. The laptop floor, whose memory ceiling caps
 the reader at roughly half of native page resolution, has a measured structuring stage but an
@@ -78,9 +78,8 @@ unmeasured reading quality (Section~\ref{sec:method-repro}). The delivered pipel
 makes no network call, and fits the floor --- but its reading quality at the floor was not
 measured, and no figure here should be read as a floor figure
 (Section~\ref{sec:lim-hardware}). Within those boundaries, the claims are as
-strong as the committed evidence behind them --- every number in this manuscript is
-generated from the archived measurement artefacts, none transcribed by hand ---
-and no stronger.
+strong as the committed evidence behind them --- every measured number in this manuscript
+derives from the archived measurement artefacts --- and no stronger.
 
 \section*{Outlook}
 \addcontentsline{toc}{section}{Outlook}

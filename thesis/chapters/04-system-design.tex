@@ -231,7 +231,7 @@ outermost braces; tolerate trailing commas; and finally supply structural delimi
 omitted. Every recovered object then has its keys matched case-insensitively against the
 registry, and each value canonicalised by its declared type --- German and Anglo-Saxon decimal
 conventions to one canonical form, the several date conventions a European invoice prints to
-one canonical form, a rate with or without its percent sign to one canonical form.
+one canonical form, a rate with or without its per cent sign to one canonical form.
 
 One design principle governs the whole stage, and it is a hard constraint, not a
 preference: \emph{repair may never invent a value}. The structural repair supplies delimiters
@@ -307,7 +307,7 @@ spellings of one company name, or one misread tax identifier, split a supplier i
 entities and silently corrupt every aggregate it appears in.
 
 On top of that structure, compliance properties would be derived per document instead of
-stored: whether the invoice carries every particular that \S14 \ac{UStG} requires, whether the
+stored: whether the invoice carries every particular that \S~14 \ac{UStG} requires, whether the
 stated tax treatment is coherent with the parties' registered identifiers, and whether the
 input tax is therefore deductible. Deriving instead of storing keeps a single
 authority for each judgement --- the rule, applied to the current record --- so that a

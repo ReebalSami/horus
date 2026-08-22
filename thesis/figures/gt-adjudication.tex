@@ -6,7 +6,8 @@
 %%
 %% Hand-authored TikZ. Counts mirror the prose of Section~\ref{sec:method-heldout-gt} and
 %% the generated datasheet tables of Appendix~\ref{app:heldout} (1,326 cells; 463
-%% accepted on a recorded warrant; 248 author-decided; 39/39 documents signed off).
+%% accepted on a recorded warrant; 615 accepted as absences; 248 author-decided;
+%% 39/39 documents signed off).
 %%
 %% Input from a chapter with:  \input{figures/gt-adjudication.tex}
 
@@ -73,16 +74,18 @@
 
   %% Outcomes: automatic acceptance on a recorded warrant, or ranked escalation to
   %% the author. The counts are the datasheet's.
-  \node[stage, right=10mm of k2, text width=2.6cm, yshift=5mm] (auto)
+  \node[stage, right=9.5mm of k1, text width=2.6cm] (auto)
     {\textbf{accepted on a recorded warrant}\\[1pt]\scriptsize 463 cells};
-  \node[stage, right=10mm of k4, text width=2.6cm, yshift=-2mm,
+  \node[stage, below=3mm of auto, text width=2.6cm] (absent)
+    {\textbf{accepted as absences}\\[1pt]\scriptsize 615 cells};
+  \node[stage, below=3mm of absent, text width=2.6cm,
         draw=horuswarn, fill=white] (author)
     {\textbf{ranked by damage, adjudicated by the author}\\[1pt]\scriptsize 248
     cells, against the page image};
 
   \draw[dimflow] (k1.east) -- (auto.west);
   \draw[dimflow] (k2.east) -- (auto.west);
-  \draw[dimflow] (k3.east) -- (auto.west);
+  \draw[dimflow] (k3.east) -- (absent.west);
   \draw[dimflow] (k4.east) -- (author.west);
   \draw[dimflow] (k5.east) -- (author.west);
 
@@ -92,8 +95,10 @@
     below=6mm of author,
   ] (key) {\textbf{signed-off answer key}\\[1pt]\scriptsize 1{,}326 cells,\\39/39
     documents confirmed individually};
-  %% The accepted-cells flow travels along the right margin so it crosses nothing.
-  \draw[flow] (auto.east) -- ++(2.5mm,0) |- (key.east);
+  %% The two acceptance flows travel along the right margin in separate lanes so that
+  %% neither crosses the other: absences take the inner lane, warrants the outer.
+  \draw[flow] (absent.east) -- ++(2mm,0) |- ($(key.east)+(0,3.5mm)$);
+  \draw[flow] (auto.east) -- ++(3.5mm,0) |- (key.east);
   \draw[flow] (author.south) -- (key.north);
 
 \end{tikzpicture}

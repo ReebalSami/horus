@@ -4,9 +4,10 @@
 \section{Conventions}
 \label{sec:results-reading}
 
-Every number in this chapter is generated from a committed evaluation report rather than
-transcribed, and every table states the corpus, model stack, numeric precision, scoring ruler
-and aggregation it was produced under. Two tables that differ in any of those are not
+Every table in this chapter is generated from a committed evaluation report rather than
+transcribed by hand, prose quotes only values those reports carry, and every table states
+the corpus, model stack, numeric precision, scoring ruler and aggregation it was produced
+under. Two tables that differ in any of those are not
 comparable, and the protocol notes are what make that checkable instead of assumed.
 
 Three conventions govern what may be claimed.
@@ -36,7 +37,7 @@ in-sample, all three predate the scoring corrections, and none of their figures 
 claim. They are reported because the decisions they produced shaped the architecture, and a reader
 entitled to question those decisions is entitled to see what informed them.
 
-\textbf{A survey of local candidate readers} evaluated a cohort of open-weight document and
+\textbf{A survey of local candidate readers} evaluated a cohort of open-weights document and
 vision-language models on a small set of invoices under the local hardware envelope. Its
 function was elimination, not ranking. It removed candidates that could not be run at all on
 the target hardware, candidates whose available ports were incompatible with the platform, and
@@ -111,7 +112,12 @@ repairs; the exclusions are values absent from the page and from its own embedde
 layer, which no vision system could recover. A symmetric pass over the general-purpose model's own
 residual misses followed, exposing two further ruler gaps, so that neither finalist was
 audited under a rule the other was spared.
-Table~\ref{tab:reader-findability} reports the corrected result.
+Table~\ref{tab:reader-findability} reports the corrected result, under which the aggregate
+ordering flips a second time --- consistent with two candidates an aggregate instrument
+cannot separate. The two MinerU checkpoints from the candidate cohort are carried in the
+table under the same corrected ruler; the later one collapses into degenerate repetition
+loops on this corpus --- the failure class the sibling test below disqualifies --- which its
+miss count reflects.
 
 \input{tables/reader-findability.tex}
 
@@ -193,7 +199,7 @@ structures.
   the reading model's transcript and on text rendered from the reference data, per field
   cluster. Only the input text differs between the two bars, so the annotated gap is the part
   of the shortfall attributable to reading. Measured with a superseded reading model: this
-  attributes a shortfall between stages, it does not score the delivered system.}
+  attributes a shortfall between stages; it does not score the delivered system.}
   \label{fig:attribution}
 \end{figure}
 
