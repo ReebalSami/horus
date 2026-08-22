@@ -1209,7 +1209,8 @@ def build_field_registry() -> str:
             r"than term codes. \textsuperscript{\dag}~marks the one field the registry "
             "carries at document level that the standard defines only inside the "
             r"\ac{VAT} breakdown group (BG-23); it is consequently ill-posed on invoices "
-            r"bearing more than one rate, and excluded there (Section~\ref{sec:validity-reference})."
+            r"bearing more than one rate, and excluded there "
+            r"(Section~\ref{sec:validity-reference})."
         ),
         sources=["src/horus/eval/ground_truth.py (FIELDS, REPEATING_GROUPS)"],
     )
