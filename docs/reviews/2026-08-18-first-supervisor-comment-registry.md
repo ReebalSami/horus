@@ -26,6 +26,25 @@ Canonical, actionable register of every annotation made by the **first examiner*
 
 ---
 
+## 0. Scope — read this before anything else
+
+**This is a fine-polish pass, not a rewrite.** The examiner asked for *Feinschliff*, and his own qualifiers set the dose:
+
+| His words | What it licenses |
+|---|---|
+| *"Der Inhalt und die Darstellung sind bereits sehr gut gelungen"* | The content is finished. Do not re-argue it |
+| *"manchmal grenzwertig und **selten** auch nicht angemessen"* | Register problems are **rare**, not pervasive |
+| *"**in Teilen** … zu umständlich"* | Convoluted sentences are **in parts**, not throughout |
+| *"**vielleicht etwas weniger** mit diesen Gedankenstrichen"* (R10) | Fewer em-dashes. Not zero, and no target count |
+| *"ich möchte ihnen **keinen anderen Stil aufdrängen**"* | The voice stays. Remove the tells, not the author |
+| *"den Text einmal kritisch … **nachjustieren**"* | Readjust. Not rewrite |
+
+**Operating rule: the current manuscript is the reference.** A sentence changes only if a registry row points at it, or if it is a clear instance of one of the named classes. If a sentence is merely long, or merely contains an em-dash, and it reads fine — it stays. When uncertain, leave it.
+
+Every chapter has some slack to take out. **No chapter needs reworking.**
+
+---
+
 ## 1. Themes
 
 ### From the covering email
@@ -187,19 +206,25 @@ IDs are assigned in **document order**. `K` = kind: `HL` highlight, `ST` sticky.
 
 Do these as single sweeps rather than per-row, or they will be done inconsistently.
 
-### B1 — Em-dash reduction (from R10)
+### B1 — Em-dash thinning (from R10)
 
-**469** instances of `---`: chapters 355, preamble 36, appendix 33, figures 29, tables 16.
+**469** instances of `---` (chapters 355, preamble 36, appendix 33, figures 29, tables 16). **18** sit inside `%` comments and are out of scope, leaving **451** live.
 
-Policy — **aggressive, default to removal**:
+His words: *"vielleicht etwas weniger mit diesen Gedankenstrichen arbeiten und dann lieber getrennte Sätze formulieren"* — **somewhat fewer**. There is **no target count**. An earlier draft of this batch set one ("well under 50 survivors") and that was an over-reading of the source; it is withdrawn.
 
-1. Parenthetical pair `--- X ---` → recast the aside as its **own sentence** where it carries weight; otherwise demote to commas.
-2. Single `---` → colon, semicolon, or full stop.
-3. Keep `---` **only** where it marks a genuine abrupt break with no clean alternative. Target well under 50 survivors.
-4. **Do not touch `---` inside `%` LaTeX comments.**
-5. Second rationale beyond his readability complaint: heavy em-dash parentheticals are a recognisable LLM writing tell.
+Policy — **thin, don't purge**. Change an em-dash where it is doing real damage:
 
-Chapter counts, for sequencing: 05 (53), 07 (39), 02 (38), 04 (36), 10 (34), 09 (33), 01 (32), 03 (28), 06 (23), 08 (20), 11 (15), 00 (4).
+1. **Two or more pairs in one sentence** — the construction that produced R09. Split into separate sentences.
+2. **A pair wrapping a clause long enough that the main sentence is lost** — recast the aside as its own sentence.
+3. **An em-dash in a sentence already carrying parentheses or a citation cluster** — demote to a comma or a full stop.
+
+Leave a single em-dash marking a clean break in an otherwise short sentence. That is correct English punctuation, and he did not ask for its removal.
+
+**Do not touch `---` inside `%` LaTeX comments.**
+
+Secondary rationale, worth acting on but not worth over-correcting for: dense em-dash parentheticals are a recognisable LLM writing tell.
+
+Chapter counts, for orientation only: 05 (53), 07 (39), 02 (38), 04 (36), 10 (34), 09 (33), 01 (32), 03 (28), 06 (23), 08 (20), 11 (15), 00 (4).
 
 ### B2 — Cross-reference convention (from R05 + R06)
 
@@ -225,13 +250,17 @@ Scope: **headings that talk about the document rather than the subject matter.**
 - **No change**: the other 12 question-form headings (`Why the Adaptation Failed`, `Where the Shortfall Sits`, `What Generalises`, `Why the first attempt failed`, …). They describe subject matter, and he called the style *"konsequent durchgezogen und somit OK"*.
 - **Declined**: R19 `What Is Measured` — subject-matter, and conceded OK. This is the one place the chosen scope declines a comment he actually wrote; recorded deliberately.
 
-### B5 — Argue-by-negation sweep (from R27 + R29, and email theme 2)
+### B5 — Argue-by-negation (from R27 + R29, and email theme 2)
 
-Two instances flagged, both in ch.6. The email states this is a general habit, so sweep all chapters for the pattern "X is not Y … instead Z" and restate positively. R15 ("The design here does not do that.") is a third instance found by the anchors.
+Three known instances: R27 and R29 (both ch.6), plus R15 (`04-system-design.tex:112`) found by the anchors.
 
-### B6 — Colloquial register sweep (from R11, R15, R16, R18, R22, and email theme 1)
+The email calls it a habit — *"Sie arbeiten bei ihrem Stil auch gerne damit zunächst eine Verneinung zu formulieren"* — so look beyond the three. But the target is the **rhetorical construction** he described: opening with a negation, then defining the work against it. A sentence that merely contains "not" is **not** an instance. His own remedy is *"kürzer und neutraler"*, so prefer deletion or a short positive restatement over an elaborate rewrite.
 
-Five instances flagged explicitly. He asks for one critical pass over the whole text for *Umgangssprache*, so treat the flagged five as samples of a class rather than the complete list.
+### B6 — Colloquial register (from R11, R15, R16, R18, R22, and email theme 1)
+
+Five explicit instances. He asks for one critical pass for *Umgangssprache*, so treat the five as samples of a class rather than the complete list — but calibrate to his own dose: *"manchmal grenzwertig und **selten** auch nicht angemessen"*. Rare, not pervasive.
+
+**R11 is the ceiling, not the floor.** He marked `German invoices have been extracted before, and by whom` as *"Fast schon ein wenig zu umgangsprachlich - **aber noch OK**"*. Anything at or above that register is acceptable and stays. Fix only what is clearly below it.
 
 ---
 
