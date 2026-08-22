@@ -79,11 +79,14 @@
     \color{horuswarn}\itshape effect: Table~\ref{tab:precision-confound}%
   };
 
+  %% Anchored relative to c6.south (not hard-coded): the previous fixed
+  %% y=-11.3 collided with c6, whose height it did not track (examiner
+  %% review 2026-08-18, registry row R25).
   \node[
     draw=horusmuted, line width=0.5pt, rounded corners=2pt, dotted,
     fill=white, text=horusink, font=\scriptsize, align=center,
     text width=9.6cm, inner sep=4pt, anchor=north,
-  ] at (0,-11.3) {Every correction was measured on \textbf{frozen generations} ---
+  ] at ($(0,0 |- c6.south)+(0,-0.45)$) {Every correction was measured on \textbf{frozen generations} ---
     no model ran, so each movement is attributable to the instrument alone --- under
     the four-rule discipline of \S\ref{sec:validity-discipline}.};
 

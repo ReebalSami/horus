@@ -1570,19 +1570,36 @@ def figure_heldout_channels(data: dict[str, Any]) -> None:
 
 
 def figure_ruler_correction() -> None:
-    """What the ruler repairs did to the score, on frozen generations."""
+    """What the ruler repairs did to the score, on frozen generations.
+
+    Grouped bars, not a line: there are only two measurement points per arm and
+    they are independent scorings, so a connecting line would imply a trend that
+    does not exist (examiner review 2026-08-18, registry row R28).
+    """
     reader_stages = [_overall(_arm("zeroshot-qwen")), _overall(_arm("zeroshot-qwen-adr059"))]
     oracle_stages = [_overall(_arm("oracle-tier1")), _overall(_arm("oracle-adr059"))]
 
     figure, axes = _new_axes(6.0, 3.0)
     positions = [0, 1]
-    axes.plot(positions, reader_stages, marker="o", color=_ACCENT, label="reader-transcript arm")
-    axes.plot(positions, oracle_stages, marker="s", color=_WARN, label="perfect-text arm")
+    axes.bar(
+        [p - 0.16 for p in positions],
+        reader_stages,
+        width=0.32,
+        color=_ACCENT,
+        label="reader-transcript arm",
+    )
+    axes.bar(
+        [p + 0.16 for p in positions],
+        oracle_stages,
+        width=0.32,
+        color=_WARN,
+        label="perfect-text arm",
+    )
     for index, value in enumerate(reader_stages):
         axes.annotate(
             f"{value:.4f}",
-            xy=(index, value),
-            xytext=(0, -14),
+            xy=(index - 0.16, value),
+            xytext=(0, 3),
             textcoords="offset points",
             ha="center",
             fontsize=8,
@@ -1591,8 +1608,8 @@ def figure_ruler_correction() -> None:
     for index, value in enumerate(oracle_stages):
         axes.annotate(
             f"{value:.4f}",
-            xy=(index, value),
-            xytext=(0, 8),
+            xy=(index + 0.16, value),
+            xytext=(0, 3),
             textcoords="offset points",
             ha="center",
             fontsize=8,
@@ -1600,9 +1617,10 @@ def figure_ruler_correction() -> None:
         )
     axes.set_xticks(positions)
     axes.set_xticklabels(["before repair", "after repair"])
-    axes.set_xlim(-0.3, 1.3)
+    axes.set_xlim(-0.55, 1.55)
+    axes.set_ylim(0.0, 1.0)
     axes.set_ylabel("overall F$_1$")
-    axes.legend(frameon=False, fontsize=8, loc="center right")
+    axes.legend(frameon=False, fontsize=8, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.01))
     axes.grid(axis="y", color=_MUTED, alpha=0.25, linewidth=0.6)
     axes.set_axisbelow(True)
     _save(figure, "ruler-correction")
