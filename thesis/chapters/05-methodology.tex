@@ -439,25 +439,28 @@ token stream and an architecture, so no architectural boundary does the separati
 Three instruments do it instead; the two that attach to the transcript are shown in
 Figure~\ref{fig:pipeline}.
 
-\textbf{Instrument one: re-score stored predictions by field group.} Predictions are archived,
+\textbf{Instrument one, \emph{cluster re-scoring}: re-score stored predictions by field
+group.} Predictions are archived,
 so they can be re-scored by cluster --- core header fields, extended header fields, line
 items, tax breakdown, discount terms --- without running any model. This localises the loss.
 It cannot attribute it.
 
-\textbf{Instrument two: classify every miss by whether the value was findable.} For each
+\textbf{Instrument two, \emph{per-miss findability}: classify every miss by whether the
+value was findable.} For each
 individual miss, ask whether the reference value was present in the transcript the structuring
 stage received. If it was not, no structuring model could have recovered it, and the error
 belongs to reading. If it was, the value was available and the structuring stage failed to
 place it. This is applied per miss, never inferred from totals, which is what makes it an
 attribution rather than a correlation.
 
-\textbf{Instrument three: replace the transcript with reference-quality text.} The decisive
+\textbf{Instrument three, the \emph{perfect-text ceiling}: replace the transcript with
+reference-quality text.} The decisive
 one. The same structuring model, the same prompt, the same decoding settings, the same
 documents --- but the transcript is replaced by text rendered from the reference data. This
 removes the reading stage from the measurement entirely and yields an upper bound on the
 structuring stage that is independent of reading quality.
 
-All three instruments use matched decoding settings, and instrument three matters enough that
+All three instruments use matched decoding settings, and the perfect-text ceiling matters enough that
 its own correctness had to be established before its output could be trusted: a renderer that
 produces text the reference data does not support would make the ceiling wrong in an
 unpredictable direction rather than merely optimistic. Chapter~\ref{ch:measurement-validity}
@@ -465,7 +468,7 @@ reports the defects found in that renderer and what correcting them cost.
 
 \textbf{The instrument is not a product.} Reference-quality text does not exist for a real
 document. An adapter trained on it, or a score measured with it, may never be reported as a
-deliverable capability. This thesis uses instrument three exclusively to attribute a
+deliverable capability. This thesis uses the perfect-text ceiling exclusively to attribute a
 shortfall, and says so at every point where its numbers appear.
 
 \section{Pre-Registration and Honest Reporting}
@@ -501,6 +504,11 @@ register.
 
 \section{Reproducibility and Hardware}
 \label{sec:method-repro}
+
+Every number in this thesis is intended to be re-derivable from recorded state. This
+section states the two mechanisms that provide that --- configuration as data and run
+tracking --- and then the hardware the numbers were produced on, which is part of the
+deployment claim itself rather than a logistical detail.
 
 \textbf{Configuration as data.} Every experiment knob --- model identifiers, dataset paths,
 seeds, decoding settings, prompt strings, thresholds --- lives in a versioned configuration
