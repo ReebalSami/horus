@@ -149,3 +149,12 @@ app/assets/brand/sources/
 # thesis/references.bib (tracked); the compiled PDF + all aux/log/bbl/bcf/toc
 # intermediates are written by latexmk into thesis/_build/ and are transient.
 thesis/_build/
+
+# ADR-074: supervisor review material (2026-08-18). The annotated PDF and the
+# covering email carry the first examiner's name and signature, so both stay
+# local-only — same reasoning as the redaction pass on the meeting notes. The
+# anonymised, actionable register of their contents is tracked instead, at
+# docs/reviews/2026-08-18-first-supervisor-comment-registry.md (ADR-069 makes
+# docs/reviews/ the canonical home for review records and explicitly rejected
+# keeping review prose under thesis/).
+thesis/proff-kommentare/
