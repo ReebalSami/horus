@@ -2,7 +2,7 @@
 %% projection -> autoregressive decoder conditioned on visual tokens + prompt.
 %%
 %% Hand-authored TikZ (not generated): it depicts the standard architecture described
-%% in \S\ref{sec:bg-vlm} (Vaswani et al. 2017; Dosovitskiy et al. 2021), not a
+%% in Section~\ref{sec:bg-vlm} (Vaswani et al. 2017; Dosovitskiy et al. 2021), not a
 %% measurement, so there is no data source to derive it from. It deliberately carries
 %% no invoice-specific content: nothing in this architecture knows what an invoice is,
 %% which is exactly the point the accompanying prose makes.
@@ -28,7 +28,9 @@
 
   %% Page -> patch grid. The grid is drawn, not described: the one visual idea a
   %% reader must take away is that the page becomes a sequence of image tokens.
-  \node[endpoint, minimum height=1.5cm] (page) {page\\image};
+  %% Labelled with the concrete input ("invoice page", not the abstract "page
+  %% image") per the examiner's 2026-08-18 note, registry row R08.
+  \node[endpoint, minimum height=1.5cm] (page) {invoice\\page};
   \begin{scope}[shift={($(page.east)+(7mm,-5.4mm)$)}]
     \foreach \x in {0,1,2} \foreach \y in {0,1,2}
       \draw[draw=horusmuted, line width=0.5pt, fill=white]

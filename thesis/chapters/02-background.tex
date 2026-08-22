@@ -25,7 +25,7 @@ shows the anatomy. Nothing in that
 architecture knows what an invoice is. Everything this thesis measures --- reading
 quality, structuring quality, abstention behaviour --- is behaviour learned from
 training data, elicited through prompts, and constrained after the fact by deterministic
-validation (\S\ref{sec:design-validation}).
+validation (Section~\ref{sec:design-validation}).
 
 \begin{figure}[htbp]
   \centering
@@ -67,7 +67,7 @@ Qwen2.5-VL-7B, emits naturally ordered plain text optimised for faithful
 transcription \parencite{olmocr2}; general-purpose models such as Qwen3-VL emit whatever the
 prompt asks, including \ac{JSON} \parencite{qwen3vl}. This thesis's pipeline deliberately
 asks its reading model for plain text and its structuring model for \ac{JSON}, keeping
-the two output disciplines apart; \S\ref{sec:design-two-stage} gives the reasons.
+the two output disciplines apart; Section~\ref{sec:design-two-stage} gives the reasons.
 
 \begin{figure}[htbp]
   \centering
@@ -82,9 +82,9 @@ the two output disciplines apart; \S\ref{sec:design-two-stage} gives the reasons
 \label{sec:bg-local}
 
 The privacy premise of Chapter~\ref{ch:introduction} confines every deployed model to
-hardware a firm plausibly owns on premises --- concretely a workstation with a single modern
+hardware a company plausibly owns on premises --- concretely a workstation with a single modern
 24\,\ac{GB} graphics processor as the target class, and a laptop with 16\,\ac{GB} of unified
-memory as the measured floor (\S\ref{sec:method-repro}). Two techniques make that envelope
+memory as the measured floor (Section~\ref{sec:method-repro}). Two techniques make that envelope
 workable, and both appear throughout the results.
 
 \textbf{Quantisation} stores the trained weights at reduced numeric precision. The
@@ -116,13 +116,13 @@ adaptation affordable on a single graphics processor and distributable as a smal
 \end{figure}
 
 What such an update can and cannot teach a model is an empirical question with a growing
-literature (\S\ref{sec:rw-adaptation}), and this thesis's adaptation experiment
-(\S\ref{sec:results-adaptation}) is a data point in it.
+literature (Section~\ref{sec:rw-adaptation}), and this thesis's adaptation experiment
+(Section~\ref{sec:results-adaptation}) is a data point in it.
 
 All reported generations are \emph{greedy}: the decoder always takes its
 highest-probability token, so a given model, prompt and input produce the same output
 every time. The measurement consequences of that choice are discussed in
-\S\ref{sec:method-architecture} and its threats in Chapter~\ref{ch:discussion}.
+Section~\ref{sec:method-architecture} and its threats in Chapter~\ref{ch:discussion}.
 
 \section{German Electronic Invoicing: ZUGFeRD, XRechnung, EN~16931}
 \label{sec:bg-einvoicing}
@@ -130,27 +130,30 @@ every time. The measurement consequences of that choice are discussed in
 \subsection{The semantic model and its carriers}
 
 \ac{EN}~16931 is the European standard defining the \emph{semantic model} of an
-electronic invoice: an enumerated set of business terms --- \ac{BT}-numbered fields such
-as BT-1 (invoice number), BT-31 (seller \ac{VAT} identifier) and BT-112 (grand total
-including \ac{VAT}) --- with defined meanings, cardinalities and datatypes
-\parencite{en16931}. The
-standard deliberately separates \emph{what} an invoice says from \emph{how} it is
-serialised. Germany carries the model in two forms. \textbf{XRechnung} is the national
+electronic invoice: an enumerated set of business terms with defined meanings,
+cardinalities and datatypes \parencite{en16931}. The terms are \ac{BT}-numbered fields
+such as BT-1 (invoice number), BT-31 (seller \ac{VAT} identifier) and BT-112 (grand
+total including \ac{VAT}). The standard deliberately separates \emph{what} an invoice
+says from \emph{how} it is serialised.
+
+Germany carries the model in two forms. \textbf{XRechnung} is the national
 pure-\ac{XML} profile for invoices to public-sector buyers, maintained by KoSIT
 \parencite{xrechnung}: machine-first, with no visual page at all. \textbf{\ac{ZUGFeRD}}
 (technically aligned with the Franco-German Factur-X specification) is a \emph{hybrid}:
 a \ac{PDF}/A-3 file whose visible pages are an ordinary human-readable invoice and which
 embeds, inside the same file, a machine-readable \ac{XML} instance of the invoice in
-\ac{CII} syntax \parencite{zugferdanhang}. \ac{ZUGFeRD} defines five conformance profiles
-of increasing completeness --- MINIMUM, BASIC~WL, BASIC, EN~16931 (also called COMFORT),
-EXTENDED --- plus a sixth, XRECHNUNG, which is a \emph{reference} profile whose \ac{XML}
-requirements are set by KoSIT rather than by FeRD, so that a hybrid file can satisfy the
-public-sector standard \parencite{ferdprofiles}. The profile fixes how much of the semantic
+\ac{CII} syntax \parencite{zugferdanhang}.
+
+\ac{ZUGFeRD} defines five conformance profiles of increasing completeness: MINIMUM,
+BASIC~WL, BASIC, EN~16931 (also called COMFORT) and EXTENDED. A sixth, XRECHNUNG, is a
+\emph{reference} profile whose \ac{XML} requirements are set by KoSIT rather than by
+FeRD, so that a hybrid file can satisfy the public-sector standard
+\parencite{ferdprofiles}. The profile fixes how much of the semantic
 model the embedded \ac{XML} must carry, and two of the six carry too little to be invoices
 at all: MINIMUM and BASIC~WL omit line items and are recognised only as booking aids, not
 as complete invoices under German \ac{VAT} law \parencite{ferdprofiles}. That matters for
-this thesis twice over --- the corpus of \S\ref{sec:method-data} deliberately spans the
-range including those two profiles, and \S\ref{sec:bg-legal-target} argues that the
+this thesis twice over: the corpus of Section~\ref{sec:method-data} deliberately spans the
+range including those two profiles, and Section~\ref{sec:bg-legal-target} argues that the
 extraction target is legally grounded, which is a claim about the \emph{field definitions}
 rather than about every document in the corpus being a lawful invoice.
 
@@ -164,26 +167,26 @@ obligation altogether \parencite{bstbkerechnung}. The professions this thesis ta
 therefore sit in a transition period --- and, for the exempt classes, a permanent state ---
 in which structured invoices, hybrid invoices and entirely unstructured paper or
 \ac{PDF} documents arrive side by side, which is exactly the situation the
-held-out corpus of \S\ref{sec:method-data} samples.
+held-out corpus of Section~\ref{sec:method-data} samples.
 
 \subsection{Why the extraction target is legally grounded}
 \label{sec:bg-legal-target}
 
 German law prescribes invoice content independently of any serialisation standard.
-\S~14 \ac{UStG} lists the mandatory particulars an invoice must carry --- the parties'
+\S~14 \ac{UStG} lists the mandatory particulars an invoice must carry: the parties'
 identities, the supplier's tax or \ac{VAT} identifier, issue date, a sequential invoice
-number, the supply, the net amount per rate, the tax rate and amount \parencite{ustg14} ---
-and \S~33 \ac{UStDV} relaxes those requirements for small-amount invoices up to
+number, the supply, the net amount per rate, the tax rate and amount \parencite{ustg14}.
+\S~33 \ac{UStDV} relaxes those requirements for small-amount invoices up to
 250~Euro, which may lawfully omit the recipient's identity and the separate tax amount
 \parencite{ustdv33}. Two consequences matter for this thesis. First, the field registry
-(\S\ref{sec:method-schema}) is an alignment to \ac{EN}~16931 business terms rather than
+(Section~\ref{sec:method-schema}) is an alignment to \ac{EN}~16931 business terms rather than
 an invented schema, so an extracted field's meaning is fixed by the standard rather than by
-this thesis --- with one documented exception, a single document-level tax rate that the
+this thesis, with one documented exception: a single document-level tax rate that the
 standard defines only per breakdown group and which is therefore ill-posed on multi-rate
-invoices (\S\ref{sec:validity-reference}). Second, field
+invoices (Section~\ref{sec:validity-reference}). Second, field
 \emph{absence} is frequently lawful rather than defective --- a Kleinbetragsrechnung
 simply does not carry a buyer identity --- which is one root of the honest-null contract
-(\S\ref{sec:design-honest-null}): a system that guesses a value for a field the document
+(Section~\ref{sec:design-honest-null}): a system that guesses a value for a field the document
 lawfully omits is wrong in a way that matters professionally.
 
 \subsection{The embedded reference as free ground truth}
@@ -197,7 +200,7 @@ Ground truth obtained this way is free of annotation cost and of annotator fatig
 it is exact in the narrow sense that matters most: it is not one person's reading of the
 page. It is available only for documents that carry the embedding, which born-digital
 synthetic corpora do and real scanned paper does not --- an asymmetry that forces the split
-corpus design of \S\ref{sec:method-data}.
+corpus design of Section~\ref{sec:method-data}.
 
 Two warnings belong here rather than later, because the method reads as stronger than it
 is without them. First, the embedded record states what the issuer's software
@@ -214,7 +217,7 @@ correct answers --- and it is the reason that chapter exists at all.
 \label{sec:bg-kg}
 
 This section is deliberately brief: the layers it supports were designed but not built
-(\S\ref{sec:design-scope}), so the reader needs vocabulary, not a survey.
+(Section~\ref{sec:design-scope}), so the reader needs vocabulary, not a survey.
 
 A \ac{KG} represents entities as typed nodes and relations as typed edges --- for this
 domain, a supplier node connected to invoice nodes, which connect to line items,
@@ -231,9 +234,9 @@ proposed for exactly the query shapes flat retrieval handles poorly --- aggregat
 (``total spend with this supplier this quarter'') and multi-hop connections --- at the cost
 of building and maintaining the graph; whether it delivers that advantage is an active and
 unsettled question rather than a settled result \parencite{edge2024graphrag,han2025}.
-The intended Layer~2/3 design (\S\ref{sec:design-layer2},
-\S\ref{sec:design-layer3}) and the hypotheses registered for it
-(Chapter~\ref{ch:limitations-future-work}) rest on this vocabulary and on nothing more
+The intended Layer~2/3 design (Section~\ref{sec:design-layer2},
+Section~\ref{sec:design-layer3}) and the hypotheses registered for it
+(Chapter~\ref{ch:limitations}) rest on this vocabulary and on nothing more
 advanced than it.
 
 \section{Evaluation Foundations}
@@ -248,7 +251,7 @@ field the document does not carry; an \ac{FN} is a reference value the system fa
 produce; a \ac{TN} is a field the document does not carry and the system correctly left
 empty; and a fifth outcome, \emph{excluded}, marks a cell that is ill-posed and is scored
 neither way --- a document-level tax rate on an invoice carrying two different rates, for
-instance. \S\ref{sec:method-metrics} states the exclusion discipline that keeps that fifth
+instance. Section~\ref{sec:method-metrics} states the exclusion discipline that keeps that fifth
 category from becoming a way to improve a score, and
 Chapter~\ref{ch:measurement-validity} reports every exclusion actually applied.
 
@@ -274,33 +277,32 @@ equally regardless of how many fields it carries. The two answer different quest
 cell-level accuracy against document-level experience --- and diverge when documents
 vary in field count, so the results chapters report both and say which is which.
 Matching itself (when is an extracted string ``equal'' to the reference?) is a third
-decision with its own literature and its own defect history; \S\ref{sec:rw-evaluation}
+decision with its own literature and its own defect history; Section~\ref{sec:rw-evaluation}
 positions it and Chapter~\ref{ch:measurement-validity} audits it.
 
 \subsection{Pre-registration and HARKing}
 
 A hypothesis stated after the data has been seen is not a test, it is a description.
-\textcite{kerr1998} named the practice \ac{HARKing} --- hypothesising after the
-results are known --- and catalogued why it corrupts the evidentiary value of
-research even when every individual number is correct. The standard defence is to register
-hypotheses, decision rules and thresholds \emph{before} the corresponding data is
-collected, so that an outcome can be checked against a commitment instead of a memory.
-This thesis registers its hypothesis set and selection rules in advance
-(\S\ref{sec:method-hypotheses}, Appendix~\ref{app:hypotheses}), and two of its results
---- the conjunctive reader-sibling test and the adaptation experiment's matched-baseline
-requirement --- are only defensible because the rule predates the outcome
-(\S\ref{sec:results-reader}, \S\ref{sec:results-adaptation}).
+Kerr \parencite{kerr1998} named the practice \ac{HARKing} and catalogued why it
+corrupts the evidentiary value of research even when every number is correct. The
+standard defence is to register hypotheses, decision rules and thresholds
+\emph{before} the data is collected, so that an outcome is checked against a
+commitment instead of a memory.
+This thesis does so
+(Section~\ref{sec:method-hypotheses}, Appendix~\ref{app:hypotheses}), and two of its results
+are only defensible because the rule predates the outcome: the conjunctive reader-sibling
+test and the adaptation experiment's matched-baseline requirement
+(Sections~\ref{sec:results-reader} and~\ref{sec:results-adaptation}).
 
 \subsection{Reproducibility mechanics}
 
-Three mechanical disciplines carry the reproducibility weight in this thesis, and they
-are background because none is novel. \emph{Determinism}: greedy decoding makes every
-reported figure a function of model, prompt and input (\S\ref{sec:bg-local}).
+Three mechanical disciplines carry the reproducibility weight in this thesis; none is
+novel, hence background. \emph{Determinism}: greedy decoding makes every
+reported figure a function of model, prompt and input (Section~\ref{sec:bg-local}).
 \emph{Artefact retention}: every generation --- transcripts, structurer outputs, scores
---- is persisted, so a scoring change can be re-applied to frozen outputs and measured
-in isolation from model changes, the mechanism Chapter~\ref{ch:measurement-validity}
-depends on. \emph{Recorded provenance}: runs are tracked with their configuration,
-split hashes and environment, and the data itself is documented in datasheet form
+--- is persisted, so a scoring change can be re-run on frozen outputs in
+isolation from model changes. \emph{Recorded provenance}: runs are tracked with configuration,
+split hashes and environment, and the data is documented in datasheet form
 \parencite{gebru2018datasheets} (Appendix~\ref{app:heldout}). None of this guarantees
 correctness; it guarantees that an error, once suspected, can be located --- which
 Chapter~\ref{ch:measurement-validity} demonstrates repeatedly.

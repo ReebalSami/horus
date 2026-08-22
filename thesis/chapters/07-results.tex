@@ -1,7 +1,7 @@
 \chapter{Results}
 \label{ch:results}
 
-\section{How to Read This Chapter}
+\section{Conventions}
 \label{sec:results-reading}
 
 Every number in this chapter is generated from a committed evaluation report rather than
@@ -15,12 +15,12 @@ Three conventions govern what may be claimed.
 were taken on documents that also informed prompt design, or on small development subsets, or
 under scoring rules later found defective. Those results are diagnostic: they answer
 \emph{which approach is worth pursuing}, not \emph{how well does the system perform}. They are
-confined to \S\ref{sec:results-preliminary} and labelled there.
+confined to Section~\ref{sec:results-preliminary} and labelled there.
 
 \textbf{Perfect-text figures are never reported as deliverable capability.} Where the
 structuring stage is measured on text rendered from the reference data, the number is an upper
 bound obtained with an instrument that does not exist at inference time
-(\S\ref{sec:method-attribution}). It appears throughout as an attribution device and nowhere as
+(Section~\ref{sec:method-attribution}). It appears throughout as an attribution device and nowhere as
 a claim about the system.
 
 \textbf{Superseded figures are not quoted for precision.} Several measurements in this project
@@ -68,7 +68,7 @@ measurement of the budget, not of the approach.
 \label{sec:results-reader}
 
 The pipeline's reading stage was selected by competitive comparison. This is worth stating
-plainly because the structuring stage was not, and \S\ref{sec:results-adaptation} returns to
+plainly because the structuring stage was not, and Section~\ref{sec:results-adaptation} returns to
 that asymmetry as a limitation.
 
 \subsection{Why aggregate scores could not decide it}
@@ -80,7 +80,7 @@ names cite the language backbone rather than the full multimodal checkpoint; the
 here are the checkpoints as published.} The two available
 instruments told conflicting stories about them. On end-to-end score under the pre-correction
 ruler, the transcription model led by two to five points (Table~\ref{tab:reader-lineage}). On
-reading quality measured directly on the transcript (\S\ref{sec:method-answerability}), the
+reading quality measured directly on the transcript (Section~\ref{sec:method-answerability}), the
 general-purpose model led narrowly under that same defective ruler (0.777 against 0.774) ---
 and when the corrections of Chapter~\ref{ch:measurement-validity} were applied to the
 identical stored transcripts, that ordering \emph{inverted} (0.906 against 0.913), both
@@ -106,9 +106,9 @@ The decision therefore moved to the individual misses. Every remaining miss of t
 then-leading transcription model --- 52 individual ``missing'' values across the 29 sealed
 validation invoices --- was judged by hand against the page image and against both finalists'
 transcripts, and classified as a genuine reading failure, a comparison-rule artefact, or a
-value not findable on the page by anything. That audit produced 23 exclusions --- values
-absent from the page and from its own embedded text layer, which no vision system could
-recover --- plus six ruler repairs. A symmetric pass over the general-purpose model's own
+value not findable on the page by anything. That audit produced 23 exclusions and six ruler
+repairs; the exclusions are values absent from the page and from its own embedded text
+layer, which no vision system could recover. A symmetric pass over the general-purpose model's own
 residual misses followed, exposing two further ruler gaps, so that neither finalist was
 audited under a rule the other was spared.
 Table~\ref{tab:reader-findability} reports the corrected result.
@@ -176,7 +176,7 @@ anomaly would have been easy to rationalise in either direction.
 \label{sec:results-attribution}
 
 The central question is which stage limits the pipeline. Three instruments answer it
-(\S\ref{sec:method-attribution}), and their verdict is unambiguous.
+(Section~\ref{sec:method-attribution}), and their verdict is unambiguous.
 
 Table~\ref{tab:attribution-clusters} and Figure~\ref{fig:attribution} give the same structuring
 model on the reader's transcript and on text rendered from the reference. Only the input text
@@ -219,7 +219,7 @@ cosmetic.} It was taken with a reading model that was subsequently replaced --- 
 reader, not the selected one. What it establishes is the \emph{attribution method} and the
 \emph{ordering of the two stages}, both of which survive the reader change. What it does not
 establish is any figure for the delivered system; those are in
-\S\ref{sec:results-baseline} and \S\ref{sec:results-heldout}.
+Sections~\ref{sec:results-baseline} and~\ref{sec:results-heldout}.
 
 The finding is the thesis's central empirical claim: \emph{on this task, with local models at
 this scale, reading is the binding constraint and structuring is not.} Chapter~\ref{ch:discussion}
@@ -239,11 +239,11 @@ generated pages.
 
 \textbf{The structuring stage is near its ceiling on perfect text.} Given text rendered from the
 reference, the same model scores in the high nineties. The structuring stage is not what limits
-this pipeline, which corroborates \S\ref{sec:results-attribution} on the current reader rather
+this pipeline, which corroborates Section~\ref{sec:results-attribution} on the current reader rather
 than the superseded one.
 
 \textbf{Full numeric precision is worth a measurable amount} --- the difference between the two
-stacks is small but not negligible, and \S\ref{sec:results-adaptation} shows why that
+stacks is small but not negligible, and Section~\ref{sec:results-adaptation} shows why that
 seemingly minor quantity mattered enormously.
 
 \textbf{The spurious-emission rate is markedly lower on perfect text than on transcripts.} The
@@ -280,7 +280,7 @@ Rather than train one adapter and measure it, two were trained, differing only i
 distribution they saw: one on the reader's actual transcripts, one on text rendered from the
 reference. Both are low-rank adapters \parencite{hu2021lora} on the structuring model's language
 tower only --- its vision and audio components stay frozen and receive no input, consistent
-with how the pipeline uses the model (\S\ref{sec:method-architecture}). Each was then
+with how the pipeline uses the model (Section~\ref{sec:method-architecture}). Each was then
 evaluated on both conditions, giving the grid in Table~\ref{tab:finetune-grid} and
 Figure~\ref{fig:finetune-grid}.
 
@@ -293,7 +293,7 @@ never proposed as a deliverable.
 The recipe, in Table~\ref{tab:hyperparameters}, was registered before either run, along with the
 selection rule, the requirement of a matched-precision baseline, and the commitment to publish a
 null result. No hyperparameter sweep was performed, which is a limitation and is recorded as
-one in Chapter~\ref{ch:limitations-future-work}.
+one in Chapter~\ref{ch:limitations}.
 
 \input{tables/hyperparameters.tex}
 
@@ -386,15 +386,15 @@ dropped.
 network call. The reading pass ran at full precision and native page resolution on
 target-class hardware --- a single 24\,\ac{GB} graphics processor, which transcribed all
 58 pages in roughly sixteen minutes --- and the structuring pass ran at the floor, on the
-laptop in its deployed 4-bit precision (\S\ref{sec:method-repro}). The figure below is
-therefore the pipeline's accuracy on the hardware class a firm would buy for it. What the
+laptop in its deployed 4-bit precision (Section~\ref{sec:method-repro}). The figure below is
+therefore the pipeline's accuracy on the hardware class a company would buy for it. What the
 floor configuration's capped reader would score on the same documents is a separate, smaller
-question, recorded as open in \S\ref{sec:lim-hardware}.
+question, recorded as open in Section~\ref{sec:lim-hardware}.
 
 \input{tables/heldout-headline.tex}
 
 The result is that performance largely survives the transition from generated pages to real
-ones. That is not a trivial finding: the documents were produced by other people's billing
+ones. That is a substantive finding: the documents were produced by other people's billing
 systems, in two languages, with layouts the pipeline was never shown, and roughly a quarter of
 them were phone-scanned paper rather than exported files.
 
@@ -417,7 +417,7 @@ Precision is substantially higher than recall (Table~\ref{tab:heldout-headline})
 errors in five are a field left empty, not a field invented.
 
 For an accounting application this is the safer direction to fail in, and the asymmetry is not
-incidental --- it is the honest-null contract of \S\ref{sec:design-honest-null}, with the
+incidental --- it is the honest-null contract of Section~\ref{sec:design-honest-null}, with the
 gap-versus-fabrication argument made there, showing up in the numbers. A system with the
 opposite profile at the same F$_1$ would be considerably less useful, which is why the
 spurious-emission rate is tracked as a first-class metric throughout instead of folded into
@@ -434,7 +434,7 @@ email-native documents score close together. Phone-scanned German documents fall
 --- a gap of more than eleven points of mean per-invoice F$_1$ against the email-native
 documents. And the scans in this corpus are the \emph{favourable} kind of degraded input:
 scanning-app output that has already been deskewed and contrast-enhanced
-(\S\ref{sec:method-data}), not raw camera photographs. The gap for uncorrected captures
+(Section~\ref{sec:method-data}), not raw camera photographs. The gap for uncorrected captures
 should be expected to be larger, not smaller.
 
 Two properties of that gap deserve emphasis.
@@ -477,14 +477,13 @@ comparable; what they share is the direction and the order of magnitude. That ag
 matters because a single-annotator corpus of 39 documents cannot carry a general claim on its
 own, and here it does not have to.
 
-\subsection{What this result does not cover}
-
-The held-out claim is about header fields. Repeating-group rows are excluded structurally,
+\textbf{Scope of the held-out claim.} The held-out claim is about header fields.
+Repeating-group rows are excluded structurally,
 because their reference rows were never author-reviewed and could not be reviewed affordably
-(\S\ref{sec:method-heldout-gt}). Line-item extraction is measured on the synthetic corpus,
+(Section~\ref{sec:method-heldout-gt}). Line-item extraction is measured on the synthetic corpus,
 where the reference is exact and free, and is reported in
-Table~\ref{tab:attribution-clusters}. The limitation, and the known route to closing it, are in
-Chapter~\ref{ch:limitations-future-work}.
+Table~\ref{tab:attribution-clusters}. The limitation is recorded in
+Chapter~\ref{ch:limitations}, and the known route to closing it in Chapter~\ref{ch:future-work}.
 
 \section{Summary of Findings}
 \label{sec:results-summary}

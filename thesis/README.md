@@ -33,7 +33,7 @@ thesis/
 ├── references.bib        # bibliography (biblatex/biber; keys backed by docs/sources/)
 ├── preamble/
 │   ├── header.tex        # packages, fonts, listings, biblatex, hyperref, doc-info
-│   ├── titlepage.tex     # FH Wedel title page (placeholders marked <...>)
+│   ├── titlepage.tex     # FH Wedel title page (all fields filled; no placeholders)
 │   ├── declaration.tex   # Eidesstattliche Erklärung (incl. AI-disclosure clause)
 │   └── acronyms.tex      # list of abbreviations (acronym package)
 ├── chapters/
@@ -47,8 +47,9 @@ thesis/
 │   ├── 07-results.tex
 │   ├── 08-implementation.tex
 │   ├── 09-discussion.tex
-│   ├── 10-limitations-future-work.tex
-│   └── 11-conclusion.tex
+│   ├── 10-limitations.tex
+│   ├── 11-future-work.tex
+│   └── 12-conclusion.tex
 ├── appendix/
 │   └── appendix.tex      # field registry, hypotheses, datasheet, abandoned metric, AI-usage, reproducibility
 ├── images/               # static assets (FH logo)
@@ -59,12 +60,13 @@ thesis/
 ## Conventions
 
 - **Language**: English (babel `main=english,ngerman`; German legal terms inline).
-- **Citations**: biblatex `authoryear` + biber, rendering `(Author et al. Year)` —
-  the first examiner's established preference (same option set as the WS25 seminar
-  and SS25 project; Richtlinie defers the short-reference form to the supervisor).
-  Use `\parencite{key}` for parenthetical citations and `\textcite{key}` when the
-  authors are the sentence's subject; keys live in `references.bib` and are backed
-  by archived stubs under `../docs/sources/`.
+- **Citations**: biblatex `numeric-comp` + biber (`sorting=nty`), rendering `[N]`
+  — the first examiner's written instruction in his 2026-08-18 review (registry
+  row R02; ADR-074 supersedes the earlier `authoryear` inference; Richtlinie
+  defers the short-reference form to the supervisor). Use `\parencite{key}` for
+  bracketed citations and `\textcite{key}` when the authors are the sentence's
+  subject; keys live in `references.bib` and are backed by archived stubs under
+  `../docs/sources/`.
 - **Acronyms**: define in `preamble/acronyms.tex`; use `\ac{KEY}` (`\acp{}` for
   plural). Legal everywhere in the body, including the abstract, because the
   abbreviations list now precedes it (required part order).
@@ -75,7 +77,7 @@ thesis/
   `preamble/declaration.tex`. Never paraphrase it; document AI use in the appendix
   instead.
 - **Scope guard**: do not claim the knowledge-graph layer, the query layer, or a
-  cloud comparison as results. They are design (ch.4) and future work (ch.10).
+  cloud comparison as results. They are design (ch.4) and future work (ch.11).
 - **Cross-references**: `\label{ch:...}` / `\ref{...}`.
 - **Results integration**: numbers are **never hand-copied**. Figures are exported
   to `figures/` (`\includegraphics`) and tables to `tables/` (`\input`), generated
@@ -85,20 +87,17 @@ thesis/
 
 ## Status
 
-All twelve chapters, the abstract and all six appendices are drafted; the
-2026-08-15 supervisor-review fix plan (evidential repairs M1--M7, bibliography
-corrections, missing prose, appendices, formatting) is applied, and the
-2026-08-16 second-pass review is applied on top of it: citation style switched to
-`authoryear` (`\parencite`/`\textcite`), seven new figures authored (VLM anatomy,
-cohort comparison, LoRA, corpus map, GT adjudication, defect chronology, app
-surfaces — every chapter 2--8 now carries at least one visual), German
-parentheticals consolidated at the §203 StGB sentence, duplication trimmed
-("rather than" 89→42, honest-null re-derivations referenced instead of repeated),
-AI-usage appendix sharpened to the FH disclosure template, and the ch.11
-cross-reference defect fixed. Green build verified: 128 pp, zero unresolved
-references and citations, worst overfull box 3.2 pt. Review records:
-`../docs/reviews/2026-08-15-first-supervisor-review.md`,
-`../docs/reviews/2026-08-16-second-supervisor-review.md`.
+All thirteen chapters, the abstract and all six appendices are drafted. Applied
+review passes, in order: the 2026-08-15 supervisor-review fix plan (evidential
+repairs M1--M7, bibliography corrections, missing prose, appendices, formatting);
+the 2026-08-16 second pass (seven new figures — every chapter 2--8 carries at
+least one visual — duplication trimmed, AI-usage appendix sharpened); the
+2026-08-18 examiner review of the interim manuscript, worked as a 38-row registry
+(R01--R38: citation style switched to `numeric-comp` per his written instruction,
+ADR-074; limitations/future-work split into own chapters; measurement-venue
+scoping per ADR-070); and the 2026-08-20 Feinschliff pass. Green build verified:
+140 pp, zero unresolved references and citations, zero overfull boxes, 1,265
+tests passing. Review records under `../docs/reviews/`.
 Per-chapter status: `../docs/prompts/stages/05-writeup.md` §2.
 
 ## TODO before submission
@@ -106,9 +105,8 @@ Per-chapter status: `../docs/prompts/stages/05-writeup.md` §2.
 - Author read-through of the full PDF: the author signs off every sentence
   (declaration requirement; AI-drafted prose is documented in the AI-usage
   appendix).
-- Citation style: switched to `authoryear` (2026-08-16) matching the supervisor's
-  established preference from two prior graded works; mention it at the next
-  meeting for the formal nod.
+- Citation style: resolved — `numeric-comp` per the examiner's written
+  instruction (2026-08-18 review, R02; ADR-074). No further nod needed.
 - Kurzfassung: deliberately omitted (author decision 2026-08-15, English-only);
   re-confirm with the Prüfungsamt only if its requirement is in doubt.
 - Print, sign and date the statutory declaration in the submitted copies.

@@ -4,7 +4,7 @@
 \section{Answers to the Research Questions}
 \label{sec:disc-rqs}
 
-The guiding question of \S\ref{sec:research-questions} had two halves: how reliably local
+The guiding question of Section~\ref{sec:research-questions} had two halves: how reliably local
 open-weights document models convert German business-to-business invoices into a structured
 representation on commodity hardware, and which stage of the pipeline limits that reliability.
 
@@ -23,7 +23,7 @@ supports a stronger claim.
 not structuring.} The same structuring model scores far higher on text rendered from the
 reference than on the reading model's transcript, in every field cluster
 (Table~\ref{tab:attribution-clusters}), and roughly half of all individual errors are values the
-transcript never contained (Table~\ref{tab:attribution-shares}). \S\ref{sec:disc-reading-constraint}
+transcript never contained (Table~\ref{tab:attribution-shares}). Section~\ref{sec:disc-reading-constraint}
 develops what follows.
 
 The four sub-questions are answered as follows.
@@ -35,12 +35,12 @@ They differ less than expected on aggregate score and more than expected in \emp
 quality the two finalists sat within a point of each other, and their ordering inverted when
 the scoring corrections of Chapter~\ref{ch:measurement-validity} were applied to identical
 transcripts; end-to-end score favoured one of them beforehand and was not re-taken for both
-afterwards (\S\ref{sec:results-reader}). The honest answer is therefore that the aggregate
+afterwards (Section~\ref{sec:results-reader}). The honest answer is therefore that the aggregate
 instruments do not separate them, and that selecting on them would have been arbitrary. What does separate them is
 qualitative: one model transcribes characters near-flawlessly but silently drops letterhead and
 footer regions, which is exactly where a German invoice prints tax identifiers and bank details;
 the other reads every region but occasionally slips a character inside a value
-(\S\ref{sec:results-reader}). For this application the second is preferable, because a corrupted
+(Section~\ref{sec:results-reader}). For this application the second is preferable, because a corrupted
 value is attached to a named field and can be checked against the page, whereas a dropped block
 produces an absence indistinguishable from a field the document never carried.
 
@@ -48,7 +48,7 @@ produces an absence indistinguishable from a field the document never carried.
 unproven?} On accuracy, the evidence gathered here favours the split --- but it is weaker than the
 question deserves and is labelled accordingly. The comparison was made on a small
 development subset before the scoring corrections, and it is reported as a preliminary study
-(\S\ref{sec:results-preliminary}). Its qualitative outcome was clear enough to determine the
+(Section~\ref{sec:results-preliminary}). Its qualitative outcome was clear enough to determine the
 architecture, and it is consistent with the published finding that constraining a model's output
 format degrades its performance instead of being a free convenience \parencite{tam2024format}. The
 attribution result then supplies an independent reason to prefer the split arrangement that has
@@ -59,16 +59,16 @@ out to be where most of this project's value lay, that is not a minor advantage.
 \textbf{(3) What accuracy is attainable inside a commodity local envelope, and which stage pays
 for it?} At the target class --- one modern 24\,\ac{GB} graphics processor --- the answer is
 the headline itself: every reading figure in this thesis was produced on exactly that class of
-machine, and nothing reported required more (\S\ref{sec:method-repro}). The structuring stage
+machine, and nothing reported required more (Section~\ref{sec:method-repro}). The structuring stage
 was additionally measured at the floor, on the 16\,\ac{GB} laptop, in the 4-bit precision it
 is deployed in (Table~\ref{tab:sealed-val-arms}); full numeric precision is worth a small but
 measurable amount, so quantisation costs something real and modest. What remains unmeasured is
 the floor's \emph{reading} quality: the laptop's memory ceiling forces a pixel cap that reads
 an A4 page at roughly half resolution, so while the pipeline loads and runs there, what it
-scores there on real documents is a missing number, and \S\ref{sec:lim-hardware} names it as a
+scores there on real documents is a missing number, and Section~\ref{sec:lim-hardware} names it as a
 limitation rather than assuming the gap away. What the floor demonstrably rules out is
 \emph{training}: the adaptation experiments exceeded the laptop outright --- and then ran,
-like everything else, within the same single 24\,\ac{GB} card. A firm should size for the
+like everything else, within the same single 24\,\ac{GB} card. A company should size for the
 target class, can expect the structuring stage to run even below it, and should expect the
 reading stage to be the part that pays for any smaller machine.
 
@@ -95,7 +95,7 @@ specification work is worthless --- the audit of
 Chapter~\ref{ch:measurement-validity} found real specification defects, and repairing them
 mattered --- but it bounds what that work can achieve. The formal classification of every
 underperforming field before the adaptation experiment
-(\S\ref{sec:results-adaptation}) found zero warranted specification repairs remaining, which is
+(Section~\ref{sec:results-adaptation}) found zero warranted specification repairs remaining, which is
 that ceiling being reached in practice.
 
 \textbf{The cheapest large gain is a better reader.} Between the survey reader and the selected
@@ -111,7 +111,7 @@ versus digital documents, and that the collapse is concentrated in exactly the c
 thesis found hardest \parencite{mdpbench2026}. Their measurement is of reading quality, on 3{,}400
 documents in 17 languages, with no structuring stage involved at all, and their degraded
 condition --- printed pages photographed under controlled adverse conditions --- is harsher
-than the deskewed scan-app captures here (\S\ref{sec:method-data}). The directional agreement
+than the deskewed scan-app captures here (Section~\ref{sec:method-data}). The directional agreement
 between their result and the eleven-point channel gap measured here
 (Table~\ref{tab:heldout-by-channel}) is the strongest external support this thesis has for its
 central claim.
@@ -135,17 +135,20 @@ rises markedly above its own baseline (Table~\ref{tab:finetune-grid}). The failu
 \emph{when the model answers}, not in \emph{how well it answers}.
 
 That is precisely what supervised fine-tuning has been reported to do.
-\textcite{uluoglakci2026humility} state the premise directly: models hallucinate partly
+Uluoglakci and Taskaya Temizel \parencite{uluoglakci2026humility} state the premise directly: models hallucinate partly
 because supervised fine-tuning ``implicitly rewards always responding''. Their study runs 800
 controlled adaptation runs across two model families --- one of which is the immediate
 predecessor generation of the structuring model used here --- and their remedy is to train
 \emph{for} the admission of uncertainty rather than against it. This thesis's training data
 contained no examples of appropriate abstention as a taught behaviour; every training target was
-a filled record. On that reading, the adapter learned exactly what it was shown.
+a filled record. On that reading, the adapter learned exactly what it was shown. The
+corresponding remedy, a training set in which appropriate absence is itself a taught
+behaviour, is concrete and untested here; Section~\ref{sec:fw-abstention} states it as
+future work.
 
 Three further results in that literature line up with what was measured.
 
-\textbf{Adaptation of this kind learns style, not knowledge.} \textcite{ghosh2024limitations}
+\textbf{Adaptation of this kind learns style, not knowledge.} Ghosh et~al.\ \parencite{ghosh2024limitations}
 report that low-rank adaptation ``is limited to learning response initiation and style
 tokens''. If the intervention cannot add capability and can adjust output
 disposition, then a task already near its ceiling on clean input
@@ -154,13 +157,13 @@ adapter evaluated on perfect text --- the cell with the cleanest input and the l
 regresses too, which is consistent with this and not with a simple overfitting story.
 
 \textbf{Unfamiliar training examples govern how a model hallucinates.}
-\textcite{kang2024unfamiliar} find that the character of a fine-tuned model's hallucinations
+Kang et~al.\ \parencite{kang2024unfamiliar} find that the character of a fine-tuned model's hallucinations
 is controlled by the unfamiliar examples in its training set. The transcript-trained adapter was fed exactly
 that: noisy transcripts containing artefacts, dropped regions and character slips. Its
 spurious-emission rate is the highest of any arm measured in this thesis.
 
 \textbf{Freezing parameters preserves task performance while reducing hallucination.}
-\textcite{kaplan2026why} frame the effect as a stability--plasticity trade-off and report
+Kaplan et~al.\ \parencite{kaplan2026why} frame the effect as a stability--plasticity trade-off and report
 that suppressing factual plasticity by freezing parameter groups can preserve task
 performance while reducing hallucination. The intervention here did the opposite: it added plasticity
 to the text tower of a model that was already competent at the task.
@@ -187,8 +190,8 @@ page-reading system against machine-readable reference data inherits a systemati
 \emph{as printed} and \emph{as stored}. The reference records a date as an ordered numeric
 string; the page prints it day-first. The reference stores a controlled-vocabulary code; the page
 prints a phrase. The reference omits an optional zero; the page implies one. Every one of these
-punishes a correct reading, and the sum is not small. This is not a property of this corpus or
-this schema --- it follows from the shape of the evaluation, so any study built the same way has
+punishes a correct reading, and the sum is not small. It follows from the shape of the
+evaluation rather than from this corpus or this schema, so any study built the same way has
 it.
 
 \textbf{The bias is invisible in aggregates.} This is the part that makes it dangerous. Every
@@ -203,7 +206,7 @@ meant something other than what they appeared to mean.
 that reports extraction scores without describing how the comparison handles representation
 differences has not given the reader enough to judge the numbers, because the size of the
 correction is comparable to the size of the effects being reported. The practices that carried
-the weight here are collected in \S\ref{sec:validity-generalises}; the cheapest and most
+the weight here are collected in Section~\ref{sec:validity-generalises}; the cheapest and most
 valuable is simply to archive generations, which makes a scoring change measurable in isolation.
 
 \textbf{One consequence is uncomfortable and should be said plainly.} If a naive comparison
@@ -211,28 +214,28 @@ understates performance by an amount comparable to the differences between model
 published comparisons that do not document their comparison rules are difficult to interpret,
 and rankings drawn from them may not be robust. This thesis observed exactly that within its own
 data: the ordering of two candidate readers on directly measured reading quality inverted when
-the ruler was corrected (\S\ref{sec:results-reader}).
+the ruler was corrected (Section~\ref{sec:results-reader}).
 
 \section{Local-Only Viability, Honestly Costed}
 \label{sec:disc-local}
 
-The premise of this work is that the document never leaves the firm
-(\S\ref{sec:motivation}). It is worth stating what that premise costs and where it held.
+The premise of this work is that the document never leaves the company
+(Section~\ref{sec:motivation}). It is worth stating what that premise costs and where it held.
 
 \textbf{Inference fits both tiers; training fits only the target class; and the reading stage
 pays for the smaller machine.} Both models
 of the full pipeline load and run on a laptop with 16\,\ac{GB} of unified memory --- but only
 with the reader's input capped to roughly half an A4 page's resolution, which is why every
-reported transcript was produced on target-class hardware instead (\S\ref{sec:method-repro}).
+reported transcript was produced on target-class hardware instead (Section~\ref{sec:method-repro}).
 The adaptation experiments exceeded the laptop outright and ran on that same class: a single
 24\,\ac{GB} graphics processor was enough to train, evaluate and re-baseline both adapters. A
-firm that owns such a workstation can therefore both run and adapt this system without any
-document leaving the premises. A firm that owns only the floor can run it --- at a reading
+company that owns such a workstation can therefore both run and adapt this system without any
+document leaving the premises. A company that owns only the floor can run it --- at a reading
 quality this thesis did not measure --- but would have to rent for adaptation, which means the
 training documents leave the premises and reintroduces the problem the design exists to
 avoid. Since the adaptation produced no benefit here, that trade did not have to be made; had
 it produced one, the confidentiality argument would have had to be re-examined for the
-floor-only firm.
+floor-only company.
 
 \textbf{Quantisation costs a small, measurable amount.} Table~\ref{tab:sealed-val-arms} gives
 the difference between 4-bit and full precision on the same corpus. The deployable configuration
@@ -240,10 +243,10 @@ is the weaker one, and that gap is part of the price of the local constraint.
 
 \textbf{The measurement itself broke the premise, deliberately and on record.} Two of the
 three channels used to build the held-out answer key are cloud services, so the content of
-those 39 invoices left local hardware (\S\ref{sec:method-heldout-gt}); and the
+those 39 invoices left local hardware (Section~\ref{sec:method-heldout-gt}); and the
 native-resolution pass that transcribed them ran on the rented target-class instance
-(\S\ref{sec:method-repro}) --- open weights under the author's control rather than a
-third-party model service, which is a different privacy class, but off-premises nonetheless. The distinction
+(Section~\ref{sec:method-repro}); that pass ran open weights under the author's control rather
+than a third-party model service, a different privacy class, but off-premises nonetheless. The distinction
 relied on --- that a
 measuring instrument is not part of the delivered system --- is sound as far as it goes: nothing
 on the inference path makes a network call. But it is worth being clear that a practitioner
@@ -256,14 +259,14 @@ listed as future work.
 \section{Threats to Validity}
 \label{sec:disc-threats}
 
-Limitations proper are collected in Chapter~\ref{ch:limitations-future-work}. This section
+Limitations proper are collected in Chapter~\ref{ch:limitations}. This section
 concerns threats to the validity of the inferences drawn above.
 
 \subsection{Internal validity}
 
 \textbf{Leakage.} The validation split was sealed with a recorded hash before any adaptation
 work; prompt design used only the fitting set; checkpoint selection used a slice carved from the
-fitting set, not the validation set (\S\ref{sec:method-splits}). The residual risk is the one
+fitting set, not the validation set (Section~\ref{sec:method-splits}). The residual risk is the one
 that leaves no trace: the author read validation documents during the defect investigations of
 Chapter~\ref{ch:measurement-validity}. Those investigations changed \emph{scoring rules}, never
 prompts, and every rule change is symmetric and test-guarded --- but a scoring rule authored
@@ -275,7 +278,7 @@ sampling seed. The cost is that no variance estimate over decoding randomness is
 single-run figures cannot carry confidence intervals of that kind, and differences of a few
 thousandths should not be read as meaningful. Where a paired comparison mattered --- the two
 reader finalists --- document-level variation was tested directly instead, with an exact
-McNemar test over the paired per-cell outcomes (\S\ref{sec:results-reader}), which requires
+McNemar test over the paired per-cell outcomes (Section~\ref{sec:results-reader}), which requires
 no repeated sampling.
 
 \textbf{Precision matching.} Every adaptation comparison is made against a baseline measured in
@@ -289,18 +292,18 @@ over registered header fields measures extraction correctness. It does not measu
 booking would be accepted by a tax authority, whether the invoice satisfies the mandatory
 particulars of \S14~\ac{UStG}, or whether an input-tax deduction would survive audit. The
 weighted, compliance-aware metric that would have gestured at this was abandoned for the reason
-given in \S\ref{sec:method-metrics}. What is reported is a technical measurement with a legal
+given in Section~\ref{sec:method-metrics}. What is reported is a technical measurement with a legal
 motivation, not a legal assessment.
 
 \textbf{Is the reading proxy faithful?} Partially, with a known blind spot. It asks whether a
 reference value appears in the transcript at all, which a transcript containing every value in
 scrambled order would satisfy while being useless downstream
-(\S\ref{sec:method-answerability}). The proxy was therefore never used alone, and the one
+(Section~\ref{sec:method-answerability}). The proxy was therefore never used alone, and the one
 decision where it mattered was settled by hand-judging every individual miss instead of
 trusting the aggregate.
 
 \textbf{Is the perfect-text ceiling a fair upper bound?} Only after its own defects were
-repaired. Five were found (\S\ref{sec:validity-apparatus}), two of which made fields score
+repaired. Five were found (Section~\ref{sec:validity-apparatus}), two of which made fields score
 nothing because the renderer labelled them with schema vocabulary no invoice prints --- the
 values were there, under a wording the model could not map to the field. A renderer defect makes
 the ceiling wrong in an unpredictable direction, not merely optimistic, so a ceiling reported
@@ -318,7 +321,7 @@ justify.
 --- so no inter-annotator agreement can be reported. The three-channel design and the
 automatic-acceptance rule reduce the exposure, in that 463 of the decided cells rest on either
 printed-text proof or two independent channels agreeing, not on judgement
-(\S\ref{sec:method-heldout-gt}). The remaining 248 do rest on judgement, and that is an
+(Section~\ref{sec:method-heldout-gt}). The remaining 248 do rest on judgement, and that is an
 irreducible limitation of a single-author corpus.
 
 \textbf{One document class, two languages, one country.} Everything here concerns
@@ -327,7 +330,7 @@ receipts, contracts, bank statements or correspondence, and nothing about jurisd
 different invoicing rules.
 
 \textbf{Synthetic pages dominate the corpus.} The larger corpus is born-digital, so its pages
-are clean by construction (\S\ref{sec:method-data}). That is exactly why the held-out corpus
+are clean by construction (Section~\ref{sec:method-data}). That is exactly why the held-out corpus
 exists, and the eleven-point gap between clean and phone-scanned documents
 (Table~\ref{tab:heldout-by-channel}) is the size of the error a reader would make by
 generalising from the synthetic corpus alone.

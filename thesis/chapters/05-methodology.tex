@@ -19,7 +19,7 @@ distinction between them is what most of this chapter exists to preserve.
 The \textbf{reading} stage is a \ac{VLM} that receives a rasterised page and emits plain
 text. It is given no schema, no field list and no instruction about invoices; it is asked to
 transcribe. In the delivered system this is Qwen3-VL-4B-Instruct \parencite{qwen3vl}, selected by
-the comparison of \S\ref{sec:results-reader}; earlier measurements used granite-docling-258M
+the comparison of Section~\ref{sec:results-reader}; earlier measurements used granite-docling-258M
 \parencite{granitedocling}, and every table drawn from that superseded reader says so. The
 \textbf{structuring} stage is a second model, gemma-4-E4B-it \parencite{gemma4e4b}, that receives
 that transcript together with a field specification and emits a \ac{JSON} object. The model
@@ -28,7 +28,7 @@ what makes the transcript the only channel between the stages. The
 \textbf{validate-and-repair} stage is deterministic code: it recovers the record from
 imperfectly formed model output, matches emitted keys to the field registry, canonicalises
 each value by its declared type, and leaves a field absent when it cannot be parsed
-(\S\ref{sec:design-validation}). No model runs in the third stage, which matters when
+(Section~\ref{sec:design-validation}). No model runs in the third stage, which matters when
 attributing an error --- a defect there is a program defect, reproducible and fixable, not a
 sampling artefact.
 
@@ -36,7 +36,7 @@ Two properties of the pipeline are contractual, not incidental, and both affect 
 must be scored.
 
 \textbf{The honest null.} A field the document does not carry must come back absent, not
-guessed --- the contract of \S\ref{sec:design-honest-null}, with the professional
+guessed --- the contract of Section~\ref{sec:design-honest-null}, with the professional
 justification given there. What matters for this chapter is its scoring consequence: the
 evaluation treats absence as a first-class outcome instead of ignoring it, and reports the
 rate at which the system emits values for fields that do not exist as a metric in its own
@@ -63,7 +63,7 @@ each is allowed to claim.
   scale and an exact, extracted reference (Table~\ref{tab:corpus-composition}); the
   held-out corpus supplies external validity on real documents and real capture
   (Table~\ref{tab:heldout-composition}), at the price of an answer key that had to be
-  built and adjudicated (\S\ref{sec:method-heldout-gt}).}
+  built and adjudicated (Section~\ref{sec:method-heldout-gt}).}
   \label{fig:corpus-map}
 \end{figure}
 
@@ -79,7 +79,7 @@ The reason this corpus exists is not scale. It is that a hybrid electronic invoi
 same content twice: once as a page a human reads, and once as an embedded machine-readable
 representation of the same facts, conforming to the European standard \ac{EN}~16931
 \parencite{en16931}. That redundancy is the methodological device this thesis is built on, and
-\S\ref{sec:method-gt} describes how it is used.
+Section~\ref{sec:method-gt} describes how it is used.
 
 The documents span the profile range of the standard, from the minimal profile through the
 core \ac{EN}~16931 profile to extended profiles, and include the awkward cases that a corpus
@@ -98,13 +98,13 @@ only on the easy half of the problem. That is precisely why the second corpus ex
 \subsection{A held-out corpus of real documents}
 
 The second corpus is 39 real invoices collected from the author's own business
-correspondence, recorded as a datasheet in the manner \textcite{gebru2018datasheets}
+correspondence, recorded as a datasheet in the manner Gebru et~al.\ \parencite{gebru2018datasheets}
 propose and reproduced in Appendix~\ref{app:heldout}. It spans two
 languages and, more importantly, two acquisition channels: documents that arrived as
 email-native \ac{PDF} attachments, and paper documents captured with a phone scanning
 application --- camera captures that the application deskews and contrast-enhances into a
 \ac{PDF} without a text layer. That is a \emph{milder} degradation than a raw photograph,
-which matters when the per-channel gap of \S\ref{sec:results-heldout} is interpreted. Its
+which matters when the per-channel gap of Section~\ref{sec:results-heldout} is interpreted. Its
 per-channel composition is part of Table~\ref{tab:heldout-by-channel}.
 
 This corpus is small, and no claim in this thesis pretends otherwise. What it provides is not
@@ -116,7 +116,7 @@ decision.
 
 Its ground truth could not come from embedded data, because real invoices largely do not carry
 any. Obtaining a defensible answer key for it was the single most expensive methodological
-step in the project, and \S\ref{sec:method-heldout-gt} describes it.
+step in the project, and Section~\ref{sec:method-heldout-gt} describes it.
 
 \section{Ground Truth Without Manual Labelling}
 \label{sec:method-gt}
@@ -272,7 +272,7 @@ about \emph{header-field extraction}, groups are excluded structurally, not by a
 reporting convention, and line-item extraction is measured on the synthetic corpus where the
 reference is exact and free. Neither question is dropped; each is answered on the corpus that
 can support it. The limitation is recorded in
-Chapter~\ref{ch:limitations-future-work} together with the known route to closing it.
+Chapter~\ref{ch:limitations}; the known route to closing it is in Chapter~\ref{ch:future-work}.
 
 \section{The Field Registry}
 \label{sec:method-schema}
@@ -318,7 +318,7 @@ literature, which is why edit-distance-based measures were introduced for this c
 \parencite{biten2019anls} and later generalised to handle the structured, partially-absent outputs
 that generative models produce \parencite{peer2024anlsstar}. The suite below follows that
 tradition, and additionally separates entity-level from group-level correctness in the manner
-that \textcite{kieval2025} argue industrial extraction requires.
+that Khang et~al.\ \parencite{kieval2025} argue industrial extraction requires.
 
 Every comparison of one predicted field against its reference yields exactly one of five
 outcomes:
@@ -439,25 +439,28 @@ token stream and an architecture, so no architectural boundary does the separati
 Three instruments do it instead; the two that attach to the transcript are shown in
 Figure~\ref{fig:pipeline}.
 
-\textbf{Instrument one: re-score stored predictions by field group.} Predictions are archived,
+\textbf{Instrument one, \emph{cluster re-scoring}: re-score stored predictions by field
+group.} Predictions are archived,
 so they can be re-scored by cluster --- core header fields, extended header fields, line
 items, tax breakdown, discount terms --- without running any model. This localises the loss.
 It cannot attribute it.
 
-\textbf{Instrument two: classify every miss by whether the value was findable.} For each
+\textbf{Instrument two, \emph{per-miss findability}: classify every miss by whether the
+value was findable.} For each
 individual miss, ask whether the reference value was present in the transcript the structuring
 stage received. If it was not, no structuring model could have recovered it, and the error
 belongs to reading. If it was, the value was available and the structuring stage failed to
 place it. This is applied per miss, never inferred from totals, which is what makes it an
 attribution rather than a correlation.
 
-\textbf{Instrument three: replace the transcript with reference-quality text.} The decisive
+\textbf{Instrument three, the \emph{perfect-text ceiling}: replace the transcript with
+reference-quality text.} The decisive
 one. The same structuring model, the same prompt, the same decoding settings, the same
 documents --- but the transcript is replaced by text rendered from the reference data. This
 removes the reading stage from the measurement entirely and yields an upper bound on the
 structuring stage that is independent of reading quality.
 
-All three instruments use matched decoding settings, and instrument three matters enough that
+All three instruments use matched decoding settings, and the perfect-text ceiling matters enough that
 its own correctness had to be established before its output could be trusted: a renderer that
 produces text the reference data does not support would make the ceiling wrong in an
 unpredictable direction rather than merely optimistic. Chapter~\ref{ch:measurement-validity}
@@ -465,7 +468,7 @@ reports the defects found in that renderer and what correcting them cost.
 
 \textbf{The instrument is not a product.} Reference-quality text does not exist for a real
 document. An adapter trained on it, or a score measured with it, may never be reported as a
-deliverable capability. This thesis uses instrument three exclusively to attribute a
+deliverable capability. This thesis uses the perfect-text ceiling exclusively to attribute a
 shortfall, and says so at every point where its numbers appear.
 
 \section{Pre-Registration and Honest Reporting}
@@ -496,11 +499,16 @@ one criterion, and Chapter~\ref{ch:results} reports the failure and the resultin
 \textbf{Registered but not evaluated.} The scope of this thesis was narrowed during the work,
 and several registered hypotheses --- concerning the two upper layers of the architecture and
 a comparison against cloud services --- were consequently never tested. They are listed as
-such in Chapter~\ref{ch:limitations-future-work}, never quietly dropped from the
+such in Chapter~\ref{ch:limitations}, never quietly dropped from the
 register.
 
 \section{Reproducibility and Hardware}
 \label{sec:method-repro}
+
+Every number in this thesis is intended to be re-derivable from recorded state. This
+section states the two mechanisms that provide that --- configuration as data and run
+tracking --- and then the hardware the numbers were produced on, which is part of the
+deployment claim itself rather than a logistical detail.
 
 \textbf{Configuration as data.} Every experiment knob --- model identifiers, dataset paths,
 seeds, decoding settings, prompt strings, thresholds --- lives in a versioned configuration
@@ -514,7 +522,7 @@ memory.
 rather than to a remembered one.
 
 \textbf{Hardware.} The privacy premise requires on-premises processing, and the hardware claim
-is made at two tiers, both of them machines a firm plausibly owns. The \emph{target class} is
+is made at two tiers, both of them machines a company plausibly owns. The \emph{target class} is
 a workstation carrying a single modern 24\,\ac{GB} graphics processor --- the memory class of
 one consumer graphics card, not a data-centre rack. The \emph{floor} is the development
 machine: an Apple M1~Pro laptop with 16\,\ac{GB} of unified memory, running the platform's own
@@ -523,11 +531,11 @@ incidental --- it is the deployment claim, stated with the evidence each tier ac
 system that requires a data-centre rack does not solve the problem this thesis addresses;
 nothing reported here required one, or indeed anything beyond that single 24\,\ac{GB} card.
 
-The author's development machine sits at the floor, not at the target, so measurements the
-floor would have confounded were taken on target-class hardware instead, and each move is
-recorded. The venue was a rented single-\ac{GPU} instance --- one NVIDIA A10G with
-24\,\ac{GB}, in an \ac{EU} region, single-tenant, its storage destroyed at termination ---
-running the same open-weights checkpoints under the author's control, less than six
+The author's development machine belongs to the floor tier rather than the target class, so
+measurements the floor would have confounded were taken on target-class hardware instead, and
+each move is recorded. The venue was a rented single-\ac{GPU} instance: one NVIDIA A10G with
+24\,\ac{GB}, in an \ac{EU} region, single-tenant, its storage destroyed at termination.
+It ran the same open-weights checkpoints under the author's control, less than six
 \ac{GPU}-hours in total. Renting the target class for measurement is what kept the author's
 hardware from confounding the science; it is not a cloud dependency of the system, and no
 model provider processed anything at any point. The documents that instance handled were the
@@ -535,33 +543,33 @@ synthetic corpus and the author's own collected invoices --- no client document 
 party's confidential data. Four classes of pass ran there in full precision, enumerated
 exhaustively because a reader is entitled to know which numbers were produced where.
 
-\textbf{One: adapter training}, which exceeded the floor's memory outright. A
-path-validation run on four examples ran long enough to be abandoned, against a real training
-budget several hundred times larger, and the local training code already carried three
-separate workarounds for platform ceilings.
-
-\textbf{Two: the adaptation evaluations and their
-baselines}, because a full-precision adapter compared against a 4-bit baseline measures the
-adapter and a precision change simultaneously --- a mismatch that turned out to be large
-enough to invert a conclusion, which is why re-measuring the baseline in the adapter's own
-precision was made a precondition of the study, not an afterthought
-(Table~\ref{tab:precision-confound} reports what would have been concluded without it).
-
-\textbf{Three: the reader comparison} of \S\ref{sec:results-reader}, at full precision, because
-the floor disqualified every candidate on its own terms rather than on reading
-quality --- native-resolution vision towers demanded Metal buffers twice the size of the
-machine, and the 4-bit route corrupted German text.
-
-\textbf{Four: every transcript reported in this thesis.} Both the regeneration of the synthetic
-corpus with the selected reader and the transcription of the held-out corpus ran there at
-native resolution, because on the laptop the memory ceiling forces a pixel cap that reads an A4
-page at roughly half resolution. For the held-out corpus a reduced-resolution reading would
-have confounded \emph{real invoices are harder} with \emph{real invoices were read at half
-resolution}; for the synthetic corpus it would have made the two corpora incomparable. The
-held-out pass doubles as the measure of how modest the target class is: all 39 documents ---
-58 pages --- were transcribed at native resolution in roughly sixteen minutes of total
-instance lifetime, including the fetch of the nine-gigabyte model checkpoint, with zero
-errors.
+\begin{enumerate}
+  \item \textbf{Adapter training}, which exceeded the floor's memory outright. A
+        path-validation run on four examples ran long enough to be abandoned, against a real
+        training budget several hundred times larger, and the local training code already
+        carried three separate workarounds for platform ceilings.
+  \item \textbf{The adaptation evaluations and their baselines}, because a full-precision
+        adapter compared against a 4-bit baseline measures the adapter and a precision change
+        simultaneously --- a mismatch that turned out to be large enough to invert a
+        conclusion, which is why re-measuring the baseline in the adapter's own precision was
+        made a precondition of the study, not an afterthought
+        (Table~\ref{tab:precision-confound} reports what would have been concluded without it).
+  \item \textbf{The reader comparison} of Section~\ref{sec:results-reader}, at full precision,
+        because the floor disqualified every candidate on its own terms rather than on reading
+        quality --- native-resolution vision towers demanded Metal buffers twice the size of
+        the machine, and the 4-bit route corrupted German text.
+  \item \textbf{Every transcript reported in this thesis.} Both the regeneration of the
+        synthetic corpus with the selected reader and the transcription of the held-out
+        corpus ran there at native resolution, because on the laptop the memory ceiling
+        forces a pixel cap that reads an A4 page at roughly half resolution. For the
+        held-out corpus a reduced-resolution reading would have confounded \emph{real
+        invoices are harder} with \emph{real invoices were read at half resolution}; for
+        the synthetic corpus it would have made the two corpora incomparable. The held-out
+        pass doubles as the measure of how modest the target class is: all 39 documents ---
+        58 pages --- were transcribed at native resolution in roughly sixteen minutes of
+        total instance lifetime, including the fetch of the nine-gigabyte model checkpoint,
+        with zero errors.
+\end{enumerate}
 
 The consequence is a boundary that must be stated in the method rather than discovered in the
 results: the reading figures in this thesis are \emph{target-class} figures, and the reading
@@ -575,5 +583,5 @@ and the cost of 4-bit quantisation on the structuring stage is measured rather t
 floor's capped resolution would deliver --- and the cap is a workaround for this one
 laptop's memory ceiling, not a property of on-premises deployment, since the same reader
 handles native resolution within a single 24\,\ac{GB} card.
-\S\ref{sec:lim-hardware} records the gap as a limitation and \S\ref{sec:fw-envelope} states
+Section~\ref{sec:lim-hardware} records the gap as a limitation and Section~\ref{sec:fw-envelope} states
 the bounded measurement that would close it.

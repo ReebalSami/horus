@@ -4,7 +4,7 @@
 The previous chapters describe a design (Chapter~\ref{ch:system-design}), a measurement
 protocol (Chapter~\ref{ch:methodology}) and what the measurement found
 (Chapter~\ref{ch:results}). This chapter describes the artefact, the HORUS system
-(\S\ref{sec:contributions}): the software that runs the pipeline, produces the numbers, and
+(Section~\ref{sec:contributions}): the software that runs the pipeline, produces the numbers, and
 lets a human look at what the system did.
 
 It is deliberately short on inventory and long on the few structural choices that had
@@ -65,13 +65,13 @@ from architectural preference.
 run, scored and recorded on its own. A failure in one cell is caught, recorded with its error
 class, and does not stop the sweep; a model that fails to load marks its whole row with a
 reason and the harness moves to the next model. A sweep that aborts on the first failure would
-have made the cohort survey of \S\ref{sec:results-preliminary} impossible, because several of
+have made the cohort survey of Section~\ref{sec:results-preliminary} impossible, because several of
 the candidate models failed in exactly that way.
 
 \textbf{Sweeps are resumable.} Before running a cell the harness asks the tracking store
 whether that cell already completed, and skips it if so. Interrupting a multi-hour sweep and
-restarting it therefore costs only the cell in flight. This is not a convenience feature: on
-this hardware a full sweep does not reliably fit into one uninterrupted session, and without
+restarting it therefore costs only the cell in flight. On this hardware this is a necessity
+rather than a convenience: a full sweep does not reliably fit into one uninterrupted session, and without
 resumability the practical choice would have been between smaller sweeps and unreliable ones.
 
 \textbf{Every cell records its own provenance.} Each run carries the configuration that
@@ -83,8 +83,8 @@ number in this thesis traceable to the run that produced it, not to a note.
 
 \subsection{Two training executors, one data path}
 
-The adaptation study of \S\ref{sec:results-adaptation} had to move off the local machine, for
-reasons \S\ref{sec:method-repro} states. That created a risk worth naming: two training paths
+The adaptation study of Section~\ref{sec:results-adaptation} had to move off the local machine, for
+reasons Section~\ref{sec:method-repro} states. That created a risk worth naming: two training paths
 means two opportunities for the training data to differ, and a difference there would have
 made the two arms incomparable and the whole grid uninterpretable.
 
@@ -176,7 +176,7 @@ says so. Model identifiers, prompts and token budgets are read from the same con
 files the experiments use, so the demonstration cannot drift from the measured system.
 
 \textbf{An adjudication surface.} The fifth page is the annotation interface behind the
-held-out answer key of \S\ref{sec:method-heldout-gt}, and it is the clearest case in this
+held-out answer key of Section~\ref{sec:method-heldout-gt}, and it is the clearest case in this
 project of an interface decision determining whether a methodological step was feasible at all.
 
 The naive form of that interface is a form with every field for every document: 34 fields
@@ -206,20 +206,20 @@ targets described above, and continuous integration that verifies the whole of i
 change. On the floor machine --- one laptop, no discrete accelerator, no network dependency on
 the inference path --- a checkout runs the delivered pipeline and every scoring and re-scoring
 pass reported in this thesis; the training and native-resolution reading passes require the
-target class (\S\ref{sec:method-repro}). One external
+target class (Section~\ref{sec:method-repro}). One external
 dependency sits outside the Python environment: an independent validator used to cross-check
 the reference extraction is fetched on demand and verified against a pinned cryptographic
 hash, so the cross-check cannot silently become a different tool.
 
 \textbf{What does not exist} is packaging for anyone other than a developer. There is no
 container image, no service interface, no installer, and no operational documentation for a
-firm's information-technology department. The system is operated from a source checkout by
+company's information-technology department. The system is operated from a source checkout by
 someone who can read a build file.
 
 That is a scope decision, not an omission, and the reasoning is the same as in
-\S\ref{sec:design-scope}. Packaging serves adoption; nothing in the research questions of
-\S\ref{sec:research-questions} depends on it, and the effort it would have consumed went into
+Section~\ref{sec:design-scope}. Packaging serves adoption; nothing in the research questions of
+Section~\ref{sec:research-questions} depends on it, and the effort it would have consumed went into
 the measurement apparatus instead --- which, given what Chapter~\ref{ch:measurement-validity}
 found, was the correct allocation. What a deployable version would additionally require is
-listed in \S\ref{sec:fw-production}, and the prototype's review surface is the part of it that
+listed in Section~\ref{sec:fw-production}, and the prototype's review surface is the part of it that
 already exists, because the evaluation needed it first.

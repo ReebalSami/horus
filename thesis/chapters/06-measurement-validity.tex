@@ -1,7 +1,7 @@
 \chapter{Measurement Validity: Validating the Ruler}
 \label{ch:measurement-validity}
 
-\section{Why This Chapter Exists}
+\section{The Instrument as the Larger Source of Error}
 \label{sec:validity-why}
 
 A measurement claim rests on two things: the system measured, and the instrument that measured
@@ -24,11 +24,11 @@ against canonical reference data is systematically pessimistic, and the size of 
 small}. A reader who takes one thing from this thesis should take that.
 
 The chapter proceeds by stating the discipline that separates repairing an instrument from
-inflating a score (\S\ref{sec:validity-discipline}), then the four classes of defect found
-(\S\ref{sec:validity-reference}--\S\ref{sec:validity-specification}), then what correcting them
-was worth (\S\ref{sec:validity-effect}), then the near-miss
-(\S\ref{sec:validity-confound}), and finally what remains broken and is recorded instead of
-repaired (\S\ref{sec:validity-open}). Figure~\ref{fig:defect-chronology} gives the whole
+inflating a score (Section~\ref{sec:validity-discipline}), then the four classes of defect found
+(Section~\ref{sec:validity-reference}--Section~\ref{sec:validity-specification}), then what correcting them
+was worth (Section~\ref{sec:validity-effect}), then the near-miss
+(Section~\ref{sec:validity-confound}), and finally what remains broken and is recorded instead of
+repaired (Section~\ref{sec:validity-open}). Figure~\ref{fig:defect-chronology} gives the whole
 sequence in one view, with each defect class pointing at the evidence that carries its
 effect.
 
@@ -37,7 +37,7 @@ effect.
   \input{figures/defect-chronology.tex}
   \caption[The defect classes and their evidence]{The defect classes of this chapter, in
   the order the audit surfaced them. Every one was found by opening individual documents,
-  repaired under the four-rule discipline of \S\ref{sec:validity-discipline}, and measured
+  repaired under the four-rule discipline of Section~\ref{sec:validity-discipline}, and measured
   on frozen generations; the two red entries are the project's own errors, reported
   because they are the strongest argument for the rules.}
   \label{fig:defect-chronology}
@@ -60,7 +60,7 @@ genuinely wrong value still fails.
 
 \textbf{Any rule applied to a predicted value is applied identically to the reference value.}
 Asymmetric normalisation is the specific mechanism by which a fairness fix becomes a scoring
-error, and \S\ref{sec:validity-selfinflicted} reports the occasion on which this project
+error, and Section~\ref{sec:validity-selfinflicted} reports the occasion on which this project
 violated its own rule and what it cost.
 
 \textbf{The effect of a correction is measured on frozen model outputs.} Generations are
@@ -74,7 +74,7 @@ disk.
 may be removed from scoring only on a stated, general warrant --- never case by case after
 observing whether the model happened to get it right. Where a criterion could not be
 generalised safely, it was deliberately confined to the one field the evidence supported, and
-\S\ref{sec:validity-reference} says why.
+Section~\ref{sec:validity-reference} says why.
 
 \section{Class One: The Reference Data Was Wrong or Ill-Posed}
 \label{sec:validity-reference}
@@ -110,14 +110,19 @@ because it is the most easily abused. Eight cells in the signed-off answer key c
 that \emph{no} reading channel could locate anywhere in the page text --- not the vision model,
 not the commercial service, not the text-layer parser, not the author reading the image. A
 value that is not on the page cannot be extracted from the page by any vision system, so
-scoring it as a miss measures the answer key, not the system.
+scoring it as a miss measures the answer key, not the system. All eight belong to one
+field, the payment method as free text (BT-82), whose values are phrases such as
+\emph{SEPA direct debit} or \emph{bank transfer}. The answer key carries them on the
+author's knowledge of how each invoice was settled; the page nowhere prints a phrase
+naming the method.
 
 The temptation is to generalise that criterion. It was deliberately not generalised, for a
-reason worth stating: the criterion is confounded across fields. One amount is unlocatable on a
-dozen documents and yet correctly recovered on eleven of them, because it is fixed
-arithmetically by other fields without being read. Keying the exclusion on provenance class alone
-would therefore have discarded correct answers. The exclusion was applied to exactly one field,
-on evidence specific to it: every present cell of that field rests on an author decision with
+reason worth stating: the criterion is confounded across fields. One amount, the amount due
+for payment (BT-115), is unlocatable on a dozen documents and yet correctly recovered on
+eleven of them, because it is fixed arithmetically by other fields without being read.
+Keying the exclusion on provenance class alone
+would therefore have discarded correct answers. The exclusion was applied to the
+payment-method field alone, on evidence specific to it: every present cell of that field rests on an author decision with
 no printed proof and no cross-channel agreement, the standard derives it from no other field,
 and the model recovers none of them while scoring perfectly on the same field given perfect
 text. The effect is reported in Table~\ref{tab:heldout-headline}: recall improves, the false-
@@ -130,7 +135,7 @@ neutralisation just described is one route into that state. The other is an acci
 author's own signed-off value fails to parse into its declared type, the cell is withdrawn by
 the same internal marker --- on no criterion at all. Twenty-two cells are withdrawn this way,
 against the eight withdrawn deliberately, and all twenty-two are dates.
-\S\ref{sec:validity-open} reports it as an open defect, because the collision between the two
+Section~\ref{sec:validity-open} reports it as an open defect, because the collision between the two
 routes is the more instructive part of it.
 
 \section{Class Two: The Comparison Rule Punished Correct Answers}
@@ -159,7 +164,7 @@ as strings fails on a correct reading.
 documents and printed with a minus sign. A model that emits the printed form is right and
 scores as a miss.
 
-None of these is exotic. All four are the ordinary consequence of measuring a
+All four are the ordinary consequence of measuring a
 page-reading system against machine-readable reference data, which is why the class matters
 beyond this project: any evaluation constructed the same way inherits the same bias, and
 inherits it silently.
@@ -193,8 +198,8 @@ used at all three aggregation sites, and a field with no signal-bearing outcomes
 instead of reported as perfect. Reporting a perfect score there says \emph{always right} when
 it means \emph{never asked}.
 
-\textbf{The perfect-text instrument was unfaithful.} Instrument three of
-\S\ref{sec:method-attribution} renders text from the reference data and feeds it to the
+\textbf{The perfect-text instrument was unfaithful.} The perfect-text ceiling of
+Section~\ref{sec:method-attribution} renders text from the reference data and feeds it to the
 structuring stage. If that renderer omits or misstates something the reference contains, the
 resulting ceiling is wrong --- and wrong in an unpredictable direction, not merely
 optimistic, because the structurer may be penalised for a value the renderer never showed it.
@@ -267,16 +272,16 @@ lives in the configuration, not in the default. The first audit run did exactly 
 therefore measured the wrong pipeline --- a weak reader makes genuinely printed labels look
 ungrounded. Both audit tools now load the configuration explicitly. The stale default remains a
 live hazard for any future script that constructs the configuration bare, and it is listed in
-Chapter~\ref{ch:limitations-future-work}.
+Chapter~\ref{ch:limitations}.
 
 \section{A Correction That Was Itself a Defect}
 \label{sec:validity-selfinflicted}
 
-One correction in this project broke the symmetry rule of \S\ref{sec:validity-discipline}, and
+One correction in this project broke the symmetry rule of Section~\ref{sec:validity-discipline}, and
 it is reported here because it is the clearest illustration of why that rule
 exists.
 
-The sign-convention fix of \S\ref{sec:validity-comparison} was first implemented on the
+The sign-convention fix of Section~\ref{sec:validity-comparison} was first implemented on the
 predicted side only, on the stated premise that the reference always stores these totals
 unsigned. That premise is false. A credit note in the corpus carries a negative discount total
 in its reference data --- correctly, because on a credit note the quantity is negative. Folding
@@ -327,7 +332,7 @@ constant by construction.
 measured reading quality, the two candidate reading models were separated by three thousandths
 under the defective ruler, with the general-purpose model ahead. After the corrections ---
 applied to identical stored transcripts --- the ordering inverted, with the gap still under a
-point (\S\ref{sec:results-reader}). The correct conclusion from an ordering that flips when
+point (Section~\ref{sec:results-reader}). The correct conclusion from an ordering that flips when
 the ruler is fixed is not that the second model is better; it is that \textbf{the instrument
 does not separate these two candidates at all}, and a selection made on it would have been
 arbitrary. That is what forced the reader decision onto a hand-judged review of every
@@ -338,11 +343,11 @@ reader afterwards; Table~\ref{tab:reader-lineage} records that lineage.
 \section{The Near-Miss}
 \label{sec:validity-confound}
 
-The most consequential measurement problem in this project was not a defect in the scoring
-code. It was a comparison between two numbers that were not comparable.
+The most consequential measurement problem in this project lay outside the scoring code:
+it was a comparison between two numbers that were not comparable.
 
 The adaptation experiments had to run on target-class hardware in full numeric precision,
-because they exceeded the floor's memory (\S\ref{sec:method-repro}). The deployed baseline runs
+because they exceeded the floor's memory (Section~\ref{sec:method-repro}). The deployed baseline runs
 at the floor in 4-bit quantised precision. Comparing the full-precision adapter against the
 quantised baseline measures the adapter \emph{and} a precision change at the same time.
 
@@ -371,7 +376,7 @@ were fixed would misrepresent the state of the apparatus.
 \textbf{One internal marker carries two unrelated meanings, and one of them is a defect.} A cell
 is withdrawn from scoring when the answer key holds no comparable normalised value. Two
 situations produce that state through the same encoding: the ratified neutralisation of
-\S\ref{sec:validity-reference}, and a signed-off value the parser could not read. The first is a
+Section~\ref{sec:validity-reference}, and a signed-off value the parser could not read. The first is a
 declared decision applied by a rule; the second is a locale-parsing gap nobody chose. Thirty
 cells of the held-out key are withdrawn in total --- eight for the first reason, twenty-two for
 the second, and all twenty-two of those are dates.
@@ -382,7 +387,7 @@ recall; and the cell count reported for this corpus is already the count after w
 a per-cell pass against the provenance record separates the two causes. The direction of the
 resulting bias is undetermined without a re-score, but the affected cells are exact-match dates
 and seventeen of the twenty-two fall in the language and capture channel the system reads best
-(\S\ref{sec:results-heldout}) --- so the more likely effect is that the reported figure is
+(Section~\ref{sec:results-heldout}) --- so the more likely effect is that the reported figure is
 understated, not flattered. Repairing the parser moves a published number, so it is held for its
 own regression pass rather than folded into a correction pass over the manuscript.
 
@@ -394,7 +399,7 @@ instead of smoothed away, and Table~\ref{tab:oracle-renderer-correction} covers 
 in which it sits.
 
 \textbf{The stale configuration default remains.} Described in
-\S\ref{sec:validity-specification}: a diagnostic that builds its configuration from defaults
+Section~\ref{sec:validity-specification}: a diagnostic that builds its configuration from defaults
 selects a superseded reading model. The two audit tools were fixed; the default was not.
 
 \section{What Generalises}
