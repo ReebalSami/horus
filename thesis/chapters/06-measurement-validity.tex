@@ -332,11 +332,10 @@ constant by construction.
 measured reading quality, the two candidate reading models were separated by three thousandths
 under the defective ruler, with the general-purpose model ahead. After the corrections ---
 applied to identical stored transcripts --- the ordering inverted, with the gap still under a
-point (Section~\ref{sec:results-reader}). The correct conclusion from an ordering that flips when
-the ruler is fixed is not that the second model is better; it is that \textbf{the instrument
-does not separate these two candidates at all}, and a selection made on it would have been
-arbitrary. That is what forced the reader decision onto a hand-judged review of every
-individual miss, which Chapter~\ref{ch:results} reports. End-to-end score, for completeness,
+point (Section~\ref{sec:results-reader}). The correct conclusion is not that the second model is
+better; it is that \textbf{this instrument cannot rank these two candidates}, so any selection
+resting on it would have been arbitrary. That is what forced the reader decision onto a
+hand-judged review of every individual miss, which Chapter~\ref{ch:results} reports. End-to-end score, for completeness,
 favoured the transcription model before the corrections and was re-taken only for the selected
 reader afterwards; Table~\ref{tab:reader-lineage} records that lineage.
 
@@ -351,14 +350,13 @@ because they exceeded the floor's memory (Section~\ref{sec:method-repro}). The d
 at the floor in 4-bit quantised precision. Comparing the full-precision adapter against the
 quantised baseline measures the adapter \emph{and} a precision change at the same time.
 
-Table~\ref{tab:precision-confound} gives both readings. The unmatched comparison shows a
-difference small enough to read as no measurable harm. The matched comparison, against a
-baseline re-measured in the adapter's own precision, shows a regression roughly twenty times
-larger. The two effects --- the damage the adapter does and the gain full precision brings ---
-very nearly cancel.
+Table~\ref{tab:precision-confound} gives both readings. In the unmatched comparison the
+difference is small enough to pass for no measurable harm; once the baseline is re-measured in
+the adapter's own precision, the regression is roughly twenty times larger. The two effects ---
+the damage the adapter does and the gain full precision brings --- very nearly cancel.
 
-Had the baseline not been re-measured, this thesis would have reported that the adaptation was
-harmless. It is not. The requirement to re-measure was written down before the runs, as a
+Without that re-measurement, the record would state that the adaptation was harmless. It is
+not. The requirement to re-measure was written down before the runs, as a
 precondition, not a check, which is the only reason the cancellation was caught.
 
 Two things follow. The first is narrow: precision must be matched. The second is general and is
