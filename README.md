@@ -84,8 +84,7 @@ The command downloads the blob from the GitHub Release, decrypts it, restores `d
 ├── data/                   # gitignored corpora; tracked MANIFESTs + fine-tune evidence (data/README.md)
 ├── app/                    # Streamlit observability dashboard (`make app`)
 ├── thesis/                 # LaTeX manuscript (`make thesis`; thesis/README.md)
-├── docs/                   # decision records, review records, archived sources, datasheets
-└── notebooks/              # scratch EDA only (notebooks/README.md)
+└── docs/                   # decision records, review records, archived sources, datasheets
 ```
 
 ## License

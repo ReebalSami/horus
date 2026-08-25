@@ -13,29 +13,29 @@ A **descriptive characterization** of the HORUS thesis data substrate. Every cha
 The Book follows two academic standards:
 
 - **Quarto Books** (Posit) — a multi-chapter scientific publishing format with first-class cross-references, automatic numbering, dual HTML + PDF output. See `docs/sources/tools/quarto.md` for the toolchain rationale (ratified in [ADR-024](docs/decisions/ADR-024-eda-visualization-stack.md) + [ADR-025](docs/decisions/ADR-025-eda-multi-dataset-book-structure.md)).
-- **Datasheets for Datasets** ([Gebru et al. 2018](https://arxiv.org/abs/1803.09010)) — the per-dataset documentation template adopted by major ML conferences (NeurIPS Datasets and Benchmarks Track) and the academic gold standard for dataset transparency. Every chapter ends with a Datasheet appendix entry covering the seven canonical sections (motivation / composition / collection / preprocessing / uses / distribution / maintenance). The consolidated appendix is at `experiments/A1-datasheets.qmd` (added as chapters land).
+- **Datasheets for Datasets** ([Gebru et al. 2018](https://arxiv.org/abs/1803.09010)) — the per-dataset documentation template adopted by major ML conferences (NeurIPS Datasets and Benchmarks Track) and the academic gold standard for dataset transparency. Every chapter ends with a Datasheet appendix entry covering the seven canonical sections (motivation / composition / collection / preprocessing / uses / distribution / maintenance). The consolidated appendix is at `experiments/A1-datasheets.qmd`.
 
 ## What this Book is NOT
 
-- **Not a hypothesis test.** The pre-registered hypothesis set H1–H6 (timestamped 2026-05-08 in `docs/prompts/stages/02-brainstorm.md` §6) is **READ-ONLY** for this artifact, per the HARKing safeguards locked in brainstorm v2 §2 + ADR-025. Hypothesis-shaped patterns surfaced during EDA go to each chapter's `## §7 — Exploratory observations log`, NOT retroactively into H1–H6.
+- **Not a hypothesis test.** The pre-registered hypothesis set H1–H6 (locked 2026-05-08, before any data inspection) is **READ-ONLY** for this artifact, per the HARKing safeguards ratified with ADR-025. Hypothesis-shaped patterns surfaced during EDA go to each chapter's `## §7 — Exploratory observations log`, NOT retroactively into H1–H6.
 - **Not a scope decision.** This EDA describes; the next phases (PRD, spec, ADRs) decide. No claim in this Book commits the thesis to using a particular dataset for a particular purpose. Observations that look load-bearing for a future scope decision are surfaced in the cross-corpus synthesis chapter's *Decision register*.
 - **Not a fine-tuning recommendation.** The `## Sufficiency commentary` sections in each chapter discuss whether the dataset *could* support fine-tuning per the literature anchors in `cfg.eda.fine_tuning_anchors`; the *whether to* is deferred to issue [#55](https://github.com/ReebalSami/horus/issues/55).
 
 ## Reading order
 
-| Chapter | Dataset | Status |
-|---|---|---|
-| @sec-zugferd | ZUGFeRD German corpus | ✓ landed |
-| (Chapter 2) | fatura2-invoices (English) | Phase C |
-| (Chapter 3) | OmniDocBench (multilingual) | Phase C |
-| (Chapter 4) | FUNSD (English) | Phase C |
-| (Chapter 5) | parsee-ai (English) | Phase C |
-| (Chapter 6) | CORD-v2 (Korean) | Phase C |
-| (Chapter 7) | inv-cdip-tobacco (English; annotations only) | Phase C |
-| (Chapter 8) | Cross-corpus synthesis + Decision register | Phase D |
-| Appendix A1 | Per-dataset Datasheets | Phase B+C |
+| Chapter | Dataset |
+|---|---|
+| @sec-zugferd | ZUGFeRD German corpus |
+| Chapter 2 | fatura2-invoices (English) |
+| Chapter 3 | OmniDocBench (multilingual) |
+| Chapter 4 | FUNSD (English) |
+| Chapter 5 | parsee-ai (English) |
+| Chapter 6 | CORD-v2 (Korean) |
+| Chapter 7 | inv-cdip-tobacco (English; annotations only) |
+| Chapter 8 | Cross-corpus synthesis + Decision register |
+| Appendix A1 | Per-dataset Datasheets |
 
-The Book is rendered locally via `make eda-book` from the source repository; the rendered Book is **not** deployed to GitHub Pages during iteration (deferred per ADR-025 §"Decision" until the Book passes end-to-end review).
+All eight chapters and the Datasheets appendix are complete. The Book is rendered locally via `make eda-book` from the source repository; the rendered output (`_book/`) is a build artifact and is not deployed.
 
 ## Per-chapter content template
 
