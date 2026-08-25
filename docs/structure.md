@@ -9,7 +9,7 @@ Source: `~/Projects/cascade-system/docs/structure.md` (this is the downstream co
 ```
 <project>/
 ├── README.md
-├── .windsurf/
+├── .devin/
 │   ├── rules/                      # L2 overrides (project-specific rules)
 │   ├── skills/                     # L2 overrides (project-specific skills)
 │   ├── workflows/                  # L2 overrides (project-specific workflows)
@@ -61,4 +61,4 @@ Source: `~/Projects/cascade-system/docs/structure.md` (this is the downstream co
 
 ## Validators
 
-`/docs-refresh` (when ready) regenerates `INDEX.md` files and rejects placement violations. Until then, placement discipline is manual; see `.windsurf/rules/strict-docs-placement.md` for project-local enforcement and `~/.windsurf/rules/clean-project-structure.md` for the universal L1 rule.
+`/docs-refresh` (when ready) regenerates `INDEX.md` files and rejects placement violations. Until then, placement discipline is manual; see `.devin/rules/strict-docs-placement.md` for project-local enforcement and `~/.windsurf/rules/clean-project-structure.md` for the universal L1 rule.

@@ -2,7 +2,7 @@
 
 Per-experiment YAML files. Each experiment has exactly one config file in this directory. Loaded + validated by `horus.config.ExperimentConfig.from_yaml()` at experiment boot; Pydantic raises on missing required fields, type mismatches, or extra (unrecognised) keys BEFORE any model loads, dataset downloads, or compute is spent.
 
-This directory is the contract surface of `horus-config-discipline` (`.windsurf/rules/horus-config-discipline.md`) — every knob a future-you might want to tune lives in YAML here, not in `.py` source.
+This directory is the contract surface of `horus-config-discipline` (`.devin/rules/horus-config-discipline.md`) — every knob a future-you might want to tune lives in YAML here, not in `.py` source.
 
 ## Naming convention
 
@@ -90,6 +90,6 @@ Both overlays compose on `pilot-13.yaml` (NOT on `pilot-13-dev.yaml` — the pro
 ## Cross-references
 
 - **Schema**: `src/horus/config.py`
-- **Discipline rule**: `.windsurf/rules/horus-config-discipline.md` (Bundle 1, ratified 2026-05-10)
+- **Discipline rule**: `.devin/rules/horus-config-discipline.md` (Bundle 1, ratified 2026-05-10)
 - **Library decision**: `docs/decisions/ADR-004-config-library.md` (Bundle 2, ratified 2026-05-10)
 - **Source archival**: `docs/sources/tools/{pydantic,pydantic-settings,pyyaml,hydra-core,omegaconf}.md`

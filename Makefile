@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck audit-prompts audit-heldout-exclusions glossary experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet thesis thesis-clean clean
+.PHONY: help install test lint format typecheck audit-prompts audit-heldout-exclusions glossary experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet frozen-testset-bundle get-frozen-testset thesis thesis-clean clean
 
 # Default target — list available commands.
 help:
@@ -29,6 +29,8 @@ help:
 	@echo "  app             Streamlit observability dashboard (ADR-036, #103; read-only; APP_PORT=<n> overrides 8501)"
 	@echo "  heldout-index   (re)write data/self-collected/index.json for the held-out Belege set (ADR-040; LOCAL-ONLY)"
 	@echo "  heldout-datasheet  write the SANITIZED tracked datasheet for the held-out set (ADR-040; OUT=path to override)"
+	@echo "  frozen-testset-bundle  build the encrypted examiner bundle of the held-out set (ADR-075; author-side, LOCAL-ONLY)"
+	@echo "  get-frozen-testset  download + decrypt + verify + restore the frozen held-out set (ADR-075; examiner-side; URL=/FILE=/FORCE=1)"
 	@echo "  thesis          build the thesis PDF via latexmk (-> thesis/_build/main.pdf; needs TeX Live/MacTeX, not uv)"
 	@echo "  thesis-clean    remove thesis LaTeX build artifacts (thesis/_build)"
 	@echo "  clean           remove build artifacts and caches"
@@ -461,6 +463,17 @@ heldout-index:
 
 heldout-datasheet:
 	uv run python scripts/heldout_manifest.py datasheet $(if $(OUT),--out "$(OUT)")
+
+# Frozen test-set distribution (ADR-075). The examiner-facing delivery channel for
+# the private held-out set: the author seals the corpus into ONE AES-256-GCM blob
+# (password via prompt or HORUS_BUNDLE_PASSWORD) attached to a GitHub Release; the
+# examiner restores + cryptographically verifies it with one command. The blob is
+# public-but-sealed; the password travels out-of-band. dist/ is git-ignored.
+frozen-testset-bundle:
+	uv run python scripts/frozen_testset_bundle.py $(if $(OUT),--out "$(OUT)")
+
+get-frozen-testset:
+	uv run python scripts/get_frozen_testset.py $(if $(URL),--url "$(URL)") $(if $(FILE),--file "$(FILE)") $(if $(FORCE),--force,)
 
 # Regenerate every table and figure the manuscript reports, from committed evidence.
 # ADR-055 forbids hand-copying measured numbers into the thesis; this is the generator

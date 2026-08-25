@@ -15,7 +15,7 @@ Covers:
 Mirrors the structure of `tests/test_config_eval.py` (the canonical sub-model
 test pattern in HORUS). Refs: ADR-024 §"Decision + integration thoughts",
 ADR-004 (config library), `src/horus/config.py` (the schema),
-`.windsurf/rules/horus-config-discipline.md`.
+`.devin/rules/horus-config-discipline.md`.
 """
 
 from __future__ import annotations

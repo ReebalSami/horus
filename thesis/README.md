@@ -98,7 +98,7 @@ ADR-074; limitations/future-work split into own chapters; measurement-venue
 scoping per ADR-070); the 2026-08-20 Feinschliff pass; and the 2026-08-22
 fresh-eyes arena review (three independent AI reviewers; fixes verified against
 source, ADRs and the rendered PDF). Green build verified: 141 pp, zero
-unresolved references and citations, zero overfull boxes, 1,265 tests passing.
+unresolved references and citations, zero overfull boxes, 1,280 tests passing.
 Review records under `../docs/reviews/`.
 Per-chapter status: `../docs/prompts/stages/05-writeup.md` §2.
 

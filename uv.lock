@@ -1371,6 +1371,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "cryptography" },
     { name = "ipykernel" },
     { name = "jupytext" },
     { name = "mypy" },
@@ -1416,6 +1417,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "cryptography", specifier = ">=44" },
     { name = "ipykernel", specifier = ">=6.29" },
     { name = "jupytext", specifier = ">=1.16" },
     { name = "mypy", specifier = ">=1.13" },

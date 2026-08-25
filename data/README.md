@@ -27,8 +27,33 @@ data/
 │   ├── multilingual/
 │   │   └── omnidocbench/          # HF opendatalab/OmniDocBench
 │   └── (gi-2021-de-invoices/ — deferred; revisit only if pilot surfaces insufficient German variety)
+├── finetune/                      # adaptation-study artefacts (#55); see below
+├── self-collected/                # PRIVATE held-out Belege set (ADR-040); see below
 └── processed/                     # intermediate artefacts (conversions, splits, etc.)
 ```
+
+## `finetune/` — adaptation-study artefacts (#55)
+
+Mixed tracking. The **tracked** exceptions (force-added per the rule above) are the
+small, sanitized evidence files the thesis asset pipeline consumes: the sealed split
+(`split.json`), the reader bake-off transcripts over synthetic ZUGFeRD invoices
+(`bakeoff/`, `bakeoff-local-m1/`), and the per-run eval/attribution JSONs
+(`eval-*.json`, `attribution-*.json`, …). Everything else — GPU transcripts, LoRA
+adapter weights, per-invoice model outputs — stays gitignored and regenerable
+(recipes: `scripts/gpu/README.md` + the `finetune_*` scripts).
+
+## `self-collected/` — the private held-out Belege set (ADR-040)
+
+**Never committed** — belt-and-braces gitignore rule; even `!` un-ignores must not
+countermand it. Contains the 39 real invoices (`german/`, `english/`), the
+hand-verified answer keys (`gt/` drafts, `_promoted/` signed-off), the local
+`index.json` freeze record, and the GT-adjudication working trees (`_judge/`,
+`_azure/`, `_transcripts/`, …). The only tracked representations are **sanitized
+aggregates**: `docs/architecture/belege-heldout-datasheet.md` (id ↔ sha256 freeze
+table) and `eval/heldout-breakdown.json` (pooled scores).
+
+Examiners restore this tree from the encrypted release asset via
+`make get-frozen-testset` (ADR-075; see the README's "Held-out test set" section).
 
 ## Per-dataset audit record
 
