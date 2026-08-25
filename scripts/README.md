@@ -93,5 +93,5 @@ reusable library components graduate to `src/horus/` via refactor + ADR.
 
 ## Provenance
 
-- Directory scaffolded at issue #8 (M2D.5 step 1); grew with each ADR named above
+- Directory scaffolded at issue #8; grew with each ADR named above
 - Per-script provenance lives in each script's module docstring

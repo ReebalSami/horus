@@ -9,8 +9,7 @@ The committed file, with its per-side SHA-256 fingerprint, is the methodological
 the validation set was fixed *before* any zero-shot-vs-fine-tuned result was seen. Re-sealing
 with the same seed + corpus state is idempotent.
 
-Refs: ADR-034 §"no-HARKing" (held-out discipline); plan
-``~/.windsurf/plans/horus-finetune-structurer-55a1c3.md``.
+Refs: ADR-034 §"no-HARKing" (held-out discipline).
 """
 
 from __future__ import annotations

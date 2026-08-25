@@ -64,11 +64,11 @@ wandb/
 tb_logs/
 lightning_logs/
 
-# M2D.5 issue #8: data/ corpus root gitignored (brainstorm §8)
+# Issue #8: data/ corpus root gitignored
 # Only data/README.md is tracked; use `git add -f data/<path>` for deliberate exceptions.
 data/*
 !data/README.md
-# M2D.5 issue #12: git-track MANIFEST.md per dataset as the per-corpus audit-trail record.
+# Issue #12: git-track MANIFEST.md per dataset as the per-corpus audit-trail record.
 # Git rule: a file inside an ignored directory cannot be un-ignored via `!` patterns.
 # Fix: un-ignore the full directory chain, re-ignore everything at each level,
 # then selectively un-ignore MANIFEST.md at the leaf (data/raw/<lang>/<slug>/) level.
@@ -103,7 +103,7 @@ data/raw/multilingual/*/*
 # only tracked artifact is the sanitized datasheet under docs/ (ids + hashes only).
 data/self-collected/
 
-# M2D.5 issue #9 (ADR-005): tools/ at repo root holds downloaded Java tools
+# Issue #9 (ADR-005): tools/ at repo root holds downloaded Java tools
 # (Mustang JAR). JAR fetched + checksum-verified via `make mustang-jar`.
 # Never committed. Anchored with leading slash so it doesn't shadow nested
 # tools/ paths (e.g., docs/sources/tools/).
@@ -149,6 +149,12 @@ app/assets/brand/sources/
 # thesis/references.bib (tracked); the compiled PDF + all aux/log/bbl/bcf/toc
 # intermediates are written by latexmk into thesis/_build/ and are transient.
 thesis/_build/
+
+# ADR-076: internal working files for the AI-assisted workflow stay on the
+# author's machine; the workflow itself is disclosed in the thesis AI-usage
+# appendix. Untracked at the submission-presentation pass.
+/AGENTS.md
+/.devin/
 
 # ADR-075: the encrypted frozen test-set bundle is written to dist/ by
 # `make frozen-testset-bundle`. The blob is published as a GitHub Release asset,

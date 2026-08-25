@@ -4,7 +4,7 @@ Ad-hoc exploratory notebooks for HORUS.
 
 ## Important: this is NOT the experiment home
 
-Per the `notebook-discipline` rule (`.devin/rules/notebook-discipline.md`),
+Per the project's notebook discipline,
 **experiments live in `experiments/` as jupytext-paired `.py:percent` files**,
 not here. `notebooks/` is the documented consumer exception for scratch /
 exploration work that does not need papermill parameterisation.
@@ -20,6 +20,4 @@ the paired `.py:percent` sources are committed.
 
 ## Provenance
 
-- `docs/prompts/stages/02-brainstorm.md` §8 step 1 ("exploratory work")
-- `.devin/rules/notebook-discipline.md` clause 1 (consumer exception documented here)
-- Issue #8: Repo structural prep (M2D.5 step 1)
+- Issue #8: repo structural prep

@@ -23,8 +23,7 @@ acquisition_status: completed
 
 ## Provenance
 
-Dataset acquired as part of HORUS M2D.5 step 3 (issue #12) per
-`docs/prompts/stages/02-brainstorm.md` §6.2 / §9.
+Dataset acquired for the HORUS evaluation corpus (issue #12).
 See [`docs/sources/datasets/omnidocbench.md`](../../../../docs/sources/datasets/omnidocbench.md) for bibliographic details.
 
 ## Download recipe (reproducible)

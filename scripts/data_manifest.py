@@ -146,8 +146,7 @@ def build_manifest(
 
 ## Provenance
 
-Dataset acquired as part of HORUS M2D.5 step 3 (issue #12) per
-`docs/prompts/stages/02-brainstorm.md` §6.2 / §9.
+Dataset acquired for the HORUS evaluation corpus (issue #12).
 See [`{stub_rel}`](../../../../{stub_rel}) for bibliographic details.
 
 ## Download recipe (reproducible)

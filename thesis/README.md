@@ -7,7 +7,6 @@ Wedel thesis template to **English**.
   (authored as 054, renumbered; carries the 2026-07-31 scope-freeze amendment).
 - **Scope decision — what may be claimed**:
   `../docs/decisions/ADR-054-thesis-endgame-reader-first-recovery-and-scope-freeze.md`.
-- **Phase tracker**: `../docs/prompts/stages/05-writeup.md`.
 
 ## Build
 
@@ -61,11 +60,10 @@ thesis/
 
 - **Language**: English (babel `main=english,ngerman`; German legal terms inline).
 - **Citations**: biblatex `numeric-comp` + biber (`sorting=nty`), rendering `[N]`
-  — the first examiner's written instruction in his 2026-08-18 review (registry
-  row R02; ADR-074 supersedes the earlier `authoryear` inference; Richtlinie
-  defers the short-reference form to the supervisor). Use `\parencite{key}` for
-  bracketed citations and `\textcite{key}` when the authors are the sentence's
-  subject; keys live in `references.bib` and are backed by archived stubs under
+  — per the first examiner's instruction (ADR-074; the Richtlinie defers the
+  short-reference form to the supervisor). Use `\parencite{key}` for bracketed
+  citations and `\textcite{key}` when the authors are the sentence's subject;
+  keys live in `references.bib` and are backed by archived stubs under
   `../docs/sources/`.
 - **Acronyms**: define in `preamble/acronyms.tex`; use `\ac{KEY}` (`\acp{}` for
   plural). Legal everywhere in the body, including the abstract, because the
@@ -84,31 +82,3 @@ thesis/
   from the repo (MLflow runs / `eval/` reports). See ADR-055.
 - **Label every number** as diagnostic (in-sample) or sealed (held-out). An
   in-sample number may never be presented as the system's accuracy.
-
-## Status
-
-All twelve chapters, the abstract and all six appendices are drafted. Applied
-review passes, in order: the 2026-08-15 supervisor-review fix plan (evidential
-repairs M1--M7, bibliography corrections, missing prose, appendices, formatting);
-the 2026-08-16 second pass (seven new figures — every chapter 2--8 carries at
-least one visual — duplication trimmed, AI-usage appendix sharpened); the
-2026-08-18 examiner review of the interim manuscript, worked as a 38-row registry
-(R01--R38: citation style switched to `numeric-comp` per his written instruction,
-ADR-074; limitations/future-work split into own chapters; measurement-venue
-scoping per ADR-070); the 2026-08-20 Feinschliff pass; and the 2026-08-22
-fresh-eyes arena review (three independent AI reviewers; fixes verified against
-source, ADRs and the rendered PDF). Green build verified: 141 pp, zero
-unresolved references and citations, zero overfull boxes, 1,280 tests passing.
-Review records under `../docs/reviews/`.
-Per-chapter status: `../docs/prompts/stages/05-writeup.md` §2.
-
-## TODO before submission
-
-- Author read-through of the full PDF: the author signs off every sentence
-  (declaration requirement; AI-drafted prose is documented in the AI-usage
-  appendix).
-- Citation style: resolved — `numeric-comp` per the examiner's written
-  instruction (2026-08-18 review, R02; ADR-074). No further nod needed.
-- Kurzfassung: deliberately omitted (author decision 2026-08-15, English-only);
-  re-confirm with the Prüfungsamt only if its requirement is in doubt.
-- Print, sign and date the statutory declaration in the submitted copies.

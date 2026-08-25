@@ -94,7 +94,7 @@ billing; ≈ $0.35–0.44/hr for an A40 48 GB → the full job costs < $5 of the
    (`ssh root@<pod-ip> -p <port> -i ~/.ssh/id_ed25519`). If only the proxy command is
    shown, Edit Pod → **Expose TCP Ports** → add `22` → restart. The proxy (`ssh.runpod.io`)
    does NOT support rsync — the exposed-TCP endpoint is required.
-5. Test: ssh in → `nvidia-smi` must show the A40. Exit. Give Cascade `<pod-ip>` + `<port>`.
+5. Test: ssh in → `nvidia-smi` must show the A40. Exit. Note `<pod-ip>` + `<port>` for the next steps.
 
 ### `~/.ssh/config` alias (so §2–§6 work verbatim)
 
@@ -220,8 +220,8 @@ collapsing below the Granite baseline; ties break toward the smaller model
 uv run python scripts/gpu/regen_transcripts.py --winner <model-id-from-step-4>
 ```
 
-(Single-line — safe to drive over `ssh` from the Windsurf terminal, unlike the heredoc
-this replaced. Resume-safe: re-running skips already-transcribed stems.)
+(Single-line — safe to drive over `ssh` from an IDE-integrated terminal, unlike the
+heredoc this replaced. Resume-safe: re-running skips already-transcribed stems.)
 
 ## 5B. Held-out Belege transcription (issue #114) — alternative to §4/§5
 

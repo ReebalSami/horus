@@ -13,8 +13,7 @@ Public surface (lazy-imported by callers):
                               (Gebru et al. 2018, arxiv:1803.09010)
 
 Per-dataset loaders are added in Phase B (ZUGFeRD) and Phase C (the
-remaining 6 datasets) per the EDA expansion plan
-(`~/.windsurf/plans/eda-full-corpus-ed5d97.md`).
+remaining 6 datasets) per the EDA expansion plan (ADR-025).
 
 Refs: ADR-024 (visualization stack), ADR-025 (multi-dataset Book + Datasheets).
 """

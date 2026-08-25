@@ -12,8 +12,7 @@ Modules:
     training-pair construction in the mlx-vlm LoRA dataset shape.
 
 Refs: ADR-034 (arms + structurer choice + no-HARKing), ADR-038 (arms mechanism),
-ADR-035/041/042 (schema + repeating-group scoring), ADR-007 (mlx-vlm), plan
-``~/.windsurf/plans/horus-finetune-structurer-55a1c3.md``.
+ADR-035/041/042 (schema + repeating-group scoring), ADR-007 (mlx-vlm).
 """
 
 from __future__ import annotations

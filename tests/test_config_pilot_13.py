@@ -10,7 +10,7 @@ Covers per `horus-config-discipline` + ADR-014:
 
 Refs: ADR-014 §"Decision + integration thoughts" (forthcoming), ADR-013 (parent),
       ADR-004 (config library), `src/horus/config.py` (the schema),
-      `.devin/rules/horus-config-discipline.md`.
+      `configs/README.md` (the config contract).
 """
 
 from __future__ import annotations

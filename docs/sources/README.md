@@ -46,10 +46,6 @@ The frontmatter schema matches Obsidian Web Clipper's default output. Clip the s
 
 To clip: in Obsidian, use Web Clipper with output path set to `docs/sources/<type>/<slug>.md` (or rename after clipping).
 
-## Vault promotion
+## Archival rule
 
-Per cascade-system ADR-030 Posture B: `@vault-distill` can promote stubs to `~/Projects/obsidian/second-brain/wiki/sources/<type>/horus/<slug>.md` with `[[wikilinks]]` to extracted concepts. Opt-in; repo stub is authoritative.
-
-## Archival trigger rule
-
-`.windsurf/rules/horus-source-archival.md` — fires at `model_decision`; enforces "create stub at cite-time, no citation without stub on `main`."
+Every source cited in any artifact (ADR, thesis chapter, review record) gets a stub here at cite-time — no citation without a stub on `main` (ratified in ADR-002).

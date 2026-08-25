@@ -123,8 +123,7 @@ documented and do not block ADR-009 ratification.
 
 ## References
 
-- `~/.windsurf/plans/adr-009-pilot-vlm-cohort-fbbfa0.md` §6.4 (Type
-  taxonomy + escalation lemma)
+- ADR-009 cohort plan §6.4 (type taxonomy + escalation lemma)
 - `mlx_vlm/models/base.py` lines 443-475 (the silent-swallow patch logic)
 - `~/.cache/huggingface/modules/transformers_modules/_<sha>/<sha>/modeling_deepseekv2.py:37-40`
   (the offending import; copied verbatim from upstream DeepSeek-OCR-2)

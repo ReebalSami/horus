@@ -8,8 +8,7 @@ was then **verified against the `.tex` source, the generators, the ADR trail and
 the rendered PDF (`pdftotext` + page images) before any fix was applied**. No
 finding was accepted on a reviewer's claim alone; several were rejected as wrong.
 
-**Verification session**: one Cascade session; disposition plan at
-`~/.windsurf/plans/arena-review-fix-verdict-c7c047.md`. Fix branch:
+**Verification session**: one session. Fix branch:
 `docs/arena-fresh-eyes-fixes`.
 
 ## Confirmed and fixed — MAJOR (examiner-visible)

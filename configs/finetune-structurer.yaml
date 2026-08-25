@@ -18,8 +18,7 @@
 # training and the epoch is not chosen on the set that gets reported. `split.json` is not
 # rewritten — the carve is a reproducible derivation, so its fingerprints still verify.
 #
-# Refs: ADR-038 (Arm-B structurer), ADR-067 (this recipe), issue #55, plan
-# ~/.windsurf/plans/horus-reader-8b-then-lora-5a47b9.md.
+# Refs: ADR-038 (Arm-B structurer), ADR-067 (this recipe), issue #55.
 
 structurer_model: google/gemma-4-E4B-it
 structuring_prompt_config: configs/arm-b.yaml

@@ -437,8 +437,7 @@ class FieldSpec:
 # 4. FIELDS registry — 16 EN16931 business terms in scope for pilot #13
 # ---------------------------------------------------------------------------
 #
-# Scope rationale (locked by Socratic walk in plan file
-# `~/.windsurf/plans/horus-issue-13-pra-cii-parser-c482cf.md`):
+# Scope rationale (locked at the issue #13 scope walk):
 #
 #   - 11 EN16931-mandatory header + totals fields
 #   - 3 VAT-compliance fields (seller VAT ID, seller Steuernummer, buyer VAT ID)

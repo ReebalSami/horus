@@ -23,7 +23,7 @@ from pathlib import Path
 
 import pandas as pd
 
-# Files Cascade or external tools deposit alongside data that are NOT data.
+# Files that editors or external tools deposit alongside data that are NOT data.
 # Centralized here so every chapter walks the same set; per-chapter
 # subclassing can extend (not narrow) this list.
 DEFAULT_SKIP_NAMES: frozenset[str] = frozenset(

@@ -14,7 +14,7 @@ invoice that already has a transcript is skipped (unless ``overwrite``), so a lo
 chunked / re-invoked safely (`long-running-foreground`).
 
 Refs: ADR-014 (rasterizer + transcript format), ADR-038/034 (Arm-B reader→structurer),
-ADR-009 (Granite manifest entry), plan `~/.windsurf/plans/horus-finetune-structurer-55a1c3.md`.
+ADR-009 (Granite manifest entry).
 """
 
 from __future__ import annotations

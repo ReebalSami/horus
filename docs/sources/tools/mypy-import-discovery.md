@@ -34,7 +34,6 @@ Key facts pertinent to ADR-022:
   command is `rm -rf .mypy_cache && uv run mypy ... --no-incremental`.
 
 This last point is the nondeterminism trap surfaced during the
-evidence-base audit conversation (`~/.windsurf/plans/audit-branch-disposition-
-14db9b.md` §2c–§2d) and is the reason every typecheck verification step in
+evidence-base audit conversation (audit-branch disposition walk, §2c–§2d) and is the reason every typecheck verification step in
 ADR-022 + ADR-023 cycles through `rm -rf .mypy_cache` first.
 -->

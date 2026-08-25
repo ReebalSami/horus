@@ -57,4 +57,4 @@ Don't add diagrams for trivial flows. Prose is faster to read for two-step inter
 
 ## Source
 
-This README was scaffolded from the `_shared` template of the cascade-system meta-repo (its ADR-004); the shipped `*.example.*` placeholder diagrams were removed once real contents landed.
+Shipped placeholder diagrams were removed once real contents landed; the two tracked documents above are the directory's canonical occupants.

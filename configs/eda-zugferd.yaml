@@ -2,7 +2,7 @@
 #
 # Lock file for `make eda NB=experiments/eda-zugferd.py CFG=configs/eda-zugferd.yaml`.
 # Drives the descriptive-only EDA on the 151-PDF ZUGFeRD corpus + 88 standalone
-# XMLs per issue #46 + the locked plan at ~/.windsurf/plans/eda-zugferd-9c4a5b.md.
+# XMLs per issue #46.
 #
 # All knobs live HERE per `horus-config-discipline` (architectural forcing
 # function). The notebook (`experiments/eda-zugferd.py`) reads ONE papermill-

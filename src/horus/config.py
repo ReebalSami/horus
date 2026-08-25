@@ -5,17 +5,17 @@ Single source of truth for an experiment's knobs. Loaded via
 validates at boot — any malformed YAML, missing required field, type mismatch,
 or extra (unrecognised) field raises `pydantic.ValidationError` BEFORE any
 model loads, dataset downloads, or compute is spent. This is the architectural
-forcing function described by `.devin/rules/horus-config-discipline.md`
-and ratified by `docs/decisions/ADR-004-config-library.md`.
+forcing function described in `configs/README.md` and ratified by
+`docs/decisions/ADR-004-config-library.md`.
 
 `HORUS_*` env vars layer on top of the YAML data (per pydantic-settings source
 ordering) for secrets-style overrides — e.g., `HORUS_MLFLOW__TRACKING_URI`
 overrides `mlflow.tracking_uri` when set in the shell environment. The double
 underscore (`__`) is the nested-delimiter convention from `pydantic-settings`.
 
-The schema is intentionally minimal at Bundle 2 close. It grows per experiment:
-when M2D.5 step 6 authors the first Granite-Docling pilot, that experiment's
-ADR extends this schema with `model: ModelConfig`, `dataset: DatasetConfig`,
+The schema is intentionally minimal at its first ratification. It grows per
+experiment: each new experiment's ADR extends it with `model: ModelConfig`,
+`dataset: DatasetConfig`,
 `eval: EvalConfig`, etc. — each addition is a code change reviewable in PR.
 
 Example (the canonical experiment-boot pattern):
@@ -106,8 +106,8 @@ class EvalConfig(BaseModel):
         ratifying ADR).
       - `docs/sources/papers/biten-2019-anls-iccv.md` (ANLS threshold rationale).
       - `docs/sources/tools/docile-rossumai.md` (tolerance-windows precedent).
-      - `.devin/rules/horus-config-discipline.md` (this is the architectural
-        forcing function — knobs live HERE, not in `.py` constants).
+      - `configs/README.md` (the config contract — knobs live HERE, not in
+        `.py` constants).
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -173,8 +173,8 @@ class RasterizerConfig(BaseModel):
       - `docs/decisions/ADR-014-cohort-harness-multipage.md` (this sub-model's
         ratifying ADR — forthcoming).
       - `docs/sources/tools/pypdfium2.md` (rasterizer source archival).
-      - `.devin/rules/horus-config-discipline.md` (architectural forcing
-        function — knobs live HERE, not in `.py` constants).
+      - `configs/README.md` (the config contract — knobs live HERE, not in
+        `.py` constants).
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -433,7 +433,6 @@ class ComplexityTierConfig(BaseModel):
     Refs:
       - `docs/decisions/ADR-024-eda-visualization-stack.md` (this sub-model's
         ratifying ADR + complexity-tier framing).
-      - `~/.windsurf/plans/eda-zugferd-9c4a5b.md` §3.3g (EDA notebook section).
       - Brainstorm v2 §2 (No-HARKing — descriptive-only EDA, not hypothesis-discovery).
     """
 
@@ -517,7 +516,6 @@ class FineTuningAnchorsConfig(BaseModel):
 
     Refs:
       - `docs/decisions/ADR-024-eda-visualization-stack.md` §"Decision + integration thoughts".
-      - `~/.windsurf/plans/eda-zugferd-9c4a5b.md` §2.3 (sample-size assessment) + §3.3j.
       - Brainstorm v2 §6.2 (P0/P1 dataset list) + §7.5 (Mustang synthetic supply).
     """
 
@@ -567,7 +565,7 @@ class EDAConfig(BaseModel):
 
     Tunes the issue #46 EDA notebook (`experiments/eda-zugferd.py`) — a
     DESCRIPTIVE-ONLY analysis of the 151-PDF ZUGFeRD corpus + 88 standalone
-    XMLs per the locked plan at `~/.windsurf/plans/eda-zugferd-9c4a5b.md`.
+    XMLs per the locked issue #46 plan.
     The notebook MUST NOT perform hypothesis testing on the H1–H6 set; new
     patterns surfaced go to the §3.3k Exploratory observations log, NOT
     retro-fitted into H1–H6 (per brainstorm v2 §2 No-HARKing).
@@ -596,9 +594,8 @@ class EDAConfig(BaseModel):
 
     Refs:
       - `docs/decisions/ADR-024-eda-visualization-stack.md` (ratifying ADR).
-      - `~/.windsurf/plans/eda-zugferd-9c4a5b.md` (locked Q1–Q5 plan).
-      - `.devin/rules/horus-config-discipline.md` (architectural forcing
-        function — knobs live HERE, not in `.py` constants).
+      - `configs/README.md` (the config contract — knobs live HERE, not in
+        `.py` constants).
     """
 
     model_config = ConfigDict(extra="forbid")

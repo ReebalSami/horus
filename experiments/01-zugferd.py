@@ -16,9 +16,7 @@
 # PDFs + 88 standalone XMLs, sealed via `MANIFEST.md`). Its scope per
 # issue #46 (originally scoped single-dataset; expanded to a full-corpus
 # multi-chapter Quarto Book per [ADR-025](../docs/decisions/ADR-025-eda-multi-dataset-book-structure.md))
-# and the locked plans at `~/.windsurf/plans/eda-zugferd-9c4a5b.md`
-# (Phase 1, single-dataset) +
-# `~/.windsurf/plans/eda-full-corpus-ed5d97.md` (Phase 2, this expansion):
+# and the locked plans (Phase 1 single-dataset; Phase 2 this expansion):
 #
 # 1. Characterize the corpus (per-flavor / per-profile / per-page-count
 #    / per-field statistics).
@@ -1352,7 +1350,7 @@ print(f"Eval N for thesis-defendable F1 (≤±0.10 95% CI half-width): {n_eval_m
 #
 # - _(Each observation = 1-line statement + reference to the §N section
 #   it surfaced from + a brief note on whether it's worth promoting to
-#   `cascade-system/queue/pending-review.md` for cross-project review.)_
+#   the cross-project review queue.)_
 # - _(No observations recorded yet. The Socratic walk in plan §4 Step 5
 #   captures these.)_
 
@@ -1443,9 +1441,7 @@ fig.show()
 #   Q4=A), fine-tuning decisions (issue #55).
 # - **Next step (per the plan)**: Socratic walk through findings (plan §4
 #   Step 5) → exploratory observations get logged in §11 → cross-project
-#   ones surface to `cascade-system/queue/pending-review.md` per
-#   `bidirectional-learning-pipe`.
+#   ones surface to the cross-project review queue.
 # - **Refs**: ADR-024 (visualization stack), ADR-014 (rasterizer +
 #   harness substrate), ADR-013 (16-field GT scorer), ADR-009 (cohort),
-#   issue #46, plan `~/.windsurf/plans/eda-zugferd-9c4a5b.md`,
-#   brainstorm v2 §2 + §6 + §9.3 + §12.
+#   issue #46, brainstorm v2 §2 + §6 + §9.3 + §12.

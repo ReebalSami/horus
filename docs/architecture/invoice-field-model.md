@@ -1,13 +1,12 @@
 # Invoice field model — full-coverage extraction schema
 
-> **Status:** draft for approval · **Author:** Cascade (schema-extension thinking session) ·
-> **Date:** 2026-06-13 · **Ratified by:** ADR-041 (schema design) + ADR-042 (line-item
-> scoring, authored at Step 2).
+> **Status:** ratified · **Date:** 2026-06-13 · **Ratified by:** ADR-041 (schema
+> design) + ADR-042 (line-item scoring).
 >
 > This is the **living checklist** of every field HORUS extracts from a German B2B
 > invoice, plus the data shapes and the exact places in the code that change when the
-> field set grows. It is the user-approved foundation the decision record and the coding
-> handoffs build on. Field names, German labels, and the existing 19-field rows are
+> field set grows. It is the author-approved foundation the decision records and the
+> implementation build on. Field names, German labels, and the existing 19-field rows are
 > grounded in `src/horus/eval/ground_truth.py`; the business-term codes are EN16931
 > (archived at `docs/sources/legal/zugferd-en16931.md`).
 
@@ -275,7 +274,6 @@ shift. New work always scores the full current `FIELDS`.
 
 ## 11. Provenance
 
-- Plan: `~/.windsurf/plans/horus-invoice-schema-full-coverage-68a4ac.md`
 - Grounded in: `src/horus/eval/ground_truth.py`, `schema.py`, `scorer.py`,
   `app/data/fields.py`, `heldout.py`, the held-out datasheet.
 - Standard: EN16931 / ZUGFeRD-Factur-X (`docs/sources/legal/zugferd-en16931.md`).
