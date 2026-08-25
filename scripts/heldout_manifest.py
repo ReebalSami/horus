@@ -215,7 +215,7 @@ def build_datasheet(corpus_root: Path, out_path: Path) -> Path:
     n_verified = sum(1 for item in items if item.verified)
 
     # Per-field presence over the SIGNED-OFF GT (aggregate counts only; no values). Drafts are
-    # Cascade-authored and then author-verified field-by-field in the review page, which writes
+    # assistant-drafted and then author-verified field-by-field in the review page, which writes
     # `_promoted/`; the verified count is still reported separately so a partially-signed-off
     # set cannot silently read as complete.
     gt_cache = build_gt_cache(corpus_root, gt_dirname=DEFAULT_HELDOUT_GT_DIRNAME)

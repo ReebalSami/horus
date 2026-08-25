@@ -244,7 +244,7 @@ cohort-smoke:
 orchestrated-smoke: zugferd-smoke
 	uv run python scripts/orchestrated_smoke.py data/raw/smoke/invoice-001.pdf
 
-# Dataset manifest generator (M2D.5 issue #12).
+# Dataset manifest generator (issue #12).
 # Generates data/raw/<lang>/<slug>/MANIFEST.md (git-tracked) + sha256.txt (gitignored).
 # Usage: make data-manifest SLUG=<slug> LANG=<lang> [SOURCE_URL=...] [SOURCE_TYPE=...]
 #                            [LICENSE_SPDX=...] [LICENSE_URL=...] [SKIP_SHA256=1]

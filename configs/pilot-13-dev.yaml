@@ -30,8 +30,7 @@
 #       * XRECHNUNG_Einfach      — multi-page XRECHNUNG (multi-format path)
 #       * EN16931_Reisekostenabrechnung — many line items + multi-category
 #         VAT (representative complex; the failure mode that drove the
-#         MONEY-field FN pattern in pilot-13 — per docs/retros/m2d.5-
-#         pilot-13-cohort-harness.md).
+#         MONEY-field FN pattern in pilot-13).
 #   - cohort.parent_run_name + transcript_archive_dir → distinct from
 #     canonical so dev transcripts NEVER contaminate the 182-tuple
 #     `docs/sources/transcripts-multipage/` archive.

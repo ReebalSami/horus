@@ -11,7 +11,7 @@ Covers per `horus-config-discipline` Bundle 1 + ADR-013:
     money/date)
 
 Refs: ADR-013 §"Decision + integration thoughts", ADR-004 (config library),
-      `src/horus/config.py` (the schema), `.devin/rules/horus-config-discipline.md`.
+      `src/horus/config.py` (the schema), `configs/README.md` (the config contract).
 """
 
 from __future__ import annotations

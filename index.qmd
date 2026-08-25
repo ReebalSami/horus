@@ -69,4 +69,4 @@ The `_book/` output directory is **gitignored** (build artifact).
 
 ## Provenance
 
-This artifact is the deliverable for HORUS issue [#46](https://github.com/ReebalSami/horus/issues/46) (originally scoped single-dataset; expanded to multi-dataset per [ADR-025](docs/decisions/ADR-025-eda-multi-dataset-book-structure.md), 2026-05-25). The expansion was driven by user feedback during EDA review: *"This is the whole point of EDA — I want to know everything about the data"* (2026-05-25). The implementation plan is at `~/.windsurf/plans/eda-full-corpus-ed5d97.md`.
+This artifact is the deliverable for HORUS issue [#46](https://github.com/ReebalSami/horus/issues/46) (originally scoped single-dataset; expanded to multi-dataset per [ADR-025](docs/decisions/ADR-025-eda-multi-dataset-book-structure.md), 2026-05-25). The expansion was driven by user feedback during EDA review: *"This is the whole point of EDA — I want to know everything about the data"* (2026-05-25).

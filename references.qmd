@@ -42,6 +42,4 @@ Per-dataset citations and provenance details live in each chapter's §1 Provenan
 
 ## Project artefacts
 
-- Implementation plan: `~/.windsurf/plans/eda-full-corpus-ed5d97.md`
-- Original ZUGFeRD-only plan (Phase 1, completed 2026-05-25): `~/.windsurf/plans/eda-zugferd-9c4a5b.md`
-- Brainstorm v2 (locked, 2026-05-08): `docs/prompts/stages/02-brainstorm.md`
+- Scope: issue [#46](https://github.com/ReebalSami/horus/issues/46) (Phase 1 single-dataset, completed 2026-05-25; Phase 2 full-corpus expansion per ADR-025)

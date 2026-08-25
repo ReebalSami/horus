@@ -57,7 +57,6 @@ concern. The pattern is documented for callers.
 - ADR-007 (dual-track inference framework)
 - ADR-008 (orchestrated baseline — install validity precedent)
 - ADR-009 (this dispatcher's parent decision; 10-model cohort)
-- ADR-018 of cascade-system (`branch-and-pr-required` enforcement)
 - `scripts/inference_smoke.py` (ADR-007's dispatcher prototype; this module
   supersedes its responsibilities)
 """

@@ -619,8 +619,8 @@ print(f"  ALL 7 datasets in scope: {LICENSE_TIER['dataset'].tolist()}")
 # it.
 #
 # **Decision needed (defer)**: codify the working pattern as an L3
-# `python-ml-uv` rule? Captured to
-# `cascade-system/queue/pending-review.md` 2026-05-25; promotion
+# project-template rule? Captured to the cross-project review
+# queue 2026-05-25; promotion
 # deferred until a second project hits the same error class OR an
 # instrumented bisect confirms the root cause.
 

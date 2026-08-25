@@ -63,7 +63,7 @@ Refs:
   - ADR-011 §"Decision" + MLflowTracker (the tracking contract)
   - ADR-009 Amendment 1 (the 10-model cohort substrate; 7 working models)
   - ADR-007 (per-model longest_edge=2048 internal resize — unchanged by 300 DPI rasterization)
-  - `.devin/rules/horus-config-discipline.md` (knobs live in YAML, not in `.py`)
+  - `configs/README.md` (knobs live in YAML, not in `.py`)
 """
 
 from __future__ import annotations

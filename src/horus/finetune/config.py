@@ -9,8 +9,7 @@ zero-shot baseline, the training targets, and the fine-tuned eval — is NOT dup
 is loaded from its canonical home (`configs/arm-b.yaml`'s `cohort.prompt_template_override`) via
 `load_structuring_prompt`, so all three passes provably share one string ("matched-precision").
 
-Refs: ADR-038 (Arm-B structurer prompt), `horus-config-discipline`; plan
-``~/.windsurf/plans/horus-finetune-structurer-55a1c3.md``.
+Refs: ADR-038 (Arm-B structurer prompt); config discipline per `configs/README.md`.
 """
 
 from __future__ import annotations

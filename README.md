@@ -8,153 +8,51 @@ Master's thesis project (FH Wedel, SS 2026): privacy-first document intelligence
 
 **Backronym**: **H**ybrid **O**CR-free **R**eading & **U**nderstanding **S**ystem.
 
-**Symbolic anchor**: Horus is the Egyptian falcon-headed god of vision and kingship. The **Eye of Horus** — the *wedjat* — is one of antiquity's most enduring symbols of perception, protection, and restoration. Vision-language models *see* documents holistically without an OCR transcription step; the mythology maps directly to the central methodological commitment of this thesis (OCR-free, VLM-first; see brainstorm v2 §1 + §3.1, ratified at `docs/decisions/ADR-003-brand-naming-horus.md`).
+**Symbolic anchor**: Horus is the Egyptian falcon-headed god of vision and kingship. The **Eye of Horus** — the *wedjat* — is one of antiquity's most enduring symbols of perception, protection, and restoration. Vision-language models *see* documents holistically without an OCR transcription step; the mythology maps directly to the central methodological commitment of this thesis (OCR-free, VLM-first; ratified at `docs/decisions/ADR-003-brand-naming-horus.md`).
 
-**Why not the alternatives?** `vellum` / `hearth` / `aegis` / `codex` were all evaluated and rejected — see `docs/decisions/ADR-003-brand-naming-horus.md` for the elimination tree.
+## What's in this repository
 
-## Toolchain
+HORUS is designed as a three-layer system — **(1) reading**: OCR-free extraction of structured invoice data with local vision-language models; **(2) knowledge graph**: entities and relations over extracted data; **(3) analytical queries** over that graph. The thesis implements and evaluates **Layer 1** end-to-end; Layers 2–3 are design and future work (the manuscript's scope guard, ADR-054).
 
-- **Python**: 3.14+ (pinned in `.python-version`)
-- **Package manager**: `uv` (Astral) — exclusive; no `pip` / `poetry` / `conda` mixing per the `uv-discipline` rule
-- **Build backend**: `uv_build`
-- **Linter / formatter**: `ruff`
-- **Type checker**: `mypy`
-- **Test runner**: `pytest`
-- **Notebook discipline**: `jupytext` (write `.py`, convert to `.ipynb` for execution) + `papermill` (parameterized execution); no `.ipynb` checked in by default per the `notebook-discipline` rule
+Everything reported in the thesis is reproducible from this repository:
+
+| Artifact | Where |
+|---|---|
+| Thesis manuscript (LaTeX; `make thesis`) | `thesis/` |
+| Evaluation harness, scorer, ground-truth machinery | `src/horus/` |
+| Experiments (jupytext-paired, papermill-run) | `experiments/` + `configs/` |
+| Committed evaluation evidence + audit reports | `eval/`, `data/finetune/` |
+| Architecture decision records (indexed) | `docs/decisions/` |
+| Manuscript review records | `docs/reviews/` |
+| Archived primary sources (papers, tools, datasets, legal) | `docs/sources/` |
+| Observability dashboard (Streamlit; `make app`) | `app/` |
+| Sanitized datasheet of the private held-out set | `docs/architecture/belege-heldout-datasheet.md` |
 
 ## Quick start
 
 ```sh
 make install     # uv sync (creates .venv, installs deps + dev group)
-make test        # uv run pytest (corpus-dependent tests auto-skip when data is absent)
+make test        # pytest — corpus-dependent tests auto-skip when data is absent
 make lint        # ruff check + format check
-make format      # ruff format + ruff check --fix
-make typecheck   # mypy src tests
+make typecheck   # mypy
 ```
 
-Every runnable entry point is a Make target — **`make help`** lists all of them with one-line descriptions. The load-bearing ones:
+Requirements: Python 3.14+ (pinned in `.python-version`) and [`uv`](https://docs.astral.sh/uv/). Every runnable entry point is a Make target — **`make help`** lists all of them.
+
+## Reproducing the results
 
 | Area | Targets |
 |---|---|
 | Evidence pipeline | `pilot-13`, `adapter-iterate`, `arm-b`, `reading-ceiling`, `inspect-pilot-13` |
 | Instrument audits | `audit-prompts`, `audit-heldout-exclusions`, `glossary` |
-| Tracking / UI | `mlflow-ui`, `app` (Streamlit observability dashboard, ADR-036) |
 | Held-out set | `get-frozen-testset` (examiner restore), `heldout-index`, `heldout-datasheet` |
-| Thesis | `thesis`, `thesis-assets`, `thesis-clean` (see `thesis/README.md`) |
+| Tracking / UI | `mlflow-ui`, `app` |
+| Thesis | `thesis-assets` (regenerate every reported table + figure from committed evidence), `thesis`, `thesis-clean` |
 | Smokes | `zugferd-smoke`, `inference-smoke`, `cohort-smoke`, `orchestrated-smoke` |
 
-## Project layout
+No measured number in the manuscript is hand-copied: `make thesis-assets` regenerates all tables and figures from the committed measurement artifacts, and `make thesis` builds the PDF (see `thesis/README.md`).
 
-```
-.
-├── pyproject.toml          # uv-managed; PEP 735 [dependency-groups]
-├── Makefile                # every runnable entry point (`make help`)
-├── .python-version         # 3.14
-├── .env.example            # UV_TORCH_BACKEND + GT-authoring cloud keys (never on the inference path)
-├── AGENTS.md               # operating guide for the AI-assisted workflow (disclosed in the thesis AI-usage appendix)
-├── .github/workflows/ci.yml  # lint + typecheck + test on every push/PR (ADR-023)
-├── src/horus/              # main package: Pydantic config schema, eval harness (scorer,
-│                           #   adapters, ground truth, held-out route), fine-tune, EDA, CLI
-├── scripts/                # ~44 operational scripts, grouped in scripts/README.md
-├── experiments/            # jupytext-paired .py experiments (papermill + Quarto; ADR-024/025)
-├── configs/                # per-experiment YAML, Pydantic-validated at boot (configs/README.md)
-├── tests/                  # pytest suite; corpus-dependent tests auto-skip (ADR-023)
-├── eval/                   # committed audit reports + sanitized result JSONs (eval/README.md)
-├── data/                   # gitignored corpora; tracked MANIFESTs + bakeoff transcripts (data/README.md)
-├── app/                    # Streamlit observability dashboard (`make app`; ADR-036)
-├── thesis/                 # LaTeX manuscript (`make thesis`; thesis/README.md)
-├── docs/                   # ADRs, archived sources, reviews, handoffs (docs/structure.md)
-├── notebooks/              # scratch EDA only — not the experiment home (notebooks/README.md)
-└── .devin/                 # project rules + phases.yaml for the AI-assisted workflow
-```
-
-## Experiment tracking
-
-HORUS uses MLflow (locked in [ADR-011](docs/decisions/ADR-011-experiment-tracker-integration.md)) for all experiment runs, with **SQLite metadata** (`sqlite:///mlflow.db`) and **filesystem artifacts** (`mlruns/<experiment_id>/<run_id>/artifacts/`). Both paths are gitignored — every run stays on the analyst's laptop, matching the privacy frame in [`AGENTS.md`](AGENTS.md) §1.
-
-### Browse runs in the MLflow UI
-
-```sh
-make mlflow-ui                            # http://127.0.0.1:8080 (local-only)
-make mlflow-ui MLFLOW_UI_PORT=5001        # override port
-```
-
-The target binds to `127.0.0.1` by default (no external network exposure) and uses port `8080` to avoid the documented macOS AirPlay Receiver conflict at MLflow's port-5000 default. Wraps `mlflow server --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1 --port 8080`. Per [ADR-015](docs/decisions/ADR-015-mlflow-ui-makefile-wire.md).
-
-### Run organization (per ADR-014)
-
-Pilot-13 runs use a **parent + nested** hierarchy:
-
-- **Parent run** (`pilot-13-full`) — cohort-pooled metrics, hardware fingerprint, deterministic seed, per-(model, field) heatmap (`cohort_heatmap.png`).
-- **Nested runs** (one per `(model, invoice)` tuple) — per-tuple `micro_f1`, per-field outcomes, full-text transcript artifact.
-
-`make pilot-13` is resume-safe via `mlflow.search_runs` filtering on `tags.mlflow.parentRunId`.
-
-### Fast adapter dev loop (per ADR-016)
-
-When iterating on adapter heuristics (`src/horus/eval/adapters.py`'s Layer 1 preprocess + Layer 2 to_predicted_dict), the full `make pilot-13` is overkill — it re-runs the VLM for every (model, invoice) tuple. The fast path re-scores cached transcripts against a candidate adapter:
-
-```sh
-# Slow path (~3-5 min for the dev cohort): produce canonical transcripts.
-make pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
-
-# Fast path (~5-15 s): re-score saved transcripts with candidate adapter.
-make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
-```
-
-The `adapter-iterate` target compares `src/horus/eval/adapters.py` (canonical baseline) against `src/horus/eval/adapters_candidate.py` (gitignored working file). Output: per-(model, field) Δ TP table + cohort pooled Δ headline.
-
-**Stability self-check** (Google "Rules of Machine Learning" §24): when the candidate file is missing OR byte-identical to baseline, the tool runs baseline-vs-baseline and asserts Δ = 0. Catches non-determinism bugs before they cause silent F1 drift.
-
-**Opt-in MLflow audit trail** (`LOG_MLFLOW=1`): when promoting a candidate to canonical, log 2 nested MLflow runs (`adapter=baseline` / `adapter=candidate`) under an `adapter-iterate` experiment for permanent record:
-
-```sh
-make adapter-iterate CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml LOG_MLFLOW=1
-```
-
-**HARKing guard** (per `brainstorm v2 §2` No-HARKing + NeurIPS Paper Checklist): `configs/pilot-13-dev.yaml` sets `cohort.dev_only: true`, which makes the harness refuse to log to the canonical `pilot-13-full` MLflow experiment. The dev cohort (1 model × 3 invoices) is for iterative tuning ONLY; final thesis-reported F1 numbers come from a `dev_only: false` config scored against the held-out test split (issue #46 substrate).
-
-### Filter by experiment / config
-
-Each run carries originating-config metadata as MLflow tags:
-
-- `tags.adr` — `ADR-011` (cohort-smoke validation), `ADR-013` (page-1 scorer), `ADR-014` (multi-page cohort harness)
-- `tags.stage` — `smoke` (pre-pilot validation) vs `pilot-13` (full evidence sweep)
-- `tags.cohort` — `adr-009-pilot-cohort` (the 7-working-model substrate)
-- `tags.profile` — `EN16931` vs `XRECHNUNG` (per ADR-012 Probe 5 split)
-
-See `configs/pilot-13.yaml` for the canonical tag set.
-
-### Headless inspection
-
-For programmatic post-mortem (no browser):
-
-```sh
-make inspect-pilot-13                                          # latest parent run, default config
-make inspect-pilot-13 CFG=configs/pilot-13.yaml,configs/pilot-13-dev.yaml
-make inspect-pilot-13 PARENT_RUN_ID=<run-id>                   # explicit parent
-```
-
-Outputs four sections in order:
-
-1. **Per-(model, invoice) F1 grid** — raw scores + wall-clock seconds per tuple.
-2. **Per-model accuracy aggregate** — mean micro-F1, sorted descending (best models top).
-3. **Per-model perf summary** ([ADR-017](docs/decisions/ADR-017-timing-tokens-memory-instrumentation.md), [issue #52](https://github.com/ReebalSami/horus/issues/52)) — wall-clock seconds, native tokens/sec, chars/sec, total generation tokens, peak memory (GB), and `%_max` of the host's MPS memory ceiling. Sorted by mean wall-clock ascending (fastest models top). Pre-#52 parent runs degrade gracefully — the section prints a single-line note instead of a blank table. **Substrate** for the **H8 efficiency** hypothesis (latency-efficiency comparison; pre-registered 2026-05-31 via ADR-031 — not §6 H4, which is the Layer-3 graph-vs-vector hypothesis); the H8 test itself is filed separately.
-4. **Probes** — Probe 1 (MONEY-field TPs on `EN16931_Einfach`), Probe 2 (XRECHNUNG factur-x route DATE outcomes).
-
-Wraps `scripts/inspect_pilot_13.py`; the script is also runnable directly via `uv run python scripts/inspect_pilot_13.py [--cfg <path>] [--parent-run-id <id>]`.
-
-## Template decisions — all resolved
-
-The `python-ml-uv` L3 template deliberately left several tooling decisions open ("B" decisions). HORUS resolved every one of them; each has a ratifying ADR:
-
-| Template decision | HORUS resolution |
-|---|---|
-| PyTorch install (B3) | `UV_TORCH_BACKEND=auto` in `.env.example` — autodetects MPS / CUDA / CPU at install time |
-| Experiment tracker (B4) | MLflow — SQLite metadata + filesystem artifacts ([ADR-011](docs/decisions/ADR-011-experiment-tracker-integration.md)); see `## Experiment tracking` |
-| Config layer (B8) | Pydantic `ExperimentConfig`, validated at boot before any model loads ([ADR-004](docs/decisions/ADR-004-config-library.md); `horus-config-discipline`) |
-| CI scaffold (B10) | GitHub Actions — lint + typecheck + test on every push to `main` and every PR ([ADR-023](docs/decisions/ADR-023-ci-pipeline.md); `.github/workflows/ci.yml`) |
-| Type checker (B1) | `mypy`; the `pyrefly` fast path was never needed |
+Experiment runs are tracked locally in MLflow (SQLite metadata + filesystem artifacts, both gitignored — every run stays on the analyst's machine). Browse with `make mlflow-ui` at `http://127.0.0.1:8080`.
 
 ## Held-out test set (examiner access)
 
@@ -168,19 +66,27 @@ make get-frozen-testset    # asks for the password (handed over separately, neve
 
 The command downloads the blob from the GitHub Release, decrypts it, restores `data/self-collected/`, and verifies every invoice's sha256 against the frozen datasheet — proving the restored set is **byte-identical** to the one the thesis evaluated. After restore, the held-out targets run locally (`make audit-heldout-exclusions`, `make heldout-datasheet`, …).
 
-## Project lifecycle
-
-This project follows a phase chain defined in `.devin/phases.yaml` (copied from the `python-ml-uv` L3 template):
+## Repository layout
 
 ```
-literature → brainstorm → spec → issues → experiment → implement → writeup
+.
+├── pyproject.toml          # uv-managed project + dependency groups
+├── Makefile                # every runnable entry point (`make help`)
+├── .python-version         # 3.14
+├── .env.example            # optional env knobs (torch backend; GT-authoring keys — never on the inference path)
+├── .github/workflows/ci.yml  # lint + typecheck + test on every push/PR (ADR-023)
+├── src/horus/              # main package: config schema, eval harness, fine-tune, EDA, CLI
+├── scripts/                # operational scripts, grouped in scripts/README.md
+├── experiments/            # jupytext-paired .py experiments (papermill + Quarto)
+├── configs/                # per-experiment YAML, Pydantic-validated at boot (configs/README.md)
+├── tests/                  # pytest suite; corpus-dependent tests auto-skip (ADR-023)
+├── eval/                   # committed audit reports + sanitized result JSONs (eval/README.md)
+├── data/                   # gitignored corpora; tracked MANIFESTs + fine-tune evidence (data/README.md)
+├── app/                    # Streamlit observability dashboard (`make app`)
+├── thesis/                 # LaTeX manuscript (`make thesis`; thesis/README.md)
+├── docs/                   # decision records, review records, archived sources, datasheets
+└── notebooks/              # scratch EDA only (notebooks/README.md)
 ```
-
-Run a phase via `/run-phase <name>` from a Cascade conversation in this project's directory.
-
-## Provenance
-
-Bootstrapped via `/start-project` from L3 template `python-ml-uv` at `~/.windsurf/templates/python-ml-uv/` (Vertical B output of the cascade-system meta-repo, milestones M2B.1–M2B.8). HORUS identity ratified at `docs/decisions/ADR-003-brand-naming-horus.md` (M2D.1). Tool-decision discipline + source archival ratified at `docs/decisions/ADR-001-tool-decision-discipline.md` and `ADR-002-source-archival.md` (M2D.2). Project handoff context: `cascade-system/docs/handoffs/cascade-d-master-thesis.md` + kickoff plan `~/.windsurf/plans/kickoff-cascade-d-horus-362eef.md`.
 
 ## License
 
