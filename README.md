@@ -61,7 +61,7 @@ The final evaluation runs on a **private held-out set of 39 real invoices** (ADR
 ```sh
 git clone https://github.com/ReebalSami/horus && cd horus
 make install
-make get-frozen-testset    # asks for the password (handed over separately, never in writing next to the link)
+make get-frozen-testset    # asks for the password (handed over by the author directly to the examiners, out-of-band from the public release)
 ```
 
 The command downloads the blob from the GitHub Release, decrypts it, restores `data/self-collected/`, and verifies every invoice's sha256 against the frozen datasheet — proving the restored set is **byte-identical** to the one the thesis evaluated. After restore, the held-out targets run locally (`make audit-heldout-exclusions`, `make heldout-datasheet`, …).
