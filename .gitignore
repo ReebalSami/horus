@@ -5,7 +5,6 @@ __pycache__/
 *.so
 .Python
 build/
-dist/
 *.egg-info/
 *.egg
 
@@ -135,7 +134,6 @@ docs/sources/transcripts-arm-a-dev/
 # Serena MCP tool — manages its own cache via .serena/.gitignore
 .serena/
 
-/.quarto/
 **/*.quarto_ipynb
 
 # ADR-036 (#103): Streamlit observability app brand assets. The raw logo
@@ -158,7 +156,8 @@ thesis/_build/
 
 # ADR-075: the encrypted frozen test-set bundle is written to dist/ by
 # `make frozen-testset-bundle`. The blob is published as a GitHub Release asset,
-# never committed (the repo carries the datasheet freeze table instead).
+# never committed (the repo carries the datasheet freeze table instead). This
+# anchored pattern also covers the conventional Python build-artifact dist/.
 /dist/
 
 # ADR-074: supervisor review material (2026-08-18). The annotated PDF and the
@@ -168,4 +167,4 @@ thesis/_build/
 # docs/reviews/2026-08-18-first-supervisor-comment-registry.md (ADR-069 makes
 # docs/reviews/ the canonical home for review records and explicitly rejected
 # keeping review prose under thesis/).
-thesis/proff-kommentare/
+thesis/supervisor-feedback/

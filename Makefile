@@ -1,4 +1,4 @@
-.PHONY: help install test lint format typecheck audit-prompts audit-heldout-exclusions glossary experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet frozen-testset-bundle get-frozen-testset thesis thesis-clean clean
+.PHONY: help install test lint format typecheck audit-prompts audit-heldout-exclusions glossary experiment eda eda-book mustang-jar zugferd-smoke inference-smoke orchestrated-smoke cohort-smoke data-manifest pilot-13 adapter-iterate arm-b mlflow-ui inspect-pilot-13 reading-ceiling app heldout-index heldout-datasheet frozen-testset-bundle get-frozen-testset thesis-assets thesis thesis-clean clean
 
 # Default target — list available commands.
 help:
@@ -25,12 +25,13 @@ help:
 	@echo "  arm-b           Arm B (orchestrated) structuring pass over cached reader transcripts (ADR-038; CFG=...,arm-b.yaml required; run the reader/baseline pass first)"
 	@echo "  mlflow-ui       browse pilot-13 + adapter-iterate + cohort-smoke runs in MLflow's local UI (ADR-015; MLFLOW_UI_PORT=<n> to override default 8080)"
 	@echo "  inspect-pilot-13  print per-model accuracy + perf summary table for the latest pilot-13 parent run (ADR-017, #52; CFG=configs/...yaml; PARENT_RUN_ID=<id> optional)"
-	@echo "  reading-ceiling   read-quality ceiling + parser-loss + same-tuple free-form-vs-JSON 4-metric diagnostic (ADR-030, #76; offline, writes eval/ report)"
+	@echo "  reading-ceiling   HISTORICAL diagnostic (ADR-030 era, #76): read-ceiling + free-form-vs-JSON comparison; its determinism guard pins the ADR-037-era scorer and refuses under the current one"
 	@echo "  app             Streamlit observability dashboard (ADR-036, #103; read-only; APP_PORT=<n> overrides 8501)"
 	@echo "  heldout-index   (re)write data/self-collected/index.json for the held-out Belege set (ADR-040; LOCAL-ONLY)"
 	@echo "  heldout-datasheet  write the SANITIZED tracked datasheet for the held-out set (ADR-040; OUT=path to override)"
 	@echo "  frozen-testset-bundle  build the encrypted examiner bundle of the held-out set (ADR-075; author-side, LOCAL-ONLY)"
 	@echo "  get-frozen-testset  download + decrypt + verify + restore the frozen held-out set (ADR-075; examiner-side; URL=/FILE=/FORCE=1)"
+	@echo "  thesis-assets   regenerate thesis/tables/ + thesis/figures/ from committed evidence (ADR-055; HELDOUT=cache to skip re-scoring)"
 	@echo "  thesis          build the thesis PDF via latexmk (-> thesis/_build/main.pdf; needs TeX Live/MacTeX, not uv)"
 	@echo "  thesis-clean    remove thesis LaTeX build artifacts (thesis/_build)"
 	@echo "  clean           remove build artifacts and caches"
@@ -425,6 +426,13 @@ inspect-pilot-13:
 #   3. determinism cross-check vs docs/sources/json-baseline-metrics.txt
 # Defuses the ADR-028 stale-MLflow landmine: free-form is re-scored LIVE from
 # transcripts, never read from saved scores. Honors `long-running-foreground`.
+#
+# ERA-BOUND: the closing determinism cross-check compares against the frozen
+# docs/sources/json-baseline-metrics.txt (last aligned at the ADR-035/037
+# 19-field scorer, PR #105). Scorer/adapter evolution after that era (line-item
+# scoring, alias + exclusion changes) makes the guard refuse BY DESIGN — the
+# historical baseline must not be regenerated under a newer scorer. Kept for
+# the ADR-030/031/034 record trail.
 #
 # Usage:
 #   make reading-ceiling                       (canonical: pre-registered configs)

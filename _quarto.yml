@@ -12,10 +12,9 @@
 #   matplotlib/seaborn static figures only (Plotly drops gracefully to
 #   static fallbacks per Quarto's documented behavior).
 #
-# Chapters list grows as Phases B + C land:
-#   - Phase A: 00-index.qmd  (pure scaffold; baseline-render verifiable)
-#   - Phase B: + 01-zugferd.py  (refactored from experiments/eda-zugferd.py)
-#   - Phase C: + 02-fatura2.py + 03-omnidocbench.py + ...
+# The Book is complete: index.qmd (preface) + 8 dataset/synthesis chapters
+# (experiments/01-*.py … 08-*.py) + the consolidated Datasheets appendix
+# (experiments/A1-datasheets.qmd) + references.qmd.
 #
 # Per-chapter overrides (e.g., `title:` in the chapter's YAML front-matter +
 # `params:` for `cfg_path`) layer on top of these project-level defaults.

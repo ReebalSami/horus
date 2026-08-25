@@ -24,12 +24,12 @@ This chapter consolidates citations from across the Book. Sources archived per [
 Per-dataset citations and provenance details live in each chapter's §1 Provenance section + the consolidated Datasheets appendix. Brief pointers:
 
 - **ZUGFeRD/Factur-X corpus** — [github.com/ZUGFeRD/corpus](https://github.com/ZUGFeRD/corpus) · [Local stub](docs/sources/datasets/zugferd-corpus.md). Apache-2.0. Sample collection by Mustang Project (Jochen Stärk) for testing ZUGFeRD readers + validators. See @sec-zugferd.
-- **fatura2-invoices** — Mathieu1256 et al. *FATURA2-invoices.* [HuggingFace](https://huggingface.co/datasets/mathieu1256/FATURA2-invoices) · [Local stub](docs/sources/datasets/fatura2-invoices.md). CC-BY-4.0. *(Chapter 2; Phase C.)*
-- **OmniDocBench** — OpenDataLab. *OmniDocBench.* [HuggingFace](https://huggingface.co/datasets/opendatalab/OmniDocBench) · [Local stub](docs/sources/datasets/omnidocbench.md). Custom non-commercial-research license. *(Chapter 3; Phase C.)*
-- **FUNSD — Form Understanding in Noisy Scanned Documents** — Jaume, G., Ekenel, H. K., & Thiran, J.-P. (2019). [funsd-website](https://guillaumejaume.github.io/FUNSD/) · [Local stub](docs/sources/datasets/funsd.md). Non-commercial research only. *(Chapter 4; Phase C.)*
-- **parsee-ai-invoices-example** — Parsee.ai. [HuggingFace](https://huggingface.co/datasets/parsee-ai/invoices-example) · [Local stub](docs/sources/datasets/parsee-ai-invoices-example.md). MIT. *(Chapter 5; Phase C.)*
-- **CORD-v2** — Park, S., Shin, S., Lee, B., Lee, J., Surh, J., Seo, M., & Lee, H. (2019). *CORD: A Consolidated Receipt Dataset for Post-OCR Parsing.* Naver Clova. [HuggingFace](https://huggingface.co/datasets/naver-clova-ix/cord-v2) · [Local stub](docs/sources/datasets/cord-v2.md). CC-BY-4.0. *(Chapter 6; Phase C.)*
-- **inv-cdip-tobacco** — Salesforce. [GitHub](https://github.com/salesforce/inv-cdip) · [Local stub](docs/sources/datasets/inv-cdip-tobacco.md). CC-BY-NC-4.0. *(Chapter 7; Phase C.)*
+- **fatura2-invoices** — Mathieu1256 et al. *FATURA2-invoices.* [HuggingFace](https://huggingface.co/datasets/mathieu1256/FATURA2-invoices) · [Local stub](docs/sources/datasets/fatura2-invoices.md). CC-BY-4.0.
+- **OmniDocBench** — OpenDataLab. *OmniDocBench.* [HuggingFace](https://huggingface.co/datasets/opendatalab/OmniDocBench) · [Local stub](docs/sources/datasets/omnidocbench.md). Custom non-commercial-research license.
+- **FUNSD — Form Understanding in Noisy Scanned Documents** — Jaume, G., Ekenel, H. K., & Thiran, J.-P. (2019). [funsd-website](https://guillaumejaume.github.io/FUNSD/) · [Local stub](docs/sources/datasets/funsd.md). Non-commercial research only.
+- **parsee-ai-invoices-example** — Parsee.ai. [HuggingFace](https://huggingface.co/datasets/parsee-ai/invoices-example) · [Local stub](docs/sources/datasets/parsee-ai-invoices-example.md). MIT.
+- **CORD-v2** — Park, S., Shin, S., Lee, B., Lee, J., Surh, J., Seo, M., & Lee, H. (2019). *CORD: A Consolidated Receipt Dataset for Post-OCR Parsing.* Naver Clova. [HuggingFace](https://huggingface.co/datasets/naver-clova-ix/cord-v2) · [Local stub](docs/sources/datasets/cord-v2.md). CC-BY-4.0.
+- **inv-cdip-tobacco** — Salesforce. [GitHub](https://github.com/salesforce/inv-cdip) · [Local stub](docs/sources/datasets/inv-cdip-tobacco.md). CC-BY-NC-4.0.
 
 ## ADRs cross-referenced
 
