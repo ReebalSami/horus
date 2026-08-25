@@ -18,43 +18,54 @@ Master's thesis project (FH Wedel, SS 2026): privacy-first document intelligence
 - **Package manager**: `uv` (Astral) — exclusive; no `pip` / `poetry` / `conda` mixing per the `uv-discipline` rule
 - **Build backend**: `uv_build`
 - **Linter / formatter**: `ruff`
-- **Type checker**: `mypy` (default; `pyrefly` opt-in fast path documented below)
+- **Type checker**: `mypy`
 - **Test runner**: `pytest`
 - **Notebook discipline**: `jupytext` (write `.py`, convert to `.ipynb` for execution) + `papermill` (parameterized execution); no `.ipynb` checked in by default per the `notebook-discipline` rule
 
 ## Quick start
 
 ```sh
-make install                                  # uv sync (creates .venv, installs deps + dev group)
-make test                                     # uv run pytest
-make lint                                     # ruff check + format check
-make format                                   # ruff format + ruff check --fix
-make typecheck                                # mypy src tests
-make experiment NB=experiments/baseline.py    # jupytext + papermill flow
+make install     # uv sync (creates .venv, installs deps + dev group)
+make test        # uv run pytest (corpus-dependent tests auto-skip when data is absent)
+make lint        # ruff check + format check
+make format      # ruff format + ruff check --fix
+make typecheck   # mypy src tests
 ```
+
+Every runnable entry point is a Make target — **`make help`** lists all of them with one-line descriptions. The load-bearing ones:
+
+| Area | Targets |
+|---|---|
+| Evidence pipeline | `pilot-13`, `adapter-iterate`, `arm-b`, `reading-ceiling`, `inspect-pilot-13` |
+| Instrument audits | `audit-prompts`, `audit-heldout-exclusions`, `glossary` |
+| Tracking / UI | `mlflow-ui`, `app` (Streamlit observability dashboard, ADR-036) |
+| Held-out set | `get-frozen-testset` (examiner restore), `heldout-index`, `heldout-datasheet` |
+| Thesis | `thesis`, `thesis-assets`, `thesis-clean` (see `thesis/README.md`) |
+| Smokes | `zugferd-smoke`, `inference-smoke`, `cohort-smoke`, `orchestrated-smoke` |
 
 ## Project layout
 
 ```
 .
 ├── pyproject.toml          # uv-managed; PEP 735 [dependency-groups]
-├── Makefile                # convenience targets
+├── Makefile                # every runnable entry point (`make help`)
 ├── .python-version         # 3.14
-├── .env.example            # UV_TORCH_BACKEND=auto + future env vars
-├── .gitignore              # Python + ML + uv flavored
-├── README.md               # this file
-├── src/
-│   └── horus/              # main package (kebab `horus` = snake `horus`; no split needed)
-│       ├── __init__.py
-│       ├── seeding.py      # set_global_seed (stdlib + optional torch/numpy)
-│       ├── tracking.py     # Tracker Protocol + StdoutTracker (B4=C tracker-agnostic)
-│       └── config.py       # @dataclass Config placeholder (B8=C stdlib-only)
-├── tests/
-│   ├── __init__.py
-│   └── test_smoke.py       # validates package imports + seeding determinism + tracker + config
-├── experiments/            # jupytext-paired .py files; papermill runs them
-│   └── .gitkeep
-└── docs/                   # universal layout from _shared/scaffold/ (see docs/structure.md)
+├── .env.example            # UV_TORCH_BACKEND + GT-authoring cloud keys (never on the inference path)
+├── AGENTS.md               # operating guide for the AI-assisted workflow (disclosed in the thesis AI-usage appendix)
+├── .github/workflows/ci.yml  # lint + typecheck + test on every push/PR (ADR-023)
+├── src/horus/              # main package: Pydantic config schema, eval harness (scorer,
+│                           #   adapters, ground truth, held-out route), fine-tune, EDA, CLI
+├── scripts/                # ~44 operational scripts, grouped in scripts/README.md
+├── experiments/            # jupytext-paired .py experiments (papermill + Quarto; ADR-024/025)
+├── configs/                # per-experiment YAML, Pydantic-validated at boot (configs/README.md)
+├── tests/                  # pytest suite; corpus-dependent tests auto-skip (ADR-023)
+├── eval/                   # committed audit reports + sanitized result JSONs (eval/README.md)
+├── data/                   # gitignored corpora; tracked MANIFESTs + bakeoff transcripts (data/README.md)
+├── app/                    # Streamlit observability dashboard (`make app`; ADR-036)
+├── thesis/                 # LaTeX manuscript (`make thesis`; thesis/README.md)
+├── docs/                   # ADRs, archived sources, reviews, handoffs (docs/structure.md)
+├── notebooks/              # scratch EDA only — not the experiment home (notebooks/README.md)
+└── .devin/                 # project rules + phases.yaml for the AI-assisted workflow
 ```
 
 ## Experiment tracking
@@ -133,81 +144,33 @@ Outputs four sections in order:
 
 Wraps `scripts/inspect_pilot_13.py`; the script is also runnable directly via `uv run python scripts/inspect_pilot_13.py [--cfg <path>] [--parent-run-id <id>]`.
 
-## Deferred decisions (consumer-customizable)
+## Template decisions — all resolved
 
-The python-ml-uv template is deliberately under-opinionated on contested tooling. Choose your project's flavor for each:
+The `python-ml-uv` L3 template deliberately left several tooling decisions open ("B" decisions). HORUS resolved every one of them; each has a ratifying ADR:
 
-### PyTorch installation (B3=A)
+| Template decision | HORUS resolution |
+|---|---|
+| PyTorch install (B3) | `UV_TORCH_BACKEND=auto` in `.env.example` — autodetects MPS / CUDA / CPU at install time |
+| Experiment tracker (B4) | MLflow — SQLite metadata + filesystem artifacts ([ADR-011](docs/decisions/ADR-011-experiment-tracker-integration.md)); see `## Experiment tracking` |
+| Config layer (B8) | Pydantic `ExperimentConfig`, validated at boot before any model loads ([ADR-004](docs/decisions/ADR-004-config-library.md); `horus-config-discipline`) |
+| CI scaffold (B10) | GitHub Actions — lint + typecheck + test on every push to `main` and every PR ([ADR-023](docs/decisions/ADR-023-ci-pipeline.md); `.github/workflows/ci.yml`) |
+| Type checker (B1) | `mypy`; the `pyrefly` fast path was never needed |
 
-Default: `UV_TORCH_BACKEND=auto` in `.env.example` autodetects CPU / MPS / CUDA at install time. Works for solo + macOS contexts.
+## Held-out test set (examiner access)
 
-For Linux GPU clusters (extras-based pinning):
-
-```toml
-# pyproject.toml additions
-[tool.uv.sources]
-torch = [
-    { index = "pytorch-cpu", marker = "platform_system != 'Linux'" },
-    { index = "pytorch-cu130", marker = "platform_system == 'Linux'" },
-]
-
-[[tool.uv.index]]
-name = "pytorch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-explicit = true
-
-[[tool.uv.index]]
-name = "pytorch-cu130"
-url = "https://download.pytorch.org/whl/cu130"
-explicit = true
-```
-
-See `https://docs.astral.sh/uv/guides/integration/pytorch/` for the full pattern.
-
-### Experiment tracker (B4=C)
-
-> **Superseded for HORUS by ADR-011 (MLflow with extended `Tracker` Protocol). See `## Experiment tracking` above for the active configuration.** This subsection documents the `python-ml-uv` L3 template's substrate; the project-specific override is one section up.
-
-Default: `StdoutTracker` in `src/horus/tracking.py` prints metrics to stdout. Swap for MLflow / W&B / TensorBoard / Aim / DVC / Neptune by implementing the `Tracker` Protocol — see `tracking.py` docstring for the swap pattern.
-
-### Config layer (B8=C)
-
-Default: stdlib `@dataclass Config` in `src/horus/config.py`. Extend or replace with Hydra / pydantic / argparse / typer — see `config.py` docstring for swap patterns.
-
-### CI scaffold (B10=C)
-
-Not shipped. To add GitHub Actions:
-
-```yaml
-# .github/workflows/ci.yml
-name: CI
-on: [push, pull_request]
-jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
-      - run: uv sync
-      - run: make test
-      - run: make lint
-      - run: make typecheck
-```
-
-### Type checker fast path (B1 follow-on)
-
-Default: `mypy`. For Astral's `pyrefly` (Beta as of 2025-11; ~10–60× faster):
+The final evaluation runs on a **private held-out set of 39 real invoices** (ADR-040). It is never committed — the repo tracks only the sanitized datasheet ([`docs/architecture/belege-heldout-datasheet.md`](docs/architecture/belege-heldout-datasheet.md)), whose id ↔ sha256 freeze table is reproduced in the thesis appendix. Examiners receive the set as an **encrypted GitHub Release asset** (AES-256-GCM; ADR-075):
 
 ```sh
-uv add --dev pyrefly
-uv run pyrefly src tests
+git clone https://github.com/ReebalSami/horus && cd horus
+make install
+make get-frozen-testset    # asks for the password (handed over separately, never in writing next to the link)
 ```
 
-Add a `pyrefly` Makefile target if it becomes load-bearing.
+The command downloads the blob from the GitHub Release, decrypts it, restores `data/self-collected/`, and verifies every invoice's sha256 against the frozen datasheet — proving the restored set is **byte-identical** to the one the thesis evaluated. After restore, the held-out targets run locally (`make audit-heldout-exclusions`, `make heldout-datasheet`, …).
 
 ## Project lifecycle
 
-This project follows a phase chain defined in `.windsurf/phases.yaml` (copied from the `python-ml-uv` L3 template):
+This project follows a phase chain defined in `.devin/phases.yaml` (copied from the `python-ml-uv` L3 template):
 
 ```
 literature → brainstorm → spec → issues → experiment → implement → writeup

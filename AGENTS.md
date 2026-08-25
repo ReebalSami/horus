@@ -13,12 +13,12 @@ This is **HORUS** — *Hybrid OCR-free Reading & Understanding System*. Master's
   - …subsequent ADRs ratify each tool/model/library/dataset/framework choice (lifecycle: continuously)
 - `docs/sources/` — archived primary sources (papers / tool docs / datasets / legal); see `docs/sources/README.md`
 - `docs/prompts/stages/` — phase artifacts (`01-literature.md`, `02-brainstorm.md`, …) per the python-ml-uv phase chain
-- `.windsurf/phases.yaml` — runtime source of truth for `/run-phase` (7-phase chain: `literature → brainstorm → spec → issues → experiment → implement → writeup`)
+- `.devin/phases.yaml` — runtime source of truth for `/run-phase` (7-phase chain: `literature → brainstorm → spec → issues → experiment → implement → writeup`)
 - `thesis/` — the master-thesis manuscript (LaTeX; FH Wedel template adapted to **English**). Build with `make thesis` → `thesis/_build/main.pdf`. Structure + provenance + conventions: `thesis/README.md`; authoring decision: **ADR-055**; what the manuscript may claim is frozen by **ADR-054** (Layer 1 only — the knowledge-graph and query layers are design + future work). This is where the `writeup` phase lands; per-chapter status in `docs/prompts/stages/05-writeup.md`.
 
 ## Project-local rules (workspace scope; auto-load on Cascade activation)
 
-In `.windsurf/rules/`:
+In `.devin/rules/`:
 
 - 18 global long-form rules copied from cascade-system (`document-as-you-go`, `context7-and-docs-first`, `adapt-from-all`, `branch-and-pr-required`, `clean-project-structure`, `make-sure-it-works`, `bidirectional-learning-pipe`, …)
 - L3 (`python-ml-uv`) overrides: `notebook-discipline.md` (jupytext .py only, no .ipynb checked in), `uv-discipline.md` (uv exclusive; no pip/poetry/conda mixing)
@@ -29,7 +29,7 @@ In `.windsurf/rules/`:
 
 ## How to start work
 
-- **Resume / continue** an existing phase → `/run-phase <name>` from a Cascade conversation in this directory; reads `.windsurf/phases.yaml`, runs pre/post checks, invokes the phase's skill
+- **Resume / continue** an existing phase → `/run-phase <name>` from a Cascade conversation in this directory; reads `.devin/phases.yaml`, runs pre/post checks, invokes the phase's skill
 - **No-arg** `/run-phase` → lists current phases with artifact status (which are open, which are closed)
 - **Vertical pickup from a handoff doc** → `@kickoff <handoff-path>` (typically `cascade-system/docs/handoffs/<cascade-id>-<scope>.md`); reads handoff + parent plan + cited ADRs, asks ONE focused starting question
 

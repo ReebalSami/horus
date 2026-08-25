@@ -5,7 +5,7 @@ Single source of truth for an experiment's knobs. Loaded via
 validates at boot — any malformed YAML, missing required field, type mismatch,
 or extra (unrecognised) field raises `pydantic.ValidationError` BEFORE any
 model loads, dataset downloads, or compute is spent. This is the architectural
-forcing function described by `.windsurf/rules/horus-config-discipline.md`
+forcing function described by `.devin/rules/horus-config-discipline.md`
 and ratified by `docs/decisions/ADR-004-config-library.md`.
 
 `HORUS_*` env vars layer on top of the YAML data (per pydantic-settings source
@@ -106,7 +106,7 @@ class EvalConfig(BaseModel):
         ratifying ADR).
       - `docs/sources/papers/biten-2019-anls-iccv.md` (ANLS threshold rationale).
       - `docs/sources/tools/docile-rossumai.md` (tolerance-windows precedent).
-      - `.windsurf/rules/horus-config-discipline.md` (this is the architectural
+      - `.devin/rules/horus-config-discipline.md` (this is the architectural
         forcing function — knobs live HERE, not in `.py` constants).
     """
 
@@ -173,7 +173,7 @@ class RasterizerConfig(BaseModel):
       - `docs/decisions/ADR-014-cohort-harness-multipage.md` (this sub-model's
         ratifying ADR — forthcoming).
       - `docs/sources/tools/pypdfium2.md` (rasterizer source archival).
-      - `.windsurf/rules/horus-config-discipline.md` (architectural forcing
+      - `.devin/rules/horus-config-discipline.md` (architectural forcing
         function — knobs live HERE, not in `.py` constants).
     """
 
@@ -597,7 +597,7 @@ class EDAConfig(BaseModel):
     Refs:
       - `docs/decisions/ADR-024-eda-visualization-stack.md` (ratifying ADR).
       - `~/.windsurf/plans/eda-zugferd-9c4a5b.md` (locked Q1–Q5 plan).
-      - `.windsurf/rules/horus-config-discipline.md` (architectural forcing
+      - `.devin/rules/horus-config-discipline.md` (architectural forcing
         function — knobs live HERE, not in `.py` constants).
     """
 

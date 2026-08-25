@@ -150,6 +150,11 @@ app/assets/brand/sources/
 # intermediates are written by latexmk into thesis/_build/ and are transient.
 thesis/_build/
 
+# ADR-075: the encrypted frozen test-set bundle is written to dist/ by
+# `make frozen-testset-bundle`. The blob is published as a GitHub Release asset,
+# never committed (the repo carries the datasheet freeze table instead).
+/dist/
+
 # ADR-074: supervisor review material (2026-08-18). The annotated PDF and the
 # covering email carry the first examiner's name and signature, so both stay
 # local-only — same reasoning as the redaction pass on the meeting notes. The

@@ -84,6 +84,7 @@ dev = [
     "papermill>=2.6",
     "ipykernel>=6.29",
     "types-pyyaml>=6.0.12.20260510",
+    "cryptography>=44",
 ]
 
 [build-system]
